@@ -1,17 +1,16 @@
-
 tbody {
-    display:block;
-    max-height:660px;
-    overflow-y:scroll;
+    display: block;
+    max-height: 660px;
+    overflow-y: scroll;
     word-wrap: break-word;
 }
 
-thead, tbody tr {
-    display:table;
-    width:100%;
-    table-layout:fixed;
+thead,
+tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
 }
-
 
 table {
     border-collapse: collapse;
@@ -20,13 +19,13 @@ table {
     margin: 0 auto;
 }
 
-
-th, td {
+th,
+td {
     text-align: left;
     padding: 8px;
     border-bottom: 1px solid #ddd;
 }
-thead{
+thead {
     background-color: black;
     color: white;
 }
@@ -36,7 +35,12 @@ tr:nth-child(even) {
 }
 
 @media only screen and (max-width: 600px) {
-    table, thead, tbody, th, td, tr {
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
         display: block;
     }
 
