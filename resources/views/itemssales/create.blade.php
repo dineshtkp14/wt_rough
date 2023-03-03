@@ -14,7 +14,9 @@
     </div>
 
     <div class="container">
+
         <a href="/daybooks/">Back</a>
+
         <form class="row gx-5 gy-3" action="{{ route('itemsales.store') }}" method="post">
             @csrf
             <div class="col-md-12">
@@ -66,5 +68,6 @@
                 <button type="submit" class="btn btn-lg btn-primary">Save</button>
             </div>
         </form>
+
     </div>
 @stop
