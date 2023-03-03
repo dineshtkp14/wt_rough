@@ -27,6 +27,7 @@
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
+
             <div class="col-md-12">
                 <label for="inputPassword4" class="form-label">ITEMID</label>
                 <input type="text" class="form-control @error('itemid') is-invalid @enderror" name="itemid"
@@ -35,8 +36,11 @@
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
+
             <div class="row gx-5 gy-3 form-wrapper" id="formWrapper"></div>
+
             <button class="btn btn-info" id="addFieldBtn">+</button>
+
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Sub-Total</label>
                 <input type="text" class="form-control @error('subtotalf') is-invalid @enderror" name="subtotalf"
