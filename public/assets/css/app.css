@@ -1,3 +1,10 @@
+.invoicetable th,td {
+    border: 1px solid rgb(100, 96, 96) !important;
+    
+   
+}
+
+  
 tbody {
     display: block;
     max-height: 660px;
@@ -19,11 +26,12 @@ table {
     margin: 0 auto;
 }
 
+
 th,
 td {
     text-align: left;
     padding: 8px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #141111;
 }
 thead {
     background-color: black;
@@ -32,6 +40,19 @@ thead {
 
 tr:nth-child(even) {
     background-color: #f2f2f2;
+}
+
+.invoicetable tr{
+    display: table-row;
+}
+
+.invoicetable tbody{
+    height: auto;
+    overflow-y: hidden;
+}
+
+.invoicetable input{
+    width: 229px;
 }
 
 @media only screen and (max-width: 600px) {
@@ -64,5 +85,11 @@ tr:nth-child(even) {
         content: attr(data-label);
         text-transform: uppercase;
         font-weight: bold;
+    }
+}
+
+@media (max-width: 1399px) {
+    .invoicetable input{
+        width: 100%;
     }
 }
