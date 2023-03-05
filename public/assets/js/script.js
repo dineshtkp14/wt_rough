@@ -1,61 +1,63 @@
-const fields = [
-    {
-        label: "Unstocked Name",
-        name: "unstockedname",
-        width: "half",
-    },
-    {
-        label: "Quantity",
-        name: "quantity",
-        width: "half",
-    },
-    {
-        label: "Price",
-        name: "price",
-        width: "half",
-    },
-    {
-        label: "Discount",
-        name: "discount",
-        width: "half",
-    },
-    {
-        label: "Sub Total",
-        name: "subtotal",
-        width: "full",
-    },
-];
+let counter = 0;
+let salesData = [];
 
-function inputHTML(field) {
-    return (
-        '<div class="' +
-        (field.width === "full" ? "col-md-12" : "col-md-6") +
-        '" style="' +
-        (field.width === "full"
-            ? "border-bottom: 1px solid #888888; padding-bottom: 30px;"
-            : "") +
-        '"' +
-        ">" +
-        '<label for="inputPassword4" class="form-label">' +
-        field.label +
-        "</label>" +
-        '<input type="text" class="form-control" name="' +
-        field.name +
-        '">' +
-        "</div>"
-    );
+function inputHTML(counter) {
+    return `<tr id="inputRow${counter}">
+                <td><button class="btn btn-danger remove-row-btn" data-parent="inputRow${counter}"><i class="fa-solid fa-xmark"></i></button></td>
+                <td>
+                    <input type="text" class="w-100 form-control" value="" placeholder="Enter a Product">
+                </td>
+                <td>
+                    <input type="text" placeholder="Quantity" class="form-control" value="">
+                </td>
+                <td>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">$</span>
+                        <input type="text" placeholder="Price" class="form-control" value="">
+                    </div>
+                </td>
+                <td>
+                    <input type="text" placeholder="Discount" class="form-control" value="">
+                </td>
+                <td>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">$</span>
+                        <input type="text" placeholder="Sub-Total" class="form-control" value="">
+                    </div>
+                </td>
+            </tr>`;
 }
 
-function appendInputFields() {
-    $.each(fields, function (index, field) {
-        $("#formWrapper").append(inputHTML(field));
+function triggerRemoveEvent() {
+    $(".remove-row-btn").on("click", function (e) {
+        e.preventDefault();
+        const parentId = $(this).data("parent");
+        if (salesData.length <= 1) {
+            alert("minimum i row required");
+            return false;
+        }
+        $(`#${parentId}`).remove();
     });
 }
 
+function appendInputRow() {
+    counter++;
+    $("#invoiceTableBody").append(inputHTML(counter));
+    salesData.push({
+        id: counter,
+        product: "",
+        quantity: "",
+        price: "",
+        discount: "",
+        subtotal: "",
+    });
+    triggerRemoveEvent();
+}
+
 $(window).on("load", function () {
-    appendInputFields();
-    $("#addFieldBtn").on("click", function (e) {
+    appendInputRow();
+    $("#addRowBtn").on("click", function (e) {
         e.preventDefault();
-        appendInputFields();
+        appendInputRow();
     });
 });

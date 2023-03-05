@@ -15,79 +15,28 @@
 
     <div class="container">
         <div class="mb-4">
-        <a class="d-block" href="/daybooks/">Back</a>
+            <a class="d-block" href="/daybooks/">Back</a>
         </div>
-      
+
 
         <form class="row gx-5 gy-3" action="{{ route('itemsales.store') }}" method="post">
             @csrf
+            {{-- <input type="hidden" name="allSalesData" value="[{}]" /> --}}
             <div class="row">
-            <table class="invoicetable table-responsive">
-                <tbody style="max-height: none;">
-                    <tr>
-                        <th>
-                            <button class=" btn btn-success">+</button>
-                        </th>
-                        <th class="w-25"> Product</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Discount</th>
-                        <th>Subtotal</th>
-                    </tr>
-                    <tr>
-                        <td><button class=" btn btn-danger">X</button></td>
-                        <td>
-                            <input type="text" class= "w-100 inputwidth form-control @error('itemid') is-invalid @enderror"
-                                name="itemid" value="{{ old('itemid') }}" placeholder="Enter a Product">
-                            @error('itemid')
-                                <p class="invalid-feedback">{{ $message }}</p>
-                            @enderror <a href="">or Select a Product</a>
-
-                        </td>
-
-                        <td>
-                            <input type="text" placeholder="Quantity"
-                                class="form-control @error('itemid') is-invalid @enderror" name="itemid"
-                                value="{{ old('itemid') }}">
-                            @error('itemid')
-                                <p class="invalid-feedback">{{ $message }}</p>
-                            @enderror
-                        </td>
-                        <td>
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">$</span>
-                                <input type="text" placeholder="Price"
-                                    class="form-control @error('itemid') is-invalid @enderror" name="itemid"
-                                    value="{{ old('itemid') }}">
-                                @error('itemid')
-                                    <p class="invalid-feedback">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </td>
-                        <td>
-                            <input type="text" placeholder="Discount"
-                                class="form-control @error('itemid') is-invalid @enderror" name="itemid"
-                                value="{{ old('itemid') }}">
-                            @error('itemid')
-                                <p class="invalid-feedback">{{ $message }}</p>
-                            @enderror
-                        </td>
-                        <td>
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">$</span>
-                                <input type="text" placeholder="Sub-Total"
-                                    class="form-control @error('itemid') is-invalid @enderror" name="itemid"
-                                    value="{{ old('itemid') }}">
-                                @error('itemid')
-                                    <p class="invalid-feedback">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </td>
-                    </tr>
-                    
-                   
-                </tbody>
-            </table>
+                <table class="invoicetable table-responsive">
+                    <tbody id="invoiceTableBody" style="max-height: none;">
+                        <tr>
+                            <th>
+                                <button class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></button>
+                            </th>
+                            <th class="w-25"> Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <br><br>
