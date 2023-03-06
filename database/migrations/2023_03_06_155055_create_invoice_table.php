@@ -11,18 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('salesitems', function (Blueprint $table) {
-
+        Schema::create('invoice', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('invoiceid');
+          
+            $table->bigInteger('customerid');
            
-            $table->bigInteger('itemid');
-            $table->string('unstockedname');
-            $table->float('quantity',20,2);
-            $table->string('price');
-            $table->float('discount',20,2);
+            $table->float('paidamount',20,2);
+            $table->float('dueamount',20,2);
             $table->float('subtotal',20,2);
-           
+            $table->float('discount',20,2);
+            $table->float('total',20,2);
+            $table->float('totalamount',20,2);
+            $table->string('notes');
+
+
+
+
+
             $table->timestamps();
         });
     }
@@ -32,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('salesitems');
+        Schema::dropIfExists('invoice');
     }
 };

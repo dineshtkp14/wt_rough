@@ -30,29 +30,16 @@ class ItemsalesController extends Controller
 
     public function store(Request $req)
    {
-    $validator=Validator::make($req->all(),[
+    
 
 
-
-
-
-        'customerid'=>'required',
-        'itemid'=>'required',
-        'unstockedname'=>'required',
-        'quantity'=>'required',
-      
-        'price'=>'required|numeric', 
-        'discount'=>'required',
-        'subtotal'=>'required',
-        'subtotalf'=>'required',
-        'discountf'=>'required',
-        'total'=>'required',  
-           
-    ]);
- 
-    if($validator->passes()){
- 
-     
+    //createinvoice  retirns invoiceid
+    //calculate validateallitems from frontend and backed data
+    //insert all items in itemsalestable with the returned invoice id
+    //update invoice with validated calutaion 
+    //create new invoice histry ,billno,date,paidamount,dueamount,totalamount
+    
+        
         $disinfoobj=new salesitem();
         $disinfoobj->customerid=$req->customerid;
         $disinfoobj->itemid=$req->itemid;
@@ -72,7 +59,7 @@ class ItemsalesController extends Controller
     
 
         return redirect()->route('itemsales.create')->with('success','Items Added Sucessfully !!');  
-    }
+    
     else{
        
         return redirect()->route('itemsales.create')->withErrors($validator)->withInput();
