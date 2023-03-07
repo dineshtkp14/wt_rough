@@ -1,10 +1,8 @@
-.invoicetable th,td {
+.invoicetable th,
+td {
     border: 1px solid rgb(100, 96, 96) !important;
-    
-   
 }
 
-  
 tbody {
     display: block;
     max-height: 660px;
@@ -26,7 +24,6 @@ table {
     margin: 0 auto;
 }
 
-
 th,
 td {
     text-align: left;
@@ -42,17 +39,17 @@ tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-.invoicetable tr{
+.invoicetable tr {
     display: table-row;
 }
 
-.invoicetable tbody{
+.invoicetable tbody {
     height: auto;
     overflow-y: hidden;
 }
 
-.invoicetable input{
-    width: 229px;
+.invoicetable input {
+    width: 210px;
 }
 
 @media only screen and (max-width: 600px) {
@@ -89,7 +86,7 @@ tr:nth-child(even) {
 }
 
 @media (max-width: 1399px) {
-    .invoicetable input{
+    .invoicetable input {
         width: 100%;
     }
 }

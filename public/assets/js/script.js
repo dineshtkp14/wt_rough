@@ -21,7 +21,7 @@ function inputHTML(counter) {
                     </select>
                 </td>
                 <td>
-                    <input type="text" placeholder="Unstoked name" class="form-control sales-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
+                    <input type="text" placeholder="Unstocked Name" class="form-control sales-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
                 </td>
                 <td>
                     <input type="text" placeholder="Quantity" class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
@@ -210,9 +210,9 @@ $(window).on("load", function () {
     $("#verifyBtn").on("click", function (e) {
         e.preventDefault();
         $.each(salesData, function (index, value) {
-            if (value.product.trim() === "") {
+            if (value.product.trim() === "" && value.unstocked.trim() === "") {
                 $("#errorText").attr("class", "text-danger fw-bold");
-                $("#errorText").text("Please select product !");
+                $("#errorText").text("Please enter or select product !");
                 return false;
             }
 
@@ -230,6 +230,8 @@ $(window).on("load", function () {
                 $("#errorText").text("Please enter valid price !");
                 return false;
             }
+
+            console.log(salesData);
 
             finalData[0]["note"] = $("#noteInput").val().trim();
             $("#salesArrInput").val(JSON.stringify(salesData));

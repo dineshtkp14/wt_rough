@@ -31,10 +31,10 @@
                             <th>
                                 <button class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></button>
                             </th>
-                            <th class="w-25"> Product</th>
+                            <th style="width: 20%;"> Product</th>
                             <th>Unstocked Name</th>
                             <th>Quantity</th>
-                          
+
                             <th>Price</th>
                             <th>Discount</th>
                             <th>Subtotal</th>
