@@ -4,7 +4,7 @@ let finalData = [
     {
         subtotal: 0,
         discount: 0,
-        totalValue: 0,
+        total: 0,
         note: "",
     },
 ];
