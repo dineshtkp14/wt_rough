@@ -16,11 +16,7 @@
     <div class="container">
         <div class="mb-4">
             <a class="d-block" href="/daybooks/">Back</a>
-
-            <button type="">Select customer</button>
-            <input type="text" name="cid" id="cid" placeholder="Enter customer ID">
         </div>
-        <br>
 
 
         <form class="row gx-5 gy-3" action="{{ route('itemsales.store') }}" method="post">
