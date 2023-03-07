@@ -33,12 +33,12 @@ class ItemsalesController extends Controller
     
 
 
-    //createinvoice  retirns invoiceid
+    //create invoice  retirns invoiceid
     //calculate validateallitems from frontend and backed data
     //insert all items in itemsalestable with the returned invoice id
     //update invoice with validated calutaion 
     //create new invoice histry ,billno,date,paidamount,dueamount,totalamount
-    
+
         
         $disinfoobj=new salesitem();
         $disinfoobj->customerid=$req->customerid;

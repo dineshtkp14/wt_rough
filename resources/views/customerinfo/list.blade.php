@@ -44,7 +44,17 @@
 			
            
             <td data-label="Remarks">{{ $i->remarks }}</td>
-			<td data-label="Remarks"><button class="btn btn-success">EDIT</button><button class="btn btn-danger">DELETE</button></td>
+			<td>
+			<a href="{{Route('customerinfos.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
+
+         
+<a href="#" onclick="delfunctionusers({{$i->id}})" class="btn btn-danger"  rel="noopener noreferrer">Delete</a>
+<form id="eea{{$i->id}}" action="{{ route('customerinfos.destroy',$i->id)}}" method="post">
+@csrf
+@method('delete')
+
+</form>
+			</td>
 			
 		</tr>
         @endforeach

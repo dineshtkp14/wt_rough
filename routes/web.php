@@ -24,6 +24,10 @@ Route::post('/itemsales',[ItemsalesController::class,'store'])->name('itemsales.
 Route::get('/customerinfos',[CustomerinfoController::class,'index'])->name('customerinfos.index');
 Route::get('/customerinfos/create',[CustomerinfoController::class,'create'])->name('customerinfos.create');
 Route::post('/customerinfos',[CustomerinfoController::class,'store'])->name('customerinfos.store');
+Route::get('/customerinfos/{customerinfo}/edit',[CustomerinfoController::class,'edit'])->name('customerinfos.edit');
+Route::put('/customerinfos/{customerinfo}',[CustomerinfoController::class,'update'])->name('customerinfos.update');
+Route::delete('/customerinfos/{customerinfo}',[CustomerinfoController::class,'destroy'])->name('customerinfos.destroy');
+
 
 Route::get('/items',[Itemscontroller::class,'index'])->name('items.index');
 Route::get('/items/create',[Itemscontroller::class,'create'])->name('items.create');

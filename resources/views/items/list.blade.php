@@ -30,6 +30,7 @@
             <th>MRP</th>
 			<th>Total</th>
             <th>FinalTotal</th>
+			 <th>Action</th>
 
 			
 		</tr>
