@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\itemsale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
@@ -8,18 +10,16 @@ use App\Models\salesitem;
 
 class ItemsalesController extends Controller
 {
-   
-   
+
+
 
     public function index()
     {
-        
-         $cus=salesitem::orderBy('id','DESC')->get();
-       
 
-         return view('itemssales.list',['all'=>$cus]);
+        $cus = salesitem::orderBy('id', 'DESC')->get();
 
-       
+
+        return view('itemssales.list', ['all' => $cus]);
     }
     public function create()
     {
@@ -29,10 +29,13 @@ class ItemsalesController extends Controller
 
 
     public function store(Request $req)
-   {
-    
+    {
+        $sales_arr = json_decode($req->sales_arr);
+        $final_arr = json_decode($req->final_arr);
 
+        // invoice insert
 
+<<<<<<< HEAD
     //create invoice  retirns invoiceid
     //calculate validateallitems from frontend and backed data
     //insert all items in itemsalestable with the returned invoice id
@@ -64,8 +67,13 @@ class ItemsalesController extends Controller
        
         return redirect()->route('itemsales.create')->withErrors($validator)->withInput();
 
+=======
+        // sales insert
+        foreach ($sales_arr as $value) {
+            $data = new itemsale();
+            $data->quantity = $value->price;
+            $data->save();
+        }
+>>>>>>> 44cff8e75a41c82889b9bda50d2caff09c205742
     }
-   }
 }
-
-
