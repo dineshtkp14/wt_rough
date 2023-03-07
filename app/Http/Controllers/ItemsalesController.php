@@ -28,10 +28,6 @@ class ItemsalesController extends Controller
 
 
     public function store(Request $req)
-<<<<<<< HEAD
-    {
-        $validator = Validator::make($req->all(), [
-=======
    {
     
 
@@ -66,7 +62,6 @@ class ItemsalesController extends Controller
     else{
        
         return redirect()->route('itemsales.create')->withErrors($validator)->withInput();
->>>>>>> c64d39b2a96e611658440b3134c5aed8614fa1d6
 
 
 
