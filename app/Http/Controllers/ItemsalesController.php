@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\invoice;
 use App\Models\itemsale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\salesitem;
+
+
+
+
 
 class ItemsalesController extends Controller
 {
@@ -33,14 +38,28 @@ class ItemsalesController extends Controller
         $sales_arr = json_decode($req->sales_arr);//rowdetails
         //dd($sales_arr[0]);
 
-        $final_arr = json_decode($req->final_arr);//finaltotal
+        $final_arr = json_decode($req->final_arr);//finaltotalinvoice
       
         // invoice insert
+       
+
+            $invoice_data = new invoice();
+            $invoice_data->customerid = $final_arr[0]->customer;
+            $invoice_data->paidamount =null;
+            $invoice_data->dueamount = $final_arr[0]->total;
+           
+            $invoice_data->subtotal = $final_arr[0]->subtotal;
+            $invoice_data->discount = $final_arr[0]->discount;
+            $invoice_data->total = $final_arr[0]->total;
+            $invoice_data->notes = $final_arr[0]->note;
+            $invoice_data->save();
+           
+
 
         // sales insert
         foreach ($sales_arr as $value) {
             $data = new salesitem();
-            $data->invoiceid = 1;
+            $data->invoiceid = $invoice_data->id;
             $data->itemid = $value->product;
             $data->unstockedname = "kkk";
 

@@ -21,8 +21,12 @@ function inputHTML(counter) {
                     </select>
                 </td>
                 <td>
+                    <input type="text" placeholder="Unstoked name" class="form-control sales-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
+                </td>
+                <td>
                     <input type="text" placeholder="Quantity" class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
                 </td>
+
                 <td>
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">Rs.</span>
@@ -54,6 +58,7 @@ function appendInputRow() {
     salesData.push({
         id: counter,
         product: "",
+        unstocked: "",
         quantity: "",
         price: "",
         discount: "",
