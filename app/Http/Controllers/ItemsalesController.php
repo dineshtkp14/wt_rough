@@ -36,7 +36,7 @@ class ItemsalesController extends Controller
         // invoice insert
 
         // sales insert
-        foreach ($req->values as $value) {
+        foreach ($sales_arr as $value) {
             $data = new itemsale();
             $data->quantity = $value->price;
             $data->save();
