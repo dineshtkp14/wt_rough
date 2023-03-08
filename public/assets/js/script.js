@@ -2,6 +2,7 @@ let counter = 0;
 let salesData = [];
 let finalData = [
     {
+        customer: "",
         subtotal: 0,
         discount: 0,
         total: 0,
@@ -13,7 +14,7 @@ function inputHTML(counter) {
     return `<tr id="inputRow${counter}">
                 <td><button class="btn btn-danger remove-row-btn" data-id="${counter}"><i class="fa-solid fa-xmark"></i></button></td>
                 <td>
-                    <select class="form-control sales-input" id="productInput" data-id="${counter}" data-name="product">
+                    <select class="form-control sales-input product-input" id="productInput" data-id="${counter}" data-name="product">
                         <option value="" selected disabled>Select a product</option>
                         <option value="1">Tin</option>
                         <option value="2">Steel</option>
@@ -65,6 +66,7 @@ function appendInputRow() {
         subtotal: "",
     });
     triggerRemoveEvent();
+    $(".product-input").select2();
     handleInputChange();
     getFinalCalculations();
 }
@@ -179,22 +181,37 @@ function handleInputChange() {
 }
 
 // final total input change
-$("#discountInputFinal").on("input", function () {
+$(".sales-input-final").on("input", function () {
     const value = $(this).val().trim();
-    finalData[0]["discount"] = value;
-    // trim
-    finalData[0]["discount"] = value.trim();
-    $(this).val(value.trim());
+    const dataName = $(this).data("name");
+    finalData[0][dataName] = value;
 
-    const newValue = finalData[0]["discount"].replace(/[^0-9\.]/g, "");
-    if (newValue !== finalData[0]["discount"]) {
-        $(this).val(newValue);
-        finalData[0]["discount"] = newValue;
+    if (dataName === "customer") {
+        $("#customerName").text($("option:selected", this).attr("data-name"));
+        $("#customerAddress").text(
+            $("option:selected", this).attr("data-address")
+        );
+        $("#customerEmail").text($("option:selected", this).attr("data-email"));
+        $("#customerPhone").text($("option:selected", this).attr("data-phone"));
+
+        $("#customerCard").slideDown();
     }
 
-    if (newValue > 100) {
-        $(this).val("100");
-        finalData[0]["discount"] = "100";
+    if (dataName === "discount") {
+        // trim
+        finalData[0]["discount"] = value.trim();
+        $(this).val(value.trim());
+
+        const newValue = finalData[0]["discount"].replace(/[^0-9\.]/g, "");
+        if (newValue !== finalData[0]["discount"]) {
+            $(this).val(newValue);
+            finalData[0]["discount"] = newValue;
+        }
+
+        if (newValue > 100) {
+            $(this).val("100");
+            finalData[0]["discount"] = "100";
+        }
     }
 
     getFinalCalculations();
@@ -209,6 +226,13 @@ $(window).on("load", function () {
 
     $("#verifyBtn").on("click", function (e) {
         e.preventDefault();
+
+        if (finalData[0]["customer"].trim() === "") {
+            $("#errorText").attr("class", "text-danger fw-bold");
+            $("#errorText").text("Please select customer !");
+            return false;
+        }
+
         $.each(salesData, function (index, value) {
             if (value.product.trim() === "" && value.unstocked.trim() === "") {
                 $("#errorText").attr("class", "text-danger fw-bold");

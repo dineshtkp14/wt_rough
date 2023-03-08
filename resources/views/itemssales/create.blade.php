@@ -15,104 +15,67 @@
 
     <div class="container">
 
-        <div class="mb-4">
+        <div class="mb-3">
             <a class="d-block" href="/daybooks/">Back</a>
         </div>
 
         <br>
 
-      
-         <!-- Dropdown -->       
-             <select id='selUser' style='width: 200px;' name="cid">
-                    <option value='0'>-- Select Customer --</option> 
-                 @foreach ($all as $i)
-                    <option value='{{ $i->id }}'>{{ $i->name }}</option>  
-                 @endforeach    
-            </select>   
+
+        <!-- Dropdown -->
+        <select class="sales-input-final" id='selectCustomerInput' data-name="customer">
+            <option value='' selected disabled>Select Customer</option>
+            @foreach ($all as $i)
+                <option value='{{ $i->id }}' data-name={{ $i->name }} data-address={{ $i->address }}
+                    data-email={{ $i->email }} data-phone={{ $i->phoneno }}>{{ $i->name }}
+                </option>
+            @endforeach
+        </select>
 
         <br>
         <br>
 
-        <!-- Script -->
-        <script>  
-            $(document).ready (function () {  
-                $("#selUser").change (function () {  
-                    var selectedCountry = $(this).children("option:selected").val();  
-                    $("#cidvalue").val(selectedCountry);
-                });  
-            });  
-            </script> 
-        <script>
-        $(document).ready(function(){
-            
-            // Initialize select2
-            $("#selUser").select2();
-
-           
-        });
-        </script>
-
-        <div class="card" style="">
-            <img src="..." class="card-img-top" alt="...">
+        <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
             <div class="card-body">
-              <h5 class="card-title">Customer Info</h5>
-              <p class="card-text">
-                 Name: Dinesh Bajgain <br>
-                 Address:Tikapur,Kailali <br>
-                 Email: Dinesh Bajgain <br>
-                 PhoneNo:Tikapur,Kailali <br>
-                 Remarks: Dinesh Bajgain <br>
-                
-              </p>
-            
+                <h5 class="card-title">Customer Info</h5>
+                <p class="card-text">
+                    <span>Name: </span><span id="customerName">...</span>
+                </p>
+                <p>
+                    <span>Addres: </span><span id="customerAddress">...</span>
+                </p>
+                <p>
+                    <span>E-mail: </span><span id="customerEmail">...</span>
+                </p>
+                <p>
+                    <span>PhoneN: </span><span id="customerPhone">...</span>
+                </p>
             </div>
-          </div>
-
-
-  <div class="mb-4">
-            <a class="d-block" href="/daybooks/">Back</a>
         </div>
 
-        <form class="row gx-5 gy-3" action="{{ route('itemsales.store') }}" method="post">
+        <form action="{{ route('itemsales.store') }}" method="post">
             @csrf
             <input type="hidden" id="salesArrInput" name="sales_arr" value="" />
             <input type="hidden" id="finalArrInput" name="final_arr" value="" />
+            <table class="invoicetable table-responsive">
+                <tbody id="invoiceTableBody" style="max-height: none;">
+                    <tr>
+                        <th>
+                            <button class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></button>
+                        </th>
+                        <th style="width: 20%;"> Product</th>
+                        <th>Unstocked Name</th>
+                        <th>Quantity</th>
+
+                        <th>Price</th>
+                        <th>Discount</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </tbody>
+            </table>
 
 
-
-
-
-
-
-
-
-            <input type="hidden" id="cidvalue" name="cid" value="" />
-
-            
-
-            <div class="row">
-                <table class="invoicetable table-responsive">
-                    <tbody id="invoiceTableBody" style="max-height: none;">
-                        <tr>
-                            <th>
-                                <button class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></button>
-                            </th>
-                            <th style="width: 20%;"> Product</th>
-                            <th>Unstocked Name</th>
-                            <th>Quantity</th>
-
-                            <th>Price</th>
-                            <th>Discount</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <br><br>
-            <br><br>
-
-            <div class="row my-5 p-0">
+            <div class="row mt-5 mb-4 p-0">
                 <div class="col-md-9">
                     <div class="">
                         <label class="my-3"><b>Amount in words: </b><span id="totalAmountWords"
@@ -123,17 +86,17 @@
                 <div class="col-md-3">
                     <div class="">
                         <div class="input-group mb-1">
-                            <span class="input-group-text sales-input-final">Sub Total (Rs.)</span>
+                            <span class="input-group-text">Sub Total (Rs.)</span>
                             <input type="text" class="form-control" placeholder="0.00" id="subTotalInputFinal"
                                 data-name="subtotal" disabled>
                         </div>
                         <div class="input-group mb-3">
-                            <span class="input-group-text sales-input-final">Discount (%)</span>
-                            <input type="text" class="form-control" placeholder="0.00" id="discountInputFinal"
-                                data-name="discount">
+                            <span class="input-group-text">Discount (%)</span>
+                            <input type="text" class="form-control sales-input-final" placeholder="0.00"
+                                id="discountInputFinal" data-name="discount">
                         </div>
                         <div class="input-group">
-                            <span class="input-group-text sales-input-final">Total (Rs.)</span>
+                            <span class="input-group-text">Total (Rs.)</span>
                             <input type="text" class="form-control" placeholder="0.00" id="totalInputFinal"
                                 data-name="total" disabled>
                         </div>
