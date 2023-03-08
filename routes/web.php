@@ -7,10 +7,7 @@ use App\Http\Controllers\DistrinutorinfoController;
 use App\Http\Controllers\Itemscontroller;
 use App\Http\Controllers\CustomerinfoController;
 use App\Http\Controllers\ItemsalesController;
-
-
-
-
+use App\Http\Controllers\PricelistController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +16,15 @@ Route::get('/', function () {
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
 Route::post('/itemsales',[ItemsalesController::class,'store'])->name('itemsales.store');
+
+
+Route::get('/pricelists',[PricelistController::class,'index'])->name('pricelists.index');
+Route::get('/pricelists/create',[PricelistController::class,'create'])->name('pricelists.create');
+Route::post('/pricelists',[PricelistController::class,'store'])->name('pricelists.store');
+Route::get('/pricelists/{customerinfo}/edit',[PricelistController::class,'edit'])->name('pricelists.edit');
+Route::put('/pricelists/{customerinfo}',[PricelistController::class,'update'])->name('pricelists.update');
+Route::delete('/pricelists/{customerinfo}',[PricelistController::class,'destroy'])->name('pricelists.destroy');
+
 
 
 Route::get('/customerinfos',[CustomerinfoController::class,'index'])->name('customerinfos.index');

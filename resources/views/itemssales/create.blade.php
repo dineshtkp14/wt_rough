@@ -14,15 +14,81 @@
     </div>
 
     <div class="container">
+
         <div class="mb-4">
             <a class="d-block" href="/daybooks/">Back</a>
         </div>
 
+        <br>
+
+      
+         <!-- Dropdown -->       
+             <select id='selUser' style='width: 200px;' name="cid">
+                    <option value='0'>-- Select Customer --</option> 
+                 @foreach ($all as $i)
+                    <option value='{{ $i->id }}'>{{ $i->name }}</option>  
+                 @endforeach    
+            </select>   
+
+        <br>
+        <br>
+
+        <!-- Script -->
+        <script>  
+            $(document).ready (function () {  
+                $("#selUser").change (function () {  
+                    var selectedCountry = $(this).children("option:selected").val();  
+                    $("#cidvalue").val(selectedCountry);
+                });  
+            });  
+            </script> 
+        <script>
+        $(document).ready(function(){
+            
+            // Initialize select2
+            $("#selUser").select2();
+
+           
+        });
+        </script>
+
+        <div class="card" style="">
+            <img src="..." class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">Customer Info</h5>
+              <p class="card-text">
+                 Name: Dinesh Bajgain <br>
+                 Address:Tikapur,Kailali <br>
+                 Email: Dinesh Bajgain <br>
+                 PhoneNo:Tikapur,Kailali <br>
+                 Remarks: Dinesh Bajgain <br>
+                
+              </p>
+            
+            </div>
+          </div>
+
+
+  <div class="mb-4">
+            <a class="d-block" href="/daybooks/">Back</a>
+        </div>
 
         <form class="row gx-5 gy-3" action="{{ route('itemsales.store') }}" method="post">
             @csrf
             <input type="hidden" id="salesArrInput" name="sales_arr" value="" />
             <input type="hidden" id="finalArrInput" name="final_arr" value="" />
+
+
+
+
+
+
+
+
+
+            <input type="hidden" id="cidvalue" name="cid" value="" />
+
+            
 
             <div class="row">
                 <table class="invoicetable table-responsive">

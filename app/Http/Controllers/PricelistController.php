@@ -2,43 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\pricelist;
 use Illuminate\Support\Facades\Validator;
-use Session;
-use App\Models\customerinfo;
 
+use Illuminate\Http\Request;
 
-
-class CustomerinfoController extends Controller
+class PricelistController extends Controller
 {
-
     public function index()
     {
         
-         $cus=customerinfo::orderBy('id','DESC')->get();
+         $cus=pricelist::orderBy('id','DESC')->get();
        
+         return view('pricelist.list',['all'=>$cus]);
 
-         return view('customerinfo.list',['all'=>$cus]);   
+       
     }
-
     public function create()
     {
 
-        
-        
-     
-        return view('customerinfo.create');
+        return view('pricelist.create');
     }
 
-
- public function returncustomersforsalesitems()
-{
-    $cus=customerinfo::orderBy('id','DESC')->get();
-       
-
-    return view('itemssales.create',['all'=>$cus]);   
-  
-}
 
     public function store(Request $req)
    {
@@ -56,7 +41,7 @@ class CustomerinfoController extends Controller
 
     if($validator->passes()){
 
-        $disinfoobj=new customerinfo();
+        $disinfoobj=new pricelist();
         $disinfoobj->name=$req->name;
         $disinfoobj->address=$req->address;
         $disinfoobj->email=$req->email;
@@ -69,10 +54,10 @@ class CustomerinfoController extends Controller
 
       
 
-        return redirect()->route('customerinfos.create')->with('success','Items Added Sucessfully !!');  
+        return redirect()->route('pricelists.create')->with('success','Items Added Sucessfully !!');  
     }
     else{
-        return redirect()->route('customerinfos.create')->withErrors($validator)->withInput();
+        return redirect()->route('pricelists.create')->withErrors($validator)->withInput();
 
     }
 
@@ -80,9 +65,9 @@ class CustomerinfoController extends Controller
    
    public function edit($id)
     {
-        $customers=customerinfo::findOrfail($id);
+        $customers=pricelist::findOrfail($id);
 
-        return view('customerinfo.edit',['cus'=>$customers]);
+        return view('pricelists.edit',['cus'=>$customers]);
         
     }
 
@@ -103,7 +88,7 @@ class CustomerinfoController extends Controller
         if($validator->passes()){
     
           
-            $disinfoobj= customerinfo::find($id);
+            $disinfoobj= pricelist::find($id);
             $disinfoobj->name=$req->name;
             $disinfoobj->address=$req->address;
             $disinfoobj->email=$req->email;
@@ -116,10 +101,10 @@ class CustomerinfoController extends Controller
     
           
     
-            return redirect()->route('customerinfos.create')->with('success','Items updated Sucessfully !!');  
+            return redirect()->route('pricelistss.create')->with('success','Items updated Sucessfully !!');  
         }
         else{
-            return redirect()->route('customerinfos.create')->withErrors($validator)->withInput();
+            return redirect()->route('pricelistss.create')->withErrors($validator)->withInput();
     
         }
     
@@ -128,13 +113,13 @@ class CustomerinfoController extends Controller
 
     public function destroy($id,Request $req){
 
-        $cusiddelete=customerinfo::findOrFail($id);
+        $cusiddelete=pricelist::findOrFail($id);
        
   
         $cusiddelete->delete();
   
         //$req->session()->flash('success','Deleted Sucessfully'); 
-        return redirect()->route('customerinfos.index')->with('success','Deleted sucessfully'); 
+        return redirect()->route('pricelistss.index')->with('success','Deleted sucessfully'); 
         
   
   }

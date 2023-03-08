@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('itemid');
             $table->string('unstockedname');
             $table->float('quantity',20,2);
-            $table->string('price');
+            $table->float('price',20,2);
             $table->float('discount',20,2);
             $table->float('subtotal',20,2);
            

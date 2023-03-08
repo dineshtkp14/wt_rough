@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\customerinfo;
 use App\Models\invoice;
 use App\Models\itemsale;
 use Illuminate\Http\Request;
@@ -22,14 +23,17 @@ class ItemsalesController extends Controller
     {
 
         $cus = salesitem::orderBy('id', 'DESC')->get();
-
-
         return view('itemssales.list', ['all' => $cus]);
     }
+    
+
     public function create()
     {
 
-        return view('itemssales.create');
+        $cus=customerinfo::orderBy('id','DESC')->get();
+        return view('itemssales.create',['all'=>$cus]);   
+
+       
     }
 
 
@@ -44,7 +48,8 @@ class ItemsalesController extends Controller
        
 
             $invoice_data = new invoice();
-            $invoice_data->customerid = $final_arr[0]->customer;
+            $invoice_data->customerid = $req->cid;
+          
             $invoice_data->paidamount =null;
             $invoice_data->dueamount = $final_arr[0]->total;
            
