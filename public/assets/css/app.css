@@ -1,6 +1,6 @@
 .invoicetable th,
 td {
-    border: 1px solid rgb(100, 96, 96) !important;
+    border: 1px solid #b7b7b7 !important;
 }
 
 tbody {
@@ -50,6 +50,32 @@ tr:nth-child(even) {
 
 .invoicetable input {
     width: 210px;
+}
+
+.customer-card {
+    padding: 6px !important;
+    border: none !important;
+    width: max-content;
+    min-width: 200px !important;
+    box-shadow: 0 0 10px #e7e7e7 !important;
+}
+
+.customer-card p {
+    font-size: 16px !important;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.customer-card p:nth-last-child(1) {
+    margin-bottom: 0 !important;
+}
+
+.customer-card span:nth-child(1) {
+    white-space: nowrap;
+}
+
+.customer-card p span:nth-last-child(1) {
+    font-weight: 400;
 }
 
 @media only screen and (max-width: 600px) {
