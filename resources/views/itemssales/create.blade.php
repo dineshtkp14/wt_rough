@@ -38,6 +38,7 @@
             $(document).ready (function () {  
                 $("#selUser").change (function () {  
                     var selectedCountry = $(this).children("option:selected").val();  
+                    alert ("You have selected the country - " + selectedCountry);
                     $("#cidvalue").val(selectedCountry);
                 });  
             });  
@@ -77,16 +78,7 @@
             @csrf
             <input type="hidden" id="salesArrInput" name="sales_arr" value="" />
             <input type="hidden" id="finalArrInput" name="final_arr" value="" />
-
-
-
-
-
-
-
-
-
-            <input type="hidden" id="cidvalue" name="cid" value="" />
+            <input type="text" id="cidvalue" name="cid" value="" />
 
             
 
