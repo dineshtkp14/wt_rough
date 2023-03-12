@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @section('content')
 
-    <h2 class="bg-warning"> Customer Details</h2>
+<Center><h1 class="text-danger mt-5 bold"><U>SELL PRODUCTS</U></h1></Center>
 
     <div class="cl mt-5"></div>
 
@@ -22,6 +22,9 @@
         <br>
 
 
+        {{-- forproductdata --}}
+      
+
         <!-- Dropdown -->
         <select class="sales-input-final" id='selectCustomerInput' data-name="customer">
             <option value='' selected disabled>Select Customer</option>
@@ -38,6 +41,9 @@
         <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
             <div class="card-body">
                 <h5 class="card-title">Customer Info</h5>
+                <p>
+                    <span>ID: </span><span id="customerPhone">...</span>
+                </p>
                 <p class="card-text">
                     <span>Name: </span><span id="customerName">...</span>
                 </p>
@@ -55,6 +61,7 @@
 
         <form action="{{ route('itemsales.store') }}" method="post">
             @csrf
+            <input type="text" name="particulars" placeholder="particulars">
             <input type="hidden" id="salesArrInput" name="sales_arr" value="" />
             <input type="hidden" id="finalArrInput" name="final_arr" value="" />
             <table class="invoicetable table-responsive">

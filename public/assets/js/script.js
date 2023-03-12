@@ -10,15 +10,18 @@ let finalData = [
     },
 ];
 
+console.log(ITEMS_DATA);
+
 function inputHTML(counter) {
     return `<tr id="inputRow${counter}">
                 <td><button class="btn btn-danger remove-row-btn" data-id="${counter}"><i class="fa-solid fa-xmark"></i></button></td>
                 <td>
                     <select class="form-control sales-input product-input" id="productInput" data-id="${counter}" data-name="product">
                         <option value="" selected disabled>Select a product</option>
-                        <option value="1">Tin</option>
-                        <option value="2">Steel</option>
-                        <option value="3">Iron</option>
+                      
+                        ${ITEMS_DATA.map(function (data) {
+                             return `<option value="${data.id}" data-price="${data.mrp}">${data.itemsname}</option>`
+                        })}   
                     </select>
                 </td>
                 <td>
@@ -48,6 +51,8 @@ function inputHTML(counter) {
                 </td>
             </tr>`;
 }
+
+
 
 function appendInputRow() {
     if (salesData.length >= 10) {
@@ -131,6 +136,12 @@ function getFinalCalculations() {
 
 function addInputValue(index, inputId, dataId, dataName, value) {
     salesData[index][dataName] = value;
+
+    if(dataName === "product"){
+            const priceValue = $("option:selected", $(`#inputRow${dataId} #productInput`)).attr("data-price");
+            $(`#inputRow${dataId} #priceInput`).val(priceValue);
+            salesData[index]["price"] = priceValue;
+        }
 
     // validation
     if (
@@ -255,7 +266,6 @@ $(window).on("load", function () {
                 return false;
             }
 
-            console.log(salesData);
 
             finalData[0]["note"] = $("#noteInput").val().trim();
             $("#salesArrInput").val(JSON.stringify(salesData));

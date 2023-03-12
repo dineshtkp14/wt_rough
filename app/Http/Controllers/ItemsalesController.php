@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\customerinfo;
+use App\Models\customerledgerdetails;
 use App\Models\invoice;
-use App\Models\itemsale;
+use App\Models\item;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
@@ -31,12 +33,17 @@ class ItemsalesController extends Controller
     {
 
         $cus = customerinfo::all();
-        return view('itemssales.create', ['all' => $cus]);
+        $itemsdata = item::all();
+        return view('itemssales.create', ['page' => 'isc','all' => $cus,'data' => $itemsdata]);
     }
 
 
     public function store(Request $req)
     {
+
+
+
+
         $sales_arr = json_decode($req->sales_arr); //rowdetails
         //dd($sales_arr[0]);
 
@@ -69,5 +76,16 @@ class ItemsalesController extends Controller
             $data->subtotal = $value->subtotal;
             $data->save();
         }
+
+        $cus_data = new customerledgerdetails();
+        $cus_data->customerid = $final_arr[0]->customer;
+        $cus_data->invoiceid = $invoice_data->id;
+        $cus_data->particulars  = $req->particulars;
+        $cus_data->voucher_type = "sales";
+        $cus_data->invoicetype = "credit";
+        $cus_data->debit =  $final_arr[0]->total;
+       
+        $cus_data->save();
+        
     }
 }

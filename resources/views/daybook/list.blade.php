@@ -2,18 +2,24 @@
 
 @section('content')
 
-<h2 class="text-center mt-5">View DayBook</h2>
-<h4>Total collected cash today{{$totalsum}}</h4>
+<Center><h1 class="text-danger mt-5 bold"><U>VIEW DAYBOOK DETAILS</U></h1></Center>
+
 <div class="container">
-	<div class="row float-end">
-<div class="col-12 float-end ">
-
-        <input class="form-control  border-warning border-2" id="filterInput" type="text" placeholder="Search Here">
-    
-</div>
-</div>
-
+	
 <a href="/daybooks/create">Back</a>
+<div class="row my-4">
+	<div class="col-md-6">
+		<h4>Total collected cash today : {{$totalsum}}</h4>
+
+	</div>
+	<div class="col-md-3 flat-end">
+	</div>
+	<div class="col-md-3 flat-end">
+		<input class="form-control  border-warning border-2" id="filterInput" type="text" placeholder="Search Here">
+
+	</div>
+
+</div>
 
 
 <table>

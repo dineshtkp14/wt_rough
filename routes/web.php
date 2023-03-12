@@ -6,12 +6,18 @@ use App\Http\Controllers\Bankcontroller;
 use App\Http\Controllers\DistrinutorinfoController;
 use App\Http\Controllers\Itemscontroller;
 use App\Http\Controllers\CustomerinfoController;
+
+use App\Http\Controllers\CustomerLedgerDetailsController;
 use App\Http\Controllers\ItemsalesController;
 use App\Http\Controllers\PricelistController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+
+
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
@@ -50,3 +56,8 @@ Route::post('/daybooks',[Daybookcontroller::class,'store'])->name('daybooks.stor
 Route::get('/banks',[Bankcontroller::class,'index'])->name('banks.index');
 Route::get('/banks/create',[Bankcontroller::class,'create'])->name('banks.create');
 Route::post('/banks',[Bankcontroller::class,'store'])->name('banks.store');
+
+Route::get('/xxx',[CustomerLedgerDetailsController::class,'index'])->name('cpayments.index');
+Route::get('/cpayments/create',[CustomerLedgerDetailsController::class,'create'])->name('cpayments.create');
+Route::post('/cpayments',[CustomerLedgerDetailsController::class,'store'])->name('cpayments.store');
+

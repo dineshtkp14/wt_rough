@@ -30,8 +30,114 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg sticky-top  navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="">Wholesale Tikapur</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    BANKS
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{route('banks.create')}}">Add Deposit</a></li>
+                    
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('banks.index')}}">View Deposit</a></li>
+                  </ul>
+              </li>
+             
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Daybook
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{route('daybooks.create')}}">Add Daybook</a></li>
+                    
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('daybooks.index')}}">View Daybook</a></li>
+                  </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Suppliers
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{route('disinfos.create')}}">Add New Suppliers</a></li>
+                    
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('disinfos.index')}}">View Suppliers Details</a></li>
+                  </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Products
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{route('daybooks.create')}}">Add Product</a></li>
+                    
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('daybooks.index')}}">View Product Details</a></li>
+                  </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Customers
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{route('customerinfos.create')}}">Add Customer</a></li>
+                    
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('customerinfos.index')}}">View Customers Details</a></li>
+                  </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  PRODUCT
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{route('items.create')}}">ADD Product</a></li>
+                    
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('items.index')}}">View  Product Details</a></li>
+                  </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Sell Products
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{route('itemsales.create')}}">Sell Product</a></li>
+                    
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{route('itemsales.index')}}">View  sales Product Details</a></li>
+                  </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Price List
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="">Add Product Price </a></li>
+                    
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="">View Product Price</a></li>
+                  </ul>
+              </li>
+            </ul>
+            
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
     @yield('content')
-    <script src="{{ asset('assets/js/script.js') }}"></script>
+    
     <script>
         $(document).ready(function() {
             $("#filterInput").on("keyup", function() {
@@ -62,8 +168,25 @@
 
         // select input 
         $('#selectCustomerInput').select2();
+
+
+        //
+        
     </script>
 
+
+@php
+$items_data = null;
+   if(Request::route()->getName() =="itemsales.create"){
+        $items_data = $data;
+   }
+@endphp
+
+<script>
+    var ITEMS_DATA= @json($items_data);
+</script>
+
+<script src="{{ asset('assets/js/script.js') }}"></script>
 </body>
 
 </html>

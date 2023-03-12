@@ -3,7 +3,7 @@
 @section('content')
 
 
-<h2 class="bg-warning"> Add items</h2>
+<Center><h1 class="text-danger mt-5 bold"><U>ADD PRODUCTS</U></h1></Center>
 <div class="cl mt-5"></div>
 <div class="container mt-5">
             @if (Session::has('success'))
