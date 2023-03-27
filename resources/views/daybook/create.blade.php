@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-
+<div class="main-content"> 
 
 <Center><h1 class="text-danger mt-5 bold"><U>DAYBOOK</U></h1></Center>
 <div class="cl mt-5"></div>
@@ -14,7 +14,7 @@
 </div>
 
 <div class="container">
-<a href="/daybooks/">Back</a>
+
 
 <form class="row gx-5 gy-3" action="{{ route('daybooks.store') }}" method="post">
                 @csrf
@@ -32,7 +32,7 @@
                     <label for="inputPassword4" class="form-label">Paisa</label>
                     
                         <select name="modeofpay"  class="form-control @error('modeofpay') is-invalid @enderror">
-                            <option value="ayeko">Ayeko</option>
+                            <option value="jamma">Jamma</option>
                             <option value="lageko">Lageko</option>
                            
                         </select>
@@ -94,7 +94,7 @@
 </form>
 </div>
 
-
+</div>
 
 @stop
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\Bank;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class BankController extends Controller
 {
@@ -22,14 +23,40 @@ class BankController extends Controller
 
             $custo=bank::orderBy('id','DESC')->get();
         }else{
-            $dataval=now()->format('Y-m-d');
-            $count=Bank::whereBetween('date',[$from,$to])->sum('amount');
+            
            
+            $count=Bank::whereBetween('date',[$from,$to])->sum('amount');
             $custo=Bank::whereBetween('date',  [$from,$to])->get();
 
         }
         
         return view('bank.list',['custo'=>$custo,'totalsum'=>$count]);
+    }
+
+    public function show_intopdfbankdetails(Request $req)
+    {
+        
+        $from=date($req->date1);
+        $to=date($req->date2);
+       
+
+        $custo=null;
+        $count=null;
+       
+        if($from == "" || $to==""){
+
+            $custo=bank::orderBy('id','DESC')->get();
+        }else{
+            
+           
+            $count=Bank::whereBetween('date',[$from,$to])->sum('amount');
+            $custo=Bank::whereBetween('date',  [$from,$to])->get();
+
+        }
+       
+        $pdfviewe=FacadePdf::setOptions(['dpi' => 150,'defaultFont' => 'dejavu serif'])->loadView('bank.converttopdfbankhistory',['custo'=>$custo,'totalsum'=>$count]);     
+
+        return $pdfviewe->download('invoice.pdf');
     }
 
    
@@ -47,7 +74,7 @@ class BankController extends Controller
         'date'=>'required', 
         'amount'=>'required|numeric', 
         'name'=>'required',
-        'remarks'=>'required', 
+      
        
             
     ]);

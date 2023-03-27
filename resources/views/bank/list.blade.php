@@ -44,7 +44,7 @@
 
    @endif
 
-	
+   
 
 </div>
 
@@ -55,7 +55,7 @@
 <br>
 
 
-<table>
+<table id="example">
 	<thead>
 		<tr>
 			<th>Id</th>
@@ -89,6 +89,23 @@
      @endif
 	</tbody>
 </table>
+
+<a href="" class="btn btn-danger" id="pdfLink">Print To PDF</a>
+
+<script>
+	document.getElementById('pdfLink').addEventListener('click', function(e) {
+        e.preventDefault(); 
+		var query=window.location.search;
+		var param=new URLSearchParams(query);
+
+        var url = "{{ route('banks.convert') }}?&date1=" + param.get('date1') + "&date2=" + param.get('date2');
+		window.location.href = url;
+		
+		
+
+    });
+</script>
+
 </div>
 
 

@@ -16,8 +16,7 @@ return new class extends Migration
           
             $table->bigInteger('customerid');
            
-            $table->float('paidamount',20,2)->nullable();
-            $table->float('dueamount',20,2);
+          
             $table->float('subtotal',20,2);
             $table->float('discount',20,2);
             $table->float('total',20,2);

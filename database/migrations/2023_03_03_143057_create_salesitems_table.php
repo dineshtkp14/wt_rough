@@ -16,7 +16,9 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('invoiceid');
            
-            $table->bigInteger('itemid');
+            $table->bigInteger('itemid')->nullable();
+           // $table->string('itemname')->nullable();
+
             $table->string('unstockedname');
             $table->float('quantity',20,2);
             $table->float('price',20,2);

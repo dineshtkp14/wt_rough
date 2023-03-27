@@ -12,9 +12,8 @@ class PricelistController extends Controller
     public function index()
     {
         
-         $cus=pricelist::orderBy('id','DESC')->get();
        
-         return view('pricelist.list',['all'=>$cus]);
+         return view('pricelist.list');
 
        
     }
@@ -29,28 +28,24 @@ class PricelistController extends Controller
    {
     $validator=Validator::make($req->all(),[
 
-        'name'=>'required',
-        'address'=>'required',
-        'email'=>'required',
-        'remarks'=>'required',
-      
-        'phoneno'=>'required|numeric', 
+        'itemname'=>'required',
+        'costprice'=>'required|numeric', 
+        'saleprice'=>'required|numeric', 
+        'wholesaleprice'=>'numeric', 
+       
        
            
     ]);
 
     if($validator->passes()){
 
-        $disinfoobj=new pricelist();
-        $disinfoobj->name=$req->name;
-        $disinfoobj->address=$req->address;
-        $disinfoobj->email=$req->email;
-        $disinfoobj->phoneno=$req->phoneno;
-       
-        
-        $disinfoobj->remarks=$req->remarks;
-       
-        $disinfoobj->save();
+        $pricelistobj=new pricelist();
+        $pricelistobj->itemname=$req->itemname;
+        $pricelistobj->costprice=$req->costprice;
+        $pricelistobj->saleprice=$req->saleprice;
+        $pricelistobj->wholesaleprice=$req->wholesaleprice;
+        $pricelistobj->note=$req->note;       
+        $pricelistobj->save();
 
       
 
@@ -65,9 +60,9 @@ class PricelistController extends Controller
    
    public function edit($id)
     {
-        $customers=pricelist::findOrfail($id);
+        $priceistdata=pricelist::findOrfail($id);
 
-        return view('pricelists.edit',['cus'=>$customers]);
+        return view('pricelist.edit',['pricelistdata'=>$priceistdata]);
         
     }
 
@@ -75,12 +70,10 @@ class PricelistController extends Controller
     {
         $validator=Validator::make($req->all(),[
 
-            'name'=>'required',
-            'address'=>'required',
-            'email'=>'required',
-            'remarks'=>'required',
-          
-            'phoneno'=>'required|numeric', 
+            'itemname'=>'required',
+        'costprice'=>'required|numeric', 
+        'saleprice'=>'required|numeric', 
+        'wholesaleprice'=>'numeric', 
            
                
         ]);
@@ -88,38 +81,32 @@ class PricelistController extends Controller
         if($validator->passes()){
     
           
-            $disinfoobj= pricelist::find($id);
-            $disinfoobj->name=$req->name;
-            $disinfoobj->address=$req->address;
-            $disinfoobj->email=$req->email;
-            $disinfoobj->phoneno=$req->phoneno;
-           
-            
-            $disinfoobj->remarks=$req->remarks;
-           
-            $disinfoobj->save();
+        $pricelistobj= pricelist::find($id);
+        $pricelistobj->itemname=$req->itemname;
+        $pricelistobj->costprice=$req->costprice;
+        $pricelistobj->saleprice=$req->saleprice;
+        $pricelistobj->wholesaleprice=$req->wholesaleprice;
+        $pricelistobj->note=$req->note;       
+        $pricelistobj->save();
+
     
-          
-    
-            return redirect()->route('pricelistss.create')->with('success','Items updated Sucessfully !!');  
+            return redirect()->route('pricelists.create')->with('success','Items updated Sucessfully !!');  
         }
         else{
-            return redirect()->route('pricelistss.create')->withErrors($validator)->withInput();
+            return redirect()->route('pricelists.create')->withErrors($validator)->withInput();
     
         }
     
         
     }
 
-    public function destroy($id,Request $req){
+    public function destroy($id){
 
-        $cusiddelete=pricelist::findOrFail($id);
-       
-  
-        $cusiddelete->delete();
-  
-        //$req->session()->flash('success','Deleted Sucessfully'); 
-        return redirect()->route('pricelistss.index')->with('success','Deleted sucessfully'); 
+        $pricelistid=pricelist::findOrFail($id);
+        $pricelistid->delete();
+
+
+          return redirect()->route('pricelists.index')->with('success','Deleted sucessfully'); 
         
   
   }

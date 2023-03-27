@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-
+<div class="main-content"> 
 <h2 class="text-center mt-5">View Suppliers Details</h2>
 
 <div class="container">
@@ -65,6 +65,6 @@
 </table>
 </div>
 
-
+</div>
 
 @stop

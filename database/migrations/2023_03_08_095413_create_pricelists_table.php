@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('pricelists', function (Blueprint $table) {
             $table->id();
+            $table->string('itemname');
+            $table->float('costprice',20,2);
+            $table->float('saleprice',20,2);
+            $table->float('wholesaleprice',20,2);
+            $table->string('note')->nullable();
             $table->timestamps();
         });
     }

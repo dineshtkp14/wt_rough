@@ -2,8 +2,8 @@
 
 @section('content')
 
-
-<h2 class="bg-warning"> Customer Details</h2>
+<div class="main-content"> 
+<Center><h1 class="text-danger mt-5 bold"><U>Add New Price List </U></h1></Center>
 <div class="cl mt-5"></div>
 <div class="container mt-5">
             @if (Session::has('success'))
@@ -16,7 +16,7 @@
 <div class="container">
 <a href="/daybooks/">Back</a>
 
-<form class="row gx-5 gy-3" action="{{ route('customerinfos.store') }}" method="post">
+<form class="row gx-5 gy-3" action="{{ route('pricelists.store') }}" method="post">
                 @csrf
 
                
@@ -27,36 +27,36 @@
             
 
           <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label"> Name</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                        name="name" value="{{ old('name') }}">
-                    @error('name')
+                    <label for="inputPassword4" class="form-label"> Item Name</label>
+                    <input type="text" class="form-control @error('itemname') is-invalid @enderror" 
+                        name="itemname" value="{{ old('itemname') }}">
+                    @error('itemname')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Address</label>
-                    <input type="text" class="form-control @error('address') is-invalid @enderror" 
-                        name="address" value="{{ old('address') }}">
-                    @error('address')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
-            </div>
-
-            <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Email</label>
-                    <input type="text" class="form-control @error('email') is-invalid @enderror" 
-                        name="email" value="{{ old('email') }}">
-                    @error('email')
+                    <label for="inputPassword4" class="form-label">$Cost Price</label>
+                    <input type="text" class="form-control @error('costprice') is-invalid @enderror" 
+                        name="costprice" value="{{ old('costprice') }}">
+                    @error('costprice')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">PhoneNo</label>
-                    <input type="number" class="form-control @error('phoneno') is-invalid @enderror" 
-                        name="phoneno" value="{{ old('phoneno') }}">
-                    @error('phoneno')
+                    <label for="inputPassword4" class="form-label">$Sale Price</label>
+                    <input type="text" class="form-control @error('saleprice') is-invalid @enderror" 
+                        name="saleprice" value="{{ old('saleprice') }}">
+                    @error('saleprice')
+                        <p class="invalid-feedback">{{ $message }}</p>
+                    @enderror
+            </div>
+
+            <div class="col-md-6">
+                    <label for="inputPassword4" class="form-label">WholeSale Price</label>
+                    <input type="number" class="form-control @error('wholesaleprice') is-invalid @enderror" 
+                        name="wholesaleprice" value="{{ old('wholesaleprice') }}">
+                    @error('wholesaleprice')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
@@ -64,10 +64,10 @@
            
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Remarks</label>
-                    <input type="text" class="form-control @error('remarks') is-invalid @enderror" 
-                        name="remarks" value="{{ old('remarks') }}">
-                    @error('remarks')
+                    <label for="inputPassword4" class="form-label">Note</label>
+                    <input type="text" class="form-control @error('note') is-invalid @enderror" 
+                        name="note" value="{{ old('note') }}">
+                    @error('note')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
@@ -78,7 +78,7 @@
 </form>
 </div>
 
-
+</div>
 
 @stop
 

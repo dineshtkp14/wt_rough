@@ -19,7 +19,7 @@ return new class extends Migration
             $table->float('amount',20,2);
             $table->date('date');
            
-            $table->string('remarks');
+            $table->string('remarks')->nullable();
 
             $table->timestamps();
         });

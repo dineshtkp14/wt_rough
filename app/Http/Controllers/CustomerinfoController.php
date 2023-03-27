@@ -1,6 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
+use Livewire\WithPagination;
+
+
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -9,17 +12,24 @@ use App\Models\customerinfo;
 
 
 
+
 class CustomerinfoController extends Controller
 {
+    use WithPagination;
+    public $search = '';
 
     public function index()
     {
         
-         $cus=customerinfo::orderBy('id','DESC')->get();
-       
+   
 
-         return view('customerinfo.list',['all'=>$cus]);   
+     return view('customerinfo.list');   
+
     }
+
+    
+    
+
 
     public function create()
     {
@@ -46,9 +56,8 @@ class CustomerinfoController extends Controller
 
         'name'=>'required',
         'address'=>'required',
-        'email'=>'required',
-        'remarks'=>'required',
-      
+        'email'=>'required|email',
+       
         'phoneno'=>'required|numeric', 
        
            
@@ -93,7 +102,7 @@ class CustomerinfoController extends Controller
             'name'=>'required',
             'address'=>'required',
             'email'=>'required',
-            'remarks'=>'required',
+          
           
             'phoneno'=>'required|numeric', 
            
@@ -133,7 +142,6 @@ class CustomerinfoController extends Controller
   
         $cusiddelete->delete();
   
-        //$req->session()->flash('success','Deleted Sucessfully'); 
         return redirect()->route('customerinfos.index')->with('success','Deleted sucessfully'); 
         
   

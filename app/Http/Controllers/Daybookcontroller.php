@@ -17,13 +17,22 @@ class Daybookcontroller extends Controller
      public function index()
     {
         
-        $cus=daybook::orderBy('id','DESC')->get();
-        // $count=daybook::all()->where('date', '2023-02-01')->sum('amount');
-        $dataval=now()->format('Y-m-d');
-        $count=daybook::all()->where('date',  $dataval)->sum('amount');
+        // $cus=daybook::orderBy('id','DESC')->get();
+        // // $count=daybook::all()->where('date', '2023-02-01')->sum('amount');
+        // $dataval=now()->format('Y-m-d');
+        
+        // $count=daybook::all()->where('date',  $dataval)->where('modeofpay',  "jamma")->sum('amount');
 
-        return view('daybook.list',['custo'=>$cus],['totalsum'=>$count]);
+        // return view('daybook.list',['custo'=>$cus],['totalsum'=>$count]);
+        return view('daybook.list');
+
+
+
+
     }
+
+
+
     public function create()
     {
 
@@ -39,7 +48,7 @@ class Daybookcontroller extends Controller
         'address'=>'required',
         'contactno'=>'required',
         'amount'=>'required|numeric', 
-        'remarks'=>'required', 
+      
         'date'=>'required', 
         'modeofpay'=>'required',      
     ]);

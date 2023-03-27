@@ -5,6 +5,11 @@
     <title>WT</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <script>
+      BASE_URL="<?php  echo url(''); ?>";
+  </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
@@ -17,7 +22,11 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/number-to-words"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-
+    <link href="http://nepalidatepicker.sajanmaharjan.com.np/nepali.datepicker/css/nepali.datepicker.v4.0.1.min.css" rel="stylesheet" type="text/css"/>
+   
+{{-- //forhtmltabletoexport --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
 
 
     {{-- forselectsearch --}}
@@ -26,118 +35,75 @@
 
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sidebars/">
+
 
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg sticky-top  navbar-dark bg-dark">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="">Wholesale Tikapur</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    BANKS
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{route('banks.create')}}">Add Deposit</a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{route('banks.index')}}">View Deposit</a></li>
-                  </ul>
-              </li>
-             
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Daybook
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{route('daybooks.create')}}">Add Daybook</a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{route('daybooks.index')}}">View Daybook</a></li>
-                  </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Suppliers
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{route('disinfos.create')}}">Add New Suppliers</a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{route('disinfos.index')}}">View Suppliers Details</a></li>
-                  </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Products
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{route('daybooks.create')}}">Add Product</a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{route('daybooks.index')}}">View Product Details</a></li>
-                  </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Customers
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{route('customerinfos.create')}}">Add Customer</a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{route('customerinfos.index')}}">View Customers Details</a></li>
-                  </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  PRODUCT
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{route('items.create')}}">ADD Product</a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{route('items.index')}}">View  Product Details</a></li>
-                  </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Sell Products
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{route('itemsales.create')}}">Sell Product</a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{route('itemsales.index')}}">View  sales Product Details</a></li>
-                  </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Price List
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="">Add Product Price </a></li>
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="">View Product Price</a></li>
-                  </ul>
-              </li>
-            </ul>
-            
-            <form class="d-flex" role="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-          </div>
+
+    <main class="side-nav d-flex flex-nowrap">
+  <h1 class="visually-hidden">Sidebars examples</h1>
+
+
+  <div class="flex-shrink-0 p-3" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none " style="border-bottom:1px solid #e5e7eb7e;">
+      <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-5 fw-semibold text-white">Wholesale Tikapur</span>
+    </a>
+    <ul class="list-unstyled ps-0">
+      
+      <li class="mb-1">
+        <button class=" btn btn-toggle d-inline-flex align-items-center  border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+          <i class="fa-solid fa-gauge"></i> Dashboard
+        </button>
+        <div class="collapse" id="dashboard-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Overview</a></li>
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Weekly</a></li>
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Monthly</a></li>
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Annually</a></li>
+          </ul>
         </div>
-      </nav>
-    @yield('content')
-    
+      </li>
+      <li class="mb-1">
+        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
+          Orders
+        </button>
+        <div class="collapse" id="orders-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">New</a></li>
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Processed</a></li>
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Shipped</a></li>
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Returned</a></li>
+          </ul>
+        </div>
+      </li>
+      <li style="border-bottom:1px solid #e5e7eb7e;"></li>
+      <li class="mb-1">
+        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+          Account
+        </button>
+        <div class="collapse" id="account-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">New...</a></li>
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Profile</a></li>
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Settings</a></li>
+            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Sign out</a></li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+ 
+
+  
+  
+
+
+</main>
+  
+@yield('content')
     <script>
         $(document).ready(function() {
             $("#filterInput").on("keyup", function() {

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-
+<div class="main-content"> 
 <h2 class="text-center mt-5">View Suppliers Details</h2>
 
 <div class="container">
@@ -20,14 +20,17 @@
 	<thead>
 		<tr>
 			<th>Id</th>
-			<th>Name</th>
-			<th>Address</th>
-			<th>Email</th>
-			<th>Phoneno</th>
+			<th>Bill No</th>
+			<th>Item Id</th>
+			<th>Unstocked Name</th>
+			<th>Quantity</th>
 			
             
-            <th>Remarks</th>
-            <th>Action</th>
+            <th>Price</th>
+            <th>Discount</th>
+			<th>Sub-Total</th>
+			
+
 
 			
 		</tr>
@@ -37,14 +40,17 @@
                         @foreach ($all as $i)
 		<tr>
 			<td data-label="Id">{{ $i->id }}</td>
-			<td data-label="Name">{{ $i->customerid }}</td>
+			<td data-label="Name">{{ $i->invoiceid }}</td>
 			<td data-label="Address">{{ $i->itemid}}</td>
-			<td data-label="Contact No.">{{ $i->email }}</td>
-			<td data-label="Amount">{{ $i->phoneno }}</td>
+			<td data-label="Contact No.">{{ $i->unstockedname }}</td>
+			<td data-label="Amount">{{ $i->quantity }}</td>
 			
            
-            <td data-label="Remarks">{{ $i->remarks }}</td>
-			<td data-label="Remarks"><button class="btn btn-success">EDIT</button><button class="btn btn-danger">DELETE</button></td>
+            <td data-label="Remarks">{{ $i->price }}</td>
+            <td data-label="Remarks">{{ $i->discount }}</td>
+            <td data-label="Remarks">{{ $i->subtotal }}</td>
+
+
 			
 		</tr>
         @endforeach
@@ -58,5 +64,5 @@
 </div>
 
 
-
+</div>
 @stop

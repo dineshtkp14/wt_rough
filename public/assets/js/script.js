@@ -20,7 +20,7 @@ function inputHTML(counter) {
                         <option value="" selected disabled>Select a product</option>
                       
                         ${ITEMS_DATA.map(function (data) {
-                             return `<option value="${data.id}" data-price="${data.mrp}">${data.itemsname}</option>`
+                             return `<option value="${data.id}" data-price="${data.mrp}" >${data.itemsname}</option>`
                         })}   
                     </select>
                 </td>
@@ -39,7 +39,7 @@ function inputHTML(counter) {
                 </td>
                 <td>
                     <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1">%</span>
+                        <span class="input-group-text" id="basic-addon1">Rs.</span>
                         <input type="text" placeholder="Discount" class="form-control sales-input" id="discountInput" value="" data-id="${counter}" data-name="discount">
                     </div>
                 </td>
@@ -69,6 +69,7 @@ function appendInputRow() {
         price: "",
         discount: "",
         subtotal: "",
+        
     });
     triggerRemoveEvent();
     $(".product-input").select2();
@@ -107,7 +108,7 @@ function getRowCalculations(quantity, price, discount) {
     discount = discount.trim() === "" ? 0 : discount;
 
     let totalValue = parseFloat(quantity) * parseFloat(price);
-    let discountAmount = (discount / 100) * totalValue;
+    let discountAmount = parseFloat(discount);
     let finalDiscount = totalValue - discountAmount;
     return finalDiscount.toFixed(2);
 }
@@ -121,8 +122,7 @@ function getFinalCalculations() {
     finalData[0]["subtotal"] = finalSubTotal.toFixed(2);
     $("#subTotalInputFinal").val(finalData[0]["subtotal"]);
 
-    let discountAmount =
-        (finalData[0]["discount"] / 100) * finalData[0]["subtotal"];
+    let discountAmount = finalData[0]["discount"];
     let totalAmount = finalData[0]["subtotal"] - discountAmount;
     finalData[0]["total"] = totalAmount.toFixed(2);
     $("#totalInputFinal").val(finalData[0]["total"]);
@@ -148,6 +148,7 @@ function addInputValue(index, inputId, dataId, dataName, value) {
         dataName === "quantity" ||
         dataName === "price" ||
         dataName === "discount"
+
     ) {
         $("#totalAmountWords").text("Calculating...");
         // trim
@@ -161,9 +162,10 @@ function addInputValue(index, inputId, dataId, dataName, value) {
         }
 
         if (dataName === "discount") {
-            if (newValue > 100) {
-                $(`#inputRow${dataId} #${inputId}`).val("100");
-                salesData[index][dataName] = "100";
+            console.log(salesData[index]["subtotal"]);
+            if (newValue > parseFloat(salesData[index]["quantity"]*salesData[index]["price"])) {
+                $(`#inputRow${dataId} #${inputId}`).val("0");
+                salesData[index][dataName] = "0";
             }
         }
     }
@@ -219,9 +221,9 @@ $(".sales-input-final").on("input", function () {
             finalData[0]["discount"] = newValue;
         }
 
-        if (newValue > 100) {
-            $(this).val("100");
-            finalData[0]["discount"] = "100";
+        if (newValue > parseFloat(finalData[0]['subtotal'])) {
+            $(this).val("");
+            finalData[0]["discount"] = "0";
         }
     }
 
@@ -237,7 +239,12 @@ $(window).on("load", function () {
 
     $("#verifyBtn").on("click", function (e) {
         e.preventDefault();
-
+     
+        if ($("#salesDate").val().trim() === "") {
+            $("#errorText").attr("class", "text-danger fw-bold");
+            $("#errorText").text("Please select Date !");
+            return false;
+        }
         if (finalData[0]["customer"].trim() === "") {
             $("#errorText").attr("class", "text-danger fw-bold");
             $("#errorText").text("Please select customer !");

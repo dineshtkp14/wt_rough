@@ -1,7 +1,8 @@
 @extends('layouts.master')
 @section('content')
 
-<Center><h1 class="text-danger mt-5 bold"><U>SELL PRODUCTS</U></h1></Center>
+<div class="main-content"> 
+<Center><h1 class="text-danger mt-5 bold"><U>INVOICE</U></h1></Center>
 
     <div class="cl mt-5"></div>
 
@@ -15,56 +16,70 @@
 
     <div class="container">
 
-        <div class="mb-3">
-            <a class="d-block" href="/daybooks/">Back</a>
-        </div>
-
+       <h2 class=""> Bill N0:{{$nextgenid}} </h2>
         <br>
 
+<div class="row">
+    <div class="col-md-6">
+  <!-- Dropdown -->
+  <select class="sales-input-final" id='selectCustomerInput' data-name="customer">
+    <option value='' selected disabled>Select Customer</option>
+   
+    @foreach ($all as $i)
+        <option value='{{ $i->id }}' data-name={{ $i->name }} data-address={{ $i->address }}
+            data-email={{ $i->email }} data-phone={{ $i->phoneno }}>{{ $i->name }}
+        </option>
+    @endforeach
+</select>
 
-        {{-- forproductdata --}}
+<br>
+<br>
+
+<div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
+    <div class="card-body">
+        <h5 class="card-title">Customer Info</h5>
+        <p>
+            <span>ID: </span><span id="customerPhone">...</span>
+        </p>
+        <p class="card-text">
+            <span>Name: </span><span id="customerName">...</span>
+        </p>
+        <p>
+            <span>Addres: </span><span id="customerAddress">...</span>
+        </p>
+        <p>
+            <span>E-mail: </span><span id="customerEmail">...</span>
+        </p>
+        <p>
+            <span>PhoneN: </span><span id="customerPhone">...</span>
+        </p>
+    </div>
+</div>
+
+    </div>
+   
+
+</div>
+
+
       
 
-        <!-- Dropdown -->
-        <select class="sales-input-final" id='selectCustomerInput' data-name="customer">
-            <option value='' selected disabled>Select Customer</option>
-            @foreach ($all as $i)
-                <option value='{{ $i->id }}' data-name={{ $i->name }} data-address={{ $i->address }}
-                    data-email={{ $i->email }} data-phone={{ $i->phoneno }}>{{ $i->name }}
-                </option>
-            @endforeach
-        </select>
 
-        <br>
-        <br>
-
-        <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
-            <div class="card-body">
-                <h5 class="card-title">Customer Info</h5>
-                <p>
-                    <span>ID: </span><span id="customerPhone">...</span>
-                </p>
-                <p class="card-text">
-                    <span>Name: </span><span id="customerName">...</span>
-                </p>
-                <p>
-                    <span>Addres: </span><span id="customerAddress">...</span>
-                </p>
-                <p>
-                    <span>E-mail: </span><span id="customerEmail">...</span>
-                </p>
-                <p>
-                    <span>PhoneN: </span><span id="customerPhone">...</span>
-                </p>
-            </div>
-        </div>
-
+      
         <form action="{{ route('itemsales.store') }}" method="post">
             @csrf
-            <input type="text" name="particulars" placeholder="particulars">
+            <div class="py-4 d-flex justify-content-end">
+                <div style="width: 300px">
+                  
+                    <div class="input-group mb-1">
+                        <span class="input-group-text">Date:</span>
+                        <input type="date" class="form-control" placeholder="0.00" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
+                    </div>
+                </div>
+            </div>
             <input type="hidden" id="salesArrInput" name="sales_arr" value="" />
             <input type="hidden" id="finalArrInput" name="final_arr" value="" />
-            <table class="invoicetable table-responsive">
+            <table class="invoicetable table-responsive bg-white">
                 <tbody id="invoiceTableBody" style="max-height: none;">
                     <tr>
                         <th>
@@ -98,7 +113,7 @@
                                 data-name="subtotal" disabled>
                         </div>
                         <div class="input-group mb-3">
-                            <span class="input-group-text">Discount (%)</span>
+                            <span class="input-group-text">Discount (Rs.)</span>
                             <input type="text" class="form-control sales-input-final" placeholder="0.00"
                                 id="discountInputFinal" data-name="discount">
                         </div>
@@ -118,4 +133,9 @@
             </div>
         </form>
     </div>
+
+
+
+
+</div>
 @stop

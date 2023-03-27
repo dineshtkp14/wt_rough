@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
           
             $table->bigInteger('customerid');
-            $table->bigInteger('invoiceid');
+            $table->bigInteger('invoiceid')->nullable();
             $table->string('particulars');
             $table->string('voucher_type');
+            $table->string('date');
             $table->float('debit',20,2)->nullable();
             $table->float('credit',20,2)->nullable();
-            $table->string('invoicetype');
+            $table->string('invoicetype')->nullable();;
 
             $table->timestamps();
         });

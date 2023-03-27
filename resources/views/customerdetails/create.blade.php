@@ -3,7 +3,7 @@
 @section('content')
 
 
-<Center><h1 class="text-danger mt-5 bold"><U>ADD NEW CUSTOMER </U></h1></Center>
+<Center><h1 class="text-danger mt-5 bold"><U>Customer Ledger Payments </U></h1></Center>
 <div class="cl mt-5"></div>
 <div class="container mt-5">
             @if (Session::has('success'))
@@ -16,61 +16,54 @@
 <div class="container">
 <a href="/daybooks/">Back</a>
 
-<form class="row gx-5 gy-3" action="{{ route('customerinfos.store') }}" method="post">
+<form class="row gx-5 gy-3" action="{{ route('cpayments.store') }}" method="post">
                 @csrf
 
                
            
-            
+            <input type="date" name="date" class="form-control">
            
-           
+                <select name="customerid" class="form-select" aria-label="Default select example">
+                    <option selected>Select Customer</option>
+                    @foreach ($all as $i)
+                    
+                    <option value="{{$i->id}}"> {{$i->name}}</option>
+                    @endforeach
+                    
+                  </select>
             
 
           <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label"> Name</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                        name="name" value="{{ old('name') }}">
-                    @error('name')
+                    <label for="inputPassword4" class="form-label"> Particulars</label>
+                    <input type="text" class="form-control @error('particulars') is-invalid @enderror" 
+                        name="particulars" value="{{ old('particulars') }}">
+                    @error('particulars')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Address</label>
-                    <input type="text" class="form-control @error('address') is-invalid @enderror" 
-                        name="address" value="{{ old('address') }}">
-                    @error('address')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
-            </div>
-
-            <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Email</label>
-                    <input type="text" class="form-control @error('email') is-invalid @enderror" 
-                        name="email" value="{{ old('email') }}">
-                    @error('email')
+                    <label for="inputPassword4" class="form-label">Voucher Type</label>
+                    <input type="text" class="form-control @error('vt') is-invalid @enderror" 
+                        name="vt" value="{{ old('vt') }}">
+                    @error('vt')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
 
+            
+
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">PhoneNo</label>
-                    <input type="number" class="form-control @error('phoneno') is-invalid @enderror" 
-                        name="phoneno" value="{{ old('phoneno') }}">
-                    @error('phoneno')
+                    <label for="inputPassword4" class="form-label">Amount</label>
+                    <input type="number" class="form-control @error('amount') is-invalid @enderror" 
+                        name="credit" value="{{ old('amount') }}">
+                    @error('amount')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
 
            
 
-            <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Remarks</label>
-                    <input type="text" class="form-control @error('remarks') is-invalid @enderror" 
-                        name="remarks" value="{{ old('remarks') }}">
-                    @error('remarks')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
-            </div>
+           
 
             <div class="d-grid gap-2 pt-2 pb-4">
                     <button type="submit" class="btn btn-lg btn-primary">Save</button>
