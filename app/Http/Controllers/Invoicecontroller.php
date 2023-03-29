@@ -24,12 +24,18 @@ class Invoicecontroller extends Controller
 
     public function create()
     {
+        $breadcrumb= [
+            'subtitle'=>'Create',
+            'title'=>'Invoice',
+            'link'=>'Invoice'
+        ];
 
-        return view('itemssales.create');
+        return view('itemssales.create',['breadcrumb'=>$breadcrumb]);
     }
 
     public function store()
     {
+      
 
         return view('itemssales.create');
     }

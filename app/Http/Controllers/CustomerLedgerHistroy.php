@@ -18,7 +18,7 @@ class CustomerLedgerHistroy extends Controller
 
     public function returncusbills(Request $req){
  
-
+      
         $allcusinfo=customerinfo::orderBy('id','DESC')->get();  
         $query=invoice::where('customerid',$req->customerid)->get();
 
@@ -136,6 +136,11 @@ class CustomerLedgerHistroy extends Controller
         }
 
         public function returnBillsDEtailsByInvoiceid(Request $req){
+            $breadcrumb= [
+                'subtitle'=>'',
+                'title'=>'Search Bill No',
+                'link'=>'Search Bill No'
+            ];
            
                 
                 $itemsname= item::where('id',$req->customerid)->get();
@@ -164,7 +169,7 @@ class CustomerLedgerHistroy extends Controller
                 
                }    
 
-        return view('customerledgerhistory.customerBillsDetailsByInvoideId',['allinvoices'=>$allInvoices,'allcusbyid'=>$allcusbyid,'itemsname'=>$itemsname,'invoiceid'=>$invoiceid,'cinfodetails'=>$customerinfodetails]);   
+        return view('customerledgerhistory.customerBillsDetailsByInvoideId',['allinvoices'=>$allInvoices,'allcusbyid'=>$allcusbyid,'itemsname'=>$itemsname,'invoiceid'=>$invoiceid,'cinfodetails'=>$customerinfodetails,'breadcrumb'=>$breadcrumb]);   
 
             }
 

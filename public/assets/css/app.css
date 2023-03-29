@@ -73,6 +73,7 @@
     width: 280px;
     z-index: 999;
     background-color: #0b1120 ;
+    overflow-y: auto;
   
 }
 
@@ -110,6 +111,41 @@ padding-left: 300px !important;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
   }
+
+
+.mainbreadcrumb h5{
+  position: relative;
+   color: #6363f1;
+   font-weight: 500;
+   font-size: 14px;
+   margin-left: 62px !important;
+   letter-spacing: 1px;
+   text-transform: uppercase;
+
+}
+.mainbreadcrumb h5::before{
+content: "";
+position: absolute;
+top: calc(50% - 1.5px);
+left: -60px;
+width: 50px;
+height: 1px;
+background-color: #6363f1;
+
+}
+.mainbreadcrumb h1{
+  font-weight: 700;
+}
+
+.mainbreadcrumb .breadcrumb li a{
+  color: #6363f1;
+  text-decoration: none;
+  font-weight: 600;
+
+}
+
+
+
 
 .invoicetable th,
 td {

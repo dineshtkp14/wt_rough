@@ -17,20 +17,31 @@ class ItemsalesController extends Controller
 {
     public function index()
     {
+        $breadcrumb= [
+            'subtitle'=>'View',
+            'title'=>'View Invoice Sales Details',
+            'link'=>'View Invoice Sales Details'
+        ];
         $cus = salesitem::orderBy('id', 'DESC')->get();
-        return view('itemssales.list', ['all' => $cus]);
+        return view('itemssales.list', ['all' => $cus,'breadcrumb'=>$breadcrumb]);
     }
 
 
     public function create()
     {
+        $breadcrumb= [
+            'subtitle'=>'Create',
+            'title'=>'Invoice',
+            'link'=>'Invoice'
+        ];
 
+     
         $cus = customerinfo::all();;
         $statement  = DB::select("SHOW TABLE STATUS LIKE 'invoices'");
         $nextUserId = $statement[0]->Auto_increment;
 
         $itemsdata = item::all();
-        return view('itemssales.create', ['page' => 'isc', 'all' => $cus, 'data' => $itemsdata,'nextgenid' => $nextUserId]);
+        return view('itemssales.create', ['page' => 'isc', 'all' => $cus, 'data' => $itemsdata,'nextgenid' => $nextUserId,'breadcrumb'=>$breadcrumb]);
     }
 
 

@@ -1,8 +1,9 @@
 @extends('layouts.master')
+@include('layouts.breadcrumb')
 
 @section('content')
-
-<Center><h1 class="text-danger mt-5 bold"><U>VIEW DAYBOOK DETAILS</U></h1></Center>
+<div class="main-content"> 
+@yield('breadcrumb')
 
 <livewire:daybooklivewire/>
 
@@ -10,5 +11,5 @@
         @livewireScripts
 
 
-
+</div>
 @stop

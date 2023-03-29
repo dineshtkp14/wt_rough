@@ -1,10 +1,11 @@
 @extends('layouts.master')
+@include('layouts.breadcrumb')
 
 @section('content')
 <div class="main-content"> 
 
-<h2 class="bg-warning"> Customer Details</h2>
-<div class="cl mt-5"></div>
+    @yield('breadcrumb')
+    <div class="cl mt-5"></div>
 <div class="container mt-5">
             @if (Session::has('success'))
                 <div class="alert alert-success w-50">
@@ -14,7 +15,7 @@
 </div>
 
 <div class="container">
-<a href="/daybooks/">Back</a>
+
 
 <form class="row gx-5 gy-3" action="{{route('customerinfos.update',$cus->id)}}" method="post">
                 @csrf

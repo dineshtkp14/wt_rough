@@ -1,8 +1,10 @@
 @extends('layouts.master')
+@include('layouts.breadcrumb')
+
 
 @section('content')
-
-<h2 class="text-center mt-5">View Suppliers Details</h2>
+<div class="main-content"> 
+@yield('breadcrumb')
 
 <div class="container">
 	<div class="row float-end">
@@ -13,7 +15,6 @@
 </div>
 </div>
 
-<a href="/disinfos/create">Back</a>
 
 
 <table>
@@ -58,5 +59,5 @@
 </div>
 
 
-
+</div>
 @stop

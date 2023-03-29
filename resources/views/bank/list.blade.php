@@ -1,6 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
+<div class="main-content"> 
 
 <Center><h1 class="text-danger mt-5 bold"><U>VIEW BANK DEPOSIT DETAILS</U></h1></Center>
 <br>
@@ -89,7 +90,7 @@
      @endif
 	</tbody>
 </table>
-
+<br><br>
 <a href="" class="btn btn-danger" id="pdfLink">Print To PDF</a>
 
 <script>
@@ -108,6 +109,6 @@
 
 </div>
 
-
+</div>
 
 @stop

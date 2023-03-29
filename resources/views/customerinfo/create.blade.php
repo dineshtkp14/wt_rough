@@ -1,9 +1,12 @@
 @extends('layouts.master')
+@include('layouts.breadcrumb')
+
 
 @section('content')
-<div class="main-content"> 
-
-<Center><h1 class="text-danger mt-5 bold"><U>ADD NEW CUSTOMER </U></h1></Center>
+<div class="main-content">
+@yield('breadcrumb')
+ 
+   
 <div class="cl mt-5"></div>
 <div class="container mt-5">
             @if (Session::has('success'))

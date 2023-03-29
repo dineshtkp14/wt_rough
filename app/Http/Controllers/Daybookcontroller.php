@@ -24,10 +24,15 @@ class Daybookcontroller extends Controller
         // $count=daybook::all()->where('date',  $dataval)->where('modeofpay',  "jamma")->sum('amount');
 
         // return view('daybook.list',['custo'=>$cus],['totalsum'=>$count]);
-        return view('daybook.list');
 
-
-
+        $breadcrumb= [
+            'subtitle'=>'View',
+            'title'=>'View All Daybooks',
+            'link'=>'View All Customers'
+        ];
+   
+        
+        return view('daybook.list',['breadcrumb'=>$breadcrumb]);
 
     }
 
@@ -35,8 +40,13 @@ class Daybookcontroller extends Controller
 
     public function create()
     {
-
-        return view('daybook.create');
+        $breadcrumb= [
+            'subtitle'=>'Add',
+            'title'=>'Add Daybook',
+            'link'=>'Add Daybook'
+        ];
+   
+        return view('daybook.create',['breadcrumb'=>$breadcrumb]);
     }
 
 

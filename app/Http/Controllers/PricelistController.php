@@ -11,16 +11,27 @@ class PricelistController extends Controller
 {
     public function index()
     {
+        $breadcrumb= [
+            'subtitle'=>'View',
+            'title'=>'View Items Price List',
+            'link'=>'View Items Price List'
+        ];
         
        
-         return view('pricelist.list');
+         return view('pricelist.list',['breadcrumb'=>$breadcrumb]);
 
        
     }
     public function create()
     {
-
-        return view('pricelist.create');
+        $breadcrumb= [
+            'subtitle'=>'Add',
+            'title'=>'Add Items Price List',
+            'link'=>'Add Items Price List'
+        ];
+        
+       
+        return view('pricelist.create',['breadcrumb'=>$breadcrumb]);
     }
 
 

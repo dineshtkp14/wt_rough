@@ -1,10 +1,10 @@
 @extends('layouts.master')
+@include('layouts.breadcrumb')
 
 @section('content')
 <div class="main-content"> 
+    @yield('breadcrumb')
 
-<Center><h1 class="text-danger mt-5 bold"><U>ADD SUPPLIERS DETAILS</U></h1></Center>
-<div class="cl mt-5"></div>
 <div class="container mt-5">
             @if (Session::has('success'))
                 <div class="alert alert-success w-50">
@@ -14,7 +14,6 @@
 </div>
 
 <div class="container">
-<a href="/daybooks/">Back</a>
 
 <form class="row gx-5 gy-3" action="{{ route('disinfos.store') }}" method="post">
                 @csrf
@@ -27,7 +26,7 @@
             
 
           <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Suppliers Name</label>
+                    <label for="inputPassword4" class="form-label">Suppliers / Company Name</label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" 
                         name="name" value="{{ old('name') }}">
                     @error('name')

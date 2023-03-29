@@ -1,9 +1,11 @@
 @extends('layouts.master')
+@include('layouts.breadcrumb')
 
 @section('content')
-<div class="main-content"> 
-<h2 class="text-center mt-5">View Suppliers Details</h2>
 
+<div class="main-content"> 
+
+@yield('breadcrumb')
 <div class="container">
 	<div class="row float-end">
 <div class="col-12 float-end ">
@@ -12,8 +14,6 @@
     
 </div>
 </div>
-
-<a href="/disinfos/create">Back</a>
 
 
 <table>

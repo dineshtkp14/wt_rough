@@ -1,10 +1,11 @@
 @extends('layouts.master')
-
+@include('layouts.breadcrumb')
 @section('content')
 
 <div class="main-content"> 
-<Center><h1 class="text-danger mt-5 bold"><U>Add New Price List </U></h1></Center>
-<div class="cl mt-5"></div>
+
+
+
 <div class="container mt-5">
             @if (Session::has('success'))
                 <div class="alert alert-success w-50">
@@ -14,7 +15,7 @@
 </div>
 
 <div class="container">
-<a href="/daybooks/">Back</a>
+@yield('breadcrumb')
 
 <form class="row gx-5 gy-3" action="{{ route('pricelists.store') }}" method="post">
                 @csrf
@@ -22,8 +23,7 @@
                
            
             
-           
-           
+        
             
 
           <div class="col-md-6">

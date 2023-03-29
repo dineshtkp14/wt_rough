@@ -20,10 +20,14 @@ class CustomerinfoController extends Controller
 
     public function index()
     {
-        
+        $breadcrumb= [
+            'subtitle'=>'View',
+            'title'=>'View All Customers',
+            'link'=>'View All Customers'
+        ];
    
 
-     return view('customerinfo.list');   
+     return view('customerinfo.list',['breadcrumb'=>$breadcrumb]);   
 
     }
 
@@ -34,10 +38,15 @@ class CustomerinfoController extends Controller
     public function create()
     {
 
-        
+        $breadcrumb= [
+            'subtitle'=>'Add',
+            'title'=>'Add New Customers',
+            'link'=>'Add New Customers'
+        ];
+   
         
      
-        return view('customerinfo.create');
+        return view('customerinfo.create',['breadcrumb'=>$breadcrumb]);   
     }
 
 
@@ -88,10 +97,17 @@ class CustomerinfoController extends Controller
    }
    
    public function edit($id)
+
     {
+        $breadcrumb= [
+            'subtitle'=>'Edit',
+            'title'=>'Edit Customers Details',
+            'link'=>'Edit Customers Details'
+        ];
+   
         $customers=customerinfo::findOrfail($id);
 
-        return view('customerinfo.edit',['cus'=>$customers]);
+        return view('customerinfo.edit',['cus'=>$customers,'breadcrumb'=>$breadcrumb]);   
         
     }
 

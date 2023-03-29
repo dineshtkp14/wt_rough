@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-
+<div class="main-content"> 
 
 <Center><h1 class="text-danger mt-5 bold"><U>BANK DEPOSIT</U></h1></Center>
 <div class="cl mt-5"></div>
@@ -69,7 +69,7 @@
 
 
 
-
+</div>
 
 @stop
 
