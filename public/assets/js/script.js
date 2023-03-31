@@ -9,7 +9,10 @@ function getData(url, successCb) {
 
 const CUSTOMER_SEARCH_API_URL =
     window.location.origin + "/api/customer_search/";
+const PRODUCT_SEARCH_API_URL = window.location.origin + "/api/items_search/";
+
 let customerSearchQuery = "";
+let productSearchQuery = "";
 
 let counter = 0;
 let salesData = [];
@@ -298,6 +301,45 @@ function selectProduct() {
         $("#modalWrapper").show();
     });
 }
+
+$("#searchProductInput").on("keyup", function (e) {
+    const target = e.target;
+    productSearchQuery = target.value.trim();
+
+    if (productSearchQuery.trim() === "") {
+        $("#productResultWrapper").slideUp();
+    } else {
+        $("#productResultWrapper").slideDown();
+        $("#productLoadingResultBox").removeClass("d-none");
+        $("#productNotFoundResultBox").addClass("d-none");
+        $(".product-result-box").addClass("d-none");
+
+        getData(
+            PRODUCT_SEARCH_API_URL + productSearchQuery,
+            function (response) {
+                if (response) {
+                    if (response.length > 0) {
+                        $("#productResultList").empty();
+                        $("#productLoadingResultBox").addClass("d-none");
+                        $("#productNotFoundResultBox").addClass("d-none");
+                        $.each(response, function (index, value) {
+                            if (index < 20) {
+                                $("#productResultList").append(
+                                    resultHTML(value)
+                                );
+                                triggerResultClick();
+                            }
+                        });
+                    } else {
+                        $("#productResultList").empty();
+                        $("#productLoadingResultBox").addClass("d-none");
+                        $("#productNotFoundResultBox").removeClass("d-none");
+                    }
+                }
+            }
+        );
+    }
+});
 
 $("#modalContainer").on("click", function (e) {
     const targetEl = e.target;

@@ -140,8 +140,9 @@
                     </div>
                     <div class="search-box">
                         <input type="text" class="search-input" placeholder="Search Product" id="searchProductInput">
-                        <i class="fas fa-search search-icon"> </i>
-                        <div class="result-wrapper" id="productResultWrapper" style="display: none;">
+                        <i class="fas fa-search search-icon modal-search-icon"> </i>
+                        <div class="result-wrapper modal-result-wrapper" id="productResultWrapper"
+                            style="display: none;">
                             <div class="result-box d-flex justify-content-start align-items-center"
                                 id="productLoadingResultBox">
                                 <i class="fas fa-spinner" id="spinnerIcon"> </i>

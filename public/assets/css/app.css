@@ -34,6 +34,9 @@ body {
     top: calc(50% - 7px);
     font-size: 14px;
 }
+.search-box .search-icon.modal-search-icon {
+    top: 18px;
+}
 .result-wrapper {
     position: absolute;
     top: 46px;
@@ -47,6 +50,12 @@ body {
     max-height: 195.2px;
     overflow-y: auto;
 }
+
+.result-wrapper.modal-result-wrapper {
+    position: relative;
+    top: 0;
+}
+
 .result-box {
     padding: 16px 10px;
     transition: all 0.3 ease-in;
@@ -372,6 +381,7 @@ tr:nth-child(even) {
     min-width: 300px;
     width: 400px;
     max-width: 700px;
+    height: auto;
     max-height: 90vh;
     overflow-x: hidden;
     overflow-y: auto;
