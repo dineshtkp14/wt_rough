@@ -17,38 +17,33 @@ class CustomerLedgerDetailsController extends Controller
     public function index(Request $req)
     {
 
-        $from=date($req->date1);
-        $to=date($req->date2);
-        $cusinfo=customerinfo::orderBy('id','DESC')->get();
-
-        $cus=null;
-        $cusinfo=null;
-
-       
-        if($from == "" || $to==""){
-
-            $cus=customerledgerdetails::orderBy('id','DESC')->get();
-            $cusinfo=customerinfo::orderBy('id','DESC')->get();
-
-
-        }else{
-
-
-            $cusid=$req->customerid;
-            dd($cus);
-            $cus=customerledgerdetails::whereBetween('created_at',  [$from,$to])->where('customerid', $cusid)->get();
+        $breadcrumb= [
+            'subtitle'=>'Payments',
+            'title'=>'All Customers Payment Histrory',
+            'link'=>'All Customers Payment Histrory'
+        ];
+        $cus=customerledgerdetails::orderBy('id','DESC')->get(); 
+        foreach($cus as  $data){
+            if($data->customerid){
+                $cus_name=customerinfo::where('id',$data->customerid)->select('name')->first();
+                $data->customerid = $cus_name->name;
+            }
 
         }
-       
-         return view('customerdetails.list',['all'=>$cus],['allcus'=>$cusinfo]);   
+         return view('customerdetails.list',['all'=>$cus,'breadcrumb'=>$breadcrumb]);   
     }
 
     public function create()
     
     {
+        $breadcrumb= [
+            'subtitle'=>'Payments',
+            'title'=>' Customers Ledger Payment',
+            'link'=>'Customers Ledger Payment'
+        ];
         $cus=customerinfo::orderBy('id','DESC')->get();
        
-        return view('customerdetails.create',['all'=>$cus]);   ;
+        return view('customerdetails.create',['all'=>$cus,'breadcrumb'=>$breadcrumb]);   ;
     }
 
     public function store(Request $req)
@@ -63,16 +58,10 @@ class CustomerLedgerDetailsController extends Controller
          $cl=new customerledgerdetails();
          $cl->customerid=$req->customerid;
          $cl->date=$req->date;
-       
          $cl->particulars=$req->particulars;
          $cl->voucher_type=$req->vt;
-        
-
-         $cl->credit=$req->credit;
-       
-         
-
-        
+         $cl->credit=$req->amount;
+         $cl->notes=$req->notes;
          $cl->save();
  
        

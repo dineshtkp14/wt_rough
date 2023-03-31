@@ -32,6 +32,11 @@ class CustomerLedgerHistroy extends Controller
 
         public function returnchoosendatehistroy(Request $req)
         {
+            $breadcrumb= [
+                'subtitle'=>'View',
+                'title'=>' Customers Ledger Details',
+                'link'=>' Customers Ledger Details'
+            ];
 
             $from=date($req->date1);
             $to=date($req->date2);
@@ -64,7 +69,7 @@ class CustomerLedgerHistroy extends Controller
             }
 
            
-            return view('customerledgerhistory.list',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate]);      
+            return view('customerledgerhistory.list',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
         }
 
      
@@ -153,7 +158,7 @@ class CustomerLedgerHistroy extends Controller
                 $customerinfodetails=null;
 
                foreach($allcusbyid as  $data){
-                if($data->itemid){
+                if($data->co){
                     $item_name=item::where('id',$data->itemid)->select('itemsname')->first();
                     $data->itemid = $item_name->itemsname;
                 }else{

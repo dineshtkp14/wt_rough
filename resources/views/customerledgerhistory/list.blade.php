@@ -1,9 +1,9 @@
 @extends('layouts.master')
-
+@include('layouts.breadcrumb')
 @section('content')
-<div class="main-content"> 
-<Center><h1 class="text-danger my-5 bold"><U>VIEW Ledger DETAILS</U></h1></Center>
 
+<div class="main-content"> 
+	@yield('breadcrumb')
 <div class="container">
 	
 	<div class="row">

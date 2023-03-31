@@ -1,10 +1,11 @@
 @extends('layouts.master')
 @include('layouts.breadcrumb')
 
+
 @section('content')
 <div class="main-content"> 
+@yield('breadcrumb')
 
-        @yield('breadcrumb')
 
                 @if (Session::has('success'))
                         <div class="alert alert-success w-50">
@@ -12,12 +13,11 @@
                         </div>
                 @endif
 
-<livewire:customerlivewire/>
+				<livewire:company-livewire/>
 
-@livewireScripts
+				@livewireScripts
+				
+
 
 </div>
-
-</div>
-
 @stop

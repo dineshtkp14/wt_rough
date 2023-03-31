@@ -5,25 +5,12 @@
 <div class="main-content"> 
     @yield('breadcrumb')
 
-<div class="container mt-5">
-            @if (Session::has('success'))
-                <div class="alert alert-success w-50">
-                    {{ Session::get('success') }}
-                </div>
-            @endif
-</div>
 
 <div class="container">
 
-<form class="row gx-5 gy-3" action="{{ route('disinfos.store') }}" method="post">
+<form class="row gx-5 gy-3" action="{{ route('companys.store') }}" method="post">
                 @csrf
-
-               
-           
-            
-           
-           
-            
+     
 
           <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Suppliers / Company Name</label>
@@ -44,7 +31,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Email</label>
-                    <input type="text" class="form-control @error('email') is-invalid @enderror" 
+                    <input type="email" class="form-control @error('email') is-invalid @enderror" 
                         name="email" value="{{ old('email') }}">
                     @error('email')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -53,27 +40,20 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">PhoneNo</label>
-                    <input type="number" class="form-control @error('phoneno') is-invalid @enderror" 
+                    <input type="text" class="form-control @error('phoneno') is-invalid @enderror" 
                         name="phoneno" value="{{ old('phoneno') }}">
                     @error('phoneno')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
 
-            <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Bank Account No</label>
-                    <input type="bank_accountno" class="form-control @error('bank_accountno') is-invalid @enderror" 
-                        name="bank_accountno" value="{{ old('bank_accountno') }}">
-                    @error('bank_accountno')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
-            </div>
+           
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Remarks</label>
-                    <input type="text" class="form-control @error('remarks') is-invalid @enderror" 
-                        name="remarks" value="{{ old('remarks') }}">
-                    @error('remarks')
+                    <label for="inputPassword4" class="form-label">Notes</label>
+                    <textarea  placeholder="enter notes"  class="form-control @error('notes') is-invalid @enderror" name="notes" value="{{ old('notes') }}"  rows="3"></textarea>
+                       
+                    @error('notes')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>

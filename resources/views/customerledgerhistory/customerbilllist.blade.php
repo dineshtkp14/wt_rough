@@ -1,10 +1,12 @@
 @extends('layouts.master')
+@include('layouts.breadcrumb')
 
 @section('content')
 <div class="main-content"> 
-<Center><h1 class="text-danger my-5 bold"><U>VIEW Ledger DETAILS</U></h1></Center>
+<Center><h1 class="text-danger my-5 bold"><U>VIEW Ledgerd DETAILS</U></h1></Center>
 
 <div class="container">
+	@yield('breadcrumb')
 	<div class="row">
 	  <form action="{{ route('cbills.returncusbills') }}" method="get">
 

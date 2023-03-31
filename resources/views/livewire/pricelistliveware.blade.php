@@ -2,9 +2,9 @@
   
     <div class="card text-center">
         <div class="card-header">
-           <span class="float-start fw-bold fs-3"> View Price List</span>
+           <span class="float-start fw-bold fs-3"><a href="{{route('pricelists.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a> </span>
 
-             <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search Name ,Id or phoneno" style="width: 250px;" wire:model="searchTerm" >
+             <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search Items Name , ID" style="width: 250px;" wire:model="searchTerm" >
         </div>
         <div class="card-body">
             <table>
@@ -47,8 +47,8 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                     Cost Price: {{$i->costprice}} <br>
-                     WholeSale Price: {{$i->wholesaleprice}}
+                     <h2>Cost Price: {{$i->costprice}}  /-<br></h2>
+                    <h2> WholeSale Price: {{$i->wholesaleprice}}  /-</h2>
                     
                     </div>
                     <div class="modal-footer">
@@ -78,7 +78,7 @@
                     @endforeach
                     
                 @else
-                 <h3>Database is Empty !! Plese Add to view List</h3>
+                 <h5>No Record Found !!</h5>
                     
                  @endif
                 </tbody>

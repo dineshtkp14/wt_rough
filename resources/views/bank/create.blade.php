@@ -1,11 +1,10 @@
 @extends('layouts.master')
+@include('layouts.breadcrumb')
 
 @section('content')
 <div class="main-content"> 
-
-<Center><h1 class="text-danger mt-5 bold"><U>BANK DEPOSIT</U></h1></Center>
-<div class="cl mt-5"></div>
-<div class="container mt-5">
+    @yield('breadcrumb')
+<div class="container">
             @if (Session::has('success'))
                 <div class="alert alert-success w-50">
                     {{ Session::get('success') }}
@@ -14,7 +13,6 @@
 </div>
 
 <div class="container">
-<a href="/banks/">Back</a>
 
 
 <form class="row gx-5 gy-3" action="{{ route('banks.store') }}" method="post">

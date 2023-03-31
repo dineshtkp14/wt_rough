@@ -17,14 +17,6 @@ class Daybookcontroller extends Controller
      public function index()
     {
         
-        // $cus=daybook::orderBy('id','DESC')->get();
-        // // $count=daybook::all()->where('date', '2023-02-01')->sum('amount');
-        // $dataval=now()->format('Y-m-d');
-        
-        // $count=daybook::all()->where('date',  $dataval)->where('modeofpay',  "jamma")->sum('amount');
-
-        // return view('daybook.list',['custo'=>$cus],['totalsum'=>$count]);
-
         $breadcrumb= [
             'subtitle'=>'View',
             'title'=>'View All Daybooks',
@@ -85,5 +77,67 @@ class Daybookcontroller extends Controller
     }
    
    }
+   
+public function edit($id)
+
+{
+    $breadcrumb= [
+        'subtitle'=>'Edit',
+        'title'=>'Edit Daybook Details',
+        'link'=>'Edit Daybook Details'
+    ];
+
+    $daybook=daybook::findOrfail($id);
+
+    return view('daybook.edit',['daybook'=>$daybook,'breadcrumb'=>$breadcrumb]);   
+    
+}
+
+public function update($id, Request $req)
+{
+    $validator=Validator::make($req->all(),[
+
+        'name'=>'required',
+        'address'=>'required',
+        'phoneno'=>'required', 
+       
+           
+    ]);
+
+    if($validator->passes()){
+
+      
+        $daybook= daybook::find($id);
+        $daybook->name=$req->name;
+        $daybook->address=$req->address;
+        $daybook->contact=$req->contactno;
+        $daybook->amount=$req->amount;
+        $daybook->remarks=$req->remarks;
+        $daybook->date=$req->date;
+        $daybook->modeofpay=$req->modeofpay;
+        $daybook->save();
+      
+
+        return redirect()->route('daybooks.index')->with('success','Daybook Details Updated Sucessfully !!');  
+    }
+    else{
+        return redirect()->route('companys.edit')->withErrors($validator)->withInput();
+
+    }
+
+    
+}
+
+public function destroy($id,Request $req){
+
+    $daybookdelete=daybook::findOrFail($id);
+    $daybookdelete->delete();
+
+    return redirect()->route('daybooks.index')->with('success','Daybook Deleted sucessfully'); 
+    
+
+}
+
+
 
 }

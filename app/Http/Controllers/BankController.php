@@ -13,6 +13,11 @@ class BankController extends Controller
     
     public function index(Request $req)
     {
+        $breadcrumb= [
+            'subtitle'=>'View',
+            'title'=>'View Bank Deposit Amount',
+            'link'=>'View Bank Deposit Amount'
+        ];
         
         $from=date($req->date1);
         $to=date($req->date2);
@@ -30,7 +35,7 @@ class BankController extends Controller
 
         }
         
-        return view('bank.list',['custo'=>$custo,'totalsum'=>$count]);
+        return view('bank.list',['custo'=>$custo,'totalsum'=>$count,'breadcrumb'=>$breadcrumb]);
     }
 
     public function show_intopdfbankdetails(Request $req)
@@ -62,8 +67,12 @@ class BankController extends Controller
    
     public function create()
     {
-
-        return view('bank.create');
+        $breadcrumb= [
+            'subtitle'=>'Add',
+            'title'=>'Bank Deposit',
+            'link'=>'Bank Deposit'
+        ];
+        return view('bank.create',['breadcrumb'=>$breadcrumb]);
     }
 
 
@@ -91,7 +100,7 @@ class BankController extends Controller
 
       
 
-        return redirect()->route('banks.create')->with('success','Items Added Sucessfully !!');  
+        return redirect()->route('banks.create')->with('success','Deposited Sucessfully !!');  
     }
     else{
         return redirect()->route('banks.create')->withErrors($validator)->withInput();

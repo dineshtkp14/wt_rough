@@ -60,7 +60,7 @@ class PricelistController extends Controller
 
       
 
-        return redirect()->route('pricelists.create')->with('success','Items Added Sucessfully !!');  
+        return redirect()->route('pricelists.index')->with('success','Items Price Added Sucessfully !!');  
     }
     else{
         return redirect()->route('pricelists.create')->withErrors($validator)->withInput();
@@ -71,9 +71,14 @@ class PricelistController extends Controller
    
    public function edit($id)
     {
+        $breadcrumb= [
+            'subtitle'=>'Edit',
+            'title'=>'Edit Items Price List',
+            'link'=>'Edit Items Price List'
+        ];
         $priceistdata=pricelist::findOrfail($id);
 
-        return view('pricelist.edit',['pricelistdata'=>$priceistdata]);
+        return view('pricelist.edit',['pricelistdata'=>$priceistdata,'breadcrumb'=>$breadcrumb]);
         
     }
 
@@ -101,7 +106,7 @@ class PricelistController extends Controller
         $pricelistobj->save();
 
     
-            return redirect()->route('pricelists.create')->with('success','Items updated Sucessfully !!');  
+            return redirect()->route('pricelists.index')->with('success','Items Price Updated Sucessfully !!');  
         }
         else{
             return redirect()->route('pricelists.create')->withErrors($validator)->withInput();
@@ -117,7 +122,7 @@ class PricelistController extends Controller
         $pricelistid->delete();
 
 
-          return redirect()->route('pricelists.index')->with('success','Deleted sucessfully'); 
+          return redirect()->route('pricelists.index')->with('success','Price List ID Deleted sucessfully'); 
         
   
   }

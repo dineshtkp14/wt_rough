@@ -6,6 +6,10 @@
   @yield('breadcrumb')
 
 <div class="container">
+  @if ($cinfodetails !=null)
+  <a href="{{route('invoicebillno.convert')}}" class="btn btn-danger" id="pdfLink">Print To PDF</a>
+  
+  @endif
 	<div class="row">
         <form action="{{route('customer.billno') }}" method="get" id="chosendatepdfform">
  <input type="text" placeholder="Enter Invoice Id" name="invoiceid">
@@ -83,10 +87,7 @@ Customer Id: {{$i->customerid}}
       </table>
 <br>
 
-      @if ($cinfodetails !=null)
-      <a href="{{route('invoicebillno.convert')}}" class="btn btn-danger" id="pdfLink">Print To PDF</a>
-      
-      @endif
+     
 
 </div>
 

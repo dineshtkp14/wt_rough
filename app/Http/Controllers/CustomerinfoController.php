@@ -1,17 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 use Livewire\WithPagination;
-
-
-
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\customerinfo;
-
-
-
 
 class CustomerinfoController extends Controller
 {
@@ -32,8 +25,6 @@ class CustomerinfoController extends Controller
     }
 
     
-    
-
 
     public function create()
     {
@@ -42,9 +33,7 @@ class CustomerinfoController extends Controller
             'subtitle'=>'Add',
             'title'=>'Add New Customers',
             'link'=>'Add New Customers'
-        ];
-   
-        
+        ]; 
      
         return view('customerinfo.create',['breadcrumb'=>$breadcrumb]);   
     }
@@ -52,9 +41,8 @@ class CustomerinfoController extends Controller
 
  public function returncustomersforsalesitems()
 {
-    $cus=customerinfo::orderBy('id','DESC')->get();
-       
 
+    $cus=customerinfo::orderBy('id','DESC')->get();
     return view('itemssales.create',['all'=>$cus]);   
   
 }
@@ -65,30 +53,24 @@ class CustomerinfoController extends Controller
 
         'name'=>'required',
         'address'=>'required',
-        'email'=>'required|email',
-       
-        'phoneno'=>'required|numeric', 
+        'phoneno'=>'required', 
        
            
     ]);
 
     if($validator->passes()){
 
-        $disinfoobj=new customerinfo();
-        $disinfoobj->name=$req->name;
-        $disinfoobj->address=$req->address;
-        $disinfoobj->email=$req->email;
-        $disinfoobj->phoneno=$req->phoneno;
-       
-        
-        $disinfoobj->remarks=$req->remarks;
-       
-        $disinfoobj->save();
+        $cusinfo=new customerinfo();
+        $cusinfo->name=$req->name;
+        $cusinfo->address=$req->address;
+        $cusinfo->email=$req->email;
+        $cusinfo->phoneno=$req->phoneno;
+        $cusinfo->remarks=$req->remarks;
+        $cusinfo->save();
 
-      
-
-        return redirect()->route('customerinfos.create')->with('success','Items Added Sucessfully !!');  
+        return redirect()->route('customerinfos.index')->with('success','Customer Added Sucessfully !!');  
     }
+
     else{
         return redirect()->route('customerinfos.create')->withErrors($validator)->withInput();
 
@@ -117,31 +99,22 @@ class CustomerinfoController extends Controller
 
             'name'=>'required',
             'address'=>'required',
-            'email'=>'required',
-          
-          
-            'phoneno'=>'required|numeric', 
+            'phoneno'=>'required', 
            
                
         ]);
     
         if($validator->passes()){
     
-          
-            $disinfoobj= customerinfo::find($id);
-            $disinfoobj->name=$req->name;
-            $disinfoobj->address=$req->address;
-            $disinfoobj->email=$req->email;
-            $disinfoobj->phoneno=$req->phoneno;
-           
-            
-            $disinfoobj->remarks=$req->remarks;
-           
-            $disinfoobj->save();
+            $cusinfo= customerinfo::find($id);
+            $cusinfo->name=$req->name;
+            $cusinfo->address=$req->address;
+            $cusinfo->email=$req->email;
+            $cusinfo->phoneno=$req->phoneno;
+            $cusinfo->remarks=$req->remarks;
+            $cusinfo->save();
     
-          
-    
-            return redirect()->route('customerinfos.create')->with('success','Items updated Sucessfully !!');  
+            return redirect()->route('customerinfos.index')->with('success','Customer updated Sucessfully !!');  
         }
         else{
             return redirect()->route('customerinfos.create')->withErrors($validator)->withInput();
@@ -153,14 +126,12 @@ class CustomerinfoController extends Controller
 
     public function destroy($id,Request $req){
 
+
         $cusiddelete=customerinfo::findOrFail($id);
-       
-  
         $cusiddelete->delete();
   
-        return redirect()->route('customerinfos.index')->with('success','Deleted sucessfully'); 
+        return redirect()->route('customerinfos.index')->with('success','Customer Deleted sucessfully'); 
         
-  
   }
 
 }

@@ -4,29 +4,14 @@
 @section('content')
 <div class="main-content"> 
 
-    @yield('breadcrumb')
-    <div class="cl mt-5"></div>
-<div class="container mt-5">
-            @if (Session::has('success'))
-                <div class="alert alert-success w-50">
-                    {{ Session::get('success') }}
-                </div>
-            @endif
-</div>
+@yield('breadcrumb')
+
 
 <div class="container">
 
-
 <form class="row gx-5 gy-3" action="{{route('customerinfos.update',$cus->id)}}" method="post">
                 @csrf
-                @method('put')
-
-               
-           
-            
-           
-           
-            
+                @method('put')            
 
           <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Name</label>

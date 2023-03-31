@@ -11,34 +11,17 @@ class Pricelistliveware extends Component
     
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
-    public $orderColumn = "itemname";
-    public $sortOrder = "asc";
-    public $sortLink = '<i class="sorticon fa-solid fa-caret-up"></i>';
+   
     public $searchTerm = "";
 
     
   
 
 
-    public function sortOrder($columnName=""){
-        $caretOrder = "up";
-        if($this->sortOrder == 'asc'){
-             $this->sortOrder = 'desc';
-             $caretOrder = "down";
-        }else{
-             $this->sortOrder = 'asc';
-             $caretOrder = "up";
-        } 
-        $this->sortLink = '<i class="sorticon fa-solid fa-caret-'.$caretOrder.'"></i>';
-
-        $this->orderColumn = $columnName;
-
-   }
- 
    public function render(){ 
 
 
-       $list = pricelist::orderby($this->orderColumn,$this->sortOrder)->select('*');
+       $list = pricelist::orderby('id','DESC')->select('*');
         if(!empty($this->searchTerm)){
 
             $list->orWhere('id','like',"%".$this->searchTerm."%");

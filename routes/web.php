@@ -3,28 +3,19 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Daybookcontroller;
 use App\Http\Controllers\Bankcontroller;
-use App\Http\Controllers\CustomAuthController;
-use App\Http\Controllers\DistrinutorinfoController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Itemscontroller;
 use App\Http\Controllers\CustomerinfoController;
 
 use App\Http\Controllers\CustomerLedgerDetailsController;
 use App\Http\Controllers\CustomerLedgerHistroy;
 use App\Http\Controllers\CustomerPdfGenerator;
-use App\Http\Controllers\Examcontroller;
 use App\Http\Controllers\ItemsalesController;
 use App\Http\Controllers\PricelistController;
 
 Route::get('/', function () {
     return view('welcome');
 });
-
-
-
-// Route::get('/exam_manage',[Examcontroller::class,'examshow'])->name('itemsales.examshow');
-// Route::get('/exam_manage_ajax',[Examcontroller::class,'examshow_ajax'])->name('itemsales.examshow_ajax');
-
-
 
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
@@ -50,7 +41,6 @@ Route::get('/customerinfos/{customerinfo}/edit',[CustomerinfoController::class,'
 Route::put('/customerinfos/{customerinfo}',[CustomerinfoController::class,'update'])->name('customerinfos.update');
 Route::delete('/customerinfos/{customerinfo}',[CustomerinfoController::class,'destroy'])->name('customerinfos.destroy');
 
-//Route::post('/customerinfos',[CustomerinfoController::class,'showCustomer'])->name('customerinfos.search');
 
 
 // //forhtmltopdf
@@ -64,9 +54,13 @@ Route::get('/items',[Itemscontroller::class,'index'])->name('items.index');
 Route::get('/items/create',[Itemscontroller::class,'create'])->name('items.create');
 Route::post('/items',[Itemscontroller::class,'store'])->name('items.store');
 
-Route::get('/disinfos',[DistrinutorinfoController::class,'index'])->name('disinfos.index');
-Route::get('/disinfos/create',[DistrinutorinfoController::class,'create'])->name('disinfos.create');
-Route::post('/disinfos',[DistrinutorinfoController::class,'store'])->name('disinfos.store');
+Route::get('/companys',[CompanyController::class,'index'])->name('companys.index');
+Route::get('/companys/create',[CompanyController::class,'create'])->name('companys.create');
+Route::post('/companys',[CompanyController::class,'store'])->name('companys.store');
+Route::get('/companys/{companys}/edit',[CompanyController::class,'edit'])->name('companys.edit');
+Route::put('/companys/{companys}',[CompanyController::class,'update'])->name('companys.update');
+Route::delete('/companys/{companys}',[CompanyController::class,'destroy'])->name('companys.destroy');
+
 
 Route::get('/daybooks',[Daybookcontroller::class,'index'])->name('daybooks.index');
 Route::get('/daybooks/create',[Daybookcontroller::class,'create'])->name('daybooks.create');

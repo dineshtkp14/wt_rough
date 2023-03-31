@@ -10,18 +10,26 @@ class Itemscontroller extends Controller
 {
     public function index()
     {
-        
-         $cus=item::orderBy('id','DESC')->get();
-       
+        $breadcrumb= [
+            'subtitle'=>'View',
+            'title'=>'View Invoice Sales Details',
+            'link'=>'View Invoice Sales Details'
+        ];
 
-         return view('items.list',['all'=>$cus]);
+         $cus=item::orderBy('id','DESC')->get();
+         return view('items.list',['all'=>$cus,'breadcrumb'=>$breadcrumb]);
 
        
     }
     public function create()
     {
+        $breadcrumb= [
+            'subtitle'=>'View',
+            'title'=>'View Invoice Sales Details',
+            'link'=>'View Invoice Sales Details'
+        ];
 
-        return view('items.create');
+        return view('items.create',['breadcrumb'=>$breadcrumb]);
     }
 
 

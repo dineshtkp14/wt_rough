@@ -23,6 +23,17 @@ class ItemsalesController extends Controller
             'link'=>'View Invoice Sales Details'
         ];
         $cus = salesitem::orderBy('id', 'DESC')->get();
+
+
+
+       foreach($cus as  $data){
+        if($data->itemid){
+            $item_name=item::where('id',$data->itemid)->select('itemsname')->first();
+            $data->itemid = $item_name->itemsname;
+        }
+    }
+
+        
         return view('itemssales.list', ['all' => $cus,'breadcrumb'=>$breadcrumb]);
     }
 
@@ -36,7 +47,7 @@ class ItemsalesController extends Controller
         ];
 
      
-        $cus = customerinfo::all();;
+        $cus = customerinfo::all();
         $statement  = DB::select("SHOW TABLE STATUS LIKE 'invoices'");
         $nextUserId = $statement[0]->Auto_increment;
 
@@ -94,8 +105,17 @@ class ItemsalesController extends Controller
         $cus_data->date = $req->date;
         $cus_data->particulars  = "Goods Sales";
         $cus_data->voucher_type = "sales";
-        $cus_data->invoicetype = "credit";
+        $cus_data->invoicetype = $req->modeofinvoice;
         $cus_data->debit =  $final_arr[0]->total;
         $cus_data->save();
+
+        return redirect()->route('itemsales.create');
+
+       
+
     }
+
+
+
+    
 }

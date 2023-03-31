@@ -1,3 +1,15 @@
+function getData(url, successCb) {
+    $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "json",
+        success: successCb,
+    });
+}
+
+const SEARCH_API_URL = window.location.origin + "/api/customer_search/";
+let searchQuery = "";
+
 let counter = 0;
 let salesData = [];
 let finalData = [
@@ -10,7 +22,98 @@ let finalData = [
     },
 ];
 
-console.log(ITEMS_DATA);
+function resultHTML(value) {
+    return `
+     <div class="result-box d-flex justify-content-start align-items-center customer-result-box" data-value='${JSON.stringify(
+         value
+     )}'> 
+            <i class="fas fa-user"> </i>
+            <h1 class="m-0 px-2">${value.name}</h1>
+     </div>`;
+}
+
+$("#searchCustomerInput").on("keyup", function (e) {
+    const target = e.target;
+    searchQuery = target.value.trim();
+
+    $("#customerCard").hide();
+    finalData[0]["customer"] = "";
+
+    if (searchQuery.trim() === "") {
+        $("#searchResult").slideUp();
+    } else {
+        $("#searchResult").slideDown();
+        $("#loadingResultBox").removeClass("d-none");
+        $("#notFoundResultBox").addClass("d-none");
+        $(".customer-result-box").addClass("d-none");
+
+        getData(SEARCH_API_URL + searchQuery, function (response) {
+            if (response) {
+                if (response.length > 0) {
+                    $("#customerResult").empty();
+                    $("#loadingResultBox").addClass("d-none");
+                    $("#notFoundResultBox").addClass("d-none");
+                    $.each(response, function (index, value) {
+                        if (index < 20) {
+                            $("#customerResult").append(resultHTML(value));
+                            triggerResultClick();
+                        }
+                    });
+                } else {
+                    $("#customerResult").empty();
+                    $("#loadingResultBox").addClass("d-none");
+                    $("#notFoundResultBox").removeClass("d-none");
+                }
+            }
+        });
+    }
+});
+
+function triggerResultClick() {
+    $(".customer-result-box")
+        .off()
+        .on("click", function () {
+            const json = $(this).attr("data-value");
+            const data = JSON.parse(json);
+
+            $("#customerName").text(data.name);
+            $("#customerId").text(data.id);
+            $("#customerAddress").text(data.address);
+            $("#customerEmail").text(data.email);
+            $("#customerPhone").text(data.phoneno);
+            finalData[0]["customer"] = `${data.id}`;
+
+            $("#customerCard").show();
+
+            $("#customerCard").animate({
+                right: "0",
+            });
+            $("#toggleBox").removeClass("animate");
+            $("#toggleBox").data("toggle", "open");
+
+            $("#searchCustomerInput").val(data.name);
+            $("#searchResult").slideUp();
+        });
+
+    $("#toggleBox")
+        .off()
+        .on("click", function () {
+            const toggleStatus = $(this).data("toggle");
+            if (toggleStatus === "close") {
+                $("#customerCard").animate({
+                    right: "0",
+                });
+                $(this).removeClass("animate");
+                $(this).data("toggle", "open");
+            } else {
+                $("#customerCard").animate({
+                    right: "-300px",
+                });
+                $(this).addClass("animate");
+                $(this).data("toggle", "close");
+            }
+        });
+}
 
 function inputHTML(counter) {
     return `<tr id="inputRow${counter}">
@@ -20,7 +123,7 @@ function inputHTML(counter) {
                         <option value="" selected disabled>Select a product</option>
                       
                         ${ITEMS_DATA.map(function (data) {
-                             return `<option value="${data.id}" data-price="${data.mrp}" >${data.itemsname}</option>`
+                            return `<option value="${data.id}" data-price="${data.mrp}" >${data.itemsname}</option>`;
                         })}   
                     </select>
                 </td>
@@ -52,8 +155,6 @@ function inputHTML(counter) {
             </tr>`;
 }
 
-
-
 function appendInputRow() {
     if (salesData.length >= 10) {
         return false;
@@ -69,7 +170,6 @@ function appendInputRow() {
         price: "",
         discount: "",
         subtotal: "",
-        
     });
     triggerRemoveEvent();
     $(".product-input").select2();
@@ -137,18 +237,20 @@ function getFinalCalculations() {
 function addInputValue(index, inputId, dataId, dataName, value) {
     salesData[index][dataName] = value;
 
-    if(dataName === "product"){
-            const priceValue = $("option:selected", $(`#inputRow${dataId} #productInput`)).attr("data-price");
-            $(`#inputRow${dataId} #priceInput`).val(priceValue);
-            salesData[index]["price"] = priceValue;
-        }
+    if (dataName === "product") {
+        const priceValue = $(
+            "option:selected",
+            $(`#inputRow${dataId} #productInput`)
+        ).attr("data-price");
+        $(`#inputRow${dataId} #priceInput`).val(priceValue);
+        salesData[index]["price"] = priceValue;
+    }
 
     // validation
     if (
         dataName === "quantity" ||
         dataName === "price" ||
         dataName === "discount"
-
     ) {
         $("#totalAmountWords").text("Calculating...");
         // trim
@@ -163,7 +265,12 @@ function addInputValue(index, inputId, dataId, dataName, value) {
 
         if (dataName === "discount") {
             console.log(salesData[index]["subtotal"]);
-            if (newValue > parseFloat(salesData[index]["quantity"]*salesData[index]["price"])) {
+            if (
+                newValue >
+                parseFloat(
+                    salesData[index]["quantity"] * salesData[index]["price"]
+                )
+            ) {
                 $(`#inputRow${dataId} #${inputId}`).val("0");
                 salesData[index][dataName] = "0";
             }
@@ -199,17 +306,6 @@ $(".sales-input-final").on("input", function () {
     const dataName = $(this).data("name");
     finalData[0][dataName] = value;
 
-    if (dataName === "customer") {
-        $("#customerName").text($("option:selected", this).attr("data-name"));
-        $("#customerAddress").text(
-            $("option:selected", this).attr("data-address")
-        );
-        $("#customerEmail").text($("option:selected", this).attr("data-email"));
-        $("#customerPhone").text($("option:selected", this).attr("data-phone"));
-
-        $("#customerCard").slideDown();
-    }
-
     if (dataName === "discount") {
         // trim
         finalData[0]["discount"] = value.trim();
@@ -221,7 +317,7 @@ $(".sales-input-final").on("input", function () {
             finalData[0]["discount"] = newValue;
         }
 
-        if (newValue > parseFloat(finalData[0]['subtotal'])) {
+        if (newValue > parseFloat(finalData[0]["subtotal"])) {
             $(this).val("");
             finalData[0]["discount"] = "0";
         }
@@ -239,12 +335,13 @@ $(window).on("load", function () {
 
     $("#verifyBtn").on("click", function (e) {
         e.preventDefault();
-     
+
         if ($("#salesDate").val().trim() === "") {
             $("#errorText").attr("class", "text-danger fw-bold");
             $("#errorText").text("Please select Date !");
             return false;
         }
+
         if (finalData[0]["customer"].trim() === "") {
             $("#errorText").attr("class", "text-danger fw-bold");
             $("#errorText").text("Please select customer !");
@@ -272,7 +369,6 @@ $(window).on("load", function () {
                 $("#errorText").text("Please enter valid price !");
                 return false;
             }
-
 
             finalData[0]["note"] = $("#noteInput").val().trim();
             $("#salesArrInput").val(JSON.stringify(salesData));

@@ -1,20 +1,15 @@
 @extends('layouts.master')
-
+@include('layouts.breadcrumb')
 @section('content')
 
+
 <div class="main-content"> 
-<Center><h1 class="text-danger mt-5 bold"><U> Edit Price List </U></h1></Center>
-<div class="cl mt-5"></div>
-<div class="container mt-5">
-            @if (Session::has('success'))
-                <div class="alert alert-success w-50">
-                    {{ Session::get('success') }}
-                </div>
-            @endif
-</div>
+
+@yield('breadcrumb')
+
 
 <div class="container">
-<a href="/daybooks/">Back</a>
+
 
 <form class="row gx-5 gy-3" action="{{route('pricelists.update',$pricelistdata->id)}}" method="post">
                 @csrf

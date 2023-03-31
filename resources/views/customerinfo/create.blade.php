@@ -6,28 +6,12 @@
 <div class="main-content">
 @yield('breadcrumb')
  
-   
-<div class="cl mt-5"></div>
-<div class="container mt-5">
-            @if (Session::has('success'))
-                <div class="alert alert-success w-50">
-                    {{ Session::get('success') }}
-                </div>
-            @endif
-</div>
 
 <div class="container">
-<a href="/daybooks/">Back</a>
 
 <form class="row gx-5 gy-3" action="{{ route('customerinfos.store') }}" method="post">
                 @csrf
-
-               
-           
-            
-           
-           
-            
+   
 
           <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Name</label>
@@ -48,7 +32,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Email</label>
-                    <input type="text" class="form-control @error('email') is-invalid @enderror" 
+                    <input type="email" class="form-control @error('email') is-invalid @enderror" 
                         name="email" value="{{ old('email') }}">
                     @error('email')
                         <p class="invalid-feedback">{{ $message }}</p>

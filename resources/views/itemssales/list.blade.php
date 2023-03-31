@@ -19,7 +19,7 @@
 <table>
 	<thead>
 		<tr>
-			<th>Id</th>
+		
 			<th>Bill No</th>
 			<th>Item Id</th>
 			<th>Unstocked Name</th>
@@ -39,7 +39,6 @@
     @if ($all->isNotEmpty())
                         @foreach ($all as $i)
 		<tr>
-			<td data-label="Id">{{ $i->id }}</td>
 			<td data-label="Name">{{ $i->invoiceid }}</td>
 			<td data-label="Address">{{ $i->itemid}}</td>
 			<td data-label="Contact No.">{{ $i->unstockedname }}</td>

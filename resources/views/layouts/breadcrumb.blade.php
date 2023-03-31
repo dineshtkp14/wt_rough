@@ -9,5 +9,6 @@
           <li class="breadcrumb-item active" aria-current="page">{{$breadcrumb['link']}}</li>
         </ol>
       </nav>
+      
     </div>
 @endsection

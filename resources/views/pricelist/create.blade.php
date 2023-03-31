@@ -6,14 +6,6 @@
 
 
 
-<div class="container mt-5">
-            @if (Session::has('success'))
-                <div class="alert alert-success w-50">
-                    {{ Session::get('success') }}
-                </div>
-            @endif
-</div>
-
 <div class="container">
 @yield('breadcrumb')
 
@@ -53,8 +45,8 @@
             </div>
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">WholeSale Price</label>
-                    <input type="number" class="form-control @error('wholesaleprice') is-invalid @enderror" 
+                    <label for="inputPassword4" class="form-label">$WholeSale Price</label>
+                    <input type="text" class="form-control @error('wholesaleprice') is-invalid @enderror" 
                         name="wholesaleprice" value="{{ old('wholesaleprice') }}">
                     @error('wholesaleprice')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -65,8 +57,8 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Note</label>
-                    <input type="text" class="form-control @error('note') is-invalid @enderror" 
-                        name="note" value="{{ old('note') }}">
+                    <textarea type="text" class="form-control @error('note') is-invalid @enderror" 
+                        name="note" value="{{ old('note') }}" rows="4"> </textarea>
                     @error('note')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror

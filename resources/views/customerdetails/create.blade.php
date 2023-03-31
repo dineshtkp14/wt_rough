@@ -1,11 +1,40 @@
 @extends('layouts.master')
+@include('layouts.breadcrumb')
 
 @section('content')
+<div class="main-content"> 
+        @yield('breadcrumb')
 
 
-<Center><h1 class="text-danger mt-5 bold"><U>Customer Ledger Payments </U></h1></Center>
-<div class="cl mt-5"></div>
-<div class="container mt-5">
+    <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
+        <div class="card-body">
+            <h5 class="card-title">Customer Info</h5>
+            <p>
+                <span>ID: </span><span id="customerId">...</span>
+            </p>
+            <p class="card-text">
+                <span>Name: </span><span id="customerName">...</span>
+            </p>
+            <p>
+                <span>Addres: </span><span id="customerAddress">...</span>
+            </p>
+            <p>
+                <span>E-mail: </span><span id="customerEmail">...</span>
+            </p>
+            <p>
+                <span>PhoneNo: </span><span id="customerPhone">...</span>
+            </p>
+        </div>
+
+        <div class="toogle-box p-3 d-flex justify-content-center align-items-center" id="toggleBox" data-toggle="close">
+            <i class="fas fa-user"></i>
+        </div>
+    </div>
+
+ 
+
+
+<div class="container">
             @if (Session::has('success'))
                 <div class="alert alert-success w-50">
                     {{ Session::get('success') }}
@@ -14,24 +43,51 @@
 </div>
 
 <div class="container">
-<a href="/daybooks/">Back</a>
+
 
 <form class="row gx-5 gy-3" action="{{ route('cpayments.store') }}" method="post">
                 @csrf
 
                
            
-            <input type="date" name="date" class="form-control">
            
-                <select name="customerid" class="form-select" aria-label="Default select example">
-                    <option selected>Select Customer</option>
-                    @foreach ($all as $i)
-                    
-                    <option value="{{$i->id}}"> {{$i->name}}</option>
-                    @endforeach
-                    
-                  </select>
-            
+                  <div class="py-4 d-flex justify-content-between align-items-center">
+                    <div style="width: 300px">
+                      
+                        <div class="input-group mb-1">
+                            <div class="search-box-cus">
+                                <input type="tetxt" class="searchcustomerinput" placeholder="Search Customer"
+                                    id="searchCustomerInput"> <i class="fas fa-search search-icon"> </i>
+                                <div class="searchresult" id="searchResult" style="display: none;">
+    
+                                    <div class="result-box d-flex justify-content-start align-items-center"
+                                        id="loadingResultBox">
+                                        <i class="fas fa-spinner" id="spinnerIcon"> </i>
+                                        <h1 class="m-0 px-2"> Loading</h1>
+                                    </div>
+    
+                                    <div class="result-box d-flex justify-content-start align-items-center d-none"
+                                        id="notFoundResultBox">
+                                        <i class="fas fa-triangle-exclamation"> </i>
+                                        <h1 class="m-0 px-2"> Record Not Found</h1>
+                                    </div>
+                                    
+                                    <div id="customerResult">
+    
+                                    </div> 
+    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 300px">
+                      
+                        <div class="input-group mb-1">
+                            <span class="input-group-text">Date:</span>
+                            <input type="date" class="form-control" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
+                        </div>
+                    </div>
+                </div>
 
           <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Particulars</label>
@@ -55,11 +111,20 @@
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Amount</label>
                     <input type="number" class="form-control @error('amount') is-invalid @enderror" 
-                        name="credit" value="{{ old('amount') }}">
+                        name="amount" value="{{ old('amount') }}">
                     @error('amount')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
+
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Notes</label>
+                <textarea  class="form-control @error('notes') is-invalid @enderror" 
+                    name="notes" value="{{ old('notes') }}"> </textarea>
+                @error('notes')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+        </div>
 
            
 
@@ -73,5 +138,6 @@
 
 
 
+</div>
 @stop
 
