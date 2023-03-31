@@ -7,8 +7,9 @@ function getData(url, successCb) {
     });
 }
 
-const SEARCH_API_URL = window.location.origin + "/api/customer_search/";
-let searchQuery = "";
+const CUSTOMER_SEARCH_API_URL =
+    window.location.origin + "/api/customer_search/";
+let customerSearchQuery = "";
 
 let counter = 0;
 let salesData = [];
@@ -34,38 +35,43 @@ function resultHTML(value) {
 
 $("#searchCustomerInput").on("keyup", function (e) {
     const target = e.target;
-    searchQuery = target.value.trim();
+    customerSearchQuery = target.value.trim();
 
     $("#customerCard").hide();
     finalData[0]["customer"] = "";
 
-    if (searchQuery.trim() === "") {
-        $("#searchResult").slideUp();
+    if (customerSearchQuery.trim() === "") {
+        $("#customerResultWrapper").slideUp();
     } else {
-        $("#searchResult").slideDown();
-        $("#loadingResultBox").removeClass("d-none");
-        $("#notFoundResultBox").addClass("d-none");
+        $("#customerResultWrapper").slideDown();
+        $("#customerLoadingResultBox").removeClass("d-none");
+        $("#customerNotFoundResultBox").addClass("d-none");
         $(".customer-result-box").addClass("d-none");
 
-        getData(SEARCH_API_URL + searchQuery, function (response) {
-            if (response) {
-                if (response.length > 0) {
-                    $("#customerResult").empty();
-                    $("#loadingResultBox").addClass("d-none");
-                    $("#notFoundResultBox").addClass("d-none");
-                    $.each(response, function (index, value) {
-                        if (index < 20) {
-                            $("#customerResult").append(resultHTML(value));
-                            triggerResultClick();
-                        }
-                    });
-                } else {
-                    $("#customerResult").empty();
-                    $("#loadingResultBox").addClass("d-none");
-                    $("#notFoundResultBox").removeClass("d-none");
+        getData(
+            CUSTOMER_SEARCH_API_URL + customerSearchQuery,
+            function (response) {
+                if (response) {
+                    if (response.length > 0) {
+                        $("#customerResultList").empty();
+                        $("#customerLoadingResultBox").addClass("d-none");
+                        $("#customerNotFoundResultBox").addClass("d-none");
+                        $.each(response, function (index, value) {
+                            if (index < 20) {
+                                $("#customerResultList").append(
+                                    resultHTML(value)
+                                );
+                                triggerResultClick();
+                            }
+                        });
+                    } else {
+                        $("#customerResultList").empty();
+                        $("#customerLoadingResultBox").addClass("d-none");
+                        $("#customerNotFoundResultBox").removeClass("d-none");
+                    }
                 }
             }
-        });
+        );
     }
 });
 
@@ -92,7 +98,7 @@ function triggerResultClick() {
             $("#toggleBox").data("toggle", "open");
 
             $("#searchCustomerInput").val(data.name);
-            $("#searchResult").slideUp();
+            $("#customerResultWrapper").slideUp();
         });
 
     $("#toggleBox")
@@ -119,13 +125,8 @@ function inputHTML(counter) {
     return `<tr id="inputRow${counter}">
                 <td><button class="btn btn-danger remove-row-btn" data-id="${counter}"><i class="fa-solid fa-xmark"></i></button></td>
                 <td>
-                    <select class="form-control sales-input product-input" id="productInput" data-id="${counter}" data-name="product">
-                        <option value="" selected disabled>Select a product</option>
-                      
-                        ${ITEMS_DATA.map(function (data) {
-                            return `<option value="${data.id}" data-price="${data.mrp}" >${data.itemsname}</option>`;
-                        })}   
-                    </select>
+                    <h6 class="m-0" style="font-size: 14px;">Screw Box</h6>
+                    <a href="#" class="select-product-link" data-id="${counter}" style="font-size: 14px;">or select Product</a>
                 </td>
                 <td>
                     <input type="text" placeholder="Unstocked Name" class="form-control sales-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
@@ -172,8 +173,8 @@ function appendInputRow() {
         subtotal: "",
     });
     triggerRemoveEvent();
-    $(".product-input").select2();
     handleInputChange();
+    selectProduct();
     getFinalCalculations();
 }
 
@@ -237,15 +238,6 @@ function getFinalCalculations() {
 function addInputValue(index, inputId, dataId, dataName, value) {
     salesData[index][dataName] = value;
 
-    if (dataName === "product") {
-        const priceValue = $(
-            "option:selected",
-            $(`#inputRow${dataId} #productInput`)
-        ).attr("data-price");
-        $(`#inputRow${dataId} #priceInput`).val(priceValue);
-        salesData[index]["price"] = priceValue;
-    }
-
     // validation
     if (
         dataName === "quantity" ||
@@ -299,6 +291,25 @@ function handleInputChange() {
         addInputValue(index, inputId, dataId, dataName, target.value.trim());
     });
 }
+
+function selectProduct() {
+    $(".select-product-link").on("click", function (e) {
+        e.preventDefault();
+        $("#modalWrapper").show();
+    });
+}
+
+$("#modalContainer").on("click", function (e) {
+    const targetEl = e.target;
+    const elId = $(targetEl).attr("id");
+    const closeStatus = $(targetEl).data("close");
+
+    if (closeStatus) {
+        if (elId === "modalContainer") {
+            $("#modalWrapper").hide();
+        }
+    }
+});
 
 // final total input change
 $(".sales-input-final").on("input", function () {

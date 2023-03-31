@@ -29,61 +29,45 @@
         </div>
         @yield('breadcrumb')
 
-        <div class="container ">
-            @if (Session::has('success'))
-                <div class="alert alert-success w-50">
-                    {{ Session::get('success') }}
-                </div>
-            @endif
-        </div>
-
-        <div class="container">
-
+        <div class="container-fluid">
             <h2 class=""> Bill N0:{{ $nextgenid }} </h2>
-
             <form action="{{ route('itemsales.store') }}" method="post">
                 @csrf
                 <div class="py-4 d-flex justify-content-between align-items-start">
                     <div style="width: 300px">
-                        <div class="search-box-cus">
-                            <input type="tetxt" class="searchcustomerinput" placeholder="Search Customer"
-                                id="searchCustomerInput"> <i class="fas fa-search search-icon"> </i>
-                            <div class="searchresult" id="searchResult" style="display: none;">
-
+                        <div class="search-box">
+                            <input type="text" class="search-input" placeholder="Search Customer"
+                                id="searchCustomerInput">
+                            <i class="fas fa-search search-icon"> </i>
+                            <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
                                 <div class="result-box d-flex justify-content-start align-items-center"
-                                    id="loadingResultBox">
+                                    id="customerLoadingResultBox">
                                     <i class="fas fa-spinner" id="spinnerIcon"> </i>
                                     <h1 class="m-0 px-2"> Loading</h1>
                                 </div>
 
                                 <div class="result-box d-flex justify-content-start align-items-center d-none"
-                                    id="notFoundResultBox">
+                                    id="customerNotFoundResultBox">
                                     <i class="fas fa-triangle-exclamation"> </i>
                                     <h1 class="m-0 px-2"> Record Not Found</h1>
                                 </div>
-                                
-                                <div id="customerResult">
 
-                                </div> 
-
+                                <div id="customerResultList">
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div style="width: 300px">
-
                         <select name="modeofinvoice" class=" d-inline form-select" aria-label="Default select example">
-
                             <option value="credit" selected>Credit</option>
                             <option value="cash">Cash</option>
-
                         </select>
                         <small style="font-size: 12px; color:#6c757d;"> Choose mode of invoice </small>
                     </div>
 
 
                     <div style="width: 300px">
-
                         <div class="input-group mb-1">
                             <span class="input-group-text">Date:</span>
                             <input type="date" class="form-control" placeholder="" id="salesDate"
@@ -146,6 +130,36 @@
                     </div>
                 </div>
             </form>
+        </div>
+
+        <div class="modal-wrapper" id="modalWrapper" style="display: none;">
+            <div class="modal-container flex-css" id="modalContainer" data-close="true">
+                <div class="modal-box">
+                    <div class="title flex-css mb-4">
+                        <h1>Select Product</h1>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" class="search-input" placeholder="Search Product" id="searchProductInput">
+                        <i class="fas fa-search search-icon"> </i>
+                        <div class="result-wrapper" id="productResultWrapper" style="display: none;">
+                            <div class="result-box d-flex justify-content-start align-items-center"
+                                id="productLoadingResultBox">
+                                <i class="fas fa-spinner" id="spinnerIcon"> </i>
+                                <h1 class="m-0 px-2"> Loading</h1>
+                            </div>
+
+                            <div class="result-box d-flex justify-content-start align-items-center d-none"
+                                id="productNotFoundResultBox">
+                                <i class="fas fa-triangle-exclamation"> </i>
+                                <h1 class="m-0 px-2"> Record Not Found</h1>
+                            </div>
+
+                            <div id="productResultList">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @stop
