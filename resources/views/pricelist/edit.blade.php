@@ -14,14 +14,7 @@
 <form class="row gx-5 gy-3" action="{{route('pricelists.update',$pricelistdata->id)}}" method="post">
                 @csrf
                 @method('put')
-
-               
-           
             
-           
-           
-            
-
                 <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Item Name</label>
                     <input type="text" class="form-control @error('itemname') is-invalid @enderror" 

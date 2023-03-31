@@ -65,6 +65,9 @@ Route::delete('/companys/{companys}',[CompanyController::class,'destroy'])->name
 Route::get('/daybooks',[Daybookcontroller::class,'index'])->name('daybooks.index');
 Route::get('/daybooks/create',[Daybookcontroller::class,'create'])->name('daybooks.create');
 Route::post('/daybooks',[Daybookcontroller::class,'store'])->name('daybooks.store');
+Route::get('/daybooks/{daybooks}/edit',[Daybookcontroller::class,'edit'])->name('daybooks.edit');
+Route::put('/daybooks/{daybooks}',[Daybookcontroller::class,'update'])->name('daybooks.update');
+Route::delete('/daybooks/{daybooks}',[Daybookcontroller::class,'destroy'])->name('daybooks.destroy');
 
 Route::get('/banks',[Bankcontroller::class,'index'])->name('banks.index');
 Route::get('/banks/create',[Bankcontroller::class,'create'])->name('banks.create');

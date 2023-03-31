@@ -5,15 +5,6 @@
    
 @yield('breadcrumb')
 
-
-<div class="container">
-            @if (Session::has('success'))
-                <div class="alert alert-success w-50">
-                    {{ Session::get('success') }}
-                </div>
-            @endif
-</div>
-
 <div class="container">
 
 
@@ -58,7 +49,7 @@
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Address</label>
                     <input type="text" class="form-control @error('address') is-invalid @enderror" 
-                        name="address" value="{{ old('address',$daybook->name) }}">
+                        name="address" value="{{ old('address',$daybook->address) }}">
                     @error('address')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -67,7 +58,7 @@
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Contact No</label>
                     <input type="text" class="form-control @error('contactno') is-invalid @enderror" 
-                        name="contactno" value="{{ old('contactno',$daybook->name) }}">
+                        name="contactno" value="{{ old('contactno',$daybook->contact) }}">
                     @error('contactno')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -76,7 +67,7 @@
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Amount</label>
                     <input type="number" class="form-control @error('amount') is-invalid @enderror" 
-                        name="amount" value="{{ old('amount',$daybook->name) }}">
+                        name="amount" value="{{ old('amount',$daybook->amount) }}">
                     @error('amount')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -85,7 +76,7 @@
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Remarks</label>
                     <input type="text" class="form-control @error('remarks') is-invalid @enderror" 
-                        name="remarks" value="{{ old('remarks',$daybook->name) }}">
+                        name="remarks" value="{{ old('remarks',$daybook->remarks) }}">
                     @error('remarks')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror

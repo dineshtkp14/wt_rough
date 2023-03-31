@@ -5,7 +5,7 @@
 
         <div class="card ">
             <div class="card-header">
-               <a href="{{route('customerinfos.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
+               <a href="{{route('daybooks.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
               Total collected cash today : {{$totalsum}}
    
                  <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search Name, phoneno, email" style="width: 250px;" wire:model="searchTerm" >
@@ -24,6 +24,7 @@
                     <th>Paisa</th>
                     <th>Date</th>
                     <th>Remarks</th>
+                    <th>Action</th>
                     
                 </tr>
             </thead>
@@ -39,6 +40,17 @@
                     <td data-label="Paisa">{{ $i->modeofpay }}</td>
                     <td data-label="Date">{{ $i->date }}</td>
                     <td data-label="Remarks">{{ $i->remarks }}</td>
+                    <td>
+                        <a href="{{Route('daybooks.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
+                         
+                                  
+                         <a href="#" onclick="delfunctionusers({{$i->id}})" class="btn btn-danger"  rel="noopener noreferrer">Delete</a>
+                         <form id="eea{{$i->id}}" action="{{ route('daybooks.destroy',$i->id)}}" method="post">
+                         @csrf
+                         @method('delete')
+                         
+                         </form>
+                    </td>
                     
                 </tr>
                 @endforeach

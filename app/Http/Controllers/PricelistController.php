@@ -109,7 +109,7 @@ class PricelistController extends Controller
             return redirect()->route('pricelists.index')->with('success','Items Price Updated Sucessfully !!');  
         }
         else{
-            return redirect()->route('pricelists.create')->withErrors($validator)->withInput();
+            return redirect()->route('pricelists.edit',$id)->withErrors($validator)->withInput();
     
         }
     
