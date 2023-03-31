@@ -3,19 +3,14 @@
     <div class="container">
 	
 
-        <div class="row my-4">
-            <div class="col-md-6">
-                <h4>Total collected cash today : {{$totalsum}}</h4>
-        
+        <div class="card ">
+            <div class="card-header">
+               <a href="{{route('customerinfos.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
+              Total collected cash today : {{$totalsum}}
+   
+                 <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search Name, phoneno, email" style="width: 250px;" wire:model="searchTerm" >
             </div>
-            <div class="col-md-3 flat-end">
-            </div>
-            <div class="col-md-3 flat-end">
-                <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search Name ,Id or phoneno" style="width: 250px;" wire:model="searchTerm" >
-        
-            </div>
-        
-        </div>
+            <div class="card-body">
         
         
         <table>
@@ -49,7 +44,7 @@
                 @endforeach
                 
             @else
-             <h3>Database is Empty !! Plese Add to view List</h3>
+             <h5>No Record Found</h>
                 
              @endif
             </tbody>
