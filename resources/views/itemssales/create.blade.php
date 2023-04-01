@@ -84,7 +84,7 @@
                             <th>
                                 <a class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></a>
                             </th>
-                            <th style="width: 20%;"> Product</th>
+                            <th style="width: 18%;"> Product</th>
                             <th>Unstocked Name</th>
                             <th>Quantity</th>
 

@@ -14,6 +14,10 @@ const PRODUCT_SEARCH_API_URL = window.location.origin + "/api/items_search/";
 let customerSearchQuery = "";
 let productSearchQuery = "";
 
+let currentLink = null;
+let currentIndex = null;
+let currentID = null;
+
 let counter = 0;
 let salesData = [];
 let finalData = [
@@ -26,13 +30,23 @@ let finalData = [
     },
 ];
 
-function resultHTML(value) {
+function customerResultHTML(value) {
     return `
      <div class="result-box d-flex justify-content-start align-items-center customer-result-box" data-value='${JSON.stringify(
          value
      )}'> 
             <i class="fas fa-user"> </i>
             <h1 class="m-0 px-2">${value.name}</h1>
+     </div>`;
+}
+
+function productResultHTML(value) {
+    return `
+     <div class="result-box d-flex justify-content-start align-items-center product-result-box" data-value='${JSON.stringify(
+         value
+     )}'> 
+            <i class="fas fa-user"> </i>
+            <h1 class="m-0 px-2">${value.itemsname}</h1>
      </div>`;
 }
 
@@ -62,9 +76,9 @@ $("#searchCustomerInput").on("keyup", function (e) {
                         $.each(response, function (index, value) {
                             if (index < 20) {
                                 $("#customerResultList").append(
-                                    resultHTML(value)
+                                    customerResultHTML(value)
                                 );
-                                triggerResultClick();
+                                triggerCustomerResultClick();
                             }
                         });
                     } else {
@@ -78,7 +92,7 @@ $("#searchCustomerInput").on("keyup", function (e) {
     }
 });
 
-function triggerResultClick() {
+function triggerCustomerResultClick() {
     $(".customer-result-box")
         .off()
         .on("click", function () {
@@ -103,33 +117,37 @@ function triggerResultClick() {
             $("#searchCustomerInput").val(data.name);
             $("#customerResultWrapper").slideUp();
         });
-
-    $("#toggleBox")
-        .off()
-        .on("click", function () {
-            const toggleStatus = $(this).data("toggle");
-            if (toggleStatus === "close") {
-                $("#customerCard").animate({
-                    right: "0",
-                });
-                $(this).removeClass("animate");
-                $(this).data("toggle", "open");
-            } else {
-                $("#customerCard").animate({
-                    right: "-300px",
-                });
-                $(this).addClass("animate");
-                $(this).data("toggle", "close");
-            }
-        });
 }
+
+$("#toggleBox")
+    .off()
+    .on("click", function () {
+        const toggleStatus = $(this).data("toggle");
+        if (toggleStatus === "close") {
+            $("#customerCard").animate({
+                right: "0",
+            });
+            $(this).removeClass("animate");
+            $(this).data("toggle", "open");
+        } else {
+            $("#customerCard").animate({
+                right: "-300px",
+            });
+            $(this).addClass("animate");
+            $(this).data("toggle", "close");
+        }
+    });
 
 function inputHTML(counter) {
     return `<tr id="inputRow${counter}">
                 <td><button class="btn btn-danger remove-row-btn" data-id="${counter}"><i class="fa-solid fa-xmark"></i></button></td>
                 <td>
-                    <h6 class="m-0" style="font-size: 14px;">Screw Box</h6>
-                    <a href="#" class="select-product-link" data-id="${counter}" style="font-size: 14px;">or select Product</a>
+                <a href="#" class="select-product-link" style="text-decoration: none;" data-id="${counter}" data-query="">
+                        <h6 class="m-0" style="font-size: 14px; color: #000000;"></h6>
+                        <p class="m-0" style="font-size: 14px; font-weight: 500;">
+                            or select Product
+                        </p>
+                    </a>
                 </td>
                 <td>
                     <input type="text" placeholder="Unstocked Name" class="form-control sales-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
@@ -298,6 +316,15 @@ function handleInputChange() {
 function selectProduct() {
     $(".select-product-link").on("click", function (e) {
         e.preventDefault();
+
+        currentLink = this;
+        currentID = $(this).data("id");
+        currentIndex = salesData.findIndex((obj) => obj.id === currentID);
+
+        productSearchQuery = $(this).data("query");
+        $("#searchProductInput").val($(this).data("query"));
+        getProductData();
+
         $("#modalWrapper").show();
     });
 }
@@ -305,7 +332,12 @@ function selectProduct() {
 $("#searchProductInput").on("keyup", function (e) {
     const target = e.target;
     productSearchQuery = target.value.trim();
+    $(currentLink).data("query", productSearchQuery);
 
+    getProductData();
+});
+
+function getProductData() {
     if (productSearchQuery.trim() === "") {
         $("#productResultWrapper").slideUp();
     } else {
@@ -325,9 +357,9 @@ $("#searchProductInput").on("keyup", function (e) {
                         $.each(response, function (index, value) {
                             if (index < 20) {
                                 $("#productResultList").append(
-                                    resultHTML(value)
+                                    productResultHTML(value)
                                 );
-                                triggerResultClick();
+                                triggerProductResultClick();
                             }
                         });
                     } else {
@@ -339,7 +371,28 @@ $("#searchProductInput").on("keyup", function (e) {
             }
         );
     }
-});
+}
+
+function triggerProductResultClick() {
+    $(".product-result-box")
+        .off()
+        .on("click", function () {
+            const json = $(this).attr("data-value");
+            const data = JSON.parse(json);
+
+            console.log(data);
+
+            $(currentLink).data("query", data.itemsname);
+            $(currentLink).find("h6").text(data.itemsname);
+            salesData[currentIndex]["product"] = `${data.id}`;
+
+            $(`#inputRow${currentID} #priceInput`).val(data.mrp);
+            salesData[currentIndex]["price"] = `${data.mrp}`;
+
+            $("#searchProductInput").val(data.itemsname);
+            $("#productResultWrapper").slideUp();
+        });
+}
 
 $("#modalContainer").on("click", function (e) {
     const targetEl = e.target;
