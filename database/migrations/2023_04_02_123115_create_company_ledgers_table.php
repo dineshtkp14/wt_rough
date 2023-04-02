@@ -11,19 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customerledgerdetails', function (Blueprint $table) {
+        Schema::create('company_ledgers', function (Blueprint $table) {
             $table->id();
-          
-            $table->bigInteger('customerid');
-            $table->bigInteger('invoiceid')->nullable();
             $table->string('particulars');
             $table->string('voucher_type');
+            $table->string('voucher_no')->nullable();
             $table->date('date');
             $table->float('debit',20,2)->nullable();
             $table->float('credit',20,2)->nullable();
-            $table->string('invoicetype')->nullable();;
-            $table->text('notes')->nullable();;
-
             $table->timestamps();
         });
     }
@@ -33,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customerledgerdetails');
+        Schema::dropIfExists('company_ledgers');
     }
 };

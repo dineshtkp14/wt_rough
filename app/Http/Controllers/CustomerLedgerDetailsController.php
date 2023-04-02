@@ -49,7 +49,12 @@ class CustomerLedgerDetailsController extends Controller
     public function store(Request $req)
     {
      $validator=Validator::make($req->all(),[
- 
+        'customerid'=>'required',
+        'date'=>'required',
+        'particulars'=>'required',
+        'amount'=>'required',
+        'vt'=>'required',
+
            
      ]);
  

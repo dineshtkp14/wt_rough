@@ -37,7 +37,7 @@
                     <div style="width: 300px">
                         <div class="search-box">
                             <input type="text" class="search-input" placeholder="Search Customer"
-                                id="searchCustomerInput">
+                                id="searchCustomerInput" autocomplete="off">
                             <i class="fas fa-search search-icon"> </i>
                             <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
                                 <div class="result-box d-flex justify-content-start align-items-center"
@@ -73,7 +73,13 @@
                             <input type="date" class="form-control" placeholder="" id="salesDate"
                                 class="form-control foritemsaledatecss" value="{{ now()->format('Y-m-d') }}" name="date">
                         </div>
+                        <div class="input-group mb-1">
+                            <span class="input-group-text">Miti:</span>
+                            <input type="date" class="form-control" placeholder="" id="salesDate"
+                                class="form-control foritemsaledatecss" value="{{ now()->format('Y-m-d') }}" name="date">
+                        </div>
                     </div>
+                   
 
                 </div>
                 <input type="hidden" id="salesArrInput" name="sales_arr" value="" />

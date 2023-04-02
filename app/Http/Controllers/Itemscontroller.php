@@ -11,9 +11,9 @@ class Itemscontroller extends Controller
     public function index()
     {
         $breadcrumb= [
-            'subtitle'=>'View',
-            'title'=>'View Invoice Sales Details',
-            'link'=>'View Invoice Sales Details'
+            'subtitle'=>'View ',
+            'title'=>'View Items Details',
+            'link'=>'View Items Details'
         ];
 
          $cus=item::orderBy('id','DESC')->get();
@@ -24,9 +24,9 @@ class Itemscontroller extends Controller
     public function create()
     {
         $breadcrumb= [
-            'subtitle'=>'View',
-            'title'=>'View Invoice Sales Details',
-            'link'=>'View Invoice Sales Details'
+            'subtitle'=>'Add',
+            'title'=>'Add Items',
+            'link'=>'Add Items'
         ];
 
         return view('items.create',['breadcrumb'=>$breadcrumb]);
@@ -49,13 +49,10 @@ class Itemscontroller extends Controller
         $disinfoobj->distributorname=$req->disname;
         $disinfoobj->date=$req->date;
         $disinfoobj->itemsname=$req->itemsname;
-       
         $disinfoobj->quantity=$req->quantity;
         $disinfoobj->dlp=$req->dlp;
         $disinfoobj->mrp=$req->mrp;
-        $disinfoobj->total=$req->total;
-        $disinfoobj->finaltotal=$req->finaltotal;
-       
+        $disinfoobj->total=$req->quantity*$req->dlp;
         $disinfoobj->save();
 
       

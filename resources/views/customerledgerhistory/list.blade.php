@@ -13,14 +13,33 @@
 			<div class="col-md-5 mb-3 px-5">
 				
 
-				<select name="customerid" class="form-select" aria-label="Default select example" id="cusinfo">
-                    <option selected>Select Customer</option>
-                    @foreach ($allcus as $i)
-                    
-                    <option value="{{$i->id}}"> {{$i->name}}</option>
-                    @endforeach
-                    
-                  </select>
+				<div class="search-box">
+					<input id="customerIdInput" name="customerid" hidden>
+
+					<input type="text" class="search-input @error('customerid') is-invalid @enderror" placeholder="Search Customer"
+						id="searchCustomerInput" autocomplete="off">
+						@error('customerid')
+							<p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
+						@enderror  
+						
+					<i class="fas fa-search search-icon"> </i>
+					<div class="result-wrapper" id="customerResultWrapper" style="display: none;">
+						<div class="result-box d-flex justify-content-start align-items-center"
+							id="customerLoadingResultBox">
+							<i class="fas fa-spinner" id="spinnerIcon"> </i>
+							<h1 class="m-0 px-2"> Loading</h1>
+						</div>
+
+						<div class="result-box d-flex justify-content-start align-items-center d-none"
+							id="customerNotFoundResultBox">
+							<i class="fas fa-triangle-exclamation"> </i>
+							<h1 class="m-0 px-2"> Record Not Found</h1>
+						</div>
+
+						<div id="customerResultList">
+						</div>
+					</div>
+				</div>
 				
 			</div>
 		</div>

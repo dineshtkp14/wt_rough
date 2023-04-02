@@ -23,7 +23,7 @@ return new class extends Migration
             $table->float('dlp',20,2);
             $table->float('mrp',20,2);
             $table->float('total',20,2);
-            $table->float('finaltotal',20,2);
+          
 
 
 

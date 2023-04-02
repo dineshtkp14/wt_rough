@@ -55,27 +55,31 @@
                     <div style="width: 300px">
                       
                         <div class="input-group mb-1">
-                            <div class="search-box-cus">
-                                <input type="tetxt" class="searchcustomerinput" placeholder="Search Customer"
-                                    id="searchCustomerInput"> <i class="fas fa-search search-icon"> </i>
-                                <div class="searchresult" id="searchResult" style="display: none;">
-    
+                            <div class="search-box">
+                                <input id="customerIdInput" name="customerid" hidden>
+
+                                <input type="text" class="search-input @error('customerid') is-invalid @enderror" placeholder="Search Customer"
+                                    id="searchCustomerInput" autocomplete="off">
+                                    @error('customerid')
+                                        <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
+                                    @enderror  
+                                    
+                                <i class="fas fa-search search-icon"> </i>
+                                <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
                                     <div class="result-box d-flex justify-content-start align-items-center"
-                                        id="loadingResultBox">
+                                        id="customerLoadingResultBox">
                                         <i class="fas fa-spinner" id="spinnerIcon"> </i>
                                         <h1 class="m-0 px-2"> Loading</h1>
                                     </div>
     
                                     <div class="result-box d-flex justify-content-start align-items-center d-none"
-                                        id="notFoundResultBox">
+                                        id="customerNotFoundResultBox">
                                         <i class="fas fa-triangle-exclamation"> </i>
                                         <h1 class="m-0 px-2"> Record Not Found</h1>
                                     </div>
-                                    
-                                    <div id="customerResult">
     
-                                    </div> 
-    
+                                    <div id="customerResultList">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -84,7 +88,10 @@
                       
                         <div class="input-group mb-1">
                             <span class="input-group-text">Date:</span>
-                            <input type="date" class="form-control" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
+                            <input type="date" class="form-control  @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
+                            @error('date')
+                        <p class="invalid-feedback">{{ $message }}</p>
+                    @enderror
                         </div>
                     </div>
                 </div>

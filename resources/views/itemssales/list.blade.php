@@ -21,7 +21,7 @@
 		<tr>
 		
 			<th>Bill No</th>
-			<th>Item Id</th>
+			<th>Items Name</th>
 			<th>Unstocked Name</th>
 			<th>Quantity</th>
 			
@@ -40,8 +40,8 @@
                         @foreach ($all as $i)
 		<tr>
 			<td data-label="Name">{{ $i->invoiceid }}</td>
-			<td data-label="Address">{{ $i->itemid}}</td>
-			<td data-label="Contact No.">{{ $i->unstockedname }}</td>
+			<td data-label="Address">{{ $i->itemid ? $i->itemid : '-' }}</td>
+			<td data-label="Contact No.">{{ $i->unstockedname ? $i->unstockedname : '-' }}</td>
 			<td data-label="Amount">{{ $i->quantity }}</td>
 			
            

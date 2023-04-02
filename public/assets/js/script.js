@@ -45,7 +45,7 @@ function productResultHTML(value) {
      <div class="result-box d-flex justify-content-start align-items-center product-result-box" data-value='${JSON.stringify(
          value
      )}'> 
-            <i class="fas fa-user"> </i>
+     <i class="fa-solid fa-boxes-stacked"></i>
             <h1 class="m-0 px-2">${value.itemsname}</h1>
      </div>`;
 }
@@ -56,6 +56,7 @@ $("#searchCustomerInput").on("keyup", function (e) {
 
     $("#customerCard").hide();
     finalData[0]["customer"] = "";
+    $("#customerIdInput").val("");
 
     if (customerSearchQuery.trim() === "") {
         $("#customerResultWrapper").slideUp();
@@ -111,10 +112,12 @@ function triggerCustomerResultClick() {
             $("#customerCard").animate({
                 right: "0",
             });
+
             $("#toggleBox").removeClass("animate");
             $("#toggleBox").data("toggle", "open");
 
             $("#searchCustomerInput").val(data.name);
+            $("#customerIdInput").val(data.id);
             $("#customerResultWrapper").slideUp();
         });
 }
@@ -142,7 +145,7 @@ function inputHTML(counter) {
     return `<tr id="inputRow${counter}">
                 <td><button class="btn btn-danger remove-row-btn" data-id="${counter}"><i class="fa-solid fa-xmark"></i></button></td>
                 <td>
-                <a href="#" class="select-product-link" style="text-decoration: none;" data-id="${counter}" data-query="">
+                <a href="#" class="select-product-link" id="selectProductLink" style="text-decoration: none;" data-id="${counter}" data-query="">
                         <h6 class="m-0" style="font-size: 14px; color: #000000;"></h6>
                         <p class="m-0" style="font-size: 14px; font-weight: 500;">
                             or select Product
@@ -260,6 +263,20 @@ function addInputValue(index, inputId, dataId, dataName, value) {
     salesData[index][dataName] = value;
 
     // validation
+    if (dataName === "unstocked") {
+        if (value.trim() !== "") {
+            $(`#inputRow${dataId} #selectProductLink`).css({
+                "pointer-events": "none",
+                color: "#afafaf",
+            });
+        } else {
+            $(`#inputRow${dataId} #selectProductLink`).css({
+                "pointer-events": "all",
+                color: "#0d6efd",
+            });
+        }
+    }
+
     if (
         dataName === "quantity" ||
         dataName === "price" ||
@@ -277,7 +294,6 @@ function addInputValue(index, inputId, dataId, dataName, value) {
         }
 
         if (dataName === "discount") {
-            console.log(salesData[index]["subtotal"]);
             if (
                 newValue >
                 parseFloat(
@@ -380,8 +396,6 @@ function triggerProductResultClick() {
             const json = $(this).attr("data-value");
             const data = JSON.parse(json);
 
-            console.log(data);
-
             $(currentLink).data("query", data.itemsname);
             $(currentLink).find("h6").text(data.itemsname);
             salesData[currentIndex]["product"] = `${data.id}`;
@@ -389,8 +403,12 @@ function triggerProductResultClick() {
             $(`#inputRow${currentID} #priceInput`).val(data.mrp);
             salesData[currentIndex]["price"] = `${data.mrp}`;
 
+            $(`#inputRow${currentID} #unstockedInput`).attr("disabled", "true");
+
             $("#searchProductInput").val(data.itemsname);
             $("#productResultWrapper").slideUp();
+
+            $("#modalWrapper").hide();
         });
 }
 
