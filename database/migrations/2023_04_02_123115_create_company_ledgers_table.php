@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('company_ledgers', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('companyid');
             $table->string('particulars');
-            $table->string('voucher_type');
+            $table->string('voucher_type')->nullable();
             $table->string('voucher_no')->nullable();
             $table->date('date');
             $table->float('debit',20,2)->nullable();
             $table->float('credit',20,2)->nullable();
+       
+            $table->text('notes')->nullable();;
             $table->timestamps();
         });
     }

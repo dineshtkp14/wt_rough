@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Daybookcontroller;
 use App\Http\Controllers\Bankcontroller;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyLedger;
+use App\Http\Controllers\CompanyLedgerBillEntryController;
+use App\Http\Controllers\CompanyLedgerController;
 use App\Http\Controllers\Itemscontroller;
 use App\Http\Controllers\CustomerinfoController;
 
@@ -12,11 +15,9 @@ use App\Http\Controllers\CustomerLedgerHistroy;
 use App\Http\Controllers\CustomerPdfGenerator;
 use App\Http\Controllers\ItemsalesController;
 use App\Http\Controllers\PricelistController;
+use App\Http\Controllers\StockController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/',[PricelistController::class,'index'])->name('home');
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
@@ -31,6 +32,10 @@ Route::post('/pricelists',[PricelistController::class,'store'])->name('pricelist
 Route::get('/pricelists/{pricelist}/edit',[PricelistController::class,'edit'])->name('pricelists.edit');
 Route::put('/pricelists/{pricelists}',[PricelistController::class,'update'])->name('pricelists.update');
 Route::delete('/pricelists/{customerinfo}',[PricelistController::class,'destroy'])->name('pricelists.destroy');
+
+
+Route::get('/stocks',[StockController::class,'index'])->name('stocks.index');
+
 
 
 
@@ -53,6 +58,9 @@ Route::get('/pdf/convert',[CustomerPdfGenerator::class,'pdfgenerate'])->name('pd
 Route::get('/items',[Itemscontroller::class,'index'])->name('items.index');
 Route::get('/items/create',[Itemscontroller::class,'create'])->name('items.create');
 Route::post('/items',[Itemscontroller::class,'store'])->name('items.store');
+Route::get('/items/{items}/edit',[Itemscontroller::class,'edit'])->name('items.edit');
+Route::put('/items/{items}',[Itemscontroller::class,'update'])->name('items.update');
+Route::delete('/items/{items}',[Itemscontroller::class,'destroy'])->name('items.destroy');
 
 Route::get('/companys',[CompanyController::class,'index'])->name('companys.index');
 Route::get('/companys/create',[CompanyController::class,'create'])->name('companys.create');
@@ -84,6 +92,10 @@ Route::post('/cpayments',[CustomerLedgerDetailsController::class,'store'])->name
 Route::get('/clhs',[CustomerLedgerHistroy::class,'returnchoosendatehistroy'])->name('clhs.returnchoosendatehistroy');
 Route::get('clhs/pdf/convert/',[CustomerLedgerHistroy::class,'PdfGenerateCustomerDetails'])->name('clhspdf.convert');
 
+//companyledgerdetails withpdfconverter
+Route::get('/companyledgerdetails',[CompanyLedgerBillEntryController::class,'returnchoosendatehistroy'])->name('companyledgerdetails.returnchoosendatehistroy');
+Route::get('companyledgerdetails/pdf/convert/',[CompanyLedgerBillEntryController::class,'PdfGenerateCustomerDetails'])->name('companyledgerdetails.convert');
+
 
 Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])->name('customer.billno');
 Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_InvoiveBillByBillno'])->name('invoicebillno.convert');
@@ -92,6 +104,26 @@ Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_Invoive
 
 
 Route::get('/cbills',[CustomerLedgerHistroy::class,'returncusbills'])->name('cbills.returncusbills');
+
+
+Route::get('/companyLedgers',[CompanyLedgerController::class,'index'])->name('companyLedgers.index');
+Route::get('/companyLedgers/create',[CompanyLedgerController::class,'create'])->name('companyLedgers.create');
+Route::post('/companyLedgers',[CompanyLedgerController::class,'store'])->name('companyLedgers.store');
+Route::get('/companyLedgers/{companyLedgers}/edit',[CompanyLedgerController::class,'edit'])->name('companyLedgers.edit');
+Route::put('/companyLedgers/{companyLedgers}',[CompanyLedgerController::class,'update'])->name('companyLedgers.update');
+Route::delete('/companyLedgers/{companyLedgers}',[CompanyLedgerController::class,'destroy'])->name('companyLedgers.destroy');
+
+
+
+Route::get('/companybillentry',[CompanyLedgerBillEntryController::class,'index'])->name('companybillentry.index');
+Route::get('/companybillentry/create',[CompanyLedgerBillEntryController::class,'create'])->name('companybillentry.create');
+Route::post('/companybillentry',[CompanyLedgerBillEntryController::class,'store'])->name('companybillentry.store');
+Route::get('/companybillentry/{companybillentry}/edit',[CompanyLedgerBillEntryController::class,'edit'])->name('companybillentry.edit');
+Route::put('/companybillentry/{companybillentry}',[CompanyLedgerBillEntryController::class,'update'])->name('companybillentry.update');
+Route::delete('/companybillentry/{companybillentry}',[CompanyLedgerBillEntryController::class,'destroy'])->name('companybillentry.destroy');
+
+
+
 
 
 

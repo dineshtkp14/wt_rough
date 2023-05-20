@@ -30,8 +30,9 @@
 
 	</div>
 
-  Invoice Id: {{$invoiceid}}<br>
-
+    @if(isset($forinvoicetype) && !empty($forinvoicetype))
+    <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
+@endif
   @if ($cinfodetails !=null)
   @foreach($cinfodetails as $i)
 Name:  {{$i->name}}<br>
@@ -45,57 +46,59 @@ ContactNo:  {{$i->phoneno}}<br>
    @endif
 
 
-    <table class="table">
-        <thead>
-          <tr>
+   <table class="table">
+    <thead>
+        <tr>
             <th scope="col">ITEM Name</th>
-           
+            <th scope="col">Original Price</th>
+            <th scope="col">Sold Price</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Price</th>
-            <th scope="col">Discount</th>
             <th scope="col">Total</th>
-           
-
-          </tr>
-        </thead>
-        <tbody>
-            @if ($allcusbyid !=null)
+            <th scope="col">Discount</th>
+            <th scope="col">Sub-Total</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @if ($allcusbyid != null)
             @foreach($allcusbyid as $i)
-          <tr>
-            <td scope="">{{$i->itemid}} </td>
-            <td>{{$i->quantity}}</td>
-            <td>{{$i->price}}</td>
-            <td>{{$i->discount}} </td>
-            <td>{{$i->subtotal}}</td>
+                <tr>
+                    <td>{{$i->itemid}}</td>
+                    <td>{{$i->mrp}}</td>
+                    <td>{{$i->price}}</td>
+                    <td>{{$i->quantity}}</td>
+                    <td>{{$i->price*$i->quantity}}</td>
+                    <td>{{$i->discount}}</td>
+                    <td>{{$i->subtotal}}</td>
+                    {{-- <td>{{$i->total}}</td> --}}
+                </tr>
+            @endforeach
+        @endif
 
-          </tr>
-
-          @endforeach
-          @endif
-
-
-          @if ($allinvoices !=null)
+        @if ($allinvoices != null)
             @foreach($allinvoices as $i)
-      
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        
-
-           <td>Total Amount :{{$i->subtotal}}</td>
-          </tr>
-             @endforeach
-          @endif
-         
-       
-          
-        </tbody>
-      </table>
-
-
-
+                <tr>
+                     <td colspan="5"></td>
+                     <td class="text-center"><b>Sub-Total:</b></td>
+                    <td ><b> {{$i->subtotal}}</b></td>                            </tr>
+                <tr>
+                    <td colspan="5"></td>
+                    <td class="text-center"><b>Extra Discount: -</b></td>
+                    <td ><b> {{$i->discount}}</b></td>
+                </tr>
+                    <td colspan="5">Twelve Lakh Thirty Four Thousand Five Hundred Thirty Two </td>
+                    <td class="text-center"><b>Total Amount:</b></td>
+                    <td ><b> {{$i->total}}</b></td>
+                </tr>
+                <tr>
+                    @if(isset($forinvoicetype) && !empty($forinvoicetype))
+                    <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->notes }}</b>
+                @endif
+                </tr>
+            @endforeach
+        @endif
+    </tbody>
+</table>
 
 </div>
 </body>

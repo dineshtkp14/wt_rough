@@ -6,9 +6,10 @@ function getData(url, successCb) {
         success: successCb,
     });
 }
-
+const BASE_URL = window.location.origin + "/api/";
 const CUSTOMER_SEARCH_API_URL =
     window.location.origin + "/api/customer_search/";
+
 const PRODUCT_SEARCH_API_URL = window.location.origin + "/api/items_search/";
 
 let customerSearchQuery = "";
@@ -57,6 +58,7 @@ $("#searchCustomerInput").on("keyup", function (e) {
     $("#customerCard").hide();
     finalData[0]["customer"] = "";
     $("#customerIdInput").val("");
+    const apiKey = $(this).data("api");
 
     if (customerSearchQuery.trim() === "") {
         $("#customerResultWrapper").slideUp();
@@ -67,7 +69,8 @@ $("#searchCustomerInput").on("keyup", function (e) {
         $(".customer-result-box").addClass("d-none");
 
         getData(
-            CUSTOMER_SEARCH_API_URL + customerSearchQuery,
+            BASE_URL + apiKey + "/" + customerSearchQuery,
+
             function (response) {
                 if (response) {
                     if (response.length > 0) {
@@ -156,7 +159,8 @@ function inputHTML(counter) {
                     <input type="text" placeholder="Unstocked Name" class="form-control sales-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
                 </td>
                 <td>
-                    <input type="text" placeholder="Quantity" class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
+
+                    <input type="text" placeholder="Quantity  " class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
                 </td>
 
                 <td>
@@ -254,7 +258,7 @@ function getFinalCalculations() {
 
     if (finalData[0]["total"] > 0) {
         $("#totalAmountWords").text(
-            numberToWords.toWords(finalData[0]["total"])
+            convertNumberToWords(parseInt(finalData[0]["total"]))
         );
     }
 }
@@ -302,6 +306,19 @@ function addInputValue(index, inputId, dataId, dataName, value) {
             ) {
                 $(`#inputRow${dataId} #${inputId}`).val("0");
                 salesData[index][dataName] = "0";
+            }
+        }
+        if (dataName === "quantity") {
+            const dataMax = $(`#inputRow${dataId} #${inputId}`).attr(
+                "data-max"
+            );
+            const dataCurrent = $(`#inputRow${dataId} #${inputId}`).val();
+
+            if (dataMax) {
+                if (parseInt(dataCurrent) > parseInt(dataMax)) {
+                    $(`#inputRow${dataId} #${inputId}`).val(dataMax);
+                    salesData[index]["quantity"] = dataMax;
+                }
             }
         }
     }
@@ -402,6 +419,17 @@ function triggerProductResultClick() {
 
             $(`#inputRow${currentID} #priceInput`).val(data.mrp);
             salesData[currentIndex]["price"] = `${data.mrp}`;
+
+            $(`#inputRow${currentID} #quantityInput`).attr(
+                "placeholder",
+                `Quantity (Max: ${data.quantity})`
+            );
+            $(`#inputRow${currentID} #quantityInput`).attr(
+                "data-max",
+                data.quantity
+            );
+            $(`#inputRow${currentID} #quantityInput`).val("");
+            salesData[currentIndex]["quantity"] = "";
 
             $(`#inputRow${currentID} #unstockedInput`).attr("disabled", "true");
 

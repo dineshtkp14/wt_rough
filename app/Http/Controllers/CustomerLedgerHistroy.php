@@ -50,8 +50,11 @@ class CustomerLedgerHistroy extends Controller
            
             if($from == "" || $to==""){
 
-                $cusledgertails=customerledgerdetails::where('customerid', $req->customerid)->get();
-                $betweendate=customerledgerdetails::where('customerid',$req->customerid)->get();
+                // $cusledgertails=customerledgerdetails::where('customerid', $req->customerid)->get();
+                $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)
+                ->where('invoicetype', 'credit')
+                ->get();
+                $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
 
                 $debittotalsumwithdate = $betweendate->sum('debit');
                 $credittotalsumwithdate = $betweendate->sum('credit');
@@ -59,12 +62,12 @@ class CustomerLedgerHistroy extends Controller
                
             }else{
 
-                $betweendate=customerledgerdetails::whereBetween('date',[$from,$to])->where('customerid',$req->customerid)->get();
+                $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
                 $debittotalsumwithdate = $betweendate->sum('debit');
                 $credittotalsumwithdate = $betweendate->sum('credit');
 
                 
-                $cusledgertails=customerledgerdetails::whereBetween('date',  [$from,$to])->where('customerid', $req->customerid)->get();         
+                $cusledgertails=customerledgerdetails::whereBetween('date',  [$from,$to])->where('customerid', $req->customerid)->where('invoicetype', 'credit')->get();         
                
             }
 
@@ -98,12 +101,13 @@ class CustomerLedgerHistroy extends Controller
                
                 if($from == "" || $to==""){
     
-                    $cusledgertails=customerledgerdetails::where('customerid', $req->customerid)->get();
-                    $betweendate=customerledgerdetails::where('customerid',$req->customerid)->get();
-    
-                    $debittotalsumwithdate = $betweendate->sum('debit');
-                    $credittotalsumwithdate = $betweendate->sum('credit');
+                    $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)
+                ->where('invoicetype', 'credit')
+                ->get();
+                $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
 
+                $debittotalsumwithdate = $betweendate->sum('debit');
+                $credittotalsumwithdate = $betweendate->sum('credit');
                     $xd= customerinfo::where('id',$req->customerid)->get();
                     $afn=$xd;
 
@@ -114,14 +118,12 @@ class CustomerLedgerHistroy extends Controller
                     
     
     
-                    $betweendate=customerledgerdetails::whereBetween('date',[$from,$to])->where('customerid',$req->customerid)->get();
-                    $debittotalsumwithdate = $betweendate->sum('debit');
-                    $credittotalsumwithdate = $betweendate->sum('credit');
-    
-                    
-    
-                    $cusledgertails=customerledgerdetails::whereBetween('date',  [$from,$to])->where('customerid', $req->customerid)->get();
-                    
+                    $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
+                $debittotalsumwithdate = $betweendate->sum('debit');
+                $credittotalsumwithdate = $betweendate->sum('credit');
+
+                
+                $cusledgertails=customerledgerdetails::whereBetween('date',  [$from,$to])->where('customerid', $req->customerid)->where('invoicetype', 'credit')->get();         
                     $xd= customerinfo::where('id',$req->customerid)->get();
                     $afn=$xd;
 
@@ -140,43 +142,52 @@ class CustomerLedgerHistroy extends Controller
     
         }
 
-        public function returnBillsDEtailsByInvoiceid(Request $req){
-            $breadcrumb= [
-                'subtitle'=>'',
-                'title'=>'Search Bill No',
-                'link'=>'Search Bill No'
+        public function returnBillsDEtailsByInvoiceid(Request $req)
+        {
+            $breadcrumb = [
+                'subtitle' => '',
+                'title' => 'Search Bill No',
+                'link' => 'Search Bill No'
             ];
-           
-                
-                $itemsname= item::where('id',$req->customerid)->get();
-                $invoiceid= $req->invoiceid;
+        
+            $itemsname = item::where('id', $req->customerid)->get();
+            $invoiceid = $req->invoiceid;
+        
+            $allInvoices = invoice::where('id', $req->invoiceid)->get();
+        
+            $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
+            $customerinfodetails = null;
 
-
-                $allInvoices=invoice::where('id',$req->invoiceid)->get();
-
-                $allcusbyid=salesitem::where('invoiceid',$req->invoiceid)->get();
-                $customerinfodetails=null;
-
-               foreach($allcusbyid as  $data){
-                if($data->co){
-                    $item_name=item::where('id',$data->itemid)->select('itemsname')->first();
-                    $data->itemid = $item_name->itemsname;
-                }else{
+            $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
+            $forinvoicetype = $cusleddetaiforinvoicetype->first();           
+        
+            foreach ($allcusbyid as $data) {
+                $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+                if ($item) {
+                    $data->itemid = $item->itemsname;
+                    $data->mrp = $item->mrp;
+                } else {
                     $data->itemid = $data->unstockedname;
                 }
             }
-                foreach($allInvoices as  $data){
-                    if($data->customerid){
-                        $customerinfodetails=customerinfo::where('id',$data->customerid)->get();
-                      
-                    }
-
-                
-               }    
-
-        return view('customerledgerhistory.customerBillsDetailsByInvoideId',['allinvoices'=>$allInvoices,'allcusbyid'=>$allcusbyid,'itemsname'=>$itemsname,'invoiceid'=>$invoiceid,'cinfodetails'=>$customerinfodetails,'breadcrumb'=>$breadcrumb]);   
-
+        
+            foreach ($allInvoices as $data) {
+                if ($data->customerid) {
+                    $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
+                }
             }
+        
+            return view('customerledgerhistory.customerBillsDetailsByInvoideId', [
+                'allinvoices' => $allInvoices,
+                'allcusbyid' => $allcusbyid,
+                'itemsname' => $itemsname,
+                'invoiceid' => $invoiceid,
+                'cinfodetails' => $customerinfodetails,
+                'forinvoicetype'=>$forinvoicetype,
+                'breadcrumb' => $breadcrumb
+            ]);
+        }
+        
 
 
 
@@ -186,14 +197,18 @@ class CustomerLedgerHistroy extends Controller
             $allInvoices=invoice::where('id',$req->invoiceid)->get();
             $allcusbyid=salesitem::where('invoiceid',$req->invoiceid)->get();
 
+            $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
+            $forinvoicetype = $cusleddetaiforinvoicetype->first(); 
+
            foreach($allcusbyid as  $data){
 
-            if($data->itemid){
-                $item_name=item::where('id',$data->itemid)->select('itemsname')->first();
-                $data->itemid = $item_name->itemsname;
-            }else{
-                $data->itemid = $data->unstockedname;
-            }
+            $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+                if ($item) {
+                    $data->itemid = $item->itemsname;
+                    $data->mrp = $item->mrp;
+                } else {
+                    $data->itemid = $data->unstockedname;
+                }
 
          
         }
@@ -204,7 +219,8 @@ class CustomerLedgerHistroy extends Controller
             }
         }
         
-        $pdfviewe=FacadePdf::setOptions(['dpi' => 150,'defaultFont' => 'dejavu serif'])->loadView('customerledgerhistory.customerbillnoinvoiceconvertpdf',['allinvoices'=>$allInvoices,'allcusbyid'=>$allcusbyid,'invoiceid'=>$invoiceid,'cinfodetails'=>$customerinfodetails]);     
+        $pdfviewe=FacadePdf::setOptions(['dpi' => 150,'defaultFont' => 'dejavu serif'])->loadView('customerledgerhistory.customerbillnoinvoiceconvertpdf',['allinvoices'=>$allInvoices,'allcusbyid'=>$allcusbyid,'invoiceid'=>$invoiceid,'cinfodetails'=>$customerinfodetails,  'forinvoicetype'=>$forinvoicetype,
+    ]);     
 
            return $pdfviewe->download('invoice.pdf');
 

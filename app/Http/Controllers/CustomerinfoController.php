@@ -8,14 +8,13 @@ use App\Models\customerinfo;
 
 class CustomerinfoController extends Controller
 {
-    use WithPagination;
-    public $search = '';
+  
 
     public function index()
     {
         $breadcrumb= [
             'subtitle'=>'View',
-            'title'=>'View All Customers',
+            'title'=>'View All Customerssss',
             'link'=>'View All Customers'
         ];
    

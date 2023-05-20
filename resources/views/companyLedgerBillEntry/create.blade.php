@@ -8,9 +8,9 @@
 
     <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
         <div class="card-body">
-            <h5 class="card-title">Customer Info</h5>
+            <h5 class="card-title">Company Info</h5>
             <p>
-                <span>ID: </span><span id="customerId">...</span>
+                <span>ID: </span><span id="companyid">...</span>
             </p>
             <p class="card-text">
                 <span>Name: </span><span id="customerName">...</span>
@@ -44,8 +44,8 @@
 
 <div class="container">
 
-sss
-<form class="row gx-5 gy-3" action="{{ route('cpayments.store') }}" method="post">
+
+<form class="row gx-5 gy-3" action="{{route('companybillentry.store')}}" method="post">
                 @csrf
 
                
@@ -56,14 +56,13 @@ sss
                       
                         <div class="input-group mb-1">
                             <div class="search-box">
-                                <input id="customerIdInput" name="customerid" hidden>
-
-                                <input type="text" class="search-input @error('customerid') is-invalid @enderror" placeholder="Search Customer"
-                                    id="searchCustomerInput" data-api="customer_search" autocomplete="off">
-                                    @error('customerid')
+                                <input id="customerIdInput" name="companyid" hidden required>
+                                <input type="text" class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Customer"
+                                    id="searchCustomerInput"  data-api="company_search" autocomplete="off">
+                                    @error('companyid')
                                         <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
                                     @enderror  
-                                    
+                                  
                                 <i class="fas fa-search search-icon"> </i>
                                 <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
                                     <div class="result-box d-flex justify-content-start align-items-center"
@@ -96,7 +95,7 @@ sss
                     </div>
                 </div>
 
-          <div class="col-md-6">
+                <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Particulars</label>
                     <input type="text" class="form-control @error('particulars') is-invalid @enderror" 
                         name="particulars" value="{{ old('particulars') }}">
@@ -105,7 +104,7 @@ sss
                     @enderror
             </div>
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Voucher Type</label>
+                    <label for="inputPassword4" class="form-label">Bill No</label>
                     <input type="text" class="form-control @error('vt') is-invalid @enderror" 
                         name="vt" value="{{ old('vt') }}">
                     @error('vt')

@@ -26,7 +26,7 @@
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
-           
+            <div class="col-md-6"></div>
            
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Amount</label>

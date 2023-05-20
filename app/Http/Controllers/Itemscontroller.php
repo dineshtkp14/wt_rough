@@ -37,23 +37,30 @@ class Itemscontroller extends Controller
    {
     $validator=Validator::make($req->all(),[
 
-        'disname'=>'required',
+        'date'=>'required',
+        'companyid'=>'required',
+        'itemsname'=>'required',
+        'dlp'=>'required',
+        'quantity'=>'required',
+        'mrp'=>'required',
+
+        
        
            
     ]);
 
     if($validator->passes()){
 
-        $disinfoobj=new item();
-        $disinfoobj->billno=$req->billno;
-        $disinfoobj->distributorname=$req->disname;
-        $disinfoobj->date=$req->date;
-        $disinfoobj->itemsname=$req->itemsname;
-        $disinfoobj->quantity=$req->quantity;
-        $disinfoobj->dlp=$req->dlp;
-        $disinfoobj->mrp=$req->mrp;
-        $disinfoobj->total=$req->quantity*$req->dlp;
-        $disinfoobj->save();
+        $itemsdetails=new item();
+        $itemsdetails->billno=$req->billno;
+        $itemsdetails->distributorname=$req->companyid;
+        $itemsdetails->date=$req->date;
+        $itemsdetails->itemsname=$req->itemsname;
+        $itemsdetails->quantity=$req->quantity;
+        $itemsdetails->dlp=$req->dlp;
+        $itemsdetails->mrp=$req->mrp;
+        $itemsdetails->total=$req->quantity*$req->dlp;
+        $itemsdetails->save();
 
       
 
@@ -63,5 +70,69 @@ class Itemscontroller extends Controller
         return redirect()->route('items.create')->withErrors($validator)->withInput();
 
     }
+}
+public function edit($id)
+
+{
+    $breadcrumb= [
+        'subtitle'=>'Edit',
+        'title'=>'Edit Items Details',
+        'link'=>'Edit Items Details'
+    ];
+
+    $items=item::findOrfail($id);
+
+    return view('items.edit',['item'=>$items,'breadcrumb'=>$breadcrumb]);   
+    
+}
+public function update($id, Request $req)
+{
+    $validator=Validator::make($req->all(),[
+
+        'date'=>'required',
+        'companyid'=>'required',
+        'itemsname'=>'required',
+        'dlp'=>'required',
+        'quantity'=>'required',
+        'mrp'=>'required',
+
+       
+           
+    ]);
+
+    if($validator->passes()){
+
+
+    $itemsdetails= item::find($id);
+    $itemsdetails->billno=$req->billno;
+    $itemsdetails->distributorname=$req->companyid;
+    $itemsdetails->date=$req->date;
+    $itemsdetails->itemsname=$req->itemsname;
+    $itemsdetails->quantity=$req->quantity;
+    $itemsdetails->dlp=$req->dlp;
+    $itemsdetails->mrp=$req->mrp;
+    $itemsdetails->total=$req->quantity*$req->dlp;
+    $itemsdetails->save();
+
+
+        return redirect()->route('items.index')->with('success','Items Price Updated Sucessfully !!');  
+    }
+    else{
+        return redirect()->route('items.edit',$id)->withErrors($validator)->withInput();
+
+    }
+
+    
+}
+
+public function destroy($id){
+
+    $pricelistid=item::findOrFail($id);
+    $pricelistid->delete();
+
+
+      return redirect()->route('items.index')->with('success','Items deleted Sucesfully !!'); 
+    
+
 }
 }

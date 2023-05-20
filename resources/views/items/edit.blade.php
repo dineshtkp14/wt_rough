@@ -42,9 +42,13 @@
 
 <div class="container">
 
+    
 
-<form class="row gx-5 gy-3" action="{{ route('items.store') }}" method="post">
-                @csrf
+
+
+<form class="row gx-5 gy-3" action="{{route('items.update',$item->id)}}" method="post">
+    @csrf  
+    @method('put')
 
                
                 <div class="col-md-6">
@@ -66,7 +70,7 @@
                 
                  <div class="search-box">
                             <input id="customerIdInput" name="companyid" hidden>
-                            <input type="text"  class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name"
+                            <input type="text" value= "{{ old('billno',$item->distributorname) }}"  class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name"
                                 id="searchCustomerInput"  data-api="company_search" autocomplete="off">
                                 @error('companyid')
                                     <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
@@ -96,7 +100,7 @@
                 <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Bill No</label>
                     <input type="text" class="form-control @error('billno') is-invalid @enderror" 
-                        name="billno" value="{{ old('billno') }}">
+                        name="billno" value= "{{ old('billno',$item->billno) }}"> 
                     @error('billno')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -111,7 +115,7 @@
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">ITEMS Name</label>
                     <input type="text" class="form-control @error('itemsname') is-invalid @enderror" 
-                        name="itemsname" value="{{ old('itemsname') }}">
+                        name="itemsname" value="{{ old('itemsname',$item->itemsname) }}">
                     @error('itemsname')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -120,7 +124,7 @@
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Quantity</label>
                     <input type="quantity" class="form-control @error('quantity') is-invalid @enderror" 
-                        name="quantity" value="{{ old('quantity') }}">
+                        name="quantity" value="{{ old('quantity',$item->quantity) }}">
                     @error('quantity')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -129,7 +133,7 @@
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">$Cost Rate Per Piece</label>
                     <input type="text" class="form-control @error('dlp') is-invalid @enderror" 
-                        name="dlp" value="{{ old('dlp') }}">
+                        name="dlp" value="{{ old('dlp',$item->dlp) }}">
                     @error('dlp')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -138,7 +142,7 @@
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">$Sale Price Per Piece</label>
                     <input type="text" class="form-control @error('mrp') is-invalid @enderror" 
-                        name="mrp" value="{{ old('mrp') }}">
+                        name="mrp" value="{{ old('mrp',$item->mrp) }}">
                     @error('mrp')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror

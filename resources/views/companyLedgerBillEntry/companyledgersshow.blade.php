@@ -32,18 +32,18 @@
     </div>
 	
 	<div class="row">
-	  <form action="{{ route('clhs.returnchoosendatehistroy') }}" method="get" id="chosendatepdfform">
+	  <form action="{{ route('companyledgerdetails.returnchoosendatehistroy') }}" method="get" id="chosendatepdfform">
 
 		<div class="row">
 			<div class="mb-4" style="width: 300px;">
 				<div class="search-box">
-					<input id="customerIdInput" name="customerid" hidden>
+                    <input id="customerIdInput" name="companyid" hidden>
 
-					<input type="text" class="search-input @error('customerid') is-invalid @enderror" placeholder="Search Customer"
-					id="searchCustomerInput" data-api="customer_search" autocomplete="off">
-						@error('customerid')
-							<p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
-						@enderror  
+                    <input type="text" class="search-input @error('companyid') is-invalid @enderror" placeholder="Search company"
+                        id="searchCustomerInput"  data-api="company_search" autocomplete="off">
+                        @error('companyid')
+                            <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
+                        @enderror  
 						
 					<i class="fas fa-search search-icon"> </i>
 					<div class="result-wrapper" id="customerResultWrapper" style="display: none;">
@@ -118,7 +118,7 @@
 	</thead>
 	<tbody>
         
-  
+   
                        @if($all!=null)
 					   @foreach ($all as $i)
 					   <tr>
@@ -126,7 +126,7 @@
 						   <td data-label="Name">{{ $i->created_at }}</td>
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
+						   <td data-label="Contact No.">{{ $i->voucher_no }}</td>
 			   
 						   <td data-label="Amount">{{ $i->debit }}</td>
 						   
@@ -170,16 +170,14 @@
 </table>
 
 <div class="col-12 d-flex justify-content-end align-items-center pt-4">
-	<a href="{{route('clhspdf.convert')}}" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : ''  }}" id="pdfLink">convert To PDF
+	<a href="{{route('companyledgerdetails.convert')}}" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : ''  }}" id="pdfLink">convert To PDF
 	<div class="icon-box d-flex justify-content-center align-items-center">
 	<i class="fa-solid fa-download"></i>
 	</div>
 	</a>
 </div>
 </div>
-
-<h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2>
-
+<h2 class="floatleft">Total Due Amount : <span class="forunderline">{{$dts -$cts }} /-</span>  </h2>
 
 <script>
 	document.getElementById('pdfLink').addEventListener('click', function(e) {
@@ -187,17 +185,11 @@
 		var query=window.location.search;
 		var param=new URLSearchParams(query);
 
-        var url = "{{ route('clhspdf.convert') }}?customerid=" + param.get('customerid') + "&date1=" + param.get('date1') + "&date2=" + param.get('date2');
+        var url = "{{ route('companyledgerdetails.convert') }}?companyid=" + param.get('companyid') + "&date1=" + param.get('date1') + "&date2=" + param.get('date2');
 		window.location.href = url;
 
     });
 </script>
 
 </div>
-<script>
-    console.log(convertNumberToWords({{ $dts - $cts }}));
-    console.log("dinesh");
-</script>
-
-
 @stop

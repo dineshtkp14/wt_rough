@@ -3,6 +3,7 @@
 @section('content')
 
     <div class="main-content">
+        
         <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
             <div class="card-body">
                 <h5 class="card-title">Customer Info</h5>
@@ -28,16 +29,16 @@
             </div>
         </div>
         @yield('breadcrumb')
-
+      
         <div class="container-fluid">
-            <h2 class=""> Bill N0:{{ $nextgenid }} </h2>
+           <h2 class=""> Bill N0:{{ $nextgenid }} </h2>
             <form action="{{ route('itemsales.store') }}" method="post">
                 @csrf
                 <div class="py-4 d-flex justify-content-between align-items-start">
                     <div style="width: 300px">
                         <div class="search-box">
-                            <input type="text" class="search-input" placeholder="Search Customer"
-                                id="searchCustomerInput" autocomplete="off">
+                           <input type="text" class="search-input" placeholder="Search Customer"
+                                id="searchCustomerInput" data-api="customer_search" autocomplete="off">
                             <i class="fas fa-search search-icon"> </i>
                             <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
                                 <div class="result-box d-flex justify-content-start align-items-center"
@@ -58,14 +59,29 @@
                         </div>
                     </div>
 
+
+    <script>
+
+      console.log(convertNumberToWords(1234567891));
+      console.log(convertNumberToWords(12345672.32525));
+      console.log(convertNumberToWords(458274.45));
+      console.log(convertNumberToWords(4584274.44345));
+
+
+
+      console.log("dinesh");
+
+            
+        </script>
+
+
                     <div style="width: 300px">
-                        <select name="modeofinvoice" class=" d-inline form-select" aria-label="Default select example">
+                        <select name="invoice_type" class=" d-inline form-select" aria-label="Default select example">
                             <option value="credit" selected>Credit</option>
                             <option value="cash">Cash</option>
                         </select>
                         <small style="font-size: 12px; color:#6c757d;"> Choose mode of invoice </small>
                     </div>
-
 
                     <div style="width: 300px">
                         <div class="input-group mb-1">
@@ -73,11 +89,11 @@
                             <input type="date" class="form-control" placeholder="" id="salesDate"
                                 class="form-control foritemsaledatecss" value="{{ now()->format('Y-m-d') }}" name="date">
                         </div>
-                        <div class="input-group mb-1">
+                        {{-- <div class="input-group mb-1">
                             <span class="input-group-text">Miti:</span>
                             <input type="date" class="form-control" placeholder="" id="salesDate"
                                 class="form-control foritemsaledatecss" value="{{ now()->format('Y-m-d') }}" name="date">
-                        </div>
+                        </div> --}}
                     </div>
                    
 

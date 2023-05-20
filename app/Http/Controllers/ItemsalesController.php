@@ -17,26 +17,27 @@ class ItemsalesController extends Controller
 {
     public function index()
     {
-        $breadcrumb= [
-            'subtitle'=>'View',
-            'title'=>'View Invoice Sales Details',
-            'link'=>'View Invoice Sales Details'
+        $breadcrumb = [
+            'subtitle' => 'View',
+            'title' => 'View Invoice Sales Details',
+            'link' => 'View Invoice Sales Details'
         ];
+    
         $cus = salesitem::orderBy('id', 'DESC')->get();
-
-
-
-       foreach($cus as  $data){
-        if($data->itemid){
-            $item_name=item::where('id',$data->itemid)->select('itemsname')->first();
-            $data->itemid = $item_name->itemsname;
+    
+        foreach ($cus as $data) {
+            if ($data->itemid) {
+                $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+                if ($item) {
+                    $data->itemname = $item->itemsname;
+                    $data->itemprice = $item->mrp;
+                }
+            }
         }
+    
+        return view('itemssales.list', compact('cus', 'breadcrumb'));
     }
-
-        
-        return view('itemssales.list', ['all' => $cus,'breadcrumb'=>$breadcrumb]);
-    }
-
+          
 
     public function create()
     {
@@ -105,11 +106,11 @@ class ItemsalesController extends Controller
         $cus_data->date = $req->date;
         $cus_data->particulars  = "Goods Sales";
         $cus_data->voucher_type = "sales";
-        $cus_data->invoicetype = $req->modeofinvoice;
+        $cus_data->invoicetype = $req->invoice_type;
         $cus_data->debit =  $final_arr[0]->total;
         $cus_data->save();
 
-        return redirect()->route('itemsales.create');
+        return redirect()->route('itemsales.index')->with('success','Invoice Created Sucessfully !!'); 
 
        
 

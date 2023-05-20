@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="main-content"> 
-<h2 class="text-center mt-5">View Suppliers Details</h2>
+<h2 class="text-center mt-5">View Suppliers Detaildds</h2>
 
 <div class="container">
 	<div class="row float-end">
@@ -20,16 +20,16 @@
 	<thead>
 		<tr>
 			<th>Id</th>
-			<th>Billno</th>
-			<th>Distributors name</th>
-			<th>date</th>
-			<th>itemsname</th>
+			<th>Bill No</th>
+			<th>Distributors Name</th>
+			<th>Date</th>
+			<th>Items Name</th>
 			<th>Quantity</th>
             
-            <th>DLP</th>
+            <th>Cost Rate</th>
             <th>MRP</th>
 			<th>Total</th>
-            <th>FinalTotal</th>
+          
 			 <th>Action</th>
 
 			
@@ -49,10 +49,19 @@
             <td data-label="Remarks">{{ $i->dlp }}</td>
             <td data-label="Remarks">{{ $i->mrp }}</td>
             <td data-label="Remarks">{{ $i->total }}</td>
-            <td data-label="Remarks">{{ $i->finaltotal }}</td>
+           
 
-
-			<td data-label="Remarks"><button class="btn btn-success">EDIT</button><button class="btn btn-danger">DELETE</button></td>
+			<td data-label="action">
+				<a href="{{Route('items.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
+                          
+                                   
+                          <a href="#" onclick="delfunctionusers({{$i->id}})" class="btn btn-danger"  rel="noopener noreferrer">Delete</a>
+                          <form id="eea{{$i->id}}" action="{{ route('items.destroy',$i->id)}}" method="post">
+                          @csrf
+                          @method('delete')
+                          
+                          </form>
+			</td>
 			
 		</tr>
         @endforeach

@@ -26,12 +26,12 @@ class BankController extends Controller
         $count=null;
         if($from == "" || $to==""){
 
-            $custo=bank::orderBy('id','DESC')->get();
+            $custo=bank::orderBy('id','DESC')->paginate(5);
         }else{
             
            
             $count=Bank::whereBetween('date',[$from,$to])->sum('amount');
-            $custo=Bank::whereBetween('date',  [$from,$to])->get();
+            $custo=Bank::whereBetween('date',  [$from,$to])->paginate(15);
 
         }
         
@@ -100,7 +100,7 @@ class BankController extends Controller
 
       
 
-        return redirect()->route('banks.create')->with('success','Deposited Sucessfully !!');  
+        return redirect()->route('banks.index')->with('success','Deposited Sucessfully !!');  
     }
     else{
         return redirect()->route('banks.create')->withErrors($validator)->withInput();

@@ -59,7 +59,7 @@
 	</thead>
 	<tbody>
         
-   
+ 
                        @if($all!=null)
 					   @foreach ($all as $i)
 					   <tr>

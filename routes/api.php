@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\companyNameSearchAPI;
 use App\Http\Controllers\CustomerAPI;
 use App\Http\Controllers\ItemsSearchAPI;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/customer_search/{name}',[CustomerAPI::class,'index']);
 Route::get('/items_search/{name}',[ItemsSearchAPI::class,'index']);
+Route::get('/company_search/{name}',[companyNameSearchAPI::class,'index']);
 
 
 
