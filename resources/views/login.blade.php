@@ -52,7 +52,7 @@
                         <a class="nav-link active" aria-current="page" href="#"><span class="pe-2 text-white">
                             </span>
 
-                            <a href="/"><button class=" btn btn-success regnavbtn">Billing Software</button></a>
+                            <a href="/"><button class=" btn btn-success regnavbtn">Billing Software/Inven</button></a>
                     </div>
                 </div>
             </div>
