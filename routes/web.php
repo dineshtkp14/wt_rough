@@ -111,10 +111,10 @@ Route::get('/daybooks/{daybooks}/edit',[Daybookcontroller::class,'edit'])->name(
 Route::put('/daybooks/{daybooks}',[Daybookcontroller::class,'update'])->name('daybooks.update');
 Route::delete('/daybooks/{daybooks}',[Daybookcontroller::class,'destroy'])->name('daybooks.destroy');
 
-Route::get('/banks',[Bankcontroller::class,'index'])->name('banks.index');
-Route::get('/banks/create',[Bankcontroller::class,'create'])->name('banks.create');
-Route::post('/banks',[Bankcontroller::class,'store'])->name('banks.store');
-Route::get('/banks/pdf/convert/',[Bankcontroller::class,'show_intopdfbankdetails'])->name('banks.convert');
+Route::get('/banks',[BankController::class,'index'])->name('banks.index');
+Route::get('/banks/create',[BankController::class,'create'])->name('banks.create');
+Route::post('/banks',[BankController::class,'store'])->name('banks.store');
+Route::get('/banks/pdf/convert/',[BankController::class,'show_intopdfbankdetails'])->name('banks.convert');
 
 
 
