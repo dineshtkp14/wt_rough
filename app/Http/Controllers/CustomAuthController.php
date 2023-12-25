@@ -13,31 +13,28 @@ class CustomAuthcontroller extends Controller
 {
     public function viewuser()
     {
-    
-        if(Auth::check()){
 
-            $users=User::orderBy('id','DESC') ->paginate(115);
-            return view('viewuser',['itm'=>$users]);
-    
+        if (Auth::check()) {
+
+            $users = User::orderBy('id', 'DESC')->paginate(115);
+            return view('viewuser', ['itm' => $users]);
         }
-        
+
         return redirect('/login');
-       
-    } 
+    }
 
 
-    public function destroy($id,Request $req){
+    public function destroy($id, Request $req)
+    {
 
-        $user=User::findOrFail($id);
-       
-  
+        $user = User::findOrFail($id);
+
+
         $user->delete();
-  
-        //$req->session()->flash('success','Deleted Sucessfully'); 
-        return redirect()->route('viewuser')->with('success','Deleted sucessfully'); 
-        
-  
-  }
+
+        //$req->session()->flash('success','Deleted Sucessfully');
+        return redirect()->route('viewuser')->with('success', 'Deleted sucessfully');
+    }
 
 
 
@@ -45,23 +42,23 @@ class CustomAuthcontroller extends Controller
     public function index()
     {
         return view('login');
-    }  
-       
+    }
+
 
     public function login(Request $request)
     {
-        
+
         $request->validate([
             'email' => 'required',
             'password' => 'required',
         ]);
-    
+
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             return redirect()->intended('dashboard')
-                        ->with('message', 'Signed in!');
+                ->with('message', 'Signed in!');
         }
-   
+
         return redirect('/login')->with('message', 'Login details are not valid!');
     }
 
@@ -70,10 +67,10 @@ class CustomAuthcontroller extends Controller
 
 
 
-    
 
 
- 
+
+
     public function signup()
     {
         return view('registration');
@@ -86,31 +83,28 @@ class CustomAuthcontroller extends Controller
 
 
     public function changePassword()
-{
-    if(Auth::check()){
+    {
+        if (Auth::check()) {
 
-        return view('changepassword');
+            return view('changepassword');
+        }
+
+
+        return redirect('/login');
     }
 
-
-    return redirect('/login');
-
-
-  
-}
-
-public function updatePassword(Request $request)
-{
+    public function updatePassword(Request $request)
+    {
         # Validation
         $request->validate([
             'old_password' => 'required',
             'new_password' => 'required|confirmed',
-            
+
         ]);
 
 
         #Match The Old Password
-        if(!Hash::check($request->old_password, auth()->user()->password)){
+        if (!Hash::check($request->old_password, auth()->user()->password)) {
             return back()->with("error", "Old Password Doesn't match!");
         }
 
@@ -121,45 +115,46 @@ public function updatePassword(Request $request)
         ]);
 
         return back()->with("status", "Password changed successfully!");
-}
-       
+    }
+
     public function signupsave(Request $request)
-    {  
+    {
         $request->validate([
             'name' => 'required',
             'phoneno' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
         ]);
-            
+
         $data = $request->all();
         $check = $this->create($data);
-          
+
         return redirect("/login")->with('signupmessage', 'User Registration Success!! You can Login Now');;
     }
- 
+
     public function create(array $data)
     {
-      return User::create([
-        'name' => $data['name'],
-        'phoneno' => $data['phoneno'],
-        'email' => $data['email'],
-        'password' => Hash::make($data['password'])
-      ]);
-    }    
-     
+        return User::create([
+            'name' => $data['name'],
+            'phoneno' => $data['phoneno'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password'])
+        ]);
+    }
+
     public function dashboard()
     {
-        if(Auth::check()){
+        if (Auth::check()) {
             return view('dashboard');
         }
         return redirect('/login');
     }
-     
-    public function signOut() {
+
+    public function signOut()
+    {
         FacadesSession::flush();
         Auth::logout();
-   
+
         return redirect('login');
     }
 }

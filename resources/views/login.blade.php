@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-       <!-- Include Bootstrap CSS first -->
-       <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  
+    <!-- Include Bootstrap CSS first -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
-   
 
- 
+
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
 </head>
@@ -82,20 +82,25 @@
                                 <form method="POST" action="{{ route('postlogin') }}">
                                     @csrf
                                     <div class="form-group mb-3">
-                                        <input type="text" placeholder="Email" id="email" class="form-control form-control-lg border border-dark" name="email" autofocus>
+                                        <input type="text" placeholder="Email" id="email"
+                                            class="form-control form-control-lg border border-dark" name="email"
+                                            autofocus>
                                         @if ($errors->has('email'))
                                             <span class="text-danger">{{ $errors->first('email') }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group mb-3">
-                                        <input type="password" placeholder="Password" id="password" class="form-control form-control-lg border border-dark" name="password">
+                                        <input type="password" placeholder="Password" id="password"
+                                            class="form-control form-control-lg border border-dark" name="password">
                                         @if ($errors->has('password'))
                                             <span class="text-danger">{{ $errors->first('password') }}</span>
                                         @endif
                                     </div>
-                                   
+
                                     <div class="d-grid mx-auto">
-                                        <button type="submit" class="btn btn-primary btn-block"><h2>Log In  </h2></button>
+                                        <button type="submit" class="btn btn-primary btn-block">
+                                            <h2>Log In </h2>
+                                        </button>
                                     </div>
                                 </form>
                             </div>
