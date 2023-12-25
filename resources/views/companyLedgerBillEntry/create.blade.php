@@ -56,12 +56,12 @@
                       
                         <div class="input-group mb-1">
                             <div class="search-box">
-                                <input id="customerIdInput" name="companyid" hidden required>
-                                <input type="text" class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Customer"
-                                    id="searchCustomerInput"  data-api="company_search" autocomplete="off">
-                                    @error('companyid')
-                                        <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
-                                    @enderror  
+                                <input id="customerIdInput" name="companyid" hidden>
+                            <input type="text"  class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name"
+                                id="searchCustomerInput"  data-api="company_search" autocomplete="off">
+                                @error('companyid')
+                                    <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
+                                @enderror  
                                   
                                 <i class="fas fa-search search-icon"> </i>
                                 <div class="result-wrapper" id="customerResultWrapper" style="display: none;">

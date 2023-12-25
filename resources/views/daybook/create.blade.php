@@ -34,7 +34,7 @@
                     
                         <select name="modeofpay"  class="form-control @error('modeofpay') is-invalid @enderror">
                             <option value="jamma">Jamma</option>
-                            <option value="lageko">Lageko</option>
+                            <option value="sapati">Sapati</option>
                            
                         </select>
                     @error('date')
@@ -82,8 +82,8 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Remarks</label>
-                    <input type="text" class="form-control @error('remarks') is-invalid @enderror" 
-                        name="remarks" value="{{ old('remarks') }}">
+                    <textarea type="text" class="form-control @error('remarks') is-invalid @enderror" 
+                        name="remarks" value="{{ old('remarks') }}"> </textarea>
                     @error('remarks')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror

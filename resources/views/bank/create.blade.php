@@ -51,9 +51,9 @@
 
            
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Remarks</label>
-                    <input type="text" class="form-control @error('remarks') is-invalid @enderror" 
-                        name="remarks" value="{{ old('remarks') }}">
+                    <label for="inputPassword4" class="form-label">Note</label>
+                    <textarea type="text" class="form-control @error('remarks') is-invalid @enderror" 
+                        name="remarks" value="{{ old('remarks') }}"></textarea>
                     @error('remarks')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror

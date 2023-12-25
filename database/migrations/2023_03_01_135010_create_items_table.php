@@ -23,6 +23,9 @@ return new class extends Migration
             $table->float('dlp',20,2);
             $table->float('mrp',20,2);
             $table->float('total',20,2);
+            $table->float('showwarning',20,2);
+            $table->string('notes')->nullable();
+
           
 
 

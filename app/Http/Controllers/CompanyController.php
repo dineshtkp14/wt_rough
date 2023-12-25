@@ -4,24 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 class CompanyController extends Controller
 {
     public function index()
     {
-       
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'View',
             'title'=>'View Suppliers/Company',
             'link'=>'View Suppliers/Company'
         ];
 
-         return view('company.list',['breadcrumb'=>$breadcrumb]);   
-
+         return view('company.list',['breadcrumb'=>$breadcrumb]);  
+    } 
+         return redirect('/login');
+        
        
     }
     public function create()
     {
+
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Add',
             'title'=>'Add New Suppliers/Company',
@@ -29,7 +34,11 @@ class CompanyController extends Controller
         ];
 
         return view('company.create',['breadcrumb'=>$breadcrumb]);
+        
     }
+    return redirect('/login');
+
+}
 
 
     public function store(Request $req)
@@ -69,6 +78,7 @@ class CompanyController extends Controller
 public function edit($id)
 
 {
+    if(Auth::check()){
     $breadcrumb= [
         'subtitle'=>'Edit',
         'title'=>'Edit Customers Details',
@@ -81,8 +91,13 @@ public function edit($id)
     
 }
 
+return redirect('/login');
+
+}
+
 public function update($id, Request $req)
 {
+    if(Auth::check()){
     $validator=Validator::make($req->all(),[
 
         'name'=>'required',
@@ -114,6 +129,10 @@ public function update($id, Request $req)
 
     
 }
+return redirect('/login');
+
+}
+
 
 public function destroy($id,Request $req){
 

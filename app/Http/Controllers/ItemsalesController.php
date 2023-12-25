@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\company;
 use App\Models\customerinfo;
 use App\Models\customerledgerdetails;
 use App\Models\invoice;
@@ -11,36 +12,31 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\salesitem;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ItemsalesController extends Controller
 {
+    
     public function index()
     {
+        if(Auth::check()){
         $breadcrumb = [
             'subtitle' => 'View',
             'title' => 'View Invoice Sales Details',
             'link' => 'View Invoice Sales Details'
         ];
-    
-        $cus = salesitem::orderBy('id', 'DESC')->get();
-    
-        foreach ($cus as $data) {
-            if ($data->itemid) {
-                $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
-                if ($item) {
-                    $data->itemname = $item->itemsname;
-                    $data->itemprice = $item->mrp;
-                }
-            }
-        }
-    
+        $cus = salesitem::orderBy('id', 'DESC')->paginate(20); 
         return view('itemssales.list', compact('cus', 'breadcrumb'));
     }
-          
+    return redirect('/login');
+}  
+
+
 
     public function create()
     {
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Create',
             'title'=>'Invoice',
@@ -56,9 +52,11 @@ class ItemsalesController extends Controller
         return view('itemssales.create', ['page' => 'isc', 'all' => $cus, 'data' => $itemsdata,'nextgenid' => $nextUserId,'breadcrumb'=>$breadcrumb]);
     }
 
-
+    return redirect('/login');
+ }
     public function store(Request $req)
     {
+        if(Auth::check()){
 
         $sales_arr = json_decode($req->sales_arr); //rowdetails
         $final_arr = json_decode($req->final_arr); //finaltotalinvoice
@@ -71,6 +69,7 @@ class ItemsalesController extends Controller
         $invoice_data->discount = $final_arr[0]->discount == "" ? 0.00 : $final_arr[0]->discount;
         $invoice_data->total = $final_arr[0]->total;
         $invoice_data->notes = $final_arr[0]->note;
+        //dd( $invoice_data->notes);
         $invoice_data->save();
 
         // sales insert
@@ -116,7 +115,8 @@ class ItemsalesController extends Controller
 
     }
 
-
+    return redirect('/login');
+ }
 
     
 }

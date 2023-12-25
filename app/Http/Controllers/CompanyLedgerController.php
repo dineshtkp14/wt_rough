@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CompanyLedger;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,6 +17,8 @@ class CompanyLedgerController extends Controller
 
     public function index()
     {
+        
+    if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'View',
             'title'=>'View All Customers',
@@ -26,12 +29,15 @@ class CompanyLedgerController extends Controller
      return view('companyLedgerPayment.list',['breadcrumb'=>$breadcrumb]);   
 
     }
-
+    return redirect('/login');
+ }
     
 
     public function create()
     {
 
+        
+    if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Payment',
             'title'=>'Company Ledgers Payment',
@@ -40,12 +46,15 @@ class CompanyLedgerController extends Controller
      
         return view('companyLedgerPayment.create',['breadcrumb'=>$breadcrumb]);   
     }
-
+    return redirect('/login');
+ }
 
 
 
     public function store(Request $req)
    {
+    
+    if(Auth::check()){
     $validator=Validator::make($req->all(),[
         'companyid'=>'required',
         'date'=>'required',
@@ -77,10 +86,14 @@ class CompanyLedgerController extends Controller
     }
 
    }
+   return redirect('/login');
+}
    
    public function edit($id)
 
     {
+        
+    if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Edit',
             'title'=>'Edit Customers Details',
@@ -92,6 +105,8 @@ class CompanyLedgerController extends Controller
         return view('companyLedgerPayment.edit',['cus'=>$customers,'breadcrumb'=>$breadcrumb]);   
         
     }
+    return redirect('/login');
+}
 
     public function update($id, Request $req)
     {
@@ -122,7 +137,10 @@ class CompanyLedgerController extends Controller
         }
     
         
-    }
+    
+
+    return redirect('/login');
+}
 
     public function destroy($id){
 

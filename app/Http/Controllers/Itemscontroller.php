@@ -2,27 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\item;
+use Illuminate\Support\Facades\Auth;
+
 class Itemscontroller extends Controller
 {
     public function index()
     {
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'View ',
             'title'=>'View Items Details',
             'link'=>'View Items Details'
         ];
 
+      
          $cus=item::orderBy('id','DESC')->get();
+
+         
          return view('items.list',['all'=>$cus,'breadcrumb'=>$breadcrumb]);
 
        
     }
+    return redirect('/login');
+}
     public function create()
     {
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Add',
             'title'=>'Add Items',
@@ -32,48 +42,57 @@ class Itemscontroller extends Controller
         return view('items.create',['breadcrumb'=>$breadcrumb]);
     }
 
-
-    public function store(Request $req)
-   {
-    $validator=Validator::make($req->all(),[
-
-        'date'=>'required',
-        'companyid'=>'required',
-        'itemsname'=>'required',
-        'dlp'=>'required',
-        'quantity'=>'required',
-        'mrp'=>'required',
-
-        
-       
-           
-    ]);
-
-    if($validator->passes()){
-
-        $itemsdetails=new item();
-        $itemsdetails->billno=$req->billno;
-        $itemsdetails->distributorname=$req->companyid;
-        $itemsdetails->date=$req->date;
-        $itemsdetails->itemsname=$req->itemsname;
-        $itemsdetails->quantity=$req->quantity;
-        $itemsdetails->dlp=$req->dlp;
-        $itemsdetails->mrp=$req->mrp;
-        $itemsdetails->total=$req->quantity*$req->dlp;
-        $itemsdetails->save();
-
-      
-
-        return redirect()->route('items.create')->with('success','Items Added Sucessfully !!');  
-    }
-    else{
-        return redirect()->route('items.create')->withErrors($validator)->withInput();
-
-    }
-}
+    return redirect('/login');
+ }
+ public function store(Request $req)
+ {
+     if (Auth::check()) {
+         $validator = Validator::make($req->all(), [
+             'date' => 'required',
+             'companyid' => 'required',
+             'itemsname' => 'required',
+             'dlp' => 'required',
+             'quantity' => 'required',
+             'mrp' => 'required',
+         ]);
+ 
+         if ($validator->passes()) {
+             $company = company::find($req->companyid);
+ 
+             if ($company) {
+                 $companyName = $company->name;
+ 
+                 $itemsdetails = new item();
+                 $itemsdetails->billno = $req->billno;
+                 $itemsdetails->distributorname = $companyName; // Change to use the company name
+                 $itemsdetails->date = $req->date;
+                 $itemsdetails->itemsname = $req->itemsname;
+                 $itemsdetails->quantity = $req->quantity;
+                 $itemsdetails->dlp = $req->dlp;
+                 $itemsdetails->mrp = $req->mrp;
+                 $itemsdetails->showwarning = $req->showwarning;
+                 $itemsdetails->total = $req->quantity * $req->dlp;
+                 $itemsdetails->notes = $req->notes;
+ 
+                 $itemsdetails->save();
+ 
+                 return redirect()->route('items.create')->with('success', 'Items Added Successfully !!');
+             } else {
+                 // Handle the case where the company is not found
+                 return redirect()->route('items.create')->withErrors(['companyid' => 'Invalid Company'])->withInput();
+             }
+         } else {
+             return redirect()->route('items.create')->withErrors($validator)->withInput();
+         }
+     }
+ 
+     return redirect('/login');
+ }
+ 
 public function edit($id)
 
 {
+    if(Auth::check()){
     $breadcrumb= [
         'subtitle'=>'Edit',
         'title'=>'Edit Items Details',
@@ -84,46 +103,55 @@ public function edit($id)
 
     return view('items.edit',['item'=>$items,'breadcrumb'=>$breadcrumb]);   
     
+    return redirect('/login');
 }
+}
+
 public function update($id, Request $req)
 {
-    $validator=Validator::make($req->all(),[
+    if (Auth::check()) {
+        $validator = Validator::make($req->all(), [
+            'date' => 'required',
+            'companyid' => 'required',
+            'itemsname' => 'required',
+            'dlp' => 'required',
+            'quantity' => 'required',
+            'mrp' => 'required',
+        ]);
 
-        'date'=>'required',
-        'companyid'=>'required',
-        'itemsname'=>'required',
-        'dlp'=>'required',
-        'quantity'=>'required',
-        'mrp'=>'required',
+        if ($validator->passes()) {
+            // Fetch the company based on the selected company ID
+            $company = Company::find($req->companyid);
 
-       
-           
-    ]);
+            // Check if the company is found
+            if ($company) {
+                $companyName = $company->name; // Replace 'name' with the actual column name for the company name
 
-    if($validator->passes()){
+                $itemsdetails = item::find($id);
+                $itemsdetails->billno = $req->billno;
+                $itemsdetails->distributorname = $companyName; // Update with the company name
+                $itemsdetails->date = $req->date;
+                $itemsdetails->itemsname = $req->itemsname;
+                $itemsdetails->quantity = $req->quantity;
+                $itemsdetails->dlp = $req->dlp;
+                $itemsdetails->mrp = $req->mrp;
+                $itemsdetails->notes = $req->notes;
+                $itemsdetails->total = $req->quantity * $req->dlp;
+                $itemsdetails->save();
 
-
-    $itemsdetails= item::find($id);
-    $itemsdetails->billno=$req->billno;
-    $itemsdetails->distributorname=$req->companyid;
-    $itemsdetails->date=$req->date;
-    $itemsdetails->itemsname=$req->itemsname;
-    $itemsdetails->quantity=$req->quantity;
-    $itemsdetails->dlp=$req->dlp;
-    $itemsdetails->mrp=$req->mrp;
-    $itemsdetails->total=$req->quantity*$req->dlp;
-    $itemsdetails->save();
-
-
-        return redirect()->route('items.index')->with('success','Items Price Updated Sucessfully !!');  
+                return redirect()->route('items.index')->with('success', 'Updated Successfully!');
+            } else {
+                return redirect()->route('items.edit', $id)->with('error', 'Company not found!')->withInput();
+            }
+        } else {
+            return redirect()->route('items.edit', $id)->withErrors($validator)->withInput();
+        }
     }
-    else{
-        return redirect()->route('items.edit',$id)->withErrors($validator)->withInput();
 
-    }
-
-    
+    return redirect('/login');
 }
+   
+
 
 public function destroy($id){
 
@@ -131,8 +159,9 @@ public function destroy($id){
     $pricelistid->delete();
 
 
-      return redirect()->route('items.index')->with('success','Items deleted Sucesfully !!'); 
+      return redirect()->route('items.index')->with('success','Deleted Sucesfully !!'); 
     
 
 }
+
 }

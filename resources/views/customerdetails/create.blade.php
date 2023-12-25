@@ -44,7 +44,7 @@
 
 <div class="container">
 
-sss
+
 <form class="row gx-5 gy-3" action="{{ route('cpayments.store') }}" method="post">
                 @csrf
 
@@ -97,17 +97,17 @@ sss
                 </div>
 
           <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label"> Particulars</label>
+                    <label for="inputPassword4" class="form-label"> Particulars (Bank Name/Fone Pay/Payment)</label>
                     <input type="text" class="form-control @error('particulars') is-invalid @enderror" 
-                        name="particulars" value="{{ old('particulars') }}">
+                        name="particulars" value="{{ old('particulars') }}"     >
                     @error('particulars')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Voucher Type</label>
+                    <label for="inputPassword4" class="form-label">Voucher Type (Receipt/Cash)(mistake)</label>
                     <input type="text" class="form-control @error('vt') is-invalid @enderror" 
-                        name="vt" value="{{ old('vt') }}">
+                        name="vt" value="{{ old('vt') }}" >
                     @error('vt')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -118,7 +118,7 @@ sss
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Amount</label>
                     <input type="number" class="form-control @error('amount') is-invalid @enderror" 
-                        name="amount" value="{{ old('amount') }}">
+                        name="amount" value="{{ old('amount') }}" >
                     @error('amount')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -127,7 +127,7 @@ sss
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Notes</label>
                 <textarea  class="form-control @error('notes') is-invalid @enderror" 
-                    name="notes" value="{{ old('notes') }}"> </textarea>
+                    name="notes" value="{{ old('notes') }}" > </textarea>
                 @error('notes')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror

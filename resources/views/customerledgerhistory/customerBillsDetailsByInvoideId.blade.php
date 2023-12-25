@@ -8,7 +8,7 @@
     <div class="container">
         <div class="row">
             <form action="{{route('customer.billno') }}" method="get" id="chosendatepdfform">
-                <input type="number" placeholder="Enter Invoice Id" name="invoiceid" class="form-control w-25 d-inline">
+                <Span>Enter Bill No</Span><input type="number" placeholder="Enter Bill No" name="invoiceid" class="form-control w-25 d-inline">
                 <input type="submit" class="btn btn-success ox-2" value="Search">
             </form>
         </div>
@@ -39,7 +39,7 @@
         </div>
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
         <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
-    @endif
+       @endif
         @if ($cinfodetails !=null)
             @foreach($cinfodetails as $i)
                 Name:  {{$i->name}}<br>
@@ -97,15 +97,26 @@
                                 <td class="text-center"><b>Extra Discount: -</b></td>
                                 <td style="border: none; background-color: #f0f0f0;"><b> {{$i->discount}}</b></td>
                             </tr>
+                            <tr>
                                 <td colspan="5">Twelve Lakh Thirty Four Thousand Five Hundred Thirty Two </td>
                                 <td class="text-center"><b>Total Amount:</b></td>
                                 <td style="border: none; background-color: #f0f0f0;"><b> {{$i->total}}</b></td>
                             </tr>
+
                             <tr>
-                            <td>@if(isset($forinvoicetype) && !empty($forinvoicetype))
-            <b style="">Notes:</b> {{ $forinvoicetype->notes }}</td>
+                               
+                                <td colspan="7">
+                                   <b> Notes: {{$i->notes}}</b>
+                                 
+                                 </td>
+            </tr>
+
+
+            
+                           
         </tr>
-         @endif
+
+       
                         @endforeach
                     @endif
                 </tbody>

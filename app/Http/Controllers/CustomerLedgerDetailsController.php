@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\company;
 use App\Models\customerledgerdetails;
 
 
@@ -9,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\customerinfo;
-
+use Illuminate\Support\Facades\Auth;
 
 class CustomerLedgerDetailsController extends Controller
 
@@ -17,6 +18,7 @@ class CustomerLedgerDetailsController extends Controller
     public function index(Request $req)
     {
 
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Payments',
             'title'=>'All Customers Payment Histrory',
@@ -25,17 +27,20 @@ class CustomerLedgerDetailsController extends Controller
         $cus=customerledgerdetails::orderBy('id','DESC')->get(); 
         foreach($cus as  $data){
             if($data->customerid){
-                $cus_name=customerinfo::where('id',$data->customerid)->select('name')->first();
+                $cus_name=company::where('id',$data->customerid)->select('name')->first();
                 $data->customerid = $cus_name->name;
             }
 
         }
          return view('customerdetails.list',['all'=>$cus,'breadcrumb'=>$breadcrumb]);   
     }
+    return redirect('/login');
+}
 
     public function create()
     
     {
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Payments',
             'title'=>' Customers Ledger Payment',
@@ -45,9 +50,12 @@ class CustomerLedgerDetailsController extends Controller
        
         return view('customerdetails.create',['all'=>$cus,'breadcrumb'=>$breadcrumb]);   ;
     }
+    return redirect('/login');
+}
 
     public function store(Request $req)
     {
+        if(Auth::check()){
      $validator=Validator::make($req->all(),[
         'customerid'=>'required',
         'date'=>'required',
@@ -79,4 +87,26 @@ class CustomerLedgerDetailsController extends Controller
  
      }
     }
+    return redirect('/login');
+}
+
+//foralldetailsdisplay
+public function showdetails()
+{
+    if(Auth::check()){
+        $breadcrumb= [
+            'subtitle'=>'View ',
+            'title'=>'All Details',
+            'link'=>'View All Details'
+        ];
+
+      
+         $cus=customerledgerdetails::orderBy('id','DESC')->get();
+
+         
+         return view('allsalesdetails.index',['all'=>$cus,'breadcrumb'=>$breadcrumb]);
+}
+
+
+}
 }

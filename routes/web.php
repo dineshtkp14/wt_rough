@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Daybookcontroller;
 use App\Http\Controllers\Bankcontroller;
@@ -7,17 +8,34 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyLedger;
 use App\Http\Controllers\CompanyLedgerBillEntryController;
 use App\Http\Controllers\CompanyLedgerController;
+use App\Http\Controllers\CustomAuthController;
 use App\Http\Controllers\Itemscontroller;
 use App\Http\Controllers\CustomerinfoController;
+use App\Http\Controllers\ProfitController;
+use App\Http\Controllers\Invoicecontroller;
+use App\Http\Controllers\TotalSalesController;
+
+
+
+
+
 
 use App\Http\Controllers\CustomerLedgerDetailsController;
 use App\Http\Controllers\CustomerLedgerHistroy;
 use App\Http\Controllers\CustomerPdfGenerator;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemsalesController;
+use App\Http\Controllers\openingbalanceController;
 use App\Http\Controllers\PricelistController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\UserController;
 
-Route::get('/',[PricelistController::class,'index'])->name('home');
+
+Route::get('/', function () {
+    return view('login');
+});
+
+//Route::get('/',[PricelistController::class,'index'])->name('home');
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
@@ -35,6 +53,11 @@ Route::delete('/pricelists/{customerinfo}',[PricelistController::class,'destroy'
 
 
 Route::get('/stocks',[StockController::class,'index'])->name('stocks.index');
+// Route::get('/openingbalance/create',[openingbalanceController::class,'create'])->name('opeaning.create');
+// Route::get('/openingbalance',[openingbalanceController::class,'store'])->name('opeaning.store');
+
+Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard.index');
+
 
 
 
@@ -45,6 +68,17 @@ Route::post('/customerinfos',[CustomerinfoController::class,'store'])->name('cus
 Route::get('/customerinfos/{customerinfo}/edit',[CustomerinfoController::class,'edit'])->name('customerinfos.edit');
 Route::put('/customerinfos/{customerinfo}',[CustomerinfoController::class,'update'])->name('customerinfos.update');
 Route::delete('/customerinfos/{customerinfo}',[CustomerinfoController::class,'destroy'])->name('customerinfos.destroy');
+
+
+//opeaningbalance
+
+Route::get('/openingbalances',[openingbalanceController::class,'index'])->name('openingbalances.index');
+Route::get('/openingbalances/create',[openingbalanceController::class,'create'])->name('openingbalances.create');
+Route::post('/openingbalances',[openingbalanceController::class,'store'])->name('openingbalances.store');
+Route::get('/openingbalances/{customerinfo}/edit',[openingbalanceController::class,'edit'])->name('openingbalances.edit');
+Route::put('/openingbalances/{customerinfo}',[openingbalanceController::class,'update'])->name('openingbalances.update');
+Route::delete('/openingbalances/{customerinfo}',[openingbalanceController::class,'destroy'])->name('openingbalances.destroy');
+
 
 
 
@@ -124,12 +158,40 @@ Route::delete('/companybillentry/{companybillentry}',[CompanyLedgerBillEntryCont
 
 
 
+// Route::get('/profit', 'ProfitController@index')->name('profit.index');
+
+Route::get('profit', [ProfitController::class, 'index'])->name('profit');
+
+Route::get('/invoice',[Invoicecontroller::class,'index'])->name('invoice.index');
+// Route::get('/invoice/create',[Bankcontroller::class,'create'])->name('banks.create');
+// Route::post('/banks',[Bankcontroller::class,'store'])->name('banks.store');
+// Route::get('/banks/pdf/convert/',[Bankcontroller::class,'show_intopdfbankdetails'])->name('banks.convert');
+
+ 
+Route::get('/totalsales', [TotalSalesController::class, 'index'])->name('totalsales.index');
+
+
+Route::get('/allsalesdetails', [CustomerLedgerDetailsController::class, 'showdetails'])->name('allsalesdetails.showdetails');
+
+
+
+Route::get('/showsalesperday', [Invoicecontroller::class, 'showonlysalesperday'])->name('showonlysalesperday');
 
 
 
 
 
-
-
+ Route::get('/dashboard', [CustomAuthController::class, 'dashboard']); 
+ Route::get('login', [CustomAuthController::class, 'index'])->name('login');
+ Route::post('postlogin', [CustomAuthController::class, 'login'])->name('postlogin'); 
+ Route::get('signup', [CustomAuthController::class, 'signup'])->name('register-user');
+ Route::get('changepass', [CustomAuthController::class, 'changepass'])->name('user.password');
+ Route::get('/change-password', [CustomAuthController::class, 'changePassword'])->name('change-password');
+ Route::post('/change-password', [CustomAuthController::class, 'updatePassword'])->name('update-password');
+ 
+ 
+ 
+ Route::post('postsignup', [CustomAuthController::class, 'signupsave'])->name('postsignup'); 
+ Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout');
 
 

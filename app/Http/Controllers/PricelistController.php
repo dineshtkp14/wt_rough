@@ -6,11 +6,13 @@ use App\Models\pricelist;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PricelistController extends Controller
 {
     public function index()
     {
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'View',
             'title'=>'View Items Price List',
@@ -22,8 +24,11 @@ class PricelistController extends Controller
 
        
     }
+    return redirect('/login');
+}
     public function create()
     {
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Add',
             'title'=>'Add Items Price List',
@@ -34,9 +39,11 @@ class PricelistController extends Controller
         return view('pricelist.create',['breadcrumb'=>$breadcrumb]);
     }
 
-
+    return redirect('/login');
+ }
     public function store(Request $req)
    {
+    if(Auth::check()){
     $validator=Validator::make($req->all(),[
 
         'itemname'=>'required',
@@ -68,9 +75,11 @@ class PricelistController extends Controller
     }
 
    }
-   
+   return redirect('/login');
+}
    public function edit($id)
     {
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Edit',
             'title'=>'Edit Items Price List',
@@ -81,9 +90,11 @@ class PricelistController extends Controller
         return view('pricelist.edit',['pricelistdata'=>$priceistdata,'breadcrumb'=>$breadcrumb]);
         
     }
-
+    return redirect('/login');
+ }
     public function update($id, Request $req)
     {
+        if(Auth::check()){
         $validator=Validator::make($req->all(),[
 
             'itemname'=>'required',
@@ -115,7 +126,8 @@ class PricelistController extends Controller
     
         
     }
-
+    return redirect('/login');
+ }
     public function destroy($id){
 
         $pricelistid=pricelist::findOrFail($id);

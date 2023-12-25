@@ -7,31 +7,36 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\daybook;
-
-
-
+use Illuminate\Support\Facades\Auth;
 
 class Daybookcontroller extends Controller
 {
   
      public function index()
     {
-        
+  
+    if(Auth::check()){
+
         $breadcrumb= [
             'subtitle'=>'View',
             'title'=>'View All Daybooks',
-            'link'=>'View All Customers'
+            'link'=>'View All Daybooks'
         ];
    
         
         return view('daybook.list',['breadcrumb'=>$breadcrumb]);
 
     }
+    return redirect('/login');
+}
 
 
 
     public function create()
     {
+        
+    if(Auth::check()){
+
         $breadcrumb= [
             'subtitle'=>'Add',
             'title'=>'Add Daybook',
@@ -41,9 +46,13 @@ class Daybookcontroller extends Controller
         return view('daybook.create',['breadcrumb'=>$breadcrumb]);
     }
 
-
+    return redirect('/login');
+ }
     public function store(Request $req)
    {
+    
+    if(Auth::check()){
+
     $validator=Validator::make($req->all(),[
 
         'name'=>'required',
@@ -77,10 +86,14 @@ class Daybookcontroller extends Controller
     }
    
    }
-   
+   return redirect('/login');
+}
 public function edit($id)
 
 {
+    
+    if(Auth::check()){
+
     $breadcrumb= [
         'subtitle'=>'Edit',
         'title'=>'Edit Daybook Details',
@@ -92,9 +105,13 @@ public function edit($id)
     return view('daybook.edit',['daybook'=>$daybook,'breadcrumb'=>$breadcrumb]);   
     
 }
-
+return redirect('/login');
+}
 public function update($id, Request $req)
 {
+    
+    if(Auth::check()){
+
     $validator=Validator::make($req->all(),[
 
         'name'=>'required',
@@ -127,8 +144,12 @@ public function update($id, Request $req)
 
     
 }
+return redirect('/login');
+}
 
 public function destroy($id,Request $req){
+
+    if(Auth::check()){
 
     $daybookdelete=daybook::findOrFail($id);
     $daybookdelete->delete();
@@ -138,6 +159,7 @@ public function destroy($id,Request $req){
 
 }
 
-
+return redirect('/login');
+}
 
 }

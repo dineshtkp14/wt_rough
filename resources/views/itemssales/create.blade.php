@@ -35,6 +35,7 @@
             <form action="{{ route('itemsales.store') }}" method="post">
                 @csrf
                 <div class="py-4 d-flex justify-content-between align-items-start">
+                    <a href="{{ route('customerinfos.create') }}" class="btn btn-primary"> <i class="fa-solid fa-plus"></i> Add New Customer</a>
                     <div style="width: 300px">
                         <div class="search-box">
                            <input type="text" class="search-input" placeholder="Search Customer"
@@ -60,27 +61,20 @@
                     </div>
 
 
-    <script>
+                    
+                    
 
-      console.log(convertNumberToWords(1234567891));
-      console.log(convertNumberToWords(12345672.32525));
-      console.log(convertNumberToWords(458274.45));
-      console.log(convertNumberToWords(4584274.44345));
-
-
-
-      console.log("dinesh");
 
             
-        </script>
+     
 
 
                     <div style="width: 300px">
-                        <select name="invoice_type" class=" d-inline form-select" aria-label="Default select example">
-                            <option value="credit" selected>Credit</option>
-                            <option value="cash">Cash</option>
+                        <select name="invoice_type" class="d-inline form-select select-background" aria-label="Default select example" onchange="changeBackgroundColor(this)">
+                            <option value="credit">Credit </option>
+                            <option value="cash" selected>Cash </option>
                         </select>
-                        <small style="font-size: 12px; color:#6c757d;"> Choose mode of invoice </small>
+                        <small style="font-size: 14px; padding:20px; color:#02090f;"> Choose mode of invoice &nbsp;    (cash / Credit) </small>
                     </div>
 
                     <div style="width: 300px">
@@ -89,11 +83,7 @@
                             <input type="date" class="form-control" placeholder="" id="salesDate"
                                 class="form-control foritemsaledatecss" value="{{ now()->format('Y-m-d') }}" name="date">
                         </div>
-                        {{-- <div class="input-group mb-1">
-                            <span class="input-group-text">Miti:</span>
-                            <input type="date" class="form-control" placeholder="" id="salesDate"
-                                class="form-control foritemsaledatecss" value="{{ now()->format('Y-m-d') }}" name="date">
-                        </div> --}}
+                        
                     </div>
                    
 
@@ -111,7 +101,7 @@
                             <th>Quantity</th>
 
                             <th>Price</th>
-                            <th>Discount</th>
+                            {{-- <th>Discount</th> --}}
                             <th>Subtotal</th>
                         </tr>
                     </tbody>
@@ -185,4 +175,41 @@
             </div>
         </div>
     </div>
+
+
+
+    <script>
+        function changeBackgroundColor(selectElement) {
+            var selectedValue = selectElement.value;
+    
+            if (selectedValue === 'cash') {
+                selectElement.classList.remove('credit-bg');
+                selectElement.classList.add('cash-bg');
+            } else if (selectedValue === 'credit') {
+                selectElement.classList.remove('cash-bg');
+                selectElement.classList.add('credit-bg');
+            }
+        }
+    
+        // Set the initial background color based on the default selected value
+        changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
+    </script>
+    
+    <style>
+        .select-background {
+            background-color: white;
+            font-size: 25px;
+        }
+    
+        .cash-bg {
+            background-color: white;
+        }
+    
+        .credit-bg {
+            background-color: red;
+            color: white;
+        }
+    </style>
+
+   
 @stop

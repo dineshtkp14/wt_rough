@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class customerledgerdetails extends Model
 {
     use HasFactory;
+        //added after
+    public function customerinfo()
+    {
+        return $this->belongsTo(customerinfo::class, 'customerid', 'id');
+    }
 }

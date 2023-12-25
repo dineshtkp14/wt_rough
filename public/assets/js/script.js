@@ -169,12 +169,14 @@ function inputHTML(counter) {
                         <input type="text" placeholder="Price" class="form-control sales-input" id="priceInput" value="" data-id="${counter}" data-name="price">
                     </div>
                 </td>
-                <td>
-                    <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1">Rs.</span>
-                        <input type="text" placeholder="Discount" class="form-control sales-input" id="discountInput" value="" data-id="${counter}" data-name="discount">
-                    </div>
-                </td>
+                
+
+
+
+
+
+
+
                 <td>
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">Rs.</span>

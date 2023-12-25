@@ -7,12 +7,15 @@ use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\Bank;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Illuminate\Support\Facades\Auth;
 
 class BankController extends Controller
 {
     
     public function index(Request $req)
     {
+        if(Auth::check()){
+
         $breadcrumb= [
             'subtitle'=>'View',
             'title'=>'View Bank Deposit Amount',
@@ -38,8 +41,12 @@ class BankController extends Controller
         return view('bank.list',['custo'=>$custo,'totalsum'=>$count,'breadcrumb'=>$breadcrumb]);
     }
 
+    return redirect('/login');
+
+    }
     public function show_intopdfbankdetails(Request $req)
     {
+        if(Auth::check()){
         
         $from=date($req->date1);
         $to=date($req->date2);
@@ -63,10 +70,12 @@ class BankController extends Controller
 
         return $pdfviewe->download('invoice.pdf');
     }
-
-   
+    
+return redirect('/login');
+} 
     public function create()
     {
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Add',
             'title'=>'Bank Deposit',
@@ -74,6 +83,8 @@ class BankController extends Controller
         ];
         return view('bank.create',['breadcrumb'=>$breadcrumb]);
     }
+    return redirect('/login');
+} 
 
 
     public function store(Request $req)

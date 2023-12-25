@@ -31,9 +31,9 @@ return [
     |
     */
 
-    'lifetime' => env('SESSION_LIFETIME', 120),
+    'lifetime' => env('SESSION_LIFETIME',120),
 
-    'expire_on_close' => false,
+    'expire_on_close' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -169,6 +169,9 @@ return [
     */
 
     'secure' => env('SESSION_SECURE_COOKIE'),
+
+    //'lifetime' => env('SESSION_LIFETIME', 120), maile copy gareko
+
 
     /*
     |--------------------------------------------------------------------------

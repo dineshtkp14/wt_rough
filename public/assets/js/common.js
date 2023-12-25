@@ -33,47 +33,49 @@ function convertNumberToWords(num) {
         "Eighty",
         "Ninety",
     ];
-    var scales = ["", "Thousand", "Lakh", "Crore", "Arab"];
+
+    function convertToWordsLessThanThousand(number) {
+        var words = "";
+        if (number >= 100) {
+            words += ones[Math.floor(number / 100)] + " Hundred";
+            number %= 100;
+        }
+        if (number >= 20) {
+            words += " " + tens[Math.floor(number / 10)];
+            number %= 10;
+        }
+        if (number > 0) {
+            words += " " + ones[number];
+        }
+        return words.trim();
+    }
 
     if (num === 0) {
         return "Zero";
     }
 
-    var words = "";
-
     if (num < 0) {
-        words += "Minus ";
-        num = Math.abs(num);
+        return "Minus " + convertNumberToWordsIndianFormat(Math.abs(num));
     }
 
-    var scaleIndex = 0;
+    var words = "";
+    var crore = Math.floor(num / 10000000);
+    var lakh = Math.floor((num % 10000000) / 100000);
+    var thousand = Math.floor((num % 100000) / 1000);
+    var remaining = num % 1000;
 
-    while (num > 0) {
-        var chunk = num % 1000;
-
-        if (chunk !== 0) {
-            var chunkWords = "";
-
-            if (chunk < 20) {
-                chunkWords = ones[chunk];
-            } else if (chunk < 100) {
-                chunkWords =
-                    tens[Math.floor(chunk / 10)] + " " + ones[chunk % 10];
-            } else {
-                chunkWords =
-                    ones[Math.floor(chunk / 100)] +
-                    " Hundred " +
-                    tens[Math.floor((chunk % 100) / 10)] +
-                    " " +
-                    ones[chunk % 10];
-            }
-
-            words = chunkWords + " " + scales[scaleIndex] + " " + words;
-        }
-
-        num = Math.floor(num / 1000);
-        scaleIndex++;
+    if (crore > 0) {
+        words += convertToWordsLessThanThousand(crore) + " Crore";
+    }
+    if (lakh > 0) {
+        words += " " + convertToWordsLessThanThousand(lakh) + " Lakh";
+    }
+    if (thousand > 0) {
+        words += " " + convertToWordsLessThanThousand(thousand) + " Thousand";
+    }
+    if (remaining > 0) {
+        words += " " + convertToWordsLessThanThousand(remaining);
     }
 
-    return words.trim();
+    return words.trim() + "  only /-";
 }

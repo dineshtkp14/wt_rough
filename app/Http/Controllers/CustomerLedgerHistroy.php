@@ -9,7 +9,7 @@ use App\Models\item;
 use App\Models\salesitem;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
-
+use Illuminate\Support\Facades\Auth;
 
 class CustomerLedgerHistroy extends Controller
 {
@@ -18,7 +18,8 @@ class CustomerLedgerHistroy extends Controller
 
     public function returncusbills(Request $req){
  
-      
+        if(Auth::check()){
+
         $allcusinfo=customerinfo::orderBy('id','DESC')->get();  
         $query=invoice::where('customerid',$req->customerid)->get();
 
@@ -26,12 +27,15 @@ class CustomerLedgerHistroy extends Controller
     }
 
 
-
+    return redirect('/login');
+ }
 
   
 
         public function returnchoosendatehistroy(Request $req)
         {
+            if(Auth::check()){
+
             $breadcrumb= [
                 'subtitle'=>'View',
                 'title'=>' Customers Ledger Details',
@@ -78,9 +82,12 @@ class CustomerLedgerHistroy extends Controller
      
     
       
-    
+        return redirect('/login');
+ }
             public function PdfGenerateCustomerDetails(Request $req)
             {
+                if(Auth::check()){
+
     
                 $from=date($req->date1);
                 $to=date($req->date2);
@@ -141,9 +148,12 @@ class CustomerLedgerHistroy extends Controller
            return $pdfview->download('invoice.pdf');
     
         }
-
+        return redirect('/login');
+    }
         public function returnBillsDEtailsByInvoiceid(Request $req)
         {
+            if(Auth::check()){
+
             $breadcrumb = [
                 'subtitle' => '',
                 'title' => 'Search Bill No',
@@ -190,8 +200,10 @@ class CustomerLedgerHistroy extends Controller
         
 
 
-
+        return redirect('/login');
+    }
         public function showPDF_InvoiveBillByBillno(Request $req){
+            if(Auth::check()){
 
             $invoiceid= $req->invoiceid;
             $allInvoices=invoice::where('id',$req->invoiceid)->get();
@@ -226,7 +238,8 @@ class CustomerLedgerHistroy extends Controller
 
         }
        
-
+        return redirect('/login');
+    }
         }
 
         

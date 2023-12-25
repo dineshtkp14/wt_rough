@@ -69,8 +69,8 @@
                 @enderror --}}
                 
                  <div class="search-box">
-                            <input id="customerIdInput" name="companyid" hidden>
-                            <input type="text" value= "{{ old('billno',$item->distributorname) }}"  class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name"
+                    <input id="customerIdInput" name="companyid" value="{{ old('distributorname', $item->distributorname) }}" hidden>
+                    <input type="text" value= "{{ old('distributorname',$item->distributorname) }}"  class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name"
                                 id="searchCustomerInput"  data-api="company_search" autocomplete="off">
                                 @error('companyid')
                                     <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
@@ -148,7 +148,14 @@
                     @enderror
             </div>
 
-           
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Notes</label>
+                <textarea type="text" class="form-control @error('notes') is-invalid @enderror" 
+                    name="notes"> {{ old('notes',$item->notes) }}</textarea>
+                @error('notes')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+        </div>
            
 
             <div class="d-grid gap-2 pt-2 pb-4">

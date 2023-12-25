@@ -91,10 +91,14 @@ ContactNo:  {{$i->phoneno}}<br>
                     <td ><b> {{$i->total}}</b></td>
                 </tr>
                 <tr>
-                    @if(isset($forinvoicetype) && !empty($forinvoicetype))
-                    <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->notes }}</b>
-                @endif
-                </tr>
+                               
+                    <td colspan="7">
+                        
+                               <b> Notes: {{$i->notes}}</b>
+        
+
+                     </td>
+</tr>
             @endforeach
         @endif
     </tbody>

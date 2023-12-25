@@ -47,13 +47,15 @@
 <body>
 
     <main class="side-nav d-flex flex-nowrap">
-        <h1 class="visually-hidden">Sidebars examples</h1>
+        <h1 class="visually-hidden">Sidebars </h1>
 
 
         <div class="flex-shrink-0 p-3" style="width: 280px;">
+            <a class="nav-link text-white btn btn-danger p-2" href="{{ route('signout') }}"><h4>LOG OUT</h4></a>
+
             <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none "
                 style="border-bottom:1px solid #e5e7eb7e;">
-                <img src="{{ asset('assets/images/logo.png') }}" class="logo-img" alt="logo" style="height: 170px;">
+                {{-- <img src="{{ asset('assets/images/logo.png') }}" class="logo-img" alt="logo" style="height: ;"> --}}
             </a>
             <ul class="list-unstyled ps-0">
 
@@ -63,15 +65,15 @@
                         <i class="fa-solid fa-gauge"></i> Dashboard
                     </button>
                     <div class="collapse" id="dashboard-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="#"
-                                    class="link-dark d-inline-flex text-decoration-none rounded">Overview</a></li>
+                      <a href="/dashaboard">  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"> </a>
+                            {{-- <li><a href="{{ route('dashboard.index') }}" --}}
+                                  {{-- <a  class="link-dark d-inline-flex text-decoration-none rounded">Dashboard</a></li>
                             <li><a href="#"
                                     class="link-dark d-inline-flex text-decoration-none rounded">Weekly</a></li>
                             <li><a href="#"
                                     class="link-dark d-inline-flex text-decoration-none rounded">Monthly</a></li>
                             <li><a href="#"
-                                    class="link-dark d-inline-flex text-decoration-none rounded">Annually</a></li>
+                                    class="link-dark d-inline-flex text-decoration-none rounded">Annually</a></li> --}}
                         </ul>
                     </div>
                 </li>
@@ -80,22 +82,27 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-receipt"></i> Invoice
+                        <i class="fa-solid fa-receipt"></i> Bill 
                     </button>
                     <div class="collapse" id="Invoice-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a href="{{ route('itemsales.create') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Create
-                                    Invoice</a></li>
+                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Add New 
+                                    Bill</a></li>
                             <li><a href="{{ route('itemsales.index') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
-                                    Invoice</a></li>
+                                    Sales Items</a></li>
                             <li><a href="{{ route('customer.billno') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
-                                    Invoice By Bill No</a></li>
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>Search Bill
+                                    </a></li>
+
+                                    <li><a href="{{ route('invoice.index') }}"
+                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View Invoices
+                                        </a></li>
 
                         </ul>
                     </div>
@@ -192,6 +199,11 @@
                                     class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
                              Bill Entry </a></li>
 
+                             <li><a href="{{route('companybillentry.index') }}"
+                                class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                    class="fa-solid fa-money-check-dollar px-2  d-flex justify-content-center align-items-center"></i>
+                               View Bill Entry</a></li>
+
                               <li><a href="{{route('companyledgerdetails.returnchoosendatehistroy') }}"
                                 class="link-dark d-inline-flex text-decoration-none rounded"><i
                                     class="fa-solid fa-money-check-dollar px-2  d-flex justify-content-center align-items-center"></i>
@@ -229,6 +241,10 @@
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-solid fa-money-check-dollar  px-2  d-flex justify-content-center align-items-center"></i>Customer
                                     Ledger Payment </a></li>
+                                    <li><a href="{{ route('openingbalances.create') }}"
+                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                            class="fa-solid fa-money-check-dollar  px-2  d-flex justify-content-center align-items-center"></i>Opening Balance
+                                         </a></li>
 
 
                         </ul>
@@ -278,18 +294,21 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-user"></i> Account
+                        <i class="fa-solid fa-user"></i> EXTRA
                     </button>
                     <div class="collapse" id="account-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="#"
-                                    class="link-dark d-inline-flex text-decoration-none rounded">New...</a></li>
-                            <li><a href="#"
-                                    class="link-dark d-inline-flex text-decoration-none rounded">Profile</a></li>
-                            <li><a href="#"
-                                    class="link-dark d-inline-flex text-decoration-none rounded">Settings</a></li>
-                            <li><a href="#" class="link-dark d-inline-flex text-decoration-none rounded">Sign
-                                    out</a></li>
+                            <li><a href="{{ route('profit') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded">CALCULATE PROFIT</a></li>
+                            <li><a href="{{ route('totalsales.index') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded">CALCULATE TOTAL SALES</a></li>
+                                   
+                                    <li><a href="{{ route('allsalesdetails.showdetails') }}"
+                                        class="link-dark d-inline-flex text-decoration-none rounded">Show TOTAL SALES</a></li>
+                                        <li><a href="{{ route('showonlysalesperday') }}"
+                                            class="link-dark d-inline-flex text-decoration-none rounded">Show Per Day</a></li>
+                                    
+                                        
                         </ul>
                     </div>
                 </li>
@@ -320,14 +339,14 @@
 
         });
 
-        function delfunction(id) {
-            if (confirm("Are You Sure You want to delete")) {
-                document.getElementById('eea' + id).submit();
-            }
-        }
+        // function delfunction(id) {
+        //     if (confirm("Are You Sure You want to delete")) {
+        //         document.getElementById('eea' + id).submit();
+        //     }
+        // }
 
         function delfunctionusers(id) {
-            if (confirm("Are You Sure You want to delete")) {
+            if (confirm("Are You Sure You want to delete ?????")) {
                 document.getElementById('eea' + id).submit();
             }
         }

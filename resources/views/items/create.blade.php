@@ -47,14 +47,7 @@
                 @csrf
 
                
-                <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Date</label>
-                    <input type="date" class="form-control @error('date') is-invalid @enderror" 
-                        name="date" value="{{now()->format('Y-m-d')}}" id="">
-                    @error('date')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
-            </div>
+                
                
             <div class="col-md-6">
                 {{-- <label for="inputPassword4" class="form-label">Distributor Name</label>
@@ -91,7 +84,14 @@
                             </div>
                         </div>
         </div>
-           
+        <div class="col-md-6">
+            <label for="inputPassword4" class="form-label">Date</label>
+            <input type="date" class="form-control @error('date') is-invalid @enderror" 
+                name="date" value="{{now()->format('Y-m-d')}}" id="">
+            @error('date')
+                <p class="invalid-feedback">{{ $message }}</p>
+            @enderror
+    </div>  
            
                 <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Bill No</label>
@@ -118,7 +118,7 @@
             </div>
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Quantity</label>
+                    <label for="inputPassword4" class="form-label">Quantity(PCS/kg)</label>
                     <input type="quantity" class="form-control @error('quantity') is-invalid @enderror" 
                         name="quantity" value="{{ old('quantity') }}">
                     @error('quantity')
@@ -127,7 +127,16 @@
             </div>
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">$Cost Rate Per Piece</label>
+                <label for="inputPassword4" class="form-label">Show Stock Warning</label>
+                <input type="showwarning" class="form-control @error('showwarning') is-invalid @enderror" 
+                    name="showwarning" value="{{ old('showwarning') }}">
+                @error('showwarning')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+        </div>
+
+            <div class="col-md-6">
+                    <label for="inputPassword4" class="form-label">$Cost Rate Per Piece/kg</label>
                     <input type="text" class="form-control @error('dlp') is-invalid @enderror" 
                         name="dlp" value="{{ old('dlp') }}">
                     @error('dlp')
@@ -136,13 +145,21 @@
             </div>
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">$Sale Price Per Piece</label>
+                    <label for="inputPassword4" class="form-label">$Sale Price Per Piece/kg</label>
                     <input type="text" class="form-control @error('mrp') is-invalid @enderror" 
                         name="mrp" value="{{ old('mrp') }}">
                     @error('mrp')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Notes</label>
+                <textarea type="text" class="form-control @error('notes') is-invalid @enderror" 
+                    name="notes" value="{{ old('notes') }}"> </textarea>
+                @error('notes')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+        </div>
 
            
            

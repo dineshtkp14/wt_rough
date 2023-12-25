@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\customerinfo;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerinfoController extends Controller
 {
@@ -12,6 +13,7 @@ class CustomerinfoController extends Controller
 
     public function index()
     {
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'View',
             'title'=>'View All Customerssss',
@@ -22,12 +24,14 @@ class CustomerinfoController extends Controller
      return view('customerinfo.list',['breadcrumb'=>$breadcrumb]);   
 
     }
+    return redirect('/login');
+}
 
     
 
     public function create()
     {
-
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Add',
             'title'=>'Add New Customers',
@@ -37,17 +41,23 @@ class CustomerinfoController extends Controller
         return view('customerinfo.create',['breadcrumb'=>$breadcrumb]);   
     }
 
+    return redirect('/login');
+ }
 
  public function returncustomersforsalesitems()
 {
 
+    if(Auth::check()){
     $cus=customerinfo::orderBy('id','DESC')->get();
     return view('itemssales.create',['all'=>$cus]);   
   
 }
+return redirect('/login');
+}
 
     public function store(Request $req)
    {
+    if(Auth::check()){
     $validator=Validator::make($req->all(),[
 
         'name'=>'required',
@@ -76,10 +86,13 @@ class CustomerinfoController extends Controller
     }
 
    }
-   
+   return redirect('/login');
+}
+
    public function edit($id)
 
     {
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Edit',
             'title'=>'Edit Customers Details',
@@ -91,9 +104,11 @@ class CustomerinfoController extends Controller
         return view('customerinfo.edit',['cus'=>$customers,'breadcrumb'=>$breadcrumb]);   
         
     }
-
+    return redirect('/login');
+ }
     public function update($id, Request $req)
     {
+        if(Auth::check()){
         $validator=Validator::make($req->all(),[
 
             'name'=>'required',
@@ -122,7 +137,8 @@ class CustomerinfoController extends Controller
     
         
     }
-
+    return redirect('/login');
+ }
     public function destroy($id,Request $req){
 
 

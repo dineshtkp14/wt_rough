@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Livewire\WithPagination;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyLedgerBillEntryController extends Controller
 {
@@ -16,6 +17,9 @@ class CompanyLedgerBillEntryController extends Controller
 
     public function index()
     {
+        
+    if(Auth::check()){
+        
         $breadcrumb= [
             'subtitle'=>'Add RR',
             'title'=>'Add Bills',
@@ -26,12 +30,17 @@ class CompanyLedgerBillEntryController extends Controller
      return view('companyLedgerBillEntry.list',['breadcrumb'=>$breadcrumb]);   
 
     }
+    return redirect('/login');
+
+}
+
 
     
 
     public function create()
     {
 
+        if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Add',
             'title'=>'Add Bill For Company Ledger',
@@ -40,6 +49,9 @@ class CompanyLedgerBillEntryController extends Controller
     
         return view('companyLedgerBillEntry.create',['breadcrumb'=>$breadcrumb]);   
     }
+    return redirect('/login');
+
+}
 
 
 
@@ -47,6 +59,8 @@ class CompanyLedgerBillEntryController extends Controller
     public function store(Request $req)
    {
     
+    
+    if(Auth::check()){
     $validator=Validator::make($req->all(),[
       'companyid'=>'required',
         'date'=>'required',
@@ -59,7 +73,7 @@ class CompanyLedgerBillEntryController extends Controller
      ]);
 
     if($validator->passes()){
-       
+       dd("oer");
   
         $companypanyment=new CompanyLedger();
         $companypanyment->companyid=$req->companyid;
@@ -81,10 +95,16 @@ class CompanyLedgerBillEntryController extends Controller
     }
 
    }
+   return redirect('/login');
+
+}
+
    
    public function edit($id)
 
     {
+        
+    if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Edit',
             'title'=>'Edit Customers Details',
@@ -96,9 +116,15 @@ class CompanyLedgerBillEntryController extends Controller
         return view('companyLedgerBillEntry.edit',['com'=>$company,'breadcrumb'=>$breadcrumb]);   
         
     }
+    return redirect('/login');
+
+}
+
 
     public function update($id, Request $req)
     {
+        
+    if(Auth::check()){
         $validator=Validator::make($req->all(),[
            
             'particulars'=>'required',
@@ -127,6 +153,10 @@ class CompanyLedgerBillEntryController extends Controller
     
         
     }
+    return redirect('/login');
+
+}
+
 
     public function destroy($id){
 
@@ -150,6 +180,8 @@ class CompanyLedgerBillEntryController extends Controller
     //         ->withErrors($validator)
     //         ->withInput();
     // }
+    
+    if(Auth::check()){
       $breadcrumb= [
           'subtitle'=>'View',
           'title'=>' Customers Ledger Details',
@@ -197,13 +229,18 @@ class CompanyLedgerBillEntryController extends Controller
      
         }
 
+        return redirect('/login');
 
+    }
+    
 
 
 
       public function PdfGenerateCustomerDetails(Request $req)
       {
 
+        
+    if(Auth::check()){
           $from=date($req->date1);
           $to=date($req->date2);
            
@@ -264,4 +301,8 @@ class CompanyLedgerBillEntryController extends Controller
      return $pdfview->download('invoicet.pdf');
 
   }
+  return redirect('/login');
+
+}
+
 }

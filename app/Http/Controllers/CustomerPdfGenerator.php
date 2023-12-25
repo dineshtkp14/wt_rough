@@ -9,19 +9,24 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\Snappy\Facades\SnappyPdf;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerPdfGenerator extends Controller
 {
     public function index()
     {
-        
+        if(Auth::check()){
+
          $cus=customerinfo::orderBy('id','DESC')->paginate(6);;
        
 
         // return view('customerinfo.list',['all'=>$cus]);   
     }
-
+    return redirect('/login');
+ }
     public function pdfview(){
+
+        if(Auth::check()){
 
         $cus=customerinfo::orderBy('id','DESC')->paginate(6);;
        
@@ -29,8 +34,10 @@ class CustomerPdfGenerator extends Controller
         return view('pdf.pdf_view',['all'=>$cus]);
 
     }
-
+    return redirect('/login');
+ }
     public function pdfgenerate(){
+        if(Auth::check()){
 
         $cus=customerinfo::orderBy('id','DESC')->get();;
         
@@ -45,4 +52,6 @@ class CustomerPdfGenerator extends Controller
       
         
     }
+    return redirect('/login');
+}
 }
