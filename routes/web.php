@@ -3,7 +3,7 @@
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Daybookcontroller;
-use App\Http\Controllers\Bankcontroller;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyLedger;
 use App\Http\Controllers\CompanyLedgerBillEntryController;
