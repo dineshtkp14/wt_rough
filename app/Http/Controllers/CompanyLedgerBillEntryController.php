@@ -73,7 +73,7 @@ class CompanyLedgerBillEntryController extends Controller
      ]);
 
     if($validator->passes()){
-    //    dd("oer");
+    
   
         $companypanyment=new CompanyLedger();
         $companypanyment->companyid=$req->companyid;
