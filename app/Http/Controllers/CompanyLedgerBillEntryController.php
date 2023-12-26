@@ -184,8 +184,8 @@ class CompanyLedgerBillEntryController extends Controller
     if(Auth::check()){
       $breadcrumb= [
           'subtitle'=>'View',
-          'title'=>' Customers Ledger Details',
-          'link'=>' Customers Ledger Details'
+          'title'=>' Company Ledger Details',
+          'link'=>' company Ledger Details'
       ];
 
       $from=date($req->date1);
