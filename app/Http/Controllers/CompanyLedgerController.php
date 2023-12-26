@@ -77,7 +77,7 @@ class CompanyLedgerController extends Controller
         $companypanyment->notes=$req->notes;
         $companypanyment->save();
 
-        return redirect()->route('companyLedgers.index')->with('success','Customer Added Sucessfully !!');  
+        return redirect()->route('companyLedgers.index')->with('success','Added Sucessfully !!');  
     }
 
     else{
@@ -129,7 +129,7 @@ class CompanyLedgerController extends Controller
             $cusinfo->remarks=$req->remarks;
             $cusinfo->save();
     
-            return redirect()->route('companyLedgers.index')->with('success','Customer updated Sucessfully !!');  
+            return redirect()->route('companyLedgers.index')->with('success','Updated Sucessfully !!');  
         }
         else{
             return redirect()->route('companyLedgers.create')->withErrors($validator)->withInput();
