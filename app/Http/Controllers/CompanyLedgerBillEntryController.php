@@ -86,7 +86,7 @@ class CompanyLedgerBillEntryController extends Controller
         $companypanyment->notes=$req->notes;
         $companypanyment->save();
 
-        return redirect()->route('companybillentry.create')->with('success','Customer Added Sucessfully !!');  
+        return redirect()->route('companybillentry.create')->with('success',' Added Sucessfully !!');  
     }
 
     else{
@@ -144,7 +144,7 @@ class CompanyLedgerBillEntryController extends Controller
             $company->notes=$req->notes;
             $company->save();
     
-            return redirect()->route('companybillentry.index')->with('success','Customer updated Sucessfully !!');  
+            return redirect()->route('companybillentry.index')->with('success',' Updated Sucessfully !!');  
         }
         else{
             return redirect()->route('companyLedgers.create')->withErrors($validator)->withInput();
