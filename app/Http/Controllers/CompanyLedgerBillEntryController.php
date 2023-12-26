@@ -224,7 +224,7 @@ class CompanyLedgerBillEntryController extends Controller
      
     
       
-         return view('CompanyLedgerBillEntry.companyledgersshow',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
+         return view('companyLedgerBillEntry.companyledgersshow',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
         //  return view('companyLedgerBillentry.companyledgersshow', compact('cusledgertails', 'allcusinfo', 'debittotalsumwithdate', 'credittotalsumwithdate', 'breadcrumb'))->withErrors($validator)->withInput();
      
         }
