@@ -22,6 +22,7 @@
                 <th>Invoice Type</th>
                 <th>Notes</th>
                 <th>Created At</th>
+                <th>Updated At</th>
             </tr>
         </thead>
         <tbody>
@@ -41,6 +42,8 @@
                         <td data-label="Invoice Type">{{ $i->invoicetype }}</td>
                         <td data-label="Notes">{{ $i->notes }}</td>
                         <td data-label="Created At">{{ $i->created_at }}</td>
+                        <td data-label="Created At">{{ $i->updated_at }}</td>
+
                     </tr>
                 @endforeach
             @else
