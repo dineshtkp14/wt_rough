@@ -13,7 +13,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>Items Id</th>
                         <th>Bill No</th>
                         <th>Distributors Name</th>
                         <th>Date</th>
