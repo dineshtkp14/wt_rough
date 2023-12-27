@@ -72,7 +72,7 @@ class CustomerLedgerDetailsController extends Controller
          $cl->customerid=$req->customerid;
          $cl->date=$req->date;
          $cl->particulars=$req->particulars;
-         $cl->invoicetype="Payment";
+         $cl->invoicetype="Cash Receive";
          $cl->voucher_type=$req->vt;
          $cl->credit=$req->amount;
          $cl->notes=$req->notes;
