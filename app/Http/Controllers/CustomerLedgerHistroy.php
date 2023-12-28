@@ -123,8 +123,6 @@ class CustomerLedgerHistroy extends Controller
                    
                 }else{
                     
-    
-    
                     $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
                 $debittotalsumwithdate = $betweendate->sum('debit');
                 $credittotalsumwithdate = $betweendate->sum('credit');
