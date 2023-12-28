@@ -10,6 +10,8 @@
             <form action="{{route('customer.billno') }}" method="get" id="chosendatepdfform">
                 <Span>Enter Bill No</Span><input type="number" placeholder="Enter Bill No" name="invoiceid" class="form-control w-25 d-inline">
                 <input type="submit" class="btn btn-success ox-2" value="Search">
+
+                <input type="submit" class="btn btn-danger" value="Delete Bill">
             </form>
         </div>
 
