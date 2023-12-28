@@ -134,6 +134,9 @@ Route::get('companyledgerdetails/pdf/convert/',[CompanyLedgerBillEntryController
 Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])->name('customer.billno');
 Route::delete('/billno', [CustomerLedgerHistroy::class, 'deletebillfromdatabase'])->name('customer.deletebillno');
 
+Route::delete('/billno', [CustomerLedgerHistroy::class, 'updateinvoiicetype'])->name('customer.customer.updatebillinvoicetype');
+
+
 Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_InvoiveBillByBillno'])->name('invoicebillno.convert');
 
 

@@ -51,6 +51,39 @@
         </div>
 
 
+
+
+        <div class="col-6">
+            
+            @if (Session::has('error'))
+            <div class="alert alert-info w-50">
+                {{ Session::get('error') }}
+            </div>
+        @endif <br>
+                <form action="{{ route('customer.updatebillinvoicetype') }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <span class="text-danger">Enter Bill No To Update=> :</span>
+                <input type="number"  placeholder="Enter Bill No" class="form-control w-25 d-inline @error('invoiceid') is-invalid @enderror" 
+                name="invoiceid" value="{{ old('invoiceid') }}">
+            @error('invoiceid')
+                <p class="invalid-feedback">{{ $message }}</p>
+            @enderror
+                    <select class="form-select" aria-label="Default select example" name="invoicetype">
+                        <option selected>Open this select menu</option>
+                        <option value="1">Credit</option>
+                        <option value="2">Cash</option>
+                    </select>
+                    <input type="submit" class="btn btn-danger ox-2" value="Update" onclick="return confirm('Are you sure you want to Update this invoice?');">
+
+                    
+                </form>
+           
+            </div>
+
+
+
+
         </div>
 
 

@@ -185,7 +185,24 @@ class CustomerLedgerHistroy extends Controller
     
 
 
+public function updateinvoiicetype(Request $req){
+    $validator = Validator::make($req->all(), [
+        'invoiceid' => 'required',
+    ]);
 
+    if ($validator->passes()) {
+        DB::table('customerledgerdetails')
+        ->where('invoiceid', $req->invoiceid)
+        ->update(['invoicetype' => $req->invoicetype]);
+    
+
+    }else {
+        // Redirect with an error message if invoiceid is not provided
+        return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+    }
+
+
+}
 
 
 
