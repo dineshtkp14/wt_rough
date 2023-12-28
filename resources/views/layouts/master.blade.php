@@ -94,8 +94,8 @@
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
                                     Sales Items</a></li>
-                            <li><a href="{{ route('customer.billno') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                    <li><a href="{{ route('customer.billno') }}"
+                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>Search Bill
                                     </a></li>
 

@@ -6,14 +6,57 @@
     @yield('breadcrumb')
 
     <div class="container">
-        <div class="row">
-            <form action="{{route('customer.billno') }}" method="get" id="chosendatepdfform">
-                <Span>Enter Bill No</Span><input type="number" placeholder="Enter Bill No" name="invoiceid" class="form-control w-25 d-inline">
-                <input type="submit" class="btn btn-success ox-2" value="Search">
+        @if (Session::has('success'))
+            <div class="alert alert-success w-50">
+                {{ Session::get('success') }}
+            </div>
+        @endif
 
-                <input type="submit" class="btn btn-danger" value="Delete Bill">
+</div>
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+            <form action="{{route('customer.billno') }}" method="get" id="chosendatepdfform">
+                <Span>Enter Bill No</Span>
+                <input type="number" placeholder="Enter Bill No" name="invoiceid" class="form-control w-25 d-inline">
+                <input type="submit" class="btn btn-success ox-2" value="Search">
+                
             </form>
         </div>
+
+
+        <div class="col-6">
+            
+        @if (Session::has('error'))
+        <div class="alert alert-info w-50">
+            {{ Session::get('error') }}
+        </div>
+    @endif <br>
+            <form action="{{ route('customer.deletebillno') }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <span class="text-danger">Enter Bill No To Delete=> :</span>
+                <input type="number"  placeholder="Enter Bill No" class="form-control w-25 d-inline @error('invoiceid') is-invalid @enderror" 
+                name="invoiceid" value="{{ old('invoiceid') }}">
+            @error('invoiceid')
+                <p class="invalid-feedback">{{ $message }}</p>
+            @enderror
+                <input type="submit" class="btn btn-danger ox-2" value="Delete" onclick="return confirm('Are you sure you want to delete this invoice?');">
+
+            </form>
+       
+        </div>
+
+
+        </div>
+
+
+       
+          
+
 
         <div class="card customer-card mb-4" id="customerCard" style="display: none;">
             <div class="card-body">
@@ -140,6 +183,8 @@
     </div>
 
     <script>
+
+
         document.getElementById('pdfLink').addEventListener('click', function(e) {
             e.preventDefault();
             var query = window.location.search;
