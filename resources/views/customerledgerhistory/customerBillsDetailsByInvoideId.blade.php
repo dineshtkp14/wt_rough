@@ -15,76 +15,88 @@
 </div>
 
 
-
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
-            <form action="{{route('customer.billno') }}" method="get" id="chosendatepdfform">
-                <Span>Enter Bill No</Span>
-                <input type="number" placeholder="Enter Bill No" name="invoiceid" class="form-control w-25 d-inline">
-                <input type="submit" class="btn btn-success ox-2" value="Search">
-                
-            </form>
-        </div>
-
-
-        <div class="col-6">
-            
-        @if (Session::has('error'))
-        <div class="alert alert-info w-50">
-            {{ Session::get('error') }}
-        </div>
-    @endif <br>
-            <form action="{{ route('customer.deletebillno') }}" method="POST">
-                @csrf
-                @method('DELETE')
-                <span class="text-danger">Enter Bill No To Delete=> :</span>
-                <input type="number"  placeholder="Enter Bill No" class="form-control w-25 d-inline @error('invoiceid') is-invalid @enderror" 
-                name="invoiceid" value="{{ old('invoiceid') }}">
-            @error('invoiceid')
-                <p class="invalid-feedback">{{ $message }}</p>
-            @enderror
-                <input type="submit" class="btn btn-danger ox-2" value="Delete" onclick="return confirm('Are you sure you want to delete this invoice?');">
-
-            </form>
-       
-        </div>
-
-
-
-
-        <div class="col-6">
-            
-            @if (Session::has('error'))
-            <div class="alert alert-info w-50">
-                {{ Session::get('error') }}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Search Invoice</h5>
+                    <form action="{{ route('customer.billno') }}" method="get" id="chosendatepdfform">
+                        <div class="mb-3">
+                            <label for="invoiceid" class="form-label">Enter Bill No</label>
+                            <input type="number" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Bill No">
+                        </div>
+                        <button type="submit" class="btn btn-success">Search</button>
+                    </form>
+                </div>
             </div>
-        @endif <br>
-                <form action="{{ route('customer.updatebillinvoicetype') }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <span class="text-danger">Enter Bill No To Update=> :</span>
-                <input type="number"  placeholder="Enter Bill No" class="form-control w-25 d-inline @error('invoiceid') is-invalid @enderror" 
-                name="invoiceid" value="{{ old('invoiceid') }}">
-            @error('invoiceid')
-                <p class="invalid-feedback">{{ $message }}</p>
-            @enderror
-                    <select class="form-select" aria-label="Default select example" name="invoicetype">
-                        <option selected>Open this select menu</option>
-                        <option value="1">Credit</option>
-                        <option value="2">Cash</option>
-                    </select>
-                    <input type="submit" class="btn btn-danger ox-2" value="Update" onclick="return confirm('Are you sure you want to Update this invoice?');">
-
-                    
-                </form>
-           
-            </div>
-
-
-
-
         </div>
+
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Delete Invoice</h5>
+                    @if (Session::has('error'))
+                        <div class="alert alert-info">
+                            {{ Session::get('error') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('customer.deletebillno') }}" method="POST" id="deleteForm">
+                        @csrf
+                        @method('DELETE')
+                        <div class="mb-3">
+                            <label for="deleteInvoiceId" class="form-label text-danger">Enter Bill No To Delete:</label>
+                            <input type="number" class="form-control @error('invoiceid') is-invalid @enderror" id="deleteInvoiceId" name="invoiceid" value="{{ old('invoiceid') }}" placeholder="Enter Bill No">
+                            @error('invoiceid')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Update Invoice Type</h5>
+                    @if (Session::has('updateerror'))
+                        <div class="alert alert-info">
+                            {{ Session::get('updateerror') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('customer.updatebillinvoicetype') }}" method="POST" id="updateForm">
+                        @csrf
+                        @method('put')
+                        <div class="mb-3">
+                            <label for="updateInvoiceId" class="form-label text-danger">Enter Bill No To Update:</label>
+                            <input type="number" value="{{ old('updateinvoiceid') }}" class="form-control @error('updateinvoiceid') is-invalid @enderror" id="updateInvoiceId" name="updateinvoiceid" value="{{ old('updateinvoiceid') }}" placeholder="Enter Bill No">
+                            @error('updateinvoiceid')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="invoiceType" class="form-label text-danger">Select Invoice Type:</label>
+                            <select class="form-select @error('invoicetype') is-invalid @enderror" id="invoiceType" name="invoicetype" required>
+                                <option value="check" selected>Please Select Invoice Type</option>
+                                <option value="credit">Credit</option>
+                                <option value="cash">Cash</option>
+                            </select>
+                            @error('invoicetype')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-danger">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
        
@@ -216,6 +228,16 @@
     </div>
 
     <script>
+// JavaScript for Delete Form
+document.getElementById('deleteFormSubmitButton').addEventListener('click', function(e) {
+    return confirm('Are you sure you want to delete this invoice?') || e.preventDefault();
+});
+
+// JavaScript for Update Form
+document.getElementById('updateFormSubmitButton').addEventListener('click', function(e) {
+    return confirm('Are you sure you want to update this invoice?') || e.preventDefault();
+});
+
 
 
         document.getElementById('pdfLink').addEventListener('click', function(e) {

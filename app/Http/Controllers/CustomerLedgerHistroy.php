@@ -161,6 +161,7 @@ class CustomerLedgerHistroy extends Controller
             'invoiceid' => 'required',
         ]);
     
+
         if ($validator->passes()) {
             // Delete records from salesitem_tbl
             $salesItemsDeleted = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->delete();
@@ -183,26 +184,43 @@ class CustomerLedgerHistroy extends Controller
         }
     }
     
-
-
-public function updateinvoiicetype(Request $req){
+    public function updateinvoiicetype(Request $req)
+{
+   
     $validator = Validator::make($req->all(), [
-        'invoiceid' => 'required',
+        'updateinvoiceid' => 'required',
+        'invoicetype' => 'required|in:credit,cash',
     ]);
 
+    if ($req->invoicetype == 'check') {
+       
+        return redirect()->route('customer.billno')->with('updateerror', 'Please select a valid invoice type');
+    }
     if ($validator->passes()) {
-        DB::table('customerledgerdetails')
-        ->where('invoiceid', $req->invoiceid)
-        ->update(['invoicetype' => $req->invoicetype]);
-    
+        // Check if the selected value is not the default "Open this select menu"
+       
+       
+        $invoiceExists = DB::table('customerledgerdetails')->where('invoiceid', $req->updateinvoiceid)->exists();
 
-    }else {
-        // Redirect with an error message if invoiceid is not provided
+        if ($invoiceExists) {
+            DB::table('customerledgerdetails')
+                ->where('invoiceid', $req->updateinvoiceid)
+                ->update(['invoicetype' => $req->invoicetype]);
+
+            return redirect()->route('customer.billno')->with('success', 'Updated Invoice Type Successfully !!');
+        } else {
+            return redirect()->route('customer.billno')->with('updateerror', 'No records found for the provided invoiceid');
+        }
+    } else {
+        // Redirect with an error message if validation fails
         return redirect()->route('customer.billno')->withErrors($validator)->withInput();
     }
-
-
 }
+
+    
+   
+    
+
 
 
 
