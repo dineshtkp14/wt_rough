@@ -156,34 +156,60 @@ class CustomerLedgerHistroy extends Controller
 
     
     public function deletebillfromdatabase(Request $req)
-    {
-        $validator = Validator::make($req->all(), [
-            'invoiceid' => 'required',
-        ]);
-    
+{
+    $validator = Validator::make($req->all(), [
+        'invoiceid' => 'required',
+    ]);
 
-        if ($validator->passes()) {
-            // Delete records from salesitem_tbl
-            $salesItemsDeleted = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->delete();
-    
-            // Delete records from invoices_tbl
-            $invoicesDeleted = DB::table('invoices')->where('id', $req->invoiceid)->delete();
-    
-            // Delete records from customerledgerdetails_tbl
-            $ledgerDetailsDeleted = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->delete();
-    
-            // Check if any records were deleted
-            if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
-                return redirect()->route('customer.billno')->with('success', 'Deleted Successfully !!');
-            } else {
-                return redirect()->route('customer.billno')->with('error', 'No records found for the provided invoiceid');
-            }
-        } else {
-            // Redirect with an error message if invoiceid is not provided
-            return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+    if ($validator->passes()) {
+        // Retrieve the items from the bill before deleting
+        $items = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->get();
+
+        
+        // Adjust stock quantities before deleting
+        foreach ($items as $item) {
+
+           
+            $product = item::find($item->itemid); // Use your actual model name here
+
+            // Check if the record exists before updating
+            if ($product) {
+               
+                $product->quantity += $item->quantity; // Assuming 'quantity' is the field representing the sold quantity
+                $product->save();
+            } 
         }
+
+        // Delete records from salesitem_tbl
+        $salesItemsDeleted = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->delete();
+
+        // Delete records from invoices_tbl
+        $invoicesDeleted = DB::table('invoices')->where('id', $req->invoiceid)->delete();
+
+        // Delete records from customerledgerdetails_tbl
+        $ledgerDetailsDeleted = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->delete();
+
+        // Check if any records were deleted
+        if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
+            return redirect()->route('customer.billno')->with('success', 'Deleted Successfully !!');
+        } else {
+            return redirect()->route('customer.billno')->with('error', 'No records found for the provided invoiceid');
+        }
+    } else {
+        // Redirect with an error message if invoiceid is not provided
+        return redirect()->route('customer.billno')->withErrors($validator)->withInput();
     }
-    
+}
+
+
+
+
+
+
+
+
+
+
     public function updateinvoiicetype(Request $req)
 {
    
