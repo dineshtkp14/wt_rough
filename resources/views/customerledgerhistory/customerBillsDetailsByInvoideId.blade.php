@@ -68,7 +68,7 @@
                         </div>
                     @endif
                     @if (Session::has('updatesuccess'))
-                    <div class="alert alert-success w-50">
+                    <div class="alert alert-success">
                         {{ Session::get('updatesuccess') }}
                     </div>
                 @endif
