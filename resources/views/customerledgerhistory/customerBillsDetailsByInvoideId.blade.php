@@ -5,14 +5,14 @@
 <div class="main-content">
     @yield('breadcrumb')
 
-    <div class="container">
+    {{-- <div class="container">
         @if (Session::has('success'))
             <div class="alert alert-success w-50">
                 {{ Session::get('success') }}
             </div>
         @endif
 
-</div>
+</div> --}}
 
 
 <div class="container">
@@ -67,6 +67,11 @@
                             {{ Session::get('updateerror') }}
                         </div>
                     @endif
+                    @if (Session::has('updatesuccess'))
+                    <div class="alert alert-success w-50">
+                        {{ Session::get('updatesuccess') }}
+                    </div>
+                @endif
 
                     <form action="{{ route('customer.updatebillinvoicetype') }}" method="POST" id="updateForm">
                         @csrf

@@ -233,7 +233,7 @@ class CustomerLedgerHistroy extends Controller
                 ->where('invoiceid', $req->updateinvoiceid)
                 ->update(['invoicetype' => $req->invoicetype]);
 
-            return redirect()->route('customer.billno')->with('success', 'Updated Invoice Type Successfully !!');
+            return redirect()->route('customer.billno')->with('updatesuccess', 'Updated Invoice Type Successfully !!');
         } else {
             return redirect()->route('customer.billno')->with('updateerror', 'No records found for the provided invoiceid');
         }
