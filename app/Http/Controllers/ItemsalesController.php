@@ -118,5 +118,65 @@ class ItemsalesController extends Controller
     return redirect('/login');
  }
 
+
+
+ public function edit($id)
+ {
+     if (Auth::check()) {
+         $breadcrumb = [
+             'subtitle' => 'Edit',
+             'title' => 'Edit SalesItem Details',
+             'link' => 'Edit SalesItem Details'
+         ];
+ 
+         $all = salesitem::findOrFail($id);
+ 
+         return view('itemssales.edit', ['all' => $all, 'breadcrumb' => $breadcrumb]);
+ 
+         return redirect('/login');
+     }
+ }
+ 
+ public function update($id, Request $req)
+ {
+     if (Auth::check()) {
+         $validator = Validator::make($req->all(), [
+             'itemid' => 'required',
+             'unstockedname' => 'required',
+             'quantity' => 'required',
+             'price' => 'required',
+             'discount' => 'required',
+             'subtotal' => 'required',
+             // Add more validation rules as needed
+         ]);
+ 
+         if ($validator->passes()) {
+             $item = salesitem::find($id);
+             $item->itemid = $req->itemid;
+             $item->unstockedname = $req->unstockedname;
+             $item->quantity = $req->quantity;
+             $item->price = $req->price;
+             $item->discount = $req->discount;
+             $item->subtotal = $req->subtotal;
+             // Update other fields as needed
+ 
+             $item->save();
+ 
+             return redirect()->route('itemsales.index')->with('success', 'ItemSales Updated Successfully!');
+         } else {
+             return redirect()->route('itemsales.edit', $id)->withErrors($validator)->withInput();
+         }
+     }
+ 
+     return redirect('/login');
+ }
+ 
+
+
+
+
+
+
+
     
 }

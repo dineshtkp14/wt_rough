@@ -77,4 +77,54 @@ class Invoicecontroller extends Controller
         return redirect('/login');
     }
 
+
+
+
+
+
+    public function edit($id)
+
+{
+    if(Auth::check()){
+    $breadcrumb= [
+        'subtitle'=>'Edit',
+        'title'=>'Edit Invoice Details',
+        'link'=>'Edit Invoice Details'
+    ];
+
+    $invoices=invoice::findOrfail($id);
+
+    return view('invoice.edit',['invoice'=>$invoices,'breadcrumb'=>$breadcrumb]);   
+    
+    return redirect('/login');
+}
+}
+
+public function update($id, Request $req)
+{
+    if (Auth::check()) {
+        $validator = Validator::make($req->all(), [
+            'subtotal' => 'required',
+            'discount' => 'required',
+            'total' => 'required',
+        ]);
+
+        if ($validator->passes()) {
+            $invoice = Invoice::find($id);
+            $invoice->subtotal = $req->subtotal;
+            $invoice->discount = $req->discount;
+            $invoice->total = $req->total;
+            $invoice->notes = $req->notes;
+
+            $invoice->save();
+
+            return redirect()->route('invoice.index')->with('success', 'Updated Successfully!');
+        } else {
+            return redirect()->route('invoice.edit', $id)->withErrors($validator)->withInput();
+        }
+    }
+
+    return redirect('/login');
+}
+
 }

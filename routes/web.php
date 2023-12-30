@@ -39,6 +39,8 @@ Route::get('/', function () {
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
+Route::get('/itemsales/{itemsales}/edit',[ItemsalesController::class,'edit'])->name('itemsales.edit');
+Route::put('/itemsales/{itemsales}',[ItemsalesController::class,'update'])->name('itemsales.update');
 Route::get('/exam_manage_ajax',[ItemsalesController::class,'examshow_ajax'])->name('itemsales.ajax');
 
 Route::post('/itemsales',[ItemsalesController::class,'store'])->name('itemsales.store');
@@ -167,9 +169,8 @@ Route::delete('/companybillentry/{companybillentry}',[CompanyLedgerBillEntryCont
 Route::get('profit', [ProfitController::class, 'index'])->name('profit');
 
 Route::get('/invoice',[Invoicecontroller::class,'index'])->name('invoice.index');
-// Route::get('/invoice/create',[Bankcontroller::class,'create'])->name('banks.create');
-// Route::post('/banks',[Bankcontroller::class,'store'])->name('banks.store');
-// Route::get('/banks/pdf/convert/',[Bankcontroller::class,'show_intopdfbankdetails'])->name('banks.convert');
+Route::get('/invoice/{invoice}/edit',[Invoicecontroller::class,'edit'])->name('invoice.edit');
+Route::put('/invoice/{invoice}',[Invoicecontroller::class,'update'])->name('invoice.update');
 
  
 Route::get('/totalsales', [TotalSalesController::class, 'index'])->name('totalsales.index');

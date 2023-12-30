@@ -47,6 +47,8 @@
                                     {{-- <td data-label="Discount">{{ $item->discount }}</td> --}}
                                     <td data-label="Sub-Total">{{ $item->subtotal }}</td>
                                     <td data-label="profit">{{ ($item->price-$item->itemdlp)*$item->quantity }}</td>
+                                    <td><a href="{{ route('itemsales.edit', $item->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a> </td>
+                                   
 
                                 </tr>
                             @endforeach

@@ -13,7 +13,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>IDE</th>
                             <th>Customer Id</th>
                             <th>Customer Name</th>
                             <th>Subtotal</th>
@@ -21,6 +21,7 @@
                             <th>Total</th>
                             <th>Notes</th>
                             <th>Date</th>
+                            <th>Action</th>
                             {{-- <th>Action</th> --}}
                         </tr>
                     </thead>
@@ -36,15 +37,15 @@
                                     <td>{{ $sale->total }}</td>
                                     <td>{{ $sale->notes }}</td>
                                     <td>{{ $sale->created_at }}</td>
-                                    {{-- <td>
-                                        <a href="{{ route('itemssales.edit', $sale->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a>
+                                    <td>
+                                        <a href="{{ route('invoice.edit', $sale->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a>
     
-                                        <a href="#" onclick="delfunctionsales({{ $sale->id }})" class="btn btn-danger">Delete</a>
+                                        {{-- <a href="#" onclick="delfunctionsales({{ $sale->id }})" class="btn btn-danger">Delete</a>
                                         <form id="eea{{ $sale->id }}" action="{{ route('itemssales.destroy', $sale->id) }}" method="post">
                                             @csrf
                                             @method('delete')
-                                        </form>
-                                    </td> --}}
+                                        </form> --}}
+                                    </td>
                                 </tr>
                             @endforeach
                         @else
