@@ -16,7 +16,7 @@ class Allcustomercreditlistlivewire extends Component
 
     public function render()
     {
-        $cus = customerledgerdetails::select(
+        $query = customerledgerdetails::select(
             'customerid',
             \DB::raw('SUM(debit) AS total_debit'),
             \DB::raw('COALESCE(SUM(credit), 0) AS total_credit'),
@@ -24,25 +24,26 @@ class Allcustomercreditlistlivewire extends Component
             ))
             ->where('invoicetype', 'credit')
             ->groupBy('customerid');
-    
+
+        // Apply search conditions
         if (!empty($this->searchTerm)) {
-            $cus->where(function ($query) {
+            $query->where(function ($query) {
                 $query->where('customerid', 'like', "%" . $this->searchTerm . "%")
                     ->orWhereHas('customerinfo', function ($subQuery) {
                         $subQuery->where('name', 'like', "%" . $this->searchTerm . "%");
                     });
             });
-    
+
             // Separate query for searching by phoneno
-            $cus->orWhereHas('customerinfo', function ($subQuery) {
+            $query->orWhereHas('customerinfo', function ($subQuery) {
                 $subQuery->where('phoneno', 'like', "%" . $this->searchTerm . "%");
             });
         }
-    
-        // Get the results after applying the conditions
-        $results = $cus->paginate(20);
-    
-        // Iterate over the results and fetch related data
+
+        // Paginate the results
+        $results = $query->paginate(20);
+
+        // Fetch additional data
         foreach ($results as $data) {
             if ($data->customerid) {
                 $item = customerinfo::where('id', $data->customerid)->select('name', 'phoneno')->first();
@@ -52,8 +53,7 @@ class Allcustomercreditlistlivewire extends Component
                 }
             }
         }
-    
+
         return view('livewire.allcustomercreditlistlivewire', ['all' => $results]);
     }
-    
 }
