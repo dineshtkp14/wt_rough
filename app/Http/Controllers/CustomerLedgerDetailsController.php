@@ -12,6 +12,8 @@ use Session;
 use App\Models\customerinfo;
 use Illuminate\Support\Facades\Auth;
 
+
+
 class CustomerLedgerDetailsController extends Controller
 
 {
@@ -107,6 +109,24 @@ public function showdetails()
          return view('allsalesdetails.index',['all'=>$cus,'breadcrumb'=>$breadcrumb]);
 }
 
+}
+//foralldetailsdisplay
+public function showallcuscreditdetails()
+{
+    if(Auth::check()){
+        $breadcrumb= [
+            'subtitle'=>'View ',
+            'title'=>'All Customer Credit Details Listx',
+            'link'=>'View Customer Credit Details List'
+        ];
 
+      
+       
+        $query=customerledgerdetails::orderBy('id','DESC')->get();
+       
+        return view('allsalesdetails.allcustomercreditlist', ['all' => $query, 'breadcrumb' => $breadcrumb]);
+        
+
+}
 }
 }

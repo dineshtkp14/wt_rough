@@ -177,6 +177,7 @@ Route::get('/totalsales', [TotalSalesController::class, 'index'])->name('totalsa
 
 
 Route::get('/allsalesdetails', [CustomerLedgerDetailsController::class, 'showdetails'])->name('allsalesdetails.showdetails');
+Route::get('/accl', [CustomerLedgerDetailsController::class, 'showallcuscreditdetails'])->name('allsalesdetails.showallcuscreditdetails');
 
 
 

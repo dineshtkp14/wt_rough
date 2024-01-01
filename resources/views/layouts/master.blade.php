@@ -237,6 +237,12 @@
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
                                     Customer Ledger</a></li>
+
+                                    <li><a href="{{ route('allsalesdetails.showallcuscreditdetails') }}"
+                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
+                                       All Customer Ledger Due</a></li>
+
                             <li><a href="{{ route('cpayments.create') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-solid fa-money-check-dollar  px-2  d-flex justify-content-center align-items-center"></i>Customer
