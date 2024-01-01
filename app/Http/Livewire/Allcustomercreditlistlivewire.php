@@ -3,7 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\CustomerLedgerDetails;
-use App\Models\CustomerInfo;
+use App\Models\customerinfo;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -41,7 +41,7 @@ class Allcustomercreditlistlivewire extends Component
         foreach ($results as $data) {
             
             if ($data->customerid) {
-                $item = CustomerInfo::where('id', $data->customerid)->select('name')->first();
+                $item = customerinfo::where('id', $data->customerid)->select('name')->first();
                 if ($item) {
                     $data->cname = $item->name;
                 }
