@@ -30,6 +30,8 @@ class Allcustomercreditlistlivewire extends Component
                     $query->where('customerid', 'like', "%" . $this->searchTerm . "%")
                         ->orWhereHas('customerinfo', function ($subQuery) {
                             $subQuery->where('name', 'like', "%" . $this->searchTerm . "%");
+                            $subQuery->where('phoneno', 'like', "%" . $this->searchTerm . "%");
+
                         });
                 });
             }
