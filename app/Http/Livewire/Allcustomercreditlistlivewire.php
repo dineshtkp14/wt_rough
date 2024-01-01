@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\CustomerLedgerDetails;
+use App\Models\customerledgerdetails;
 use App\Models\customerinfo;
 
 use Livewire\Component;
@@ -16,7 +16,7 @@ class Allcustomercreditlistlivewire extends Component
 
     public function render()
     {
-        $cus = CustomerLedgerDetails::select(
+        $cus = customerledgerdetails::select(
             'customerid',
             \DB::raw('SUM(debit) AS total_debit'),
             \DB::raw('COALESCE(SUM(credit), 0) AS total_credit'),
