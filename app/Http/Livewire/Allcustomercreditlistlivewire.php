@@ -44,6 +44,7 @@ class Allcustomercreditlistlivewire extends Component
                 $item = customerinfo::where('id', $data->customerid)->select('name')->first();
                 if ($item) {
                     $data->cname = $item->name;
+                    $data->cphoneno = $item->phoneno;
                 }
             }
         }

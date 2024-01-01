@@ -24,7 +24,7 @@
                     <tr>
                       
                         <td data-label="Customer Id"><b>{{ $i->customerid }}</b></td>
-                        <td data-label="Customer Id"><b>{{ $i->cname }}</b></td>
+                        <td data-label="Customer Id"><b>{{ $i->cname }}{{ $i->cphoneno }}</b></td>
 
                         <td data-label="Invoice Id"><b>{{ $i->debit_credit_difference  }}</b></td>
                        
