@@ -41,7 +41,7 @@ class Allcustomercreditlistlivewire extends Component
         foreach ($results as $data) {
             
             if ($data->customerid) {
-                $item = customerinfo::where('id', $data->customerid)->select('name')->first();
+                $item = customerinfo::where('id', $data->customerid)->select('name','phoneno')->first();
                 if ($item) {
                     $data->cname = $item->name;
                     $data->cphoneno = $item->phoneno;
