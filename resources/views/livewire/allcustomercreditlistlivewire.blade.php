@@ -4,7 +4,7 @@
             <a href="{{route('companys.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
              Total No Of Customer 
 
-              <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search Name, phoneno, email" style="width: 250px;" wire:model="searchTerm" >
+              <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search By Name" style="width: 250px;" wire:model="searchTerm" >
          </div>
 		<div class="card-body">
     <table>
