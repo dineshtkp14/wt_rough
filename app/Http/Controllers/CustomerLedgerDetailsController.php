@@ -116,7 +116,7 @@ public function showallcuscreditdetails()
     if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'View ',
-            'title'=>'All Customer Credit Details Listx',
+            'title'=>'All Customer Credit Details List',
             'link'=>'View Customer Credit Details List'
         ];
 
