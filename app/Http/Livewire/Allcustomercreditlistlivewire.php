@@ -34,10 +34,10 @@ class Allcustomercreditlistlivewire extends Component
                     });
             });
 
-            // Separate query for searching by phoneno
-            $query->orWhereHas('customerinfo', function ($subQuery) {
-                $subQuery->where('phoneno', 'like', "%" . $this->searchTerm . "%");
-            });
+            // // Separate query for searching by phoneno
+            // $query->orWhereHas('customerinfo', function ($subQuery) {
+            //     $subQuery->where('phoneno', 'like', "%" . $this->searchTerm . "%");
+            // });
         }
 
         // Paginate the results
