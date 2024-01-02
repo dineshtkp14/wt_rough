@@ -43,7 +43,7 @@ class Allcustomercreditlistlivewire extends Component
         }
     
         // Paginate the results
-        $allResults = $query->paginate(10);
+        $allResults = $query->paginate(20);
     
         // Fetch additional data
         foreach ($allResults as $data) {
