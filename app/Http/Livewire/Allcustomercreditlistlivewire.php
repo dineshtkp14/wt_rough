@@ -16,6 +16,13 @@ class Allcustomercreditlistlivewire extends Component
 
     public function render()
     {
+        // Calculate the total_debit and total_credit separately
+        $totals = customerledgerdetails::select(
+            \DB::raw('SUM(IFNULL(debit, 0)) AS total_debit'),
+            \DB::raw('SUM(IFNULL(credit, 0)) AS total_credit')
+        )->where('invoicetype', 'credit')->first();
+
+        // Main query to get individual customer data
         $query = customerledgerdetails::select(
             'customerid',
             \DB::raw('SUM(debit) AS total_debit'),
@@ -24,7 +31,7 @@ class Allcustomercreditlistlivewire extends Component
             ))
             ->where('invoicetype', 'credit')
             ->groupBy('customerid');
-
+    
         // Apply search conditions
         if (!empty($this->searchTerm)) {
             $query->where(function ($query) {
@@ -33,18 +40,13 @@ class Allcustomercreditlistlivewire extends Component
                         $subQuery->where('name', 'like', "%" . $this->searchTerm . "%");
                     });
             });
-
-            // // Separate query for searching by phoneno
-            // $query->orWhereHas('customerinfo', function ($subQuery) {
-            //     $subQuery->where('phoneno', 'like', "%" . $this->searchTerm . "%");
-            // });
         }
-
+    
         // Paginate the results
-        $results = $query->paginate(20);
-
+        $allResults = $query->paginate(20);
+    
         // Fetch additional data
-        foreach ($results as $data) {
+        foreach ($allResults as $data) {
             if ($data->customerid) {
                 $item = customerinfo::where('id', $data->customerid)->select('name', 'phoneno')->first();
                 if ($item) {
@@ -54,6 +56,14 @@ class Allcustomercreditlistlivewire extends Component
             }
         }
 
-        return view('livewire.allcustomercreditlistlivewire', ['all' => $results]);
+        return view('livewire.allcustomercreditlistlivewire', [
+            'all' => $allResults,
+            'total_debit' => $totals->total_debit,
+            'total_credit' => $totals->total_credit,
+        ]);
     }
+    
+    
+    
+
 }

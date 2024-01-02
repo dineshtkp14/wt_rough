@@ -2,7 +2,8 @@
 	<div class="card">
 		<div class="card-header">
             <a href="{{route('companys.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
-             Total No Of Customer 
+            Total Credit of all Customer:- <b>{{$total_debit}}</b>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Advance Payment:- <b>{{$total_credit}}</b>
 
               <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search By Name" style="width: 250px;" wire:model="searchTerm" >
          </div>
@@ -37,6 +38,8 @@
                     <td colspan="11"><h3> No Record Found !!!!</h3></td>
                 </tr>
             @endif
+           
+             
         </tbody>
     </table>
     
