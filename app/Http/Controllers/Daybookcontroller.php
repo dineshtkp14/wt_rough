@@ -130,7 +130,7 @@ public function update($id, Request $req)
             return redirect()->route('daybooks.index')->with('success','Daybook Details Updated Successfully !!');
         } else {
             dd("this is errror");
-            return redirect()->route('daybooks.edit', ['daybooks' => $daybook])->withErrors($validator)->withInput();
+            return redirect()->route('daybooks.create', ['daybooks' => $daybook])->withErrors($validator)->withInput();
         }
     }
 
