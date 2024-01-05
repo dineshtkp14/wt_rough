@@ -78,7 +78,7 @@ class CompanyLedgerController extends Controller
         $companypanyment->save();
 
 
-        return redirect()->route('companyLedgers.create')->with('success','Customer updated Sucessfully !!'); 
+        return redirect()->route('companyLedgers.create')->with('success','Added Sucessfully !!'); 
     }
 
     else{
