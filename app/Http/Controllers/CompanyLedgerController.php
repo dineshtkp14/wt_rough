@@ -76,7 +76,7 @@ class CompanyLedgerController extends Controller
 
         $companypanyment->notes=$req->notes;
         $companypanyment->save();
-
+dd("hi");
         return redirect()->route('companyLedgers.index')->with('success','Added Sucessfully !!');  
     }
 
