@@ -107,7 +107,7 @@ public function edit($id)
 }
 return redirect('/login');
 }
-public function update($id, Request $req)
+public function update($daybooks, Request $req)
 {
     
     if(Auth::check()){
@@ -134,11 +134,10 @@ public function update($id, Request $req)
         $daybook->modeofpay=$req->modeofpay;
         $daybook->save();
       
-dd("ok");
+
         return redirect()->route('daybooks.index')->with('success','Daybook Details Updated Sucessfully !!');  
     }
     else{
-        dd("what is ok");
         return redirect()->route('daybooks.edit')->withErrors($validator)->withInput();
         
     }
