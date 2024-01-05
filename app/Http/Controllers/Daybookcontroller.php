@@ -107,7 +107,7 @@ public function edit($id)
 }
 return redirect('/login');
 }
-public function update($daybook, Request $req)
+public function update($id, Request $req)
 {
     if(Auth::check()) {
         $validator = Validator::make($req->all(), [
@@ -117,7 +117,7 @@ public function update($daybook, Request $req)
         ]);
 
         if($validator->passes()) {
-            $daybook = daybook::find($daybook);
+            $daybook = daybook::find($id);
             $daybook->name = $req->name;
             $daybook->address = $req->address;
             $daybook->contact = $req->contactno;
