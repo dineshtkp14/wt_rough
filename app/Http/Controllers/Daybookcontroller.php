@@ -107,7 +107,7 @@ public function edit($id)
 }
 return redirect('/login');
 }
-public function update($daybooks, Request $req)
+public function update($daybook, Request $req)
 {
     
     if(Auth::check()){
