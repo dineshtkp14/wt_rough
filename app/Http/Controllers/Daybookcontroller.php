@@ -134,7 +134,7 @@ public function update($id, Request $req)
         $daybook->modeofpay=$req->modeofpay;
         $daybook->save();
       
-
+dd("ok");
         return redirect()->route('daybooks.index')->with('success','Daybook Details Updated Sucessfully !!');  
     }
     else{
