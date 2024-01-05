@@ -113,7 +113,7 @@ public function update($id, Request $req)
         $validator = Validator::make($req->all(), [
             'name' => 'required',
             'address' => 'required',
-            'phoneno' => 'required',
+            'contactno' => 'required',
         ]);
 
         if($validator->passes()) {
