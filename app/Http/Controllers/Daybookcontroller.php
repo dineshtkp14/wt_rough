@@ -109,43 +109,33 @@ return redirect('/login');
 }
 public function update($daybook, Request $req)
 {
-    
-    if(Auth::check()){
+    if(Auth::check()) {
+        $validator = Validator::make($req->all(), [
+            'name' => 'required',
+            'address' => 'required',
+            'phoneno' => 'required',
+        ]);
 
-    $validator=Validator::make($req->all(),[
+        if($validator->passes()) {
+            $daybook = daybook::find($daybook);
+            $daybook->name = $req->name;
+            $daybook->address = $req->address;
+            $daybook->contact = $req->contactno;
+            $daybook->amount = $req->amount;
+            $daybook->remarks = $req->remarks;
+            $daybook->date = $req->date;
+            $daybook->modeofpay = $req->modeofpay;
+            $daybook->save();
 
-        'name'=>'required',
-        'address'=>'required',
-        'phoneno'=>'required', 
-       
-           
-    ]);
-
-    if($validator->passes()){
-
-      
-        $daybook= daybook::find($id);
-        $daybook->name=$req->name;
-        $daybook->address=$req->address;
-        $daybook->contact=$req->contactno;
-        $daybook->amount=$req->amount;
-        $daybook->remarks=$req->remarks;
-        $daybook->date=$req->date;
-        $daybook->modeofpay=$req->modeofpay;
-        $daybook->save();
-      
-
-        return redirect()->route('daybooks.index')->with('success','Daybook Details Updated Sucessfully !!');  
-    }
-    else{
-        return redirect()->route('daybooks.create')->withErrors($validator)->withInput();
-        
+            return redirect()->route('daybooks.index')->with('success','Daybook Details Updated Successfully !!');
+        } else {
+            return redirect()->route('daybooks.edit', ['daybooks' => $daybook])->withErrors($validator)->withInput();
+        }
     }
 
-    
+    return redirect('/login');
 }
-return redirect('/login');
-}
+
 
 public function destroy($id,Request $req){
 
