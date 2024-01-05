@@ -138,8 +138,9 @@ dd("ok");
         return redirect()->route('daybooks.index')->with('success','Daybook Details Updated Sucessfully !!');  
     }
     else{
+        dd("what is ok");
         return redirect()->route('daybooks.edit')->withErrors($validator)->withInput();
-
+        
     }
 
     
