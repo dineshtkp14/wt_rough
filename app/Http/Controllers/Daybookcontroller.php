@@ -129,13 +129,12 @@ public function update($id, Request $req)
 
             return redirect()->route('daybooks.index')->with('success','Daybook Details Updated Successfully !!');
         } else {
-            return redirect()->route('daybooks.create', ['daybooks' => $daybook])->withErrors($validator)->withInput();
-        }
+            return redirect()->route('daybooks.create')->withErrors($validator)->withInput();
     }
 
     return redirect('/login');
 }
-
+}
 
 public function destroy($id,Request $req){
 
