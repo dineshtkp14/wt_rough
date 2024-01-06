@@ -26,7 +26,7 @@
                             <label for="invoiceid" class="form-label">Enter Bill No</label>
                             <input type="number" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Bill No" required>
                         </div>
-                        <button type="submit" class="btn btn-success">Search</button>
+                        <button type="submit" class="btn btn-primary">Search</button>
                     </form>
                 </div>
             </div>
