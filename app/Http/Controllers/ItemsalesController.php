@@ -109,8 +109,8 @@ class ItemsalesController extends Controller
         $cus_data->debit =  $final_arr[0]->total;
         $cus_data->save();
 
-        return redirect()->route('itemsales.index')->with('success','Invoice Created Sucessfully !!'); 
-
+        return redirect()->route('itemsales.index')->with('success','Invoice Created Sucessfully !!');
+                                
        
 
     }

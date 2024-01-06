@@ -38,12 +38,12 @@ class ItemSaleslivewire extends Component
 
             foreach ($cus as $data) {
                 if ($data->itemid) {
-                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp', 'dlp')->first();
+                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp', 'costprice')->first();
 
                     if ($item) {
                         $data->itemname = $item->itemsname;
                         $data->itemprice = $item->mrp;
-                        $data->itemdlp = $item->dlp;
+                        $data->itemdlp = $item->costprice;
                     }
                 }
             }

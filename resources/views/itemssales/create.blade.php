@@ -120,7 +120,7 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text">Sub Total (Rs.)</span>
                                 <input type="text" class="form-control" placeholder="0.00" id="subTotalInputFinal"
-                                    data-name="subtotal" disabled>
+                                    data-name="subtotal" name="test" disabled>
                             </div>
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Discount (Rs.)</span>
@@ -177,8 +177,17 @@
     </div>
 
 
-
     <script>
+
+$(document).ready(function () {
+        $('form').submit(function () {
+            // Disable the submit button
+            $('#submitBtn').prop('disabled', true);
+            
+        });
+    });
+
+
         function changeBackgroundColor(selectElement) {
             var selectedValue = selectElement.value;
     
