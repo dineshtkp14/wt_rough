@@ -28,6 +28,8 @@
                             {{-- <th>Discount</th> --}}
                             <th>Sub-Total</th>
                             <th>Profit</th>
+                            <th>Action</th>
+
                         </tr>
                     </thead>
                     <tbody>
