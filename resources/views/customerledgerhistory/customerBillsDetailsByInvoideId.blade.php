@@ -26,7 +26,7 @@
                             <label for="invoiceid" class="form-label">Enter Bill No</label>
                             <input type="number" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Bill No" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" style="width: 100%;">Search</button>
                     </form>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-lg btn-block" style="width: 100%;">Delete</button>
                     </form>
                 </div>
             </div>
@@ -100,7 +100,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-danger">Update</button>
+                        <button type="submit" class="btn btn-danger btn-lg btn-block" style="width: 100%;">Update</button>
                     </form>
                 </div>
             </div>
