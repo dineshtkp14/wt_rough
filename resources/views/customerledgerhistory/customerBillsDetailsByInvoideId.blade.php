@@ -24,7 +24,7 @@
                     <form action="{{ route('customer.billno') }}" method="get" id="chosendatepdfform">
                         <div class="mb-3">
                             <label for="invoiceid" class="form-label">Enter Bill No</label>
-                            <input type="number" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Bill No">
+                            <input type="number" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Bill No" required>
                         </div>
                         <button type="submit" class="btn btn-success">Search</button>
                     </form>
@@ -47,7 +47,7 @@
                         @method('DELETE')
                         <div class="mb-3">
                             <label for="deleteInvoiceId" class="form-label text-danger">Enter Bill No To Delete:</label>
-                            <input type="number" class="form-control @error('invoiceid') is-invalid @enderror" id="deleteInvoiceId" name="invoiceid" value="{{ old('invoiceid') }}" placeholder="Enter Bill No">
+                            <input type="number" class="form-control @error('invoiceid') is-invalid @enderror" id="deleteInvoiceId" name="invoiceid" value="{{ old('invoiceid') }}" placeholder="Enter Bill No" required>
                             @error('invoiceid')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -78,7 +78,7 @@
                         @method('put')
                         <div class="mb-3">
                             <label for="updateInvoiceId" class="form-label text-danger">Enter Bill No To Update:</label>
-                            <input type="number" value="{{ old('updateinvoiceid') }}" class="form-control @error('updateinvoiceid') is-invalid @enderror" id="updateInvoiceId" name="updateinvoiceid" value="{{ old('updateinvoiceid') }}" placeholder="Enter Bill No">
+                            <input type="number" value="{{ old('updateinvoiceid') }}" class="form-control @error('updateinvoiceid') is-invalid @enderror" id="updateInvoiceId" name="updateinvoiceid" value="{{ old('updateinvoiceid') }}" placeholder="Enter Bill No" required>
                             @error('updateinvoiceid')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
