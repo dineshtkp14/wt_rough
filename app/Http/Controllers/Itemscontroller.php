@@ -51,7 +51,7 @@ class Itemscontroller extends Controller
              'date' => 'required',
              'companyid' => 'required',
              'itemsname' => 'required',
-             'dlp' => 'required',
+             'costprice' => 'required',
              'quantity' => 'required',
              'mrp' => 'required',
          ]);
@@ -64,17 +64,21 @@ class Itemscontroller extends Controller
  
                  $itemsdetails = new item();
                  $itemsdetails->billno = $req->billno;
-                 $itemsdetails->distributorname = $companyName; // Change to use the company name
-                 $itemsdetails->date = $req->date;
-                 $itemsdetails->itemsname = $req->itemsname;
-                 $itemsdetails->quantity = $req->quantity;
-                 $itemsdetails->dlp = $req->dlp;
-                 $itemsdetails->mrp = $req->mrp;
-                 $itemsdetails->showwarning = $req->showwarning;
-                 $itemsdetails->total = $req->quantity * $req->dlp;
-                 $itemsdetails->notes = $req->notes;
- 
-                 $itemsdetails->save();
+                $itemsdetails->distributorname = $companyName; // Update with the company name
+                $itemsdetails->date = $req->date;
+                $itemsdetails->itemsname = $req->itemsname;
+                $itemsdetails->quantity = $req->quantity;
+                $itemsdetails->costprice = $req->costprice;
+                $itemsdetails->mrp = $req->mrp;
+                $itemsdetails->notes = $req->notes;
+
+                $itemsdetails->com_Retail_price = $req->competetiveretail;
+                $itemsdetails->com_wholesale_price = $req->competetivewholesale;
+                $itemsdetails->wholesale_price = $req->wp;
+                $itemsdetails->showwarning = $req->showwarning;
+
+                $itemsdetails->total = $req->quantity * $req->costprice;
+                $itemsdetails->save();
  
                  return redirect()->route('items.create')->with('success', 'Items Added Successfully !!');
              } else {
@@ -114,7 +118,7 @@ public function update($id, Request $req)
             'date' => 'required',
             'companyid' => 'required',
             'itemsname' => 'required',
-            'dlp' => 'required',
+            'costprice' => 'required',
             'quantity' => 'required',
             'mrp' => 'required',
         ]);
@@ -133,10 +137,17 @@ public function update($id, Request $req)
                 $itemsdetails->date = $req->date;
                 $itemsdetails->itemsname = $req->itemsname;
                 $itemsdetails->quantity = $req->quantity;
-                $itemsdetails->dlp = $req->dlp;
+                $itemsdetails->costprice = $req->costprice;
                 $itemsdetails->mrp = $req->mrp;
+                $itemsdetails->showwarning = $req->showwarning;
+
                 $itemsdetails->notes = $req->notes;
-                $itemsdetails->total = $req->quantity * $req->dlp;
+
+                $itemsdetails->com_Retail_price = $req->competetiveretail;
+                $itemsdetails->com_wholesale_price = $req->competetivewholesale;
+                $itemsdetails->wholesale_price = $req->wp;
+
+                $itemsdetails->total = $req->quantity * $req->costprice;
                 $itemsdetails->save();
 
                 return redirect()->route('items.index')->with('success', 'Updated Successfully!');

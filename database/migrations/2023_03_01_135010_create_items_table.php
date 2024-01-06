@@ -20,8 +20,11 @@ return new class extends Migration
            
 
             $table->float('quantity',20,2);
-            $table->float('dlp',20,2);
+            $table->float('costprice',20,2);
             $table->float('mrp',20,2);
+            $table->string('wholesale_price')->nullable();;
+            $table->string('com_Retail_price')->nullable();;
+            $table->string('com_wholesale_price')->nullable();;
             $table->float('total',20,2);
             $table->float('showwarning',20,2);
             $table->string('notes')->nullable();

@@ -136,30 +136,61 @@
         </div>
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">$Cost Rate Per Piece/kg</label>
-                    <input type="text" class="form-control @error('dlp') is-invalid @enderror" 
-                        name="dlp" value="{{ old('dlp') }}">
-                    @error('dlp')
+                    <label for="inputPassword4" class="form-label">$Cost Rate Per (PCS/kg)</label>
+                    <input type="text" class="form-control @error('costprice') is-invalid @enderror" 
+                        name="costprice" value="{{ old('costprice') }}">
+                    @error('costprice')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">$Sale Price Per Piece/kg</label>
-                    <input type="text" class="form-control @error('mrp') is-invalid @enderror" 
-                        name="mrp" value="{{ old('mrp') }}">
-                    @error('mrp')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
-            </div>
-            <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Notes</label>
-                <textarea type="text" class="form-control @error('notes') is-invalid @enderror" 
-                    name="notes" value="{{ old('notes') }}"> </textarea>
-                @error('notes')
+                <label for="inputPassword4" class="form-label">$Sale Price Per (PCS/kg)</label>
+                <input type="text" class="form-control @error('mrp') is-invalid @enderror" 
+                    name="mrp" value="{{ old('mrp') }}">
+                @error('mrp')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
         </div>
+
+        <div class="col-md-12">
+            <label for="inputPassword4" class="form-label">Notes</label>
+            <textarea type="text" class="form-control @error('notes') is-invalid @enderror" 
+                name="notes" value="{{ old('notes') }}"> </textarea>
+            @error('notes')
+                <p class="invalid-feedback">{{ $message }}</p>
+            @enderror
+    </div>
+
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">$Wholesale Price Per (PCS/kg)</label>
+                <input type="text" class="form-control @error('wp') is-invalid @enderror" 
+                    name="wp" value="{{ old('wp') }}">
+                @error('wp')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+        </div>
+
+        <div class="col-md-6">
+            <label for="inputPassword4" class="form-label">$Competitive Retail Sale Price Per (PCS/kg)</label>
+            <input type="text" class="form-control @error('competetiveretail') is-invalid @enderror" 
+                name="competetiveretail" value="{{ old('competetiveretail') }}">
+            @error('competetiveretail')
+                <p class="invalid-feedback">{{ $message }}</p>
+            @enderror
+    </div>
+
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">$Competitive Wholesale Sale Price Per (PCS/kg)</label>
+        <input type="text" class="form-control @error('competetivewholesale') is-invalid @enderror" 
+            name="competetivewholesale" value="{{ old('competetivewholesale') }}">
+        @error('competetivewholesale')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
+</div>
+
+           
+            
 
            
            

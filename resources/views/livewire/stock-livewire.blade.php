@@ -69,8 +69,10 @@
                                             </div>
                                             <div class="modal-body">
                                              <h2>Cost Price: {{$i->costprice}}  /-<br></h2>
-                                            <h2> WholeSale Price: {{$i->wholesaleprice}}  /-</h2>
-                                            <h2> Competitive Price: {{$i->wholesaleprice}}  /-</h2>
+                                            <h2> WholeSale Price: {{$i->wholesale_price}}  /-</h2>
+                                            <h2> Competitive Retail Sale Price: {{$i->com_Retail_price}}  /-</h2>
+                                            <h2> Competitive Wholesale Sale Price: <span class="text-success">{{$i->com_wholesale_price	}} </span> /-</h2>
+
                                             
                                             </div>
                                             <div class="modal-footer">

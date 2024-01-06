@@ -131,10 +131,19 @@
             </div>
 
             <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Show Stock Warning</label>
+                <input type="showwarning" class="form-control @error('showwarning') is-invalid @enderror" 
+                    name="showwarning" value="{{ old('showwarning',$item->showwarning) }}">
+                @error('showwarning')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+        </div>
+
+            <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">$Cost Rate Per Piece</label>
-                    <input type="text" class="form-control @error('dlp') is-invalid @enderror" 
-                        name="dlp" value="{{ old('dlp',$item->dlp) }}">
-                    @error('dlp')
+                    <input type="text" class="form-control @error('costprice') is-invalid @enderror" 
+                        name="costprice" value="{{ old('costprice',$item->costprice) }}">
+                    @error('costprice')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
@@ -157,6 +166,32 @@
                 @enderror
         </div>
            
+        <div class="col-md-6">
+            <label for="inputPassword4" class="form-label">$Wholesale Price Per (PCS/kg)</label>
+            <input type="text" class="form-control @error('wp') is-invalid @enderror" 
+                name="wp" value="{{ old('wp',$item->wholesale_price) }}">
+            @error('wp')
+                <p class="invalid-feedback">{{ $message }}</p>
+            @enderror
+    </div>
+
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">$Competitive Retail Sale Price Per (PCS/kg)</label>
+        <input type="text" class="form-control @error('competetiveretail') is-invalid @enderror" 
+            name="competetiveretail" value="{{ old('competetiveretail',$item->com_Retail_price) }}">
+        @error('competetiveretail')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
+</div>
+
+<div class="col-md-6">
+    <label for="inputPassword4" class="form-label">$Competitive Wholesale Sale Price Per (PCS/kg)</label>
+    <input type="text" class="form-control @error('competetivewholesale') is-invalid @enderror" 
+        name="competetivewholesale" value="{{ old('competetivewholesale',$item->com_wholesale_price	) }}">
+    @error('competetivewholesale')
+        <p class="invalid-feedback">{{ $message }}</p>
+    @enderror
+</div>
 
             <div class="d-grid gap-2 pt-2 pb-4">
                     <button type="submit" class="btn btn-lg btn-primary">Save</button>

@@ -25,6 +25,11 @@
                         <th>Total</th>
                         <th>notes</th>
 
+                        <th>WholeSale Price</th>
+                        <th>Competitive Retail Sale Price</th>
+                        <th>Competitive Wholesale Sale Price</th>
+
+
                       
                          <th>Action</th>
             
@@ -42,10 +47,14 @@
                         <td data-label="Amount">{{ $i->itemsname }}</td>
                         <td data-label="Paisa">{{ $i->quantity}}</td>
                        
-                        <td data-label="Remarks">{{ $i->dlp }}</td>
+                        <td data-label="Remarks">{{ $i->costprice }}</td>
                         <td data-label="Remarks">{{ $i->mrp }}</td>
                         <td data-label="Remarks">{{ $i->total }}</td>
                         <td data-label="Remarks">{{ $i->notes }}</td>
+
+                        <td data-label="Remarks">{{ $i->wholesale_price }}</td>
+                        <td data-label="Remarks">{{ $i->com_Retail_price }}</td>
+                        <td data-label="Remarks">{{ $i->com_wholesale_price }}</td>
 
                         
                        
