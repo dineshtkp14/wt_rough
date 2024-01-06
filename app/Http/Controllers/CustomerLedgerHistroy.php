@@ -195,7 +195,7 @@ class CustomerLedgerHistroy extends Controller
 
         // Check if any records were deleted
         if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
-            return redirect()->route('customer.billno')->with('success', 'Deleted Successfully !!');
+            return redirect()->route('customer.billno')->with('deletesuccess', 'Deleted Successfully !!');
         } else {
             return redirect()->route('customer.billno')->with('error', 'No records found for the provided invoiceid');
         }

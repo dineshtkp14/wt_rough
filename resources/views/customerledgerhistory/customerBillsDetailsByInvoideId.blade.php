@@ -41,9 +41,9 @@
                             {{ Session::get('error') }}
                         </div>
                     @endif
-                    @if (Session::has('success'))
+                    @if (Session::has('deletesuccess'))
                     <div class="alert alert-success">
-                        {{ Session::get('success') }}
+                        {{ Session::get('deletesuccess') }}
                     </div>
                 @endif
 
