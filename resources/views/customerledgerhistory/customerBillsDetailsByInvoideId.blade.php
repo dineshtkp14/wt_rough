@@ -240,15 +240,26 @@
     <script>
 // JavaScript for Delete Form
 document.getElementById('deleteForm').addEventListener('submit', function(e) {
-    var confirmation = confirm('Are you sure you want to delete this invoice?');
+    // Get the value entered by the user in the input field
+    var deleteId = document.getElementById('deleteInvoiceId').value;
+
+    // Prompt the user with a confirmation message including the entered ID
+    var confirmation = confirm('Are you sure you want to delete Invoice ID=' + deleteId + '?');
+
+    // If the user confirms, proceed with form submission; otherwise, prevent it
     if (!confirmation) {
         e.preventDefault(); // Prevent the form from submitting if the user clicks Cancel
     }
 });
-
 // JavaScript for Update Form
 document.getElementById('updateForm').addEventListener('submit', function(e) {
-    var confirmation = confirm('Are you sure you want to update this invoice?');
+    // Get the value entered by the user in the input field
+    var updateId = document.getElementById('updateInvoiceId').value;
+
+    // Prompt the user with a confirmation message including the entered ID
+    var confirmation = confirm('Are you sure you want to update Invoice ID=' + updateId + '?');
+
+    // If the user confirms, proceed with form submission; otherwise, prevent it
     if (!confirmation) {
         e.preventDefault(); // Prevent the form from submitting if the user clicks Cancel
     }
