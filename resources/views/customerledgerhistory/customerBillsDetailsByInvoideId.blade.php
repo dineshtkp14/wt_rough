@@ -234,24 +234,29 @@
 
     <script>
 // JavaScript for Delete Form
-document.getElementById('deleteFormSubmitButton').addEventListener('click', function(e) {
-    return confirm('Are you sure you want to delete this invoice?') || e.preventDefault();
+document.getElementById('deleteForm').addEventListener('submit', function(e) {
+    var confirmation = confirm('Are you sure you want to delete this invoice?');
+    if (!confirmation) {
+        e.preventDefault(); // Prevent the form from submitting if the user clicks Cancel
+    }
 });
 
 // JavaScript for Update Form
-document.getElementById('updateFormSubmitButton').addEventListener('click', function(e) {
-    return confirm('Are you sure you want to update this invoice?') || e.preventDefault();
+document.getElementById('updateForm').addEventListener('submit', function(e) {
+    var confirmation = confirm('Are you sure you want to update this invoice?');
+    if (!confirmation) {
+        e.preventDefault(); // Prevent the form from submitting if the user clicks Cancel
+    }
 });
 
-
-
-        document.getElementById('pdfLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            var query = window.location.search;
-            var param = new URLSearchParams(query);
-            var url = "{{ route('invoicebillno.convert') }}?invoiceid=" + param.get('invoiceid');
-            window.location.href = url;
-        });
+// JavaScript for PDF Link
+document.getElementById('pdfLink').addEventListener('click', function(e) {
+    e.preventDefault();
+    var query = window.location.search;
+    var param = new URLSearchParams(query);
+    var url = "{{ route('invoicebillno.convert') }}?invoiceid=" + param.get('invoiceid');
+    window.location.href = url;
+});
     </script>
 </div>
 @stop
