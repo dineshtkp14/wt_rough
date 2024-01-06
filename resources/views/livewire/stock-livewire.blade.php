@@ -53,7 +53,32 @@
                                    <td>{{ $i->itemsname }}</td>
                                  
                                    <td>{{ $i->quantity }}</td>
-                                   <td>{{ $i->mrp }}</td>
+                                   <td>{{ $i->mrp }}  &nbsp; &nbsp; <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{$i->id}}">
+                                        Extra
+                                      </button>
+                                      
+                                      <!-- Modal -->
+                                      <div class="modal fade" id="exampleModal{{$i->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                    
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h1 class="modal-title fs-5" id="exampleModalLabel">View Addtional Details</h1>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                             <h2>Cost Price: {{$i->costprice}}  /-<br></h2>
+                                            <h2> WholeSale Price: {{$i->wholesaleprice}}  /-</h2>
+                                            <h2> Competitive Price: {{$i->wholesaleprice}}  /-</h2>
+                                            
+                                            </div>
+                                            <div class="modal-footer">
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div></td>
                                    <td>{{ $i->showwarning }}</td>
                                 
                                  
