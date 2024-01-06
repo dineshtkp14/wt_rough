@@ -41,6 +41,11 @@
                             {{ Session::get('error') }}
                         </div>
                     @endif
+                    @if (Session::has('updatesuccess'))
+                    <div class="alert alert-success">
+                        {{ Session::get('updatesuccess') }}
+                    </div>
+                @endif
 
                     <form action="{{ route('customer.deletebillno') }}" method="POST" id="deleteForm">
                         @csrf
