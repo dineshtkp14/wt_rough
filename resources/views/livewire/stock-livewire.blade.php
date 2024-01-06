@@ -38,6 +38,7 @@
             
                          <th >Quantity</th>
                          <th >MRP</th>
+                         <th >Extra</th>
                          <th >Show Warning</th>
                          <th>Action</th>
             
@@ -54,34 +55,38 @@
                                  
                                    <td>{{ $i->quantity }}</td>
                                    <td>{{ $i->mrp }}  &nbsp; &nbsp; <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{$i->id}}">
-                                        Extra
-                                      </button>
-                                      
-                                      <!-- Modal -->
-                                      <div class="modal fade" id="exampleModal{{$i->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                    
-                                          <div class="modal-content">
-                                            <div class="modal-header">
-                                              <h1 class="modal-title fs-5" id="exampleModalLabel">View Addtional Details</h1>
-                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                             <h2>Cost Price: {{$i->costprice}}  /-<br></h2>
-                                            <h2> WholeSale Price: {{$i->wholesale_price}}  /-</h2>
-                                            <h2> Competitive Retail Sale Price: {{$i->com_Retail_price}}  /-</h2>
-                                            <h2> Competitive Wholesale Sale Price: <span class="text-success">{{$i->com_wholesale_price	}} </span> /-</h2>
+                                    </td>
 
-                                            
-                                            </div>
-                                            <div class="modal-footer">
-                                              
-                                            </div>
-                                          </div>
+                                   <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{$i->id}}">
+                                    Extra
+                                  </button>
+                                  
+                                  <!-- Modal -->
+                                  <div class="modal fade" id="exampleModal{{$i->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h1 class="modal-title fs-5" id="exampleModalLabel">View Addtional Details  (Excluding VAT 13%)</h1>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                      </div></td>
+                                        <div class="modal-body">
+                                         <h2>Cost Price: {{$i->costprice}}  /-<br></h2>
+                                        <h2> WholeSale Price: {{$i->wholesale_price}}  /-</h2>
+                                        <h2> Competitive Retail Sale Price: {{$i->com_Retail_price}}  /-</h2>
+                                        <h2> Competitive Wholesale Sale Price: <span class="text-success">{{$i->com_wholesale_price	}} </span> /-</h2>
+
+                                        
+                                        </div>
+                                        <div class="modal-footer">
+                                          
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div></td>
+
                                    <td>{{ $i->showwarning }}</td>
+
                                 
                                  
                                    <td>
