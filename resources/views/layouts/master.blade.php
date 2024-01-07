@@ -74,7 +74,10 @@
                                     class="link-dark d-inline-flex text-decoration-none rounded">Monthly</a></li>
                             <li><a href="#"
                                     class="link-dark d-inline-flex text-decoration-none rounded">Annually</a></li> --}}
-                        </ul>
+                       
+                                    <li><a href="{{ route('deletedcustomer.deletebillno') }}"
+                                        class="link-dark d-inline-flex text-decoration-none rounded">Searh Deleted Bill</a></li> 
+                                </ul>
                     </div>
                 </li>
                
