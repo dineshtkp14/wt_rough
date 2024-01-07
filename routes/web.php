@@ -133,6 +133,8 @@ Route::get('/companyledgerdetails',[CompanyLedgerBillEntryController::class,'ret
 Route::get('companyledgerdetails/pdf/convert/',[CompanyLedgerBillEntryController::class,'PdfGenerateCustomerDetails'])->name('companyledgerdetails.convert');
 
 
+Route::get('/deletedbillno',[CustomerLedgerHistroy::class,'returndeletedBillsDEtailsByInvoiceid'])->name('deletedcustomer.deletebillno');
+
 Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])->name('customer.billno');
 Route::delete('/billno', [CustomerLedgerHistroy::class, 'deletebillfromdatabase'])->name('customer.deletebillno');
 Route::put('/billno', [CustomerLedgerHistroy::class, 'updateinvoiicetype'])->name('customer.updatebillinvoicetype');

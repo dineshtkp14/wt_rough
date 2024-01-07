@@ -60,7 +60,7 @@
             </div>
 
             <div class="d-grid gap-2 pt-2 pb-4">
-                    <button type="submit" class="btn btn-lg btn-primary">Save</button>
+                    <button type="submit" id="submitBtn" class="btn btn-lg btn-primary">Save</button>
             </div>
 </form>
 </div>
@@ -68,6 +68,17 @@
 
 
 </div>
+<script>
+        
+    $(document).ready(function () {
+            $('form').submit(function () {
+                // Disable the submit button
+                $('#submitBtn').prop('disabled', true);
+                
+            });
+        });
+    
+        </script>
 
 @stop
 

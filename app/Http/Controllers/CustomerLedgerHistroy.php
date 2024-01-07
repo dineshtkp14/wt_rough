@@ -7,6 +7,12 @@ use App\Models\customerledgerdetails;
 use App\Models\invoice;
 use App\Models\item;
 use App\Models\salesitem;
+
+use App\Models\BackupSalesItem;
+use App\Models\BackupInvoice;
+use App\Models\BackupCustomerLedgerDetails;
+
+
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\Auth;
@@ -159,53 +165,92 @@ class CustomerLedgerHistroy extends Controller
 
 
     
+
     public function deletebillfromdatabase(Request $req)
-{
-    $validator = Validator::make($req->all(), [
-        'invoiceid' => 'required',
-    ]);
-
-    if ($validator->passes()) {
-        // Retrieve the items from the bill before deleting
-        $items = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->get();
-
-        
-        // Adjust stock quantities before deleting
-        foreach ($items as $item) {
-
-           
-            $product = item::find($item->itemid); // Use your actual model name here
-
-            // Check if the record exists before updating
-            if ($product) {
-               
-                $product->quantity += $item->quantity; // Assuming 'quantity' is the field representing the sold quantity
-                $product->save();
-            } 
-        }
-
-        // Delete records from salesitem_tbl
-        $salesItemsDeleted = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->delete();
-
-        // Delete records from invoices_tbl
-        $invoicesDeleted = DB::table('invoices')->where('id', $req->invoiceid)->delete();
-
-        // Delete records from customerledgerdetails_tbl
-        $ledgerDetailsDeleted = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->delete();
-
-        // Check if any records were deleted
-        if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
-            return redirect()->route('customer.billno')->with('deletesuccess', 'Deleted Successfully !!');
+    {
+        $validator = Validator::make($req->all(), [
+            'invoiceid' => 'required',
+        ]);
+    
+        if ($validator->passes()) {
+            // Retrieve the items from the bill before deleting
+            $items = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->get();
+    
+            // Backup data before deleting
+            foreach ($items as $item) {
+                $backupSalesItem = new BackupSalesItem();
+                $backupSalesItem->invoiceid = $item->invoiceid;
+                $backupSalesItem->itemid = $item->itemid;
+                $backupSalesItem->unstockedname = $item->unstockedname;
+                $backupSalesItem->quantity = $item->quantity;
+                $backupSalesItem->price = $item->price;
+                $backupSalesItem->discount = $item->discount;
+                $backupSalesItem->subtotal = $item->subtotal;
+                $backupSalesItem->save();
+            }
+    
+            // Backup invoice data
+            $invoice = DB::table('invoices')->where('id', $req->invoiceid)->first();
+    
+            if ($invoice) {
+                $backupInvoice = new BackupInvoice();
+                $backupInvoice->customerid = $invoice->customerid;
+                $backupInvoice->subtotal = $invoice->subtotal;
+                $backupInvoice->discount = $invoice->discount;
+                $backupInvoice->total = $invoice->total;
+                $backupInvoice->notes = $invoice->notes;
+                $backupInvoice->save();
+            } else {
+                // Handle the case when the invoice does not exist
+                return redirect()->route('customer.billno')->with('error', 'Invalid invoiceid provided');
+            }
+    
+            // Backup customer ledger details
+            $ledgerDetails = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->get();
+            foreach ($ledgerDetails as $ledger) {
+                $backupLedger = new BackupCustomerLedgerDetails();
+                $backupLedger->customerid = $ledger->customerid;
+                $backupLedger->invoiceid = $ledger->invoiceid;
+                $backupLedger->particulars = $ledger->particulars;
+                $backupLedger->voucher_type = $ledger->voucher_type;
+                $backupLedger->date = $ledger->date;
+                $backupLedger->debit = $ledger->debit;
+                $backupLedger->credit = $ledger->credit;
+                $backupLedger->invoicetype = $ledger->invoicetype;
+                $backupLedger->notes = $ledger->notes;
+                $backupLedger->save();
+            }
+    
+            // Adjust stock quantities before deleting
+            foreach ($items as $item) {
+                $product = Item::find($item->itemid);
+                if ($product) {
+                    $product->quantity += $item->quantity;
+                    $product->save();
+                }
+            }
+    
+            // Delete records from salesitem_tbl
+            $salesItemsDeleted = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->delete();
+    
+            // Delete records from invoices_tbl
+            $invoicesDeleted = DB::table('invoices')->where('id', $req->invoiceid)->delete();
+    
+            // Delete records from customerledgerdetails_tbl
+            $ledgerDetailsDeleted = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->delete();
+    
+            // Check if any records were deleted
+            if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
+                return redirect()->route('customer.billno')->with('deletesuccess', 'Deleted Successfully !!');
+            } else {
+                return redirect()->route('customer.billno')->with('error', 'No records found for the provided invoiceid');
+            }
         } else {
-            return redirect()->route('customer.billno')->with('error', 'No records found for the provided invoiceid');
+            // Redirect with an error message if invoiceid is not provided
+            return redirect()->route('customer.billno')->withErrors($validator)->withInput();
         }
-    } else {
-        // Redirect with an error message if invoiceid is not provided
-        return redirect()->route('customer.billno')->withErrors($validator)->withInput();
     }
-}
-
-
+    
 
 
 
@@ -304,6 +349,56 @@ class CustomerLedgerHistroy extends Controller
                     'breadcrumb' => $breadcrumb
                 ]);
             }
+        }
+
+//deletedbill
+            public function returndeletedBillsDEtailsByInvoiceid(Request $req)
+            {
+                if(Auth::check()){
+
+                $breadcrumb = [
+                    'subtitle' => '',
+                    'title' => 'Search Deleted Bill No',
+                    'link' => 'Search Deleted Bill No'
+                ];
+            
+                $itemsname = item::where('id', $req->customerid)->get();
+                $invoiceid = $req->invoiceid;
+            
+                $allInvoices = BackupInvoice::where('id', $req->invoiceid)->get();
+            
+                $allcusbyid = BackupSalesItem::where('invoiceid', $req->invoiceid)->get();
+                $customerinfodetails = null;
+
+                $cusleddetaiforinvoicetype = BackupCustomerLedgerDetails::where('invoiceid', $req->invoiceid)->get();
+                $forinvoicetype = $cusleddetaiforinvoicetype->first();           
+            
+                foreach ($allcusbyid as $data) {
+                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+                    if ($item) {
+                        $data->itemid = $item->itemsname;
+                        $data->mrp = $item->mrp;
+                    } else {
+                        $data->itemid = $data->unstockedname;
+                    }
+                }
+            
+                foreach ($allInvoices as $data) {
+                    if ($data->customerid) {
+                        $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
+                    }
+                }
+            
+                return view('deletedbill.deletedbillview', [
+                    'allinvoices' => $allInvoices,
+                    'allcusbyid' => $allcusbyid,
+                    'itemsname' => $itemsname,
+                    'invoiceid' => $invoiceid,
+                    'cinfodetails' => $customerinfodetails,
+                    'forinvoicetype'=>$forinvoicetype,
+                    'breadcrumb' => $breadcrumb
+                ]);
+            }
             
 
 
@@ -348,6 +443,3 @@ class CustomerLedgerHistroy extends Controller
         return redirect('/login');
     }
         }
-
-        
-    
