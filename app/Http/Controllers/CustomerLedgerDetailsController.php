@@ -78,6 +78,8 @@ class CustomerLedgerDetailsController extends Controller
          $cl->voucher_type=$req->vt;
          $cl->credit=$req->amount;
          $cl->notes=$req->notes;
+         $cl->added_by = session('user_email');
+
          $cl->save();
  
        

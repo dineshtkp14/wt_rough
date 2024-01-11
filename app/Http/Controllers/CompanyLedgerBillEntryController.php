@@ -84,6 +84,8 @@ class CompanyLedgerBillEntryController extends Controller
         $companypanyment->voucher_no=$req->vt;
         $companypanyment->credit=$req->amount;
         $companypanyment->notes=$req->notes;
+        $companypanyment->added_by = session('user_email');
+
         $companypanyment->save();
 
         return redirect()->route('companybillentry.create')->with('success',' Added Sucessfully !!');  
@@ -142,6 +144,8 @@ class CompanyLedgerBillEntryController extends Controller
             $company->voucher_type=$req->vt;
             $company->debit=$req->amount;
             $company->notes=$req->notes;
+            $company->added_by = session('user_email');
+
             $company->save();
     
             return redirect()->route('companybillentry.index')->with('success',' Updated Sucessfully !!');  

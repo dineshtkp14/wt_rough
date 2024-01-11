@@ -21,6 +21,11 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Search Invoice</h5>
+                    @if (Session::has('error'))
+                    <div class="alert alert-success w-50">
+                        {{ Session::get('error') }}
+                    </div>
+                @endif
                     <form action="{{ route('deletedcustomer.deletebillno') }}" method="get" id="chosendatepdfform">
                         <div class="mb-3">
                             <label for="invoiceid" class="form-label">Enter Bill No</label>

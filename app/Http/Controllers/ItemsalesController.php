@@ -69,6 +69,8 @@ class ItemsalesController extends Controller
         $invoice_data->discount = $final_arr[0]->discount == "" ? 0.00 : $final_arr[0]->discount;
         $invoice_data->total = $final_arr[0]->total;
         $invoice_data->notes = $final_arr[0]->note;
+        $invoice_data->added_by = session('user_email');
+
         //dd( $invoice_data->notes);
         $invoice_data->save();
 
@@ -96,6 +98,8 @@ class ItemsalesController extends Controller
             $data->price = $value->price;
             $data->discount = $value->discount == "" ? 0.00 : $value->discount;
             $data->subtotal = $value->subtotal;
+            $data->added_by = session('user_email');
+
             $data->save();
         }
 
@@ -107,6 +111,8 @@ class ItemsalesController extends Controller
         $cus_data->voucher_type = "sales";
         $cus_data->invoicetype = $req->invoice_type;
         $cus_data->debit =  $final_arr[0]->total;
+        $cus_data->added_by = session('user_email');
+
         $cus_data->save();
 
         return redirect()->route('itemsales.index')->with('success','Invoice Created Sucessfully !!');
@@ -159,6 +165,8 @@ class ItemsalesController extends Controller
              $item->discount = $req->discount;
              $item->subtotal = $req->subtotal;
              // Update other fields as needed
+             $item->added_by = session('user_email');
+
  
              $item->save();
  

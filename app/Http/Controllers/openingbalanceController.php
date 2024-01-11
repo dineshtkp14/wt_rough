@@ -50,6 +50,8 @@ class openingbalanceController extends Controller
             $openingBalance->voucher_type = "old amount";
             $openingBalance->debit = $req->amount;
             $openingBalance->notes = $req->notes;
+            $openingBalance->added_by = session('user_email');
+
             $openingBalance->save();
 
             return redirect()->route('openingbalances.create')->with('success', ' Added Successfully!');

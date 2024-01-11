@@ -115,6 +115,7 @@ public function update($id, Request $req)
             $invoice->discount = $req->discount;
             $invoice->total = $req->total;
             $invoice->notes = $req->notes;
+            $invoice->added_by = session('user_email');
 
             $invoice->save();
 

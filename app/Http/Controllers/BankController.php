@@ -106,7 +106,8 @@ return redirect('/login');
         $bankbook->amount=$req->amount;
         $bankbook->remarks=$req->remarks;
         $bankbook->date=$req->date;
-       
+        $bankbook->added_by = session('user_email');
+
         $bankbook->save();
 
       

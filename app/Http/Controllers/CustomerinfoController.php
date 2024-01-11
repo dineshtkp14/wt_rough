@@ -75,6 +75,8 @@ return redirect('/login');
         $cusinfo->email=$req->email;
         $cusinfo->phoneno=$req->phoneno;
         $cusinfo->remarks=$req->remarks;
+        $cusinfo->added_by = session('user_email');
+
         $cusinfo->save();
 
         return redirect()->route('customerinfos.index')->with('success','Customer Added Sucessfully !!');  
@@ -126,6 +128,8 @@ return redirect('/login');
             $cusinfo->email=$req->email;
             $cusinfo->phoneno=$req->phoneno;
             $cusinfo->remarks=$req->remarks;
+            $cusinfo->added_by = session('user_email');
+
             $cusinfo->save();
     
             return redirect()->route('customerinfos.index')->with('success','Customer updated Sucessfully !!');  

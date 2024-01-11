@@ -62,6 +62,8 @@ class CompanyController extends Controller
         $companyinfo->email=$req->email;
         $companyinfo->phoneno=$req->phoneno;
         $companyinfo->notes=$req->notes;
+        $companyinfo->added_by = session('user_email');
+
         $companyinfo->save();
 
       
@@ -116,6 +118,7 @@ public function update($id, Request $req)
         $companyinfo->email=$req->email;
         $companyinfo->phoneno=$req->phoneno;
         $companyinfo->notes=$req->notes;
+        $companyinfo->added_by = session('user_email');
         $companyinfo->save();
 
       

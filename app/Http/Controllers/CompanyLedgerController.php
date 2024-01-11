@@ -75,6 +75,8 @@ class CompanyLedgerController extends Controller
         $companypanyment->debit=$req->amount;
 
         $companypanyment->notes=$req->notes;
+        $companypanyment->added_by = session('user_email');
+
         $companypanyment->save();
 
 
@@ -128,6 +130,8 @@ class CompanyLedgerController extends Controller
             $cusinfo->email=$req->email;
             $cusinfo->phoneno=$req->phoneno;
             $cusinfo->remarks=$req->remarks;
+            $cusinfo->added_by = session('user_email');
+
             $cusinfo->save();
     
             return redirect()->route('companyLedgers.index')->with('success','Updated Sucessfully !!');  

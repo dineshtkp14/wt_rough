@@ -28,6 +28,7 @@ return new class extends Migration
             $table->float('total',20,2);
             $table->float('showwarning',20,2);
             $table->string('notes')->nullable();
+            $table->string('added_by')->nullable();
 
           
 

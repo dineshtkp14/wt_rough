@@ -19,6 +19,8 @@ return new class extends Migration
             $table->float('wholesaleprice',20,2);
             $table->string('note')->nullable();
             $table->timestamps();
+            $table->string('added_by')->nullable();
+
         });
     }
 

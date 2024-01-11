@@ -11,9 +11,12 @@ use App\Http\Controllers\CompanyLedgerController;
 use App\Http\Controllers\CustomAuthController;
 use App\Http\Controllers\Itemscontroller;
 use App\Http\Controllers\CustomerinfoController;
+use App\Http\Controllers\CreditnotesInvoices_controller;
 use App\Http\Controllers\ProfitController;
 use App\Http\Controllers\Invoicecontroller;
 use App\Http\Controllers\TotalSalesController;
+use App\Http\Controllers\Creditnotes_controller;
+
 
 
 
@@ -41,9 +44,31 @@ Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.i
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
 Route::get('/itemsales/{itemsales}/edit',[ItemsalesController::class,'edit'])->name('itemsales.edit');
 Route::put('/itemsales/{itemsales}',[ItemsalesController::class,'update'])->name('itemsales.update');
-Route::get('/exam_manage_ajax',[ItemsalesController::class,'examshow_ajax'])->name('itemsales.ajax');
-
+// Route::get('/exam_manage_ajax',[ItemsalesController::class,'examshow_ajax'])->name('itemsales.ajax');
 Route::post('/itemsales',[ItemsalesController::class,'store'])->name('itemsales.store');
+
+
+  
+
+Route::get('/creditnotes',[Creditnotes_controller::class,'index'])->name('creditnotes.index');
+Route::get('/creditnotes/create',[Creditnotes_controller::class,'create'])->name('creditnotes.create');
+Route::get('/creditnotes/{creditnotes}/edit',[Creditnotes_controller::class,'edit'])->name('creditnotes.edit');
+Route::put('/creditnotes/{creditnotes}',[Creditnotes_controller::class,'update'])->name('creditnotes.update');
+// Route::get('/exam_manage_ajax',[ItemsalesController::class,'examshow_ajax'])->name('itemsales.ajax');
+Route::post('/creditnotes',[Creditnotes_controller::class,'store'])->name('creditnotes.store');
+
+Route::get('/creditnotesbillno',[Creditnotes_controller::class,'returnBillsDEtailsByInvoiceidforviewingcreditnotebill'])->name('creditnotescustomer.billno');
+Route::delete('/creditnotesbillno', [Creditnotes_controller::class, 'deletebillfromdatabaseforcreditnotes'])->name('creditnotescustomers.deletebillno');
+Route::put('/creditnotesbillno', [Creditnotes_controller::class, 'updateinvoiicetypeforcreditnotes'])->name('creditnotescustomers.updatebillinvoicetype');
+
+Route::get('/deletedcnbillno',[Creditnotes_controller::class,'returndeletedcnBillsDEtailsByInvoiceid'])->name('deletedcncustomer.deletebillno');
+
+
+Route::get('/cninvoice',[CreditnotesInvoices_controller::class,'index'])->name('cninvoice.index');
+Route::get('/cninvoice/{cninvoice}/edit',[CreditnotesInvoices_controller::class,'edit'])->name('cninvoice.edit');
+Route::put('/cninvoice/{cninvoice}',[CreditnotesInvoices_controller::class,'update'])->name('cninvoice.update');
+
+
 
 
 Route::get('/pricelists',[PricelistController::class,'index'])->name('pricelists.index');
@@ -163,7 +188,6 @@ Route::post('/companybillentry',[CompanyLedgerBillEntryController::class,'store'
 Route::get('/companybillentry/{companybillentry}/edit',[CompanyLedgerBillEntryController::class,'edit'])->name('companybillentry.edit');
 Route::put('/companybillentry/{companybillentry}',[CompanyLedgerBillEntryController::class,'update'])->name('companybillentry.update');
 Route::delete('/companybillentry/{companybillentry}',[CompanyLedgerBillEntryController::class,'destroy'])->name('companybillentry.destroy');
-
 
 
 // Route::get('/profit', 'ProfitController@index')->name('profit.index');

@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Http\Request;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session as FacadesSession;
 use Session;
+
 
 class CustomAuthcontroller extends Controller
 {
@@ -55,6 +56,9 @@ class CustomAuthcontroller extends Controller
 
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
+
+            $request->session()->put('user_email', $request->email);
+
             return redirect()->intended('dashboard')
                 ->with('message', 'Signed in!');
         }
@@ -150,10 +154,13 @@ class CustomAuthcontroller extends Controller
         return redirect('/login');
     }
 
-    public function signOut()
+    public function signOut(Request $request)
     {
+       
+
         FacadesSession::flush();
         Auth::logout();
+        $request->session()->forget('user_email');
 
         return redirect('login');
     }

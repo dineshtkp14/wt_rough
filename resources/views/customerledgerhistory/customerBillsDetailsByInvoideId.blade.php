@@ -20,7 +20,7 @@
         <div class="col-md-4">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">Search Invoice</h5>
+                    <h5 class="card-title">Search ok Invoice</h5>
                     <form action="{{ route('customer.billno') }}" method="get" id="chosendatepdfform">
                         <div class="mb-3">
                             <label for="invoiceid" class="form-label">Enter Bill No</label>
@@ -37,12 +37,12 @@
                 <div class="card-body">
                     <h5 class="card-title">Delete Invoice</h5>
                     @if (Session::has('error'))
-                        <div class="alert alert-info">
+                        <div class="alert bg-danger text-white">
                             {{ Session::get('error') }}
                         </div>
                     @endif
                     @if (Session::has('deletesuccess'))
-                    <div class="alert alert-success">
+                    <div class="alert bg-success text-white">
                         {{ Session::get('deletesuccess') }}
                     </div>
                 @endif
@@ -68,12 +68,12 @@
                 <div class="card-body">
                     <h5 class="card-title">Update Invoice Type</h5>
                     @if (Session::has('updateerror'))
-                        <div class="alert alert-info">
+                        <div class="alert bg-danger text-white">
                             {{ Session::get('updateerror') }}
                         </div>
                     @endif
                     @if (Session::has('updatesuccess'))
-                    <div class="alert alert-success">
+                    <div class="alert bg-success text-white">
                         {{ Session::get('updatesuccess') }}
                     </div>
                 @endif

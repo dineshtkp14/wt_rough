@@ -186,6 +186,8 @@ class CustomerLedgerHistroy extends Controller
                 $backupSalesItem->price = $item->price;
                 $backupSalesItem->discount = $item->discount;
                 $backupSalesItem->subtotal = $item->subtotal;
+                $backupSalesItem->added_by = session('user_email');
+
                 $backupSalesItem->save();
             }
     
@@ -199,6 +201,9 @@ class CustomerLedgerHistroy extends Controller
                 $backupInvoice->discount = $invoice->discount;
                 $backupInvoice->total = $invoice->total;
                 $backupInvoice->notes = $invoice->notes;
+                $backupInvoice->added_by = session('user_email');
+
+
                 $backupInvoice->save();
             } else {
                 // Handle the case when the invoice does not exist
@@ -218,6 +223,8 @@ class CustomerLedgerHistroy extends Controller
                 $backupLedger->credit = $ledger->credit;
                 $backupLedger->invoicetype = $ledger->invoicetype;
                 $backupLedger->notes = $ledger->notes;
+                $backupLedger->added_by = session('user_email');
+
                 $backupLedger->save();
             }
     

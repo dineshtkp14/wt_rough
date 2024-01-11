@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('remarks')->nullable();
 
             $table->timestamps();
+            $table->string('added_by')->nullable();
+
         });
     }
 

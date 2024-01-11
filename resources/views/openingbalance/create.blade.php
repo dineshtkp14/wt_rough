@@ -32,8 +32,8 @@
 
     <div class="container">
         @if (Session::has('success'))
-            <div class="alert alert-success w-50">
-                {{ Session::get('success') }}
+        <div class="alert bg-success text-white w-50">
+            {{ Session::get('success') }}
             </div>
         @endif
     </div>

@@ -78,6 +78,11 @@ class Itemscontroller extends Controller
                 $itemsdetails->showwarning = $req->showwarning;
 
                 $itemsdetails->total = $req->quantity * $req->costprice;
+                $itemsdetails->added_by = session('user_email');
+
+              
+
+
                 $itemsdetails->save();
  
                  return redirect()->route('items.create')->with('success', 'Items Added Successfully !!');
@@ -148,6 +153,8 @@ public function update($id, Request $req)
                 $itemsdetails->wholesale_price = $req->wp;
 
                 $itemsdetails->total = $req->quantity * $req->costprice;
+                $itemsdetails->added_by = session('user_email');
+
                 $itemsdetails->save();
 
                 return redirect()->route('items.index')->with('success', 'Updated Successfully!');

@@ -74,6 +74,8 @@ class Daybookcontroller extends Controller
         $daybook->remarks=$req->remarks;
         $daybook->date=$req->date;
         $daybook->modeofpay=$req->modeofpay;
+        $daybook->added_by = session('user_email');
+
         $daybook->save();
 
       
@@ -125,6 +127,8 @@ public function update($id, Request $req)
             $daybook->remarks = $req->remarks;
             $daybook->date = $req->date;
             $daybook->modeofpay = $req->modeofpay;
+            $itemsdetails->added_by = session('user_email');
+
             $daybook->save();
 
             return redirect()->route('daybooks.index')->with('success','Daybook Details Updated Successfully !!');

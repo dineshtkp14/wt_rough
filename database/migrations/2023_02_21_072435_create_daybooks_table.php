@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('date');
             $table->string('modeofpay');
             $table->string('remarks')->nullable();
+            $table->string('added_by')->nullable();
 
             $table->timestamps();
         });

@@ -62,7 +62,9 @@ class PricelistController extends Controller
         $pricelistobj->costprice=$req->costprice;
         $pricelistobj->saleprice=$req->saleprice;
         $pricelistobj->wholesaleprice=$req->wholesaleprice;
-        $pricelistobj->note=$req->note;       
+        $pricelistobj->note=$req->note;  
+        $pricelistobj->added_by = session('user_email');
+     
         $pricelistobj->save();
 
       
@@ -113,7 +115,9 @@ class PricelistController extends Controller
         $pricelistobj->costprice=$req->costprice;
         $pricelistobj->saleprice=$req->saleprice;
         $pricelistobj->wholesaleprice=$req->wholesaleprice;
-        $pricelistobj->note=$req->note;       
+        $pricelistobj->note=$req->note;  
+        $pricelistobj->added_by = session('user_email');
+     
         $pricelistobj->save();
 
     

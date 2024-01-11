@@ -25,6 +25,8 @@ return new class extends Migration
             $table->float('subtotal',20,2);
            
             $table->timestamps();
+            $table->string('added_by')->nullable();
+
         });
     }
 
