@@ -93,6 +93,8 @@
             @enderror
     </div>  
            
+                 
+
                 <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Bill No</label>
                     <input type="text" class="form-control @error('billno') is-invalid @enderror" 
@@ -187,6 +189,15 @@
         @error('competetivewholesale')
             <p class="invalid-feedback">{{ $message }}</p>
         @enderror
+</div>
+
+<div class="col-md-6">
+    <label for="inputPassword4" class="form-label">Iteam Store Area</label>
+    <input type="text" class="form-control @error('isa') is-invalid @enderror" 
+        name="isa" value="{{ old('isa') }}">
+    @error('isa')
+        <p class="invalid-feedback">{{ $message }}</p>
+    @enderror
 </div>
 
            

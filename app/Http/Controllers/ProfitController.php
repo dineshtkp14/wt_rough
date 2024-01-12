@@ -24,7 +24,7 @@ $endDate = $request->input('end_date');
 // Your logic to fetch profits based on chosen dates
 $profits = salesitem::join('items', 'salesitems.itemid', '=', 'items.id')
     ->whereBetween('salesitems.created_at', [$startDate, $endDate])
-    ->sum(DB::raw('(salesitems.price - items.dlp) * salesitems.quantity'));
+    ->sum(DB::raw('(salesitems.price - items.costprice) * salesitems.quantity'));
 
 return view('profits.index', compact('profits', 'startDate', 'endDate','breadcrumb'));
 
