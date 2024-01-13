@@ -367,11 +367,11 @@
                             <li><a href="{{ route('totalsales.index') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded">CALCULATE TOTAL SALES</a></li>
                                    
-                                    {{-- <li><a href="{{ route('allsalesdetails.showdetails') }}"
+                                    <li><a href="{{ route('allsalesdetails.showdetails') }}"
                                         class="link-dark d-inline-flex text-decoration-none rounded">Show TOTAL SALES</a></li>
                                             <li><a href="{{ route('showonlysalesperday') }}"
                                             class="link-dark d-inline-flex text-decoration-none rounded">Show Per Day</a></li>
-                                     --}}
+                                    
                                         
                         </ul>
                     </div>
