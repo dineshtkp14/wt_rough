@@ -369,7 +369,7 @@
                                    
                                     <li><a href="{{ route('allsalesdetails.showdetails') }}"
                                         class="link-dark d-inline-flex text-decoration-none rounded">Show TOTAL SALES</a></li>
-                                            <li><a href="{{ route('showonlysalesperday') }}"
+                                            <li><a href="{{ route('showonlysalesperday.pp') }}"
                                             class="link-dark d-inline-flex text-decoration-none rounded">Show Per Day</a></li>
                                     
                                         
