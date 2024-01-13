@@ -12,7 +12,7 @@ class TotalSalesController extends Controller
         $breadcrumb= [
             'subtitle'=>'TotalSales',
             'title'=>'Calculate TotalSales',
-            'link'=>'View TotalSales'
+            'link'=>'View TotalSales 00'
         ];
 
 

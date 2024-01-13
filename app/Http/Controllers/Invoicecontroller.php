@@ -57,25 +57,6 @@ class Invoicecontroller extends Controller
  }
 
 
- public function showonlysalesperday()
-    {
-        if (Auth::check()) {
-            $breadcrumb = [
-                'subtitle' => 'Per Day',
-                'title' => 'Sales Per Day',
-                'link' => 'Sales Per Day'
-            ];
-    
-            $salesPerDay = invoice::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'))
-                ->groupBy('date')
-                ->orderBy('date', 'DESC')
-                ->paginate(20); 
-    
-            return view('invoice.perday', ['salesPerDay' => $salesPerDay, 'breadcrumb' => $breadcrumb]);
-        }
-    
-        return redirect('/login');
-    }
 
 
 

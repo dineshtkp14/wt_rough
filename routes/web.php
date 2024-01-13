@@ -16,6 +16,10 @@ use App\Http\Controllers\ProfitController;
 use App\Http\Controllers\Invoicecontroller;
 use App\Http\Controllers\TotalSalesController;
 use App\Http\Controllers\Creditnotes_controller;
+use App\Http\Controllers\showperday_controller;
+
+
+
 
 
 
@@ -207,7 +211,8 @@ Route::get('/accl', [CustomerLedgerDetailsController::class, 'showallcuscreditde
 
 
 
-Route::get('/showsalesperday', [Invoicecontroller::class, 'showonlysalesperday'])->name('showonlysalesperday');
+Route::get('/showsalesperday', [showperday_controller::class, 'showonlysalesperday'])->name('showonlysalesperday.pp');
+
 
 
 

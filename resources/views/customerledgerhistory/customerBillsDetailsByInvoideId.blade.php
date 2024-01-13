@@ -198,7 +198,10 @@
                                 <td style="border: none; background-color: #f0f0f0;"><b> {{$i->discount}}</b></td>
                             </tr>
                             <tr>
-                                <td colspan="5">Twelve Lakh Thirty Four Thousand Five Hundred Thirty Two </td>
+                                
+                                <td colspan="5" id="totalAmountWords">{{$i->total}}</td>
+
+
                                 <td class="text-center"><b>Total Amount:</b></td>
                                 <td style="border: none; background-color: #f0f0f0;"><b> {{$i->total}}</b></td>
                             </tr>
@@ -272,6 +275,25 @@ document.getElementById('pdfLink').addEventListener('click', function(e) {
     var param = new URLSearchParams(query);
     var url = "{{ route('invoicebillno.convert') }}?invoiceid=" + param.get('invoiceid');
     window.location.href = url;
+});
+
+
+
+
+
+// You can also add this if you want to execute the conversion when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the element by its ID
+    var totalAmountElement = document.getElementById('totalAmountWords');
+    
+    // Get the numerical value from the element's content
+    var numericalValue = parseFloat(totalAmountElement.textContent.trim());
+
+    // Convert the numerical value to words
+    var words = convertNumberToWords(numericalValue);
+
+    // Update the content of the element with the words
+    totalAmountElement.textContent = words;
 });
     </script>
 </div>
