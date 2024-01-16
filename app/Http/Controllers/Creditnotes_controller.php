@@ -74,6 +74,8 @@ class Creditnotes_controller extends Controller
         $invoice_data->discount = $final_arr[0]->discount == "" ? 0.00 : $final_arr[0]->discount;
         $invoice_data->total = $final_arr[0]->total;
         $invoice_data->notes = $final_arr[0]->note;
+        $invoice_data->inv_type = $req->invoice_type;
+
         $invoice_data->added_by = session('user_email');
 
         //dd( $invoice_data->notes);
@@ -89,13 +91,9 @@ class Creditnotes_controller extends Controller
             $data->quantity = $value->quantity;
 
             if ($data->itemid) {
-                // $item = item::where('id', $data->itemid)->select('quantity')->first();
-                // $item->quantity =  $item->quantity - $value->quantity;
+              
 
-                // // Check for validation errors
-                // $item->update(['quantity' => $item->quantity]);
-
-                DB::table('items')->where('id', $data->itemid)->decrement('quantity', $value->quantity);
+                DB::table('items')->where('id', $data->itemid)->increment('quantity', $value->quantity);
 
 
             }
@@ -117,8 +115,11 @@ class Creditnotes_controller extends Controller
         $cus_data->invoicetype = $req->invoice_type;
         $cus_data->debit =  $final_arr[0]->total;
         $cus_data->added_by = session('user_email');
-
         $cus_data->save();
+
+
+        
+
 
         return redirect()->route('creditnotes.create')->with('success','Invoice Created Sucessfully !!');
                                 
@@ -327,6 +328,8 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
             $backupInvoice->subtotal = $invoice->subtotal;
             $backupInvoice->discount = $invoice->discount;
             $backupInvoice->total = $invoice->total;
+            $backupInvoice->inv_type = $req->invoice_type;
+
             $backupInvoice->notes = $invoice->notes;
             $backupInvoice->added_by = session('user_email');
 

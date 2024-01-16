@@ -16,7 +16,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col">
-                        <table class="table">
+                        <table class="table h5">
                             <thead>
                                 <tr>
                                     <th>Date</th>
@@ -25,17 +25,19 @@
                             </thead>
                             <tbody>
                                 @foreach($salesPerDay as $sale)
-                                    <tr>
-                                        <td>{{ $sale->date }}</td>
-                                        <td>{{ $sale->total }}</td>
-                                    </tr>
+                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
+                                    <td>{{ $sale->date }}</td>
+                                    <td>{{ $sale->total }}</td>
+                                </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        {{ $salesPerDay->links() }}
+
                     </div>
 
                     <div class="col">
-                        <table class="table">
+                        <table class="table h5">
                             <thead>
                                 <tr>
                                     <th>Date (CREDIT NOTES)</th>
@@ -44,20 +46,67 @@
                             </thead>
                             <tbody>
                                 @foreach($salesPerDaycrnotes as $sale)
-                                    <tr>
-                                        <td>{{ $sale->date }}</td>
-                                        <td>{{ $sale->total }}</td>
-                                    </tr>
+                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
+                                    <td>{{ $sale->date }}</td>
+                                    <td>{{ $sale->total }}</td>
+                                </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        {{ $salesPerDaycrnotes->links() }}
+
                     </div>
+
+
+                    <div class="col">
+                        <table class="table h5">
+                            <thead>
+                                <tr>
+                                    <th>Date (CREDIT )</th>
+                                    <th>Total Credit Sales Per day</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($salesPerDayCredit as $sale)
+                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
+                                    <td>{{ $sale->date }}</td>
+                                    <td>{{ $sale->total }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        {{ $salesPerDaycrnotes->links() }}
+
+                    </div>
+
+
+                    <div class="col">
+                        <table class="table h5">
+                            <thead>
+                                <tr>
+                                    <th>Date (Cash Ony)</th>
+                                    <th>Total Cash only </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($salesPerDayCash as $sale)
+                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
+                                    <td>{{ $sale->date }}</td>
+                                    <td>{{ $sale->total }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        {{ $salesPerDaycrnotes->links() }}
+
+                    </div>
+
                 </div>
             </div>
-            <div class="card-footer text-muted">
+            {{-- <div class="card-footer text-muted">
                 {{ $salesPerDay->links() }}
                 {{ $salesPerDaycrnotes->links() }}
-            </div>
+            </div> --}}
         </div>
     </div>
 

@@ -69,6 +69,8 @@ class ItemsalesController extends Controller
         $invoice_data->discount = $final_arr[0]->discount == "" ? 0.00 : $final_arr[0]->discount;
         $invoice_data->total = $final_arr[0]->total;
         $invoice_data->notes = $final_arr[0]->note;
+        $invoice_data->inv_type = $req->invoice_type;
+
         $invoice_data->added_by = session('user_email');
 
         //dd( $invoice_data->notes);
