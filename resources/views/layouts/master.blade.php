@@ -110,7 +110,7 @@
                                     
                                         <li><a href="{{ route('deletedcustomer.deletebillno') }}"
                                             class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                                class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Search Deleted Bill                                            Bill</a></li>
+                                                class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Search Deleted Bill</a></li>
 
                         </ul>
                     </div>
