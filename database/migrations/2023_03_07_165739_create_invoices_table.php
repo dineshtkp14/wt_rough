@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('inv_type')->nullable();;
             $table->string('notes')->nullable();;
             $table->string('salesreturn')->nullable();;
+            $table->date('inv_date')->nullable();
             $table->string('returnidforcreditnotes')->nullable();;
 
 

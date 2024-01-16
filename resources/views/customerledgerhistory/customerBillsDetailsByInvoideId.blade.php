@@ -139,6 +139,8 @@
         </div>
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
         <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
+        <b style="float: right; margin-right: 100px;">Date: {{ $forinvoicetype->date }}</b>
+
         {{-- <b style="float: right; margin-right: 100px;">Sales Return: {{ $forinvoicetype->salesreturn }}</b> --}}
 
                 @if($forinvoicetype->salesreturn=="yes")
@@ -163,6 +165,7 @@
             @endforeach
         @endif
         <span class="my-4">
+           
             <table class="table">
                 <thead>
                     <tr>

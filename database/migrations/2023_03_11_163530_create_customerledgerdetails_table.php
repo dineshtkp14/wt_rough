@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('invoiceid')->nullable();
             $table->string('particulars');
             $table->string('voucher_type');
-            $table->date('date');
+            $table->date('date')->nullable();
             $table->float('debit',20,2)->nullable();
             $table->float('credit',20,2)->nullable();
             $table->string('invoicetype')->nullable();;

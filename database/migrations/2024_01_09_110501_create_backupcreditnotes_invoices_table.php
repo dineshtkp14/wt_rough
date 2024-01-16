@@ -19,6 +19,7 @@ return new class extends Migration
             $table->float('total',20,2);
             $table->string('notes')->nullable();;
             $table->string('inv_type')->nullable();;
+            $table->date('inv_date')->nullable();
 
             $table->timestamps();
             $table->string('added_by')->nullable();

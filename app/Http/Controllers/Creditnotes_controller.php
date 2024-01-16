@@ -80,6 +80,8 @@ class Creditnotes_controller extends Controller
         $invoice_data->total = $final_arr[0]->total;
         $invoice_data->notes = $final_arr[0]->note;
         $invoice_data->inv_type = $req->invoice_type;
+        $invoice_data->date = $req->date;
+
 
         $invoice_data->added_by = session('user_email');
 

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->float('discount',20,2);
             $table->float('total',20,2);
             $table->string('inv_type')->nullable();;
+            $table->date('inv_date')->nullable();
 
             $table->string('notes')->nullable();;
             $table->timestamps();
