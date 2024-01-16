@@ -22,6 +22,9 @@ return new class extends Migration
             $table->float('debit',20,2)->nullable();
             $table->float('credit',20,2)->nullable();
             $table->string('invoicetype')->nullable();;
+            $table->string('salesreturn')->nullable();;
+            $table->string('returnidforcreditnotes')->nullable();;
+
             $table->text('notes')->nullable();;
 
             $table->timestamps();

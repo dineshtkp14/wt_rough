@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\BackupCreditnotesInvoice;
 use App\Models\BackupCreditnotesSalesItem;
 use App\Models\BackupCreditnotesCustomerLedgerDetail;
+
+use App\Models\customerledgerdetails;
+use App\Models\invoice;
+
+
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\CreditnotesInvoice;
@@ -50,7 +55,7 @@ class Creditnotes_controller extends Controller
 
      
         $cus = customerinfo::all();
-        $statement  = DB::select("SHOW TABLE STATUS LIKE 'invoices'");
+        $statement  = DB::select("SHOW TABLE STATUS LIKE 'creditnotes_invoices'");
         $nextUserId = $statement[0]->Auto_increment;
 
         $itemsdata = item::all();
@@ -102,7 +107,6 @@ class Creditnotes_controller extends Controller
             $data->discount = $value->discount == "" ? 0.00 : $value->discount;
             $data->subtotal = $value->subtotal;
             $data->added_by = session('user_email');
-
             $data->save();
         }
 
@@ -118,8 +122,36 @@ class Creditnotes_controller extends Controller
         $cus_data->save();
 
 
-        
+       
+        // $reutntype = customerledgerdetails::find($req->bilinvoiceid);
+        // $reutntype->salesreturn = "yes";
+        // $reutntype->save();
 
+        // $reutntype = invoice::find($req->bilinvoiceid);
+        // $reutntype->salesreturn = "yes";
+        // $reutntype->save();
+
+
+        if ($req->bilinvoiceid !== null) {
+            $reutntype = customerledgerdetails::find($req->bilinvoiceid);
+        
+            if ($reutntype !== null) {
+                $reutntype->salesreturn = "yes";
+                $reutntype->returnidforcreditnotes = $req->creditnoteinvoiceid;
+
+
+                $reutntype->save();
+            }
+        
+            $reutntype = invoice::find($req->bilinvoiceid);
+        
+            if ($reutntype !== null) {
+                $reutntype->salesreturn = "yes";
+                $reutntype->returnidforcreditnotes = $req->creditnoteinvoiceid;
+                $reutntype->save();
+            }
+        } 
+        
 
         return redirect()->route('creditnotes.create')->with('success','Invoice Created Sucessfully !!');
                                 

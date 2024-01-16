@@ -60,9 +60,19 @@
                         </div>
                     </div>
 
-
+                    
+                            <input type="hidden" class="form-control" placeholder="type old invoice id here" id=""
+                                class="form-control " value="{{ $nextgenid }}" name="creditnoteinvoiceid">
                     
                     
+                    <div style="width: 300px">
+                        <div class="input-group mb-1">
+                            <span class="input-group-text">Invice Id:</span>
+                            <input type="text" class="form-control" placeholder="type old invoice id here" id=""
+                                class="form-control " value="" name="bilinvoiceid">
+                        </div>
+                        
+                    </div>
 
 
             
@@ -85,6 +95,8 @@
                         </div>
                         
                     </div>
+
+                    
                    
 
                 </div>

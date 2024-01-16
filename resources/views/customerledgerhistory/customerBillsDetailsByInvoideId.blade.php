@@ -139,6 +139,12 @@
         </div>
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
         <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
+        {{-- <b style="float: right; margin-right: 100px;">Sales Return: {{ $forinvoicetype->salesreturn }}</b> --}}
+
+                @if($forinvoicetype->salesreturn=="yes")
+                    <b style="float: right; margin-right: 100px; color: green;" class="h5">Sales Return/Credit Notes Bill no :{{ $forinvoicetype->returnidforcreditnotes }}</b>
+                @endif
+
        @endif
         @if ($cinfodetails !=null)
             @foreach($cinfodetails as $i)
