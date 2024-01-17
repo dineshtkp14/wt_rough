@@ -155,6 +155,8 @@ Route::post('/cpayments',[CustomerLedgerDetailsController::class,'store'])->name
 
 //Route::get('/clhs',[CustomerLedgerHistroy::class,'index'])->name('clhs.index');
 Route::get('/clhs',[CustomerLedgerHistroy::class,'returnchoosendatehistroy'])->name('clhs.returnchoosendatehistroy');
+Route::get('/allcashandcredit',[CustomerLedgerHistroy::class,'returnchoosendatehistroycashandcredit'])->name('returnchoosendatehistroycashandcredit');
+
 Route::get('clhs/pdf/convert/',[CustomerLedgerHistroy::class,'PdfGenerateCustomerDetails'])->name('clhspdf.convert');
 
 //companyledgerdetails withpdfconverter

@@ -320,6 +320,15 @@
                                          </a></li>
 
 
+                                         <li><a href="{{ route('returnchoosendatehistroycashandcredit') }}"
+                                            class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                                class="fa-solid fa-money-check-dollar  px-2  d-flex justify-content-center align-items-center"></i>Cash/Credit Ledger
+                                             </a></li>
+
+
+                                         
+
+
                         </ul>
                     </div>
                 </li>

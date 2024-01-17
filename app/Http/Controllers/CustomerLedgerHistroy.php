@@ -449,4 +449,68 @@ class CustomerLedgerHistroy extends Controller
        
         return redirect('/login');
     }
+
+
+
+
+
+
+    public function returnchoosendatehistroycashandcredit(Request $req)
+    {
+
+        if(Auth::check()){
+
+            $breadcrumb= [
+                'subtitle'=>'View',
+                'title'=>' Customers Ledger Details Cash Credit',
+                'link'=>' Customers Ledger Details'
+            ];
+
+            $from=date($req->date1);
+            $to=date($req->date2);
+        
+
+            $cusledgertails=null;
+            $debittotalsumwithdate=null;
+            $credittotalsumwithdate=null;
+            $debitnotcash=null;   
+
+            $allcusinfo=customerinfo::orderBy('id','DESC')->get();  
+           
+            if($from == "" || $to==""){
+
+                $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)->get();
+
+                $querycheck=customerledgerdetails::where('customerid',$req->customerid)->get();
+
+                $debittotalsumwithdate = $querycheck->sum('debit');
+                $credittotalsumwithdate = $querycheck->sum('credit');
+                $debitnotcash = $querycheck->where('invoicetype', '!=', 'cash')->sum('debit');
+
+
+
+               
+            }else{
+
+                $betweendate=customerledgerdetails::where('customerid',$req->customerid)->get();
+                $debittotalsumwithdate = $betweendate->sum('debit');
+                $credittotalsumwithdate = $betweendate->sum('credit');
+
+                $debitnotcash = $betweendate->where('invoicetype', '!=', 'cash')->sum('debit');
+
+                
+                $cusledgertails=customerledgerdetails::whereBetween('date',  [$from,$to])->where('customerid', $req->customerid)->get();         
+               
+            }
+
+           
+            return view('customerledgerhistory.view_customerallledger_cashandcredit',['allnotcash'=>$debitnotcash,'all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
         }
+
+     
+
+        }
+
+
+
+    }
