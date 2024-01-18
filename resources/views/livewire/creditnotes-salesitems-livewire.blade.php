@@ -36,7 +36,7 @@ okkkkkkkkkk
                         @if ($cus->isNotEmpty())
                             @foreach ($cus as $item)
                                 <tr>
-                                    <td data-label="Bill No">{{ $item->created_at }}</td>
+                                    <td data-label="Bill No">{{ $item->inv_date }}</td>
 
                                     <td data-label="Bill No">{{ $item->invoiceid }}</td>
                                     <td data-label="Items Name">{{ $item->itemname ? $item->itemname : '-' }}</td>
