@@ -161,7 +161,7 @@
 			   
 						   <td>
 							   @if($dts!=null)
-								   Total(only cash): <h2>{{$allnotcash }}</h2></td>
+								   Total(Only Credit): <h2>{{$allnotcash }}</h2></td>
 							   @endif
 						   </td>
 			   
