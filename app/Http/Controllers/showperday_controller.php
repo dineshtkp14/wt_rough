@@ -24,27 +24,27 @@ class showperday_controller extends Controller
                 'link' => 'Sales Per Day'
             ];
     
-            $salesPerDay = invoice::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'))
+            $salesPerDay = invoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
                 ->paginate(100); 
 
                
                 
-                $salesPerDaycr = CreditnotesInvoice::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'))
+                $salesPerDaycr = CreditnotesInvoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
                 ->paginate(100); 
 
 
-                $salesPerDayCash = invoice::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'))
+                $salesPerDayCash = invoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
                 ->where('inv_type', 'cash')
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
                 ->paginate(100);
 
 
-                $salesPerDayCredit = invoice::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'))
+                $salesPerDayCredit = invoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
                 ->where('inv_type', 'credit')
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
