@@ -6,6 +6,7 @@ use App\Models\company;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+
 class CompanyLivewire extends Component
 {
     use WithPagination;

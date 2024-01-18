@@ -16,6 +16,7 @@ class showperday_controller extends Controller
 {
     public function showonlysalesperday()
     {
+
         if (Auth::check()) {
             $breadcrumb = [
                 'subtitle' => 'Per Day',
@@ -27,9 +28,9 @@ class showperday_controller extends Controller
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
                 ->paginate(100); 
-    
 
-
+               
+                
                 $salesPerDaycr = CreditnotesInvoice::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'))
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
@@ -41,7 +42,6 @@ class showperday_controller extends Controller
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
                 ->paginate(100);
-
 
 
                 $salesPerDayCredit = invoice::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'))

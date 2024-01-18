@@ -100,6 +100,16 @@
 	</div>
 
 
+	@foreach ($cusinfoforpdfok as $i)
+	<div>
+		<h3>Name: {{$i->name}}</h3> 
+		<h3>Address: {{$i->address}}</h3>
+		<h3>Phone No: {{$i->phoneno}}</h3>
+		<h3>Phone No: {{$i->email}}</h3>
+
+	</div>
+@endforeach
+
 <table>
 	<thead>
 		<tr>
@@ -122,7 +132,7 @@
 					   @foreach ($all as $i)
 					   <tr>
 						   <td data-label="Id">{{ $i->id }}</td>
-						   <td data-label="Name">{{ $i->created_at }}</td>
+						   <td data-label="Name">{{ $i->date }}</td>
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
 						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
@@ -171,17 +181,10 @@
 	</tbody>
 </table>
 
-<div class="col-12 d-flex justify-content-end align-items-center pt-4">
-	{{-- <a href="{{route('clhspdf.convert')}}" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : ''  }}" id="pdfLink">convert To PDF --}}
-	<div class="icon-box d-flex justify-content-center align-items-center">
-	<i class="fa-solid fa-download"></i>
-	</div>
-	</a>
-</div>
+
 </div>
 
-{{-- <h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2> --}}
-
+<BR>
 
 <h4 class="floatleft">Total Transcation Amount: <span class="forunderline">{{$dts}} /-</span></h4>
 
@@ -211,7 +214,7 @@
 					   @foreach ($creditnoteledger as $i)
 					   <tr>
 						   <td data-label="Id">{{ $i->id }}</td>
-						   <td data-label="Name">{{ $i->created_at }}</td>
+						   <td data-label="Name">{{ $i->date }}</td>
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
 						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>

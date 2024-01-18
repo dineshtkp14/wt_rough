@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\CreditnotesSalesitem; // Fix typo here
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use App\Models\item; // Fix typo here
 
 class CreditnotesSalesitemsLivewire extends Component
 {

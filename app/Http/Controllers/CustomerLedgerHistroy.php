@@ -471,6 +471,7 @@ class CustomerLedgerHistroy extends Controller
             $from=date($req->date1);
             $to=date($req->date2);
         
+            $cusinfoforpdf= customerinfo::where('id',$req->customerid)->get();
 
             $cusledgertails=null;
             $debittotalsumwithdate=null;
@@ -507,7 +508,8 @@ class CustomerLedgerHistroy extends Controller
             }
 
            
-            return view('customerledgerhistory.view_customerallledger_cashandcredit',['debittotalcrnotes'=>$debittotalcrnotes,'creditnoteledger'=>$creditnoteledger,'allnotcash'=>$debitnotcash,'all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
+            return view('customerledgerhistory.view_customerallledger_cashandcredit',['cusinfoforpdfok' => $cusinfoforpdf,
+            'debittotalcrnotes'=>$debittotalcrnotes,'creditnoteledger'=>$creditnoteledger,'allnotcash'=>$debitnotcash,'all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
         }
 
      
@@ -516,10 +518,6 @@ class CustomerLedgerHistroy extends Controller
     
 
 
-        public function oktest()
-{
-    dd("hi there");
-}
 
 public function pdfreturnchoosendatehistroycashandcredit(Request $req)
 {
