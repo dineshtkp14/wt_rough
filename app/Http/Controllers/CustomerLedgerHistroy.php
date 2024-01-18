@@ -459,7 +459,7 @@ class CustomerLedgerHistroy extends Controller
         if(Auth::check()){
 
             $breadcrumb= [
-                'subtitle'=>'View',
+                'subtitle'=>'View  (CASH / CREDIT)',
                 'title'=>' Customers Ledger Details ALL (CASH / CREDIT)',
                 'link'=>' Customers Ledger Details (CASH / CREDIT)'
             ];
