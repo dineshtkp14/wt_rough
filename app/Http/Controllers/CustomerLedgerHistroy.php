@@ -460,7 +460,7 @@ class CustomerLedgerHistroy extends Controller
 
             $breadcrumb= [
                 'subtitle'=>'View',
-                'title'=>' Customers Ledger Details Cash Credit',
+                'title'=>' Customers Ledger Details ALL (CASH / CREDIT)',
                 'link'=>' Customers Ledger Details'
             ];
 
