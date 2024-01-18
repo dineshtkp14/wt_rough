@@ -82,7 +82,7 @@ class Creditnotes_controller extends Controller
         $invoice_data->inv_type = $req->invoice_type;
         $invoice_data->inv_date = $req->date;
 
-
+//useremail
         $invoice_data->added_by = session('user_email');
 
         //dd( $invoice_data->notes);
