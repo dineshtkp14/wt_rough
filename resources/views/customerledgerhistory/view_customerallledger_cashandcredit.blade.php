@@ -110,6 +110,9 @@
 			<th>Voucher Type</th>
 			<th>Invoice ID</th>
             <th>Invoice Type</th>
+            <th>Sales Return</th>
+            <th>Credit Notes Invoice Id</th>
+
 
 			<th>Debit</th>  
             <th>Credit</th>
@@ -131,6 +134,10 @@
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
 						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
                            <td data-label="Remarks">{{ $i->invoicetype }}</td>
+	                       <td data-label="Remarks">{{ $i->salesreturn }}</td>
+                           <td data-label="Remarks">{{ $i->returnidforcreditnotes }}</td>
+
+
 
 						   <td data-label="Amount">{{ $i->debit }}</td>
 						   
@@ -145,6 +152,8 @@
 					   <tr>
 						   <td>-</td>
 						   <td>-</td>
+						   <td>-</td>
+
 
 						   <td>-</td>
 			   
@@ -152,6 +161,8 @@
 			   
 						   <td>-</td>
 						   <td>-</td>
+						   <td>-</td>
+
 			   
 						   <td>
 							   @if($dts!=null)
@@ -190,6 +201,100 @@
 <h4 class="floatleft">Total Transcation Amount: <span class="forunderline">{{$dts}} /-</span></h4>
 
 <h1 class="floatleft">Total Due Amount: <span class="forunderline">{{$allnotcash - $cts}} /-</span></h1>
+
+
+
+
+<h2> --------------------------------Credit Notes Details---------------------------------------- </h2>
+
+
+<table>
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Date</th>
+			<th>Particulars</th>
+			<th>Voucher Type</th>
+			<th>Invoice ID</th>
+            <th>Invoice Type</th>
+			<th>Debit</th>  
+
+           
+
+			
+		</tr>
+	</thead>
+	<tbody>
+        
+  
+                    @if($creditnoteledger!=null)
+					   @foreach ($creditnoteledger as $i)
+					   <tr>
+						   <td data-label="Id">{{ $i->id }}</td>
+						   <td data-label="Name">{{ $i->created_at }}</td>
+						   <td data-label="Address">{{ $i->particulars}}</td>
+						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
+						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
+                           <td data-label="Remarks">{{ $i->invoicetype }}</td>
+						   <td data-label="Amount">{{ $i->debit }}</td>
+						   
+						  
+
+
+						   
+					   </tr>
+					   
+					   @endforeach
+					   <tr>
+						  
+
+
+						  
+			   
+						   
+						 
+						   <td>-</td>	
+						   <td>-</td>
+
+			   
+						   <td>-</td>
+						   <td>-</td>
+						   <td>-</td>
+						   <td>-</td>
+
+
+			   
+						   <td>
+							   @if($debittotalcrnotes!=null)
+								   Total: <h2>{{$debittotalcrnotes }}</h2></td>
+							   @endif
+						   </td>
+			   
+						   {{-- <td>
+							   @if($cts!=null)
+								   Total: <h2>{{$cts }}</h2></td>
+							   @endif
+						   </td> --}}
+			   
+					   </tr>
+					   
+					  
+					   @else
+                       <h2>Record Not Found </h2>
+					   @endif
+    
+	</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
 
 
 

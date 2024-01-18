@@ -10,6 +10,8 @@ use App\Models\salesitem;
 
 use App\Models\BackupSalesItem;
 use App\Models\BackupInvoice;
+use App\Models\CreditnotesCustomerledgerdetail;
+
 use App\Models\BackupCustomerLedgerDetails;
 
 
@@ -66,9 +68,7 @@ class CustomerLedgerHistroy extends Controller
                 ->where('invoicetype', 'credit')
                 ->get();
 
-            //    old // $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
-                // $debittotalsumwithdate = $betweendate->sum('debit');
-                // $credittotalsumwithdate = $betweendate->sum('credit');
+         
 
                  $querycheck=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
                 $debittotalsumwithdate = $querycheck->sum('debit');
@@ -466,6 +466,10 @@ class CustomerLedgerHistroy extends Controller
                 'link'=>' Customers Ledger Details'
             ];
 
+
+            $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
+            $debittotalcrnotes = $creditnoteledger->sum('debit');
+
             $from=date($req->date1);
             $to=date($req->date2);
         
@@ -476,6 +480,7 @@ class CustomerLedgerHistroy extends Controller
             $debitnotcash=null;   
 
             $allcusinfo=customerinfo::orderBy('id','DESC')->get();  
+
            
             if($from == "" || $to==""){
 
@@ -504,7 +509,7 @@ class CustomerLedgerHistroy extends Controller
             }
 
            
-            return view('customerledgerhistory.view_customerallledger_cashandcredit',['allnotcash'=>$debitnotcash,'all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
+            return view('customerledgerhistory.view_customerallledger_cashandcredit',['debittotalcrnotes'=>$debittotalcrnotes,'creditnoteledger'=>$creditnoteledger,'allnotcash'=>$debitnotcash,'all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
         }
 
      

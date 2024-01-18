@@ -80,7 +80,7 @@ class Creditnotes_controller extends Controller
         $invoice_data->total = $final_arr[0]->total;
         $invoice_data->notes = $final_arr[0]->note;
         $invoice_data->inv_type = $req->invoice_type;
-        $invoice_data->date = $req->date;
+        $invoice_data->inv_date = $req->date;
 
 
         $invoice_data->added_by = session('user_email');
@@ -116,8 +116,8 @@ class Creditnotes_controller extends Controller
         $cus_data->customerid = $final_arr[0]->customer;
         $cus_data->invoiceid = $invoice_data->id;
         $cus_data->date = $req->date;
-        $cus_data->particulars  = "Goods Sales";
-        $cus_data->voucher_type = "sales";
+        $cus_data->particulars  = "Goods_Return";
+        $cus_data->voucher_type = "Return";
         $cus_data->invoicetype = $req->invoice_type;
         $cus_data->debit =  $final_arr[0]->total;
         $cus_data->added_by = session('user_email');
@@ -125,13 +125,6 @@ class Creditnotes_controller extends Controller
 
 
        
-        // $reutntype = customerledgerdetails::find($req->bilinvoiceid);
-        // $reutntype->salesreturn = "yes";
-        // $reutntype->save();
-
-        // $reutntype = invoice::find($req->bilinvoiceid);
-        // $reutntype->salesreturn = "yes";
-        // $reutntype->save();
 
 
         if ($req->bilinvoiceid !== null) {
