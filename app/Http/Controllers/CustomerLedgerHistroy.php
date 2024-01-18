@@ -48,8 +48,8 @@ class CustomerLedgerHistroy extends Controller
 
                     $breadcrumb= [
                         'subtitle'=>'View',
-                        'title'=>' Customers Ledger Details',
-                        'link'=>' Customers Ledger Details'
+                        'title'=>' Customers Ledger Details (ONLY CREDIT)',
+                        'link'=>' Customers Ledger Details (ONLY CREDIT)'
                     ];
 
                     $from=date($req->date1);
