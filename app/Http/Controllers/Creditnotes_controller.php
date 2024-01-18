@@ -109,6 +109,8 @@ class Creditnotes_controller extends Controller
             $data->discount = $value->discount == "" ? 0.00 : $value->discount;
             $data->subtotal = $value->subtotal;
             $data->added_by = session('user_email');
+            $data->date = $req->date;
+
             $data->save();
         }
 

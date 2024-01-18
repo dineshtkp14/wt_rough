@@ -25,7 +25,6 @@ okkkkkkkkkk
                             <th>Cost Price</th>
                             <th>Original Sell Price</th>
                             <th>Sold Price</th>
-                            {{-- <th>Discount</th> --}}
                             <th>Sub-Total</th>
                             <th>Profit</th>
                             <th>Action</th>
@@ -36,7 +35,7 @@ okkkkkkkkkk
                         @if ($cus->isNotEmpty())
                             @foreach ($cus as $item)
                                 <tr>
-                                    <td data-label="Bill No">ok{{ $item->date }}</td>
+                                    <td data-label="Bill N">ok{{ $item->date }}</td>
 
                                     <td data-label="Bill No">{{ $item->invoiceid }}</td>
                                     <td data-label="Items Name">{{ $item->itemname ? $item->itemname : '-' }}</td>
