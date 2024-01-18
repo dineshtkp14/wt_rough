@@ -204,7 +204,7 @@
 			<th>Particulars</th>
 			<th>Voucher Type</th>
 			<th>Invoice ID</th>
-			<th>Debit</th> 
+			<th>Credit</th> 
 		</tr>
 	</thead>
 	<tbody>
