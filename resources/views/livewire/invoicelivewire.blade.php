@@ -36,7 +36,7 @@
                                     <td>{{ $sale->discount }}</td>
                                     <td>{{ $sale->total }}</td>
                                     <td>{{ $sale->notes }}</td>
-                                    <td>{{ $sale->created_at }}</td>
+                                    <td>{{ $sale->inv_date }}</td>
                                     <td>
                                         <a href="{{ route('invoice.edit', $sale->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a>
     
