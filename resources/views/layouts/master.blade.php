@@ -86,31 +86,31 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-receipt"></i> Bill 
+                        <i class="fa-solid fa-receipt"></i> INVOICE 
                     </button>
                     <div class="collapse" id="Invoice-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a href="{{ route('itemsales.create') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Add New 
-                                    Bill</a></li>
+                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>ADD NEW 
+                                        INVOICE</a></li>
                             <li><a href="{{ route('itemsales.index') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
-                                    Sales Items</a></li>
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW
+                                   SALES ITEMS </a></li>
                                     <li><a href="{{ route('customer.billno') }}"
                                         class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>Search Bill
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>SEARCH INVOICE
                                     </a></li>
 
                                     <li><a href="{{ route('invoice.index') }}"
                                         class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View Invoices
+                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW INVOICES TABLE
                                         </a></li>
                                     
                                         <li><a href="{{ route('deletedcustomer.deletebillno') }}"
                                             class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                                class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Search Deleted Bill</a></li>
+                                                class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>SEARCH DELETED INVOICE</a></li>
 
                         </ul>
                     </div>
@@ -119,28 +119,28 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#cnorders-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-building-columns"></i> Credit Notes/Sales Return
+                        <i class="fa-solid fa-building-columns"></i>CREDIT NOTES / SALES RETURN
                     </button>
                     <div class="collapse" id="cnorders-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a href="{{ route('creditnotes.create') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
-                                    Add New Credit Notes</a></li>
+                                    ADD NEW CREDIT NOTES</a></li>
                             <li><a href="{{ route('creditnotes.index') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
-                                    View Credit Notes Sales Detail</a></li>
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
+                                    VIEW CREDIT NOTES SALES DETAIL</a></li>
 
                                     <li><a href="{{ route('creditnotescustomer.billno') }}"
                                         class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
-                                       Search Credit Notes Bill No</a></li>
+                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
+                                      SEARCH CREDIT NOTES INVOICE</a></li>
                                     
                                        <li><a href="{{ route('creditnotescustomer.billno') }}"
                                         class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
-                                      View Invoices</a></li>
+                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
+                                    VIEW CREDIT NOTES INVOICES</a></li>
 
                                       <li><a href="{{ route('deletedcncustomer.deletebillno') }}"
                                         class="link-dark d-inline-flex text-decoration-none rounded"><i

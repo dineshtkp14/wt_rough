@@ -27,14 +27,14 @@ class CustomerLedgerHistroy extends Controller
     
 
     public function returncusbills(Request $req){
- 
-        if(Auth::check()){
+        
+                if(Auth::check()){
 
-        $allcusinfo=customerinfo::orderBy('id','DESC')->get();  
-        $query=invoice::where('customerid',$req->customerid)->get();
+                $allcusinfo=customerinfo::orderBy('id','DESC')->get();  
+                $query=invoice::where('customerid',$req->customerid)->get();
 
-        return view('customerledgerhistory.customerbilllist',['all'=>$query],['allcus'=>$allcusinfo]);   
-    }
+                return view('customerledgerhistory.customerbilllist',['all'=>$query],['allcus'=>$allcusinfo]);   
+            }
 
 
     return redirect('/login');
@@ -44,58 +44,59 @@ class CustomerLedgerHistroy extends Controller
 
         public function returnchoosendatehistroy(Request $req)
         {
-            if(Auth::check()){
+                    if(Auth::check()){
 
-            $breadcrumb= [
-                'subtitle'=>'View',
-                'title'=>' Customers Ledger Details',
-                'link'=>' Customers Ledger Details'
-            ];
+                    $breadcrumb= [
+                        'subtitle'=>'View',
+                        'title'=>' Customers Ledger Details',
+                        'link'=>' Customers Ledger Details'
+                    ];
 
-            $from=date($req->date1);
-            $to=date($req->date2);
-        
+                    $from=date($req->date1);
+                    $to=date($req->date2);
+                
 
-            $cusledgertails=null;
-            $debittotalsumwithdate=null;
-            $credittotalsumwithdate=null;
-            
-            $allcusinfo=customerinfo::orderBy('id','DESC')->get();  
-           
-            if($from == "" || $to==""){
+                    $cusledgertails=null;
+                    $debittotalsumwithdate=null;
+                    $credittotalsumwithdate=null;
+                    
+                    $allcusinfo=customerinfo::orderBy('id','DESC')->get();  
+                
+                    if($from == "" || $to==""){
 
-                $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)
-                ->where('invoicetype', 'credit')
-                ->get();
-
-         
-
-                 $querycheck=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
-                $debittotalsumwithdate = $querycheck->sum('debit');
-                $credittotalsumwithdate = $querycheck->sum('credit');
-
-
-               
-            }else{
-
-                $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
-                $debittotalsumwithdate = $betweendate->sum('debit');
-                $credittotalsumwithdate = $betweendate->sum('credit');
+                        $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)
+                        ->where('invoicetype', 'credit')
+                        ->get();
 
                 
-                $cusledgertails=customerledgerdetails::whereBetween('date',  [$from,$to])->where('customerid', $req->customerid)->where('invoicetype', 'credit')->get();         
-               
-            }
 
-           
-            return view('customerledgerhistory.list',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
+                        $querycheck=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
+                        $debittotalsumwithdate = $querycheck->sum('debit');
+                        $credittotalsumwithdate = $querycheck->sum('credit');
+
+
+                    
+                    }else{
+
+                        $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
+                        $debittotalsumwithdate = $betweendate->sum('debit');
+                        $credittotalsumwithdate = $betweendate->sum('credit');
+
+                        
+                        $cusledgertails=customerledgerdetails::whereBetween('date',  [$from,$to])->where('customerid', $req->customerid)->where('invoicetype', 'credit')->get();         
+                    
+                    }
+
+                
+                    return view('customerledgerhistory.list',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
+                }
+
+    
+            return redirect('/login');
         }
 
-     
-    
-      
-        return redirect('/login');
- }
+
+
             public function PdfGenerateCustomerDetails(Request $req)
             {
                 if(Auth::check()){
@@ -152,9 +153,6 @@ class CustomerLedgerHistroy extends Controller
     
             
             $pdfview=FacadePdf::setOptions(['dpi' => 150,'defaultFont' => 'dejavu serif'])->loadView('customerledgerhistory.customerLedgerDetailsConvertPdf',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'xx'=>$afn,'fromdate'=>$from,'todate'=>$to]);   
-    
-          
-    
            return $pdfview->download('invoice.pdf');
     
         }
@@ -515,7 +513,96 @@ class CustomerLedgerHistroy extends Controller
      
 
         }
+    
 
+
+        public function oktest()
+{
+    dd("hi there");
+}
+
+public function pdfreturnchoosendatehistroycashandcredit(Request $req)
+{
+    // Check if user is authenticated
+    if (Auth::check()) {
+        
+        // Breadcrumb information
+        $breadcrumb = [
+            'subtitle' => 'View',
+            'title' => 'Customers Ledger Details Cash Credit',
+            'link' => 'Customers Ledger Details'
+        ];
+
+        // Fetch credit note ledger details
+        $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
+        $debittotalcrnotes = $creditnoteledger->sum('debit');
+
+        // Get date range from request
+        $from = date($req->date1);
+        $to = date($req->date2);
+
+        $cusinfoforpdf= customerinfo::where('id',$req->customerid)->get();
+       
+
+
+        // Initialize variables
+        $cusledgertails = null;
+        $debittotalsumwithdate = null;
+        $credittotalsumwithdate = null;
+        $debitnotcash = null;
+
+        // Get all customer information
+        $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();
+
+        if ($from == "" || $to == "") {
+            // No date range specified, fetch data without filtering by date
+
+            $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)->get();
+
+            $querycheck = customerledgerdetails::where('customerid', $req->customerid)->get();
+
+            // Calculate sums for debit and credit without date filtering
+            $debittotalsumwithdate = $querycheck->sum('debit');
+            $credittotalsumwithdate = $querycheck->sum('credit');
+            $debitnotcash = $querycheck->where('invoicetype', '!=', 'cash')->sum('debit');
+        } else {
+            // Date range specified, fetch data within the date range
+
+            $betweendate = customerledgerdetails::where('customerid', $req->customerid)->get();
+
+            // Calculate sums for debit and credit within the specified date range
+            $debittotalsumwithdate = $betweendate->sum('debit');
+            $credittotalsumwithdate = $betweendate->sum('credit');
+
+            $debitnotcash = $betweendate->where('invoicetype', '!=', 'cash')->sum('debit');
+
+            // Fetch customer ledger details within the specified date range
+            $cusledgertails = customerledgerdetails::whereBetween('date', [$from, $to])->where('customerid', $req->customerid)->get();
+        }
+
+        // Generate PDF view
+        $pdfview = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])
+            ->loadView('customerledgerhistory.view_customerallledger_cashandcredit_PDF', [
+                'debittotalcrnotes' => $debittotalcrnotes,
+                'creditnoteledger' => $creditnoteledger,
+                'allnotcash' => $debitnotcash,
+                'all' => $cusledgertails,
+                'allcus' => $allcusinfo,
+                'dts' => $debittotalsumwithdate,
+                'cts' => $credittotalsumwithdate,
+                'cusinfoforpdfok' => $cusinfoforpdf,
+
+                'breadcrumb' => $breadcrumb
+            ]);
+
+        // Download the PDF
+        return $pdfview->download('invoice.pdf');
+    }
+}
+
+    
 
 
     }
+
+

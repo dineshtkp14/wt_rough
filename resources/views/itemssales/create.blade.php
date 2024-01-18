@@ -31,7 +31,7 @@
         @yield('breadcrumb')
       
         <div class="container-fluid">
-           <h2 class=""> Bill N0:{{ $nextgenid }} </h2>
+           <span class="h1"> Invoice N0: {{ $nextgenid }} </span>
             <form action="{{ route('itemsales.store') }}" method="post">
                 @csrf
                 <div class="py-4 d-flex justify-content-between align-items-start">

@@ -31,7 +31,7 @@
         @yield('breadcrumb')
       
         <div class="container-fluid">
-           <h2 class=""> Bill N0:{{ $nextgenid }} </h2>
+           <span class="h5"> CREDIT NOTES INVOICE NO: </span><span class="h1">{{ $nextgenid }} </span>
             <form action="{{ route('creditnotes.store') }}" method="post">
                 @csrf
                 <div class="py-4 d-flex justify-content-between align-items-start">
@@ -65,10 +65,10 @@
                                 class="form-control " value="{{ $nextgenid }}" name="creditnoteinvoiceid">
                     
                     
-                    <div style="width: 300px">
+                    <div style="width: 400px">
                         <div class="input-group mb-1">
-                            <span class="input-group-text">Invice Id:</span>
-                            <input type="text" class="form-control" placeholder="type old invoice id here" id=""
+                            <span class="input-group-text">Invoice No for Reference:</span>
+                            <input type="text" class="form-control" placeholder="type  invoice No here" id=""
                                 class="form-control " value="" name="bilinvoiceid">
                         </div>
                         
@@ -79,13 +79,13 @@
      
 
 
-                    <div style="width: 300px">
+                    {{-- <div style="width: 300px">
                         <select name="invoice_type" class="d-inline form-select select-background" aria-label="Default select example" onchange="changeBackgroundColor(this)">
                             <option value="credit">Credit </option>
                             <option value="cash" selected>Cash </option>
                         </select>
                         <small style="font-size: 14px; padding:20px; color:#02090f;"> Choose mode of invoice &nbsp;    (cash / Credit) </small>
-                    </div>
+                    </div> --}}
 
                     <div style="width: 300px">
                         <div class="input-group mb-1">

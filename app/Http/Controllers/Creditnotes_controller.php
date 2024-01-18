@@ -118,13 +118,13 @@ class Creditnotes_controller extends Controller
         $cus_data->date = $req->date;
         $cus_data->particulars  = "Goods_Return";
         $cus_data->voucher_type = "Return";
-        $cus_data->invoicetype = $req->invoice_type;
+        // $cus_data->invoicetype = $req->invoice_type;
         $cus_data->debit =  $final_arr[0]->total;
         $cus_data->added_by = session('user_email');
         $cus_data->save();
 
 
-       
+        
 
 
         if ($req->bilinvoiceid !== null) {

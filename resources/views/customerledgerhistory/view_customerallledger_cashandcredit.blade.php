@@ -103,23 +103,16 @@
 <table>
 	<thead>
 		<tr>
-			<th>Id</th>
-			
-			<th>Date</th>
-			<th>Particulars</th>
-			<th>Voucher Type</th>
-			<th>Invoice ID</th>
-            <th>Invoice Type</th>
-            <th>Sales Return</th>
-            <th>Credit Notes Invoice Id</th>
-
-
-			<th>Debit</th>  
-            <th>Credit</th>
-
-           
-
-			
+			<th>ID</th>
+			<th>DATE</th>
+			<th>PARTICULARS</th>
+			<th>VOUCHER TYPE</th>
+			<th>INVOICE NO</th>
+            <th>INVOICE TYPE</th>
+            <th>SALES RETURN </th>
+            <th>CREDIT NOTES INVOICE NO</th>
+			<th>DEBIT</th>  
+            <th>CREDIT</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -136,16 +129,8 @@
                            <td data-label="Remarks">{{ $i->invoicetype }}</td>
 	                       <td data-label="Remarks">{{ $i->salesreturn }}</td>
                            <td data-label="Remarks">{{ $i->returnidforcreditnotes }}</td>
-
-
-
 						   <td data-label="Amount">{{ $i->debit }}</td>
-						   
-						  
-						   <td data-label="Remarks">{{ $i->credit }}</td>
-
-
-						   
+						   <td data-label="Remarks">{{ $i->credit }}</td> 
 					   </tr>
 					   
 					   @endforeach
@@ -216,12 +201,7 @@
 			<th>Particulars</th>
 			<th>Voucher Type</th>
 			<th>Invoice ID</th>
-            <th>Invoice Type</th>
-			<th>Debit</th>  
-
-           
-
-			
+			<th>Debit</th> 
 		</tr>
 	</thead>
 	<tbody>
@@ -235,13 +215,7 @@
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
 						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
-                           <td data-label="Remarks">{{ $i->invoicetype }}</td>
-						   <td data-label="Amount">{{ $i->debit }}</td>
-						   
-						  
-
-
-						   
+						   <td data-label="Amount">{{ $i->debit }}</td>	   
 					   </tr>
 					   
 					   @endforeach
@@ -260,7 +234,7 @@
 						   <td>-</td>
 						   <td>-</td>
 						   <td>-</td>
-						   <td>-</td>
+					
 
 
 			   
@@ -270,11 +244,7 @@
 							   @endif
 						   </td>
 			   
-						   {{-- <td>
-							   @if($cts!=null)
-								   Total: <h2>{{$cts }}</h2></td>
-							   @endif
-						   </td> --}}
+						
 			   
 					   </tr>
 					   
@@ -292,29 +262,43 @@
 
 
 
+{{-- <div class="col-12 d-flex justify-content-end align-items-center pt-4"> --}}
+	{{-- <a href="{{route('PdfGenerateCustomerDetailsallcashandcredit.convert')}}" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">convert To PDF --}}
+        {{-- <a href="{{route('PdfGenerateCustomerDetailsallcashandcredit.convert')}}" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">convert To PDF
 
+		<div class="icon-box d-flex justify-content-center align-items-center">
+			<i class="fa-solid fa-download"></i>
+		</div>
+	</a>
+</div> --}}
+
+<div class="col-12 d-flex justify-content-end align-items-center pt-4">
+	<a href="{{route('pdfreturnchoosendatehistroycashandcredit.convert')}}" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : ''  }}" id="pdfLink">convert To PDF
+	<div class="icon-box d-flex justify-content-center align-items-center">
+	<i class="fa-solid fa-download"></i>
+	</div>
+	</a>
+</div>
+</div>
 
 
 
 
 
 <script>
-	document.getElementById('pdfLink').addEventListener('click', function(e) {
+		document.getElementById('pdfLink').addEventListener('click', function(e) {
         e.preventDefault(); 
 		var query=window.location.search;
 		var param=new URLSearchParams(query);
 
-        var url = "{{ route('clhspdf.convert') }}?customerid=" + param.get('customerid') + "&date1=" + param.get('date1') + "&date2=" + param.get('date2');
+        var url = "{{ route('pdfreturnchoosendatehistroycashandcredit.convert') }}?customerid=" + param.get('customerid') + "&date1=" + param.get('date1') + "&date2=" + param.get('date2');
 		window.location.href = url;
 
     });
+
 </script>
 
 </div>
-<script>
-    console.log(convertNumberToWords({{ $dts - $cts }}));
-    console.log("dinesh");
-</script>
 
 
 @stop

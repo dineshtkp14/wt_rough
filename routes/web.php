@@ -158,6 +158,7 @@ Route::get('/clhs',[CustomerLedgerHistroy::class,'returnchoosendatehistroy'])->n
 Route::get('/allcashandcredit',[CustomerLedgerHistroy::class,'returnchoosendatehistroycashandcredit'])->name('returnchoosendatehistroycashandcredit');
 
 Route::get('clhs/pdf/convert/',[CustomerLedgerHistroy::class,'PdfGenerateCustomerDetails'])->name('clhspdf.convert');
+Route::get('allcashandcredit/pdf/convert/',[CustomerLedgerHistroy::class,'pdfreturnchoosendatehistroycashandcredit'])->name('pdfreturnchoosendatehistroycashandcredit.convert');
 
 //companyledgerdetails withpdfconverter
 Route::get('/companyledgerdetails',[CompanyLedgerBillEntryController::class,'returnchoosendatehistroy'])->name('companyledgerdetails.returnchoosendatehistroy');
