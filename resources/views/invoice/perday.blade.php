@@ -75,6 +75,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        {{-- links --}}
                         {{ $salesPerDaycrnotes->links() }}
 
                     </div>
