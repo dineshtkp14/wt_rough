@@ -54,6 +54,8 @@ class Itemscontroller extends Controller
              'costprice' => 'required',
              'quantity' => 'required',
              'mrp' => 'required',
+             'showwarning' => 'required',
+
          ]);
  
          if ($validator->passes()) {
