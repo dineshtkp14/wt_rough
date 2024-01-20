@@ -11,12 +11,12 @@ class ItemsSearchAPI extends Controller
     {
 
         //old data
-        // $items = item::where('itemsname', 'LIKE', '%'.$req->name.'%')->get();
-        // return json_encode($items);
+        $items = item::where('itemsname', 'LIKE', '%'.$req->name.'%')->get();
+        return json_encode($items);
 
-        $items = item::where('itemsname', 'LIKE', '%'.$req->name.'%')->where('product', '>', 0) ->get();
+        // $items = item::where('itemsname', 'LIKE', '%'.$req->name.'%')->where('product', '>', 0) ->get();
        
-                return json_encode($items);
+        //         return json_encode($items);
 
       
 
