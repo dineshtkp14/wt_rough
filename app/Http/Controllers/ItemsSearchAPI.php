@@ -10,8 +10,14 @@ class ItemsSearchAPI extends Controller
     public function index(Request $req)
     {
 
-        $items = item::where('itemsname', 'LIKE', '%'.$req->name.'%')->get();
-        return json_encode($items);
+        //old data
+        // $items = item::where('itemsname', 'LIKE', '%'.$req->name.'%')->get();
+        // return json_encode($items);
+
+        $items = item::where('itemsname', 'LIKE', '%'.$req->name.'%')->where('product', '>', 0) ->get();
+       
+                return json_encode($items);
+
       
 
 
