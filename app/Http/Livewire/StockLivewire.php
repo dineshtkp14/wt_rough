@@ -19,7 +19,7 @@ class StockLivewire extends Component
     public function render()
     {
         //FALSEokay
-        $all = item::orderBy('id', 'DESC')->select('*');
+        $all = item::orderBy('id', 'ASC')->select('*');
 
        
 
