@@ -24,12 +24,12 @@ class StockController extends Controller
             'link' => 'View Stocks'
         ];
 
-        // $iteamdata = Item::orderBy('id', 'DESC')->get();
+        $iteamdata = Item::orderBy('id', 'DESC')->get();
 
-        $iteamdata = item::where('check_remove_ofs', '=', 0)
+        // $iteamdata = item::where('check_remove_ofs', '=', 0)
                
-        ->orderBy('id', 'DESC')
-        ->select('*');
+        // ->orderBy('id', 'DESC')
+        // ->select('*');
 
        
 
