@@ -18,8 +18,8 @@ class StockLivewire extends Component
 
     public function render()
     {
-        //FALSEokay
-        $all = item::orderBy('id', 'DESC')->select('*');
+        // //FALSEokay
+        // $all = item::orderBy('id', 'DESC')->select('*');
 
        
 
@@ -28,7 +28,9 @@ class StockLivewire extends Component
                 // ->orderBy('id', 'DESC')
                 // ->select('*');
 
-              
+                $all = Item::where('check_remove_ofs', 0)
+                ->orderBy('id', 'DESC')
+                ->get();
     
         if (!empty($this->searchTerm)) {
             // Check if the search term is "out" and add a condition to search for items with quantity = 0
