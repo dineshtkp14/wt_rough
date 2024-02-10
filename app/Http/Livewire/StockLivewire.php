@@ -21,10 +21,9 @@ class StockLivewire extends Component
         //FALSEokay
         // $all = item::orderBy('id', 'ASC')->select('*');
 
-        $all = item::where('check_remove_ofs', '=', 0)
-           ->orderBy('id', 'DESC')
-           ->select('*');
-       
+        $all = Item::where('check_remove_ofs', '=', 0)
+        ->orderBy('id', 'DESC')
+        ->get();
 
                 // $all = item::where('check_remove_ofs', '=', 0)
                
