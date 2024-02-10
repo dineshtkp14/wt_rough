@@ -18,14 +18,15 @@ class StockLivewire extends Component
 
     public function render()
     {
-        // $all = item::orderBy('id', 'DESC')->select('*');
+        //FALSE
+        $all = item::orderBy('id', 'DESC')->select('*');
 
        
 
-                $all = item::where('check_remove_ofs', '=', 0)
+                // $all = item::where('check_remove_ofs', '=', 0)
                
-                ->orderBy('id', 'DESC')
-                ->select('*');
+                // ->orderBy('id', 'DESC')
+                // ->select('*');
 
               
     
