@@ -26,20 +26,25 @@ class StockController extends Controller
 
         $iteamdata = Item::orderBy('id', 'DESC')->get();
 
-        // // Use the map function to modify the distributorname
-        // $iteamdata = $iteamdata->map(function ($data) {
-        //    // if ($data->distributorname) {
-        //         //$dis_name = company::where('id', $data->distributorname)->select('name')->first();
-        //        // $data->distributorname = $dis_name->name;
-        //         // echo $data->distributorname;
-        //     }
-        //     return $data; // Return the modified data
-        // });
+       
 
         return view('stock.stock', ['all' => $iteamdata, 'breadcrumb' => $breadcrumb]);
     }
 
     return redirect('/login');
 }
+
+public function updateofs(Request $request)
+{
+    $itemId = $request->input('item_id');
+
+    // Update your database here
+    Item::where('id', $itemId)->update(['check_remove_ofs' => 1]);
+
+    // Redirect back or return a response as needed
+    return redirect()->back()->with('success', 'Items Remove  successfully');
+}
+
+
 
 }

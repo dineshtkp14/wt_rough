@@ -84,6 +84,11 @@ Route::delete('/pricelists/{customerinfo}',[PricelistController::class,'destroy'
 
 
 Route::get('/stocks',[StockController::class,'index'])->name('stocks.index');
+
+//checkandrmeoveoutofstock
+Route::post('/stocks',[StockController::class,'updateofs'])->name('stocks.updateofs');
+
+
 // Route::get('/openingbalance/create',[openingbalanceController::class,'create'])->name('opeaning.create');
 // Route::get('/openingbalance',[openingbalanceController::class,'store'])->name('opeaning.store');
 
@@ -126,6 +131,9 @@ Route::post('/items',[Itemscontroller::class,'store'])->name('items.store');
 Route::get('/items/{items}/edit',[Itemscontroller::class,'edit'])->name('items.edit');
 Route::put('/items/{items}',[Itemscontroller::class,'update'])->name('items.update');
 Route::delete('/items/{items}',[Itemscontroller::class,'destroy'])->name('items.destroy');
+
+
+
 
 Route::get('/companys',[CompanyController::class,'index'])->name('companys.index');
 Route::get('/companys/create',[CompanyController::class,'create'])->name('companys.create');

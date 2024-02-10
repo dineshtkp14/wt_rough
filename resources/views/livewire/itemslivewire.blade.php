@@ -64,7 +64,7 @@
                                       
                                                
                                       <a href="#" onclick="delfunctionusers({{$i->id}})" class="btn btn-danger"  rel="noopener noreferrer">Delete</a>
-                                      <form id="eea{{$i->id}}" action="{{ route('items.destroy',$i->id)}}" method="post">
+                                    <form id="eea{{$i->id}}" action="{{ route('items.destroy',$i->id)}}" method="post">
                                       @csrf
                                       @method('delete')
                                       

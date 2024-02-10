@@ -87,9 +87,13 @@
 
                                    <td>{{ $i->showwarning }}</td>
 
-                                
+                              
                                  
-                                   <td>
+                                   <td>  
+
+                                   
+
+
                                     @if ($i->quantity <= $i->showwarning  and $i->quantity >= 1)
                                     <div class="span-box">
                                         <span class="btn btn-warning ">warning</span>
@@ -97,6 +101,14 @@
                                 @elseif($i->quantity == 0)
                                     <div class="span-box">
                                         <span class="btn btn-danger  ">outofstock</span>
+
+
+                                        <form id="removeForm{{$i->id}}" action="{{ route('stocks.updateofs') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="item_id" value="{{ $i->id }}">
+                                            <button type="submit" class="btn btn-info" onclick="confirmRemove({{$i->id}})">remove</button>
+                                        </form>
+
                                     </div>
 
                                  @elseif($i->quantity < 0)
@@ -127,7 +139,19 @@
        </div>
 
 
-
-  
+     
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('form').forEach(function(form) {
+            form.addEventListener("submit", function(event) {
+                var formId = this.getAttribute('id');
+                var itemId = formId.replace('removeForm', '');
+                if (!confirm("Are you sure you want to remove item " + itemId + "?")) {
+                    event.preventDefault(); // Prevent form submission
+                }
+            });
+        });
+    });
+</script>
