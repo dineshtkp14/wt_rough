@@ -23,7 +23,7 @@ class StockController extends Controller
             'title' => 'View Stockss',
             'link' => 'View Stocks'
         ];
-//TRUE
+//TRUEorg
         $iteamdata = item::orderBy('id', 'ASC')->get();
 
         // $iteamdata = Item::where('check_remove_ofs', '=', 0)
