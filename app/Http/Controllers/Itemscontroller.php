@@ -73,6 +73,8 @@ class Itemscontroller extends Controller
                 $itemsdetails->costprice = $req->costprice;
                 $itemsdetails->mrp = $req->mrp;
                 $itemsdetails->notes = $req->notes;
+                $itemsdetails->firm_name = $req->firm_name;
+
 
                 $itemsdetails->com_Retail_price = $req->competetiveretail;
                 $itemsdetails->com_wholesale_price = $req->competetivewholesale;
@@ -149,6 +151,8 @@ public function update($id, Request $req)
                 $itemsdetails->showwarning = $req->showwarning;
 
                 $itemsdetails->notes = $req->notes;
+                $itemsdetails->firm_name = $req->firm_name;
+
 
                 $itemsdetails->com_Retail_price = $req->competetiveretail;
                 $itemsdetails->com_wholesale_price = $req->competetivewholesale;

@@ -93,6 +93,18 @@
             @enderror
     </div>  
            
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Firm Name</label>
+        <select class="form-control @error('firm_name') is-invalid @enderror" name="firm_name" id="firm_name">
+            <option value="1">Durga And Dinesh Traders</option>
+            <option value="2">Malika & Nav durga Tradersh</option>
+            <option value="3">Om Hari Tradelink</option>
+        </select>
+        @error('firm_name')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
+    </div>
+       
                  
 
                 <div class="col-md-6">
