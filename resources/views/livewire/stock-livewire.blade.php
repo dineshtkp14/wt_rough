@@ -148,7 +148,7 @@
             form.addEventListener("submit", function(event) {
                 var formId = this.getAttribute('id');
                 var itemId = formId.replace('removeForm', '');
-                if (!confirm("Are you sure you want to remove item " + itemId + "?")) {
+                if (!confirm("Please make sure to order before removing.Are you sure you want to remove item " + itemId + "?")) {
                     event.preventDefault(); // Prevent form submission
                 }
             });
