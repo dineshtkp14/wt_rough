@@ -41,7 +41,7 @@ class StockLivewire extends Component
             }
         }
     
-        $all = $query->paginate(7);
+        $query = $query->paginate(7);
     
         $warning = Item::where('showwarning', '>', 0)
                        ->where('quantity', '>=', 1)
