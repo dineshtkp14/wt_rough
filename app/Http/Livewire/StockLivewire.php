@@ -46,11 +46,12 @@ class StockLivewire extends Component
     
         $warning = Item::where('showwarning', '>', 0)
                        ->where('quantity', '>=', 1)
+                       ->where('check_remove_ofs', 0)
                        ->where('quantity', '<=', DB::raw('showwarning'))
                        ->count();
     
-        $count = Item::where('quantity', '>', 0)->count();
-        $couout = Item::where('quantity', '=', 0)->count();
+        $count = Item::where('quantity', '>', 0) ->where('check_remove_ofs', 0)->count();
+        $couout = Item::where('quantity', '=', 0) ->where('check_remove_ofs', 0)->count();
     
         return view('livewire.stock-livewire', [
             'all' => $all,
