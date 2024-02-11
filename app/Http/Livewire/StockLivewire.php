@@ -18,10 +18,7 @@ class StockLivewire extends Component
 
     public function render()
     {
-        // $query = Item::where('check_remove_ofs', 0)->orderBy('id', 'DESC');
-
-        $query = item::orderBy('id', 'ASC')->select('*');
-
+        $query = Item::orderBy('id', 'ASC')->select('*');
     
         if (!empty($this->searchTerm)) {
             $searchTerm = strtolower(trim($this->searchTerm));
@@ -41,7 +38,7 @@ class StockLivewire extends Component
             }
         }
     
-        $query = $query->paginate(7);
+        $all = $query->paginate(7);
     
         $warning = Item::where('showwarning', '>', 0)
                        ->where('quantity', '>=', 1)
@@ -58,7 +55,6 @@ class StockLivewire extends Component
             'war' => $warning
         ]);
     }
-    
 
 
 }
