@@ -18,47 +18,35 @@ class StockLivewire extends Component
 
     public function render()
     {
-        //FALSEokay
-        // $all = item::orderBy('id', 'ASC')->select('*');
-
-        $all = Item::where('check_remove_ofs', '=', 0)
-        ->orderBy('id', 'DESC')
-        ->get();
-
-                // $all = item::where('check_remove_ofs', '=', 0)
-               
-                // ->orderBy('id', 'DESC')
-                // ->select('*');
-
-              
+        $query = Item::where('check_remove_ofs', 0)->orderBy('id', 'DESC');
     
         if (!empty($this->searchTerm)) {
-            // Check if the search term is "out" and add a condition to search for items with quantity = 0
-            if (strtolower($this->searchTerm) === 'out') {
-                $all->where('quantity', 0);
-            }
-             // Check if the search term is "WAR" and add a condition to search for items with $i->quantity <= $i->showwarning and $i->quantity >= 1
-        elseif (strtolower($this->searchTerm) === 'war') {
-            $all->where('quantity', '>=', 1)
-                ->whereColumn('quantity', '<=', 'showwarning');
-        }
-             else {
-                // For other search terms, perform the existing search logic
-                $all->orWhere('id', 'like', "%" . $this->searchTerm . "%");
-                $all->orWhere('distributorname', 'like', "%" . $this->searchTerm . "%");
-                $all->orWhere('itemsname', 'like', "%" . $this->searchTerm . "%");
-                $all->orWhere('mrp', 'like', "%" . $this->searchTerm . "%");
+            $searchTerm = strtolower(trim($this->searchTerm));
+    
+            if ($searchTerm === 'out') {
+                $query->where('quantity', 0);
+            } elseif ($searchTerm === 'war') {
+                $query->where('quantity', '>=', 1)
+                      ->where('quantity', '<=', DB::raw('showwarning'));
+            } else {
+                $query->where(function ($subquery) use ($searchTerm) {
+                    $subquery->where('id', 'like', "%$searchTerm%")
+                             ->orWhere('distributorname', 'like', "%$searchTerm%")
+                             ->orWhere('itemsname', 'like', "%$searchTerm%")
+                             ->orWhere('mrp', 'like', "%$searchTerm%");
+                });
             }
         }
     
-        $all = $all->paginate(7);
-
-        $warning = item::where('showwarning', '>', 0)
-    ->where('quantity', '>=', 1)
-    ->where('quantity', '<=', DB::raw('showwarning'))
-    ->count();
-        $count = item::where('quantity', '>', 0)->count();
-        $couout = item::where('quantity', '=', 0)->count();
+        $all = $query->paginate(7);
+    
+        $warning = Item::where('showwarning', '>', 0)
+                       ->where('quantity', '>=', 1)
+                       ->where('quantity', '<=', DB::raw('showwarning'))
+                       ->count();
+    
+        $count = Item::where('quantity', '>', 0)->count();
+        $couout = Item::where('quantity', '=', 0)->count();
     
         return view('livewire.stock-livewire', [
             'all' => $all,
@@ -68,4 +56,6 @@ class StockLivewire extends Component
         ]);
     }
     
+
+
 }
