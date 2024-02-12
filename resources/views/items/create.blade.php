@@ -84,6 +84,21 @@
                             </div>
                         </div>
         </div>
+
+        <div class="col-md-6">
+            <label for="inputPassword4" class="form-label">Firm Name (CHOOSE FIRM)</label>
+            <select class="form-select @error('firm_name') is-invalid @enderror" name="firm_name" id="firm_name" stye="border-color: red;">
+                <option value="Durga">Durga And Dinesh Traders</option>
+                <option value="Malika">Malika & Nav durga Tradersh</option>
+                <option value="OmHari">Om Hari Tradelink</option>
+                <option value="Bajgain_Supp">Bajgain Suppliers</option>
+            </select>
+            @error('firm_name')
+                <p class="invalid-feedback">{{ $message }}</p>
+            @enderror
+        </div>
+        
+
         <div class="col-md-6">
             <label for="inputPassword4" class="form-label">Date</label>
             <input type="date" class="form-control @error('date') is-invalid @enderror" 
@@ -93,17 +108,7 @@
             @enderror
     </div>  
            
-    <div class="col-md-6">
-        <label for="inputPassword4" class="form-label">Firm Name</label>
-        <select class="form-control @error('firm_name') is-invalid @enderror" name="firm_name" id="firm_name">
-            <option value="1">Durga And Dinesh Traders</option>
-            <option value="2">Malika & Nav durga Tradersh</option>
-            <option value="3">Om Hari Tradelink</option>
-        </select>
-        @error('firm_name')
-            <p class="invalid-feedback">{{ $message }}</p>
-        @enderror
-    </div>
+    
        
                  
 
