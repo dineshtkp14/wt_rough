@@ -51,7 +51,7 @@ class Purchse_controller extends Controller
         $validator=Validator::make($request->all(),[
 
             'date' => 'required|date',
-            'orderlist' => 'required|string|max:255',
+            'orderlist' => 'required|string',
             'notes' => 'nullable|string', 
                
         ]);
@@ -100,7 +100,7 @@ class Purchse_controller extends Controller
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'date' => 'required|date',
-            'orderlist' => 'required|string|max:255',
+            'orderlist' => 'required|string',
             'notes' => 'nullable|string',
             // Add other validation rules for existing fields here
         ]);
