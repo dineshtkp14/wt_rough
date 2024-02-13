@@ -232,6 +232,7 @@
                         </ul>
                     </div>
                 </li>
+
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#company-collapse" aria-expanded="false">
@@ -239,7 +240,7 @@
                     </button>
                     <div class="collapse" id="company-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('companys.create') }}"
+                            <li><a href="{{ route('purorder.create') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Add
                                    Add</a></li>
@@ -253,6 +254,33 @@
                         </ul>
                     </div>
                 </li>
+
+
+
+                <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#PUROR-collapse" aria-expanded="false">
+                        <i class="fa-regular fa-building"></i> PURCHASE ORDER
+                    </button>
+                    <div class="collapse" id="PUROR-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><a href="{{ route('purorder.create') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Add
+                                   Add</a></li>
+                            <li><a href="{{ route('purorder.index') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
+                                   </a></li>
+
+                                   
+
+                        </ul>
+                    </div>
+                </li>
+
+
+
 
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
