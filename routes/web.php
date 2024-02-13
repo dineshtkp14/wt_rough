@@ -17,6 +17,9 @@ use App\Http\Controllers\Invoicecontroller;
 use App\Http\Controllers\TotalSalesController;
 use App\Http\Controllers\Creditnotes_controller;
 use App\Http\Controllers\showperday_controller;
+use App\Http\Controllers\Purchse_controller;
+
+
 
 
 
@@ -142,6 +145,15 @@ Route::get('/companys/{companys}/edit',[CompanyController::class,'edit'])->name(
 Route::put('/companys/{companys}',[CompanyController::class,'update'])->name('companys.update');
 Route::delete('/companys/{companys}',[CompanyController::class,'destroy'])->name('companys.destroy');
 
+
+
+
+Route::get('/purorder',[Purchse_controller::class,'index'])->name('purorder.index');
+Route::get('/purorder/create',[Purchse_controller::class,'create'])->name('purorder.create');
+Route::post('/purorder',[Purchse_controller::class,'store'])->name('purorder.store');
+Route::get('/purorder/{purorder}/edit',[Purchse_controller::class,'edit'])->name('purorder.edit');
+Route::put('/purorder/{purorder}',[Purchse_controller::class,'update'])->name('purorder.update');
+Route::delete('/purorder/{purorder}',[Purchse_controller::class,'destroy'])->name('purorder.destroy');
 
 Route::get('/daybooks',[Daybookcontroller::class,'index'])->name('daybooks.index');
 Route::get('/daybooks/create',[Daybookcontroller::class,'create'])->name('daybooks.create');

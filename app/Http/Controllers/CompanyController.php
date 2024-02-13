@@ -111,7 +111,6 @@ public function update($id, Request $req)
 
     if($validator->passes()){
 
-      
         $companyinfo= company::find($id);
         $companyinfo->name=$req->name;
         $companyinfo->address=$req->address;
