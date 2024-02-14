@@ -14,7 +14,7 @@
     
             <div class="col-md-6">
                 <label for="date" class="form-label">Date</label>
-                <input type="date" class="form-control @error('date') is-invalid @enderror" name="date" value="{{ old('date') }}">
+                <input type="date" class="form-control @error('date') is-invalid @enderror" name="date" value="{{ now()->format('Y-m-d') }}">
                 @error('date')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
