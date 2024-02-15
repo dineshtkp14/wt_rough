@@ -19,7 +19,7 @@ class StockLivewire extends Component
     {
         $query = item::orderBy('id', 'DESC')
              ->where('check_remove_ofs', 0)
-             ->select('*');
+             ->select('*');//"ok"
 
         if (!empty($this->searchTerm)) {
             $searchTerm = strtolower(trim($this->searchTerm));
