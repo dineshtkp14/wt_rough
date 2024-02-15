@@ -1,5 +1,39 @@
 
 
+{{-- <form action="{{ route('stocks.filterfirm') }}" method="GET">
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Firm Name (CHOOSE FIRM)</label>
+        <select class="form-select @error('firm_name') is-invalid @enderror" name="firm_name" id="firm_name" stye="border-color: red;">
+            <option value="Durga">Durga And Dinesh Traders</option>
+            <option value="Malika">Malika & Nav durga Tradersh</option>
+            <option value="OmHari">Om Hari Tradelink</option>
+            <option value="Bajgain_Supp">Bajgain Suppliers</option>
+        </select>
+        @error('firm_name')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
+    </div>
+    <button type="submit">Filter</button>
+</form> --}}
+
+
+<form wire:submit.prevent="filterByFirm">
+    <div class="col-md-6">
+        <label for="firm_name" class="form-label">Firm Name (CHOOSE FIRM)</label>
+        <select wire:model="firm_name" class="form-select @error('firm_name') is-invalid @enderror" id="firm_name" style="border-color: red;">
+            <option value="">Select Firm</option>
+            <option value="Durga">Durga And Dinesh Traders</option>
+            <option value="Malika">Malika & Nav Durga Traders</option>
+            <option value="OmHari">Om Hari Tradelink</option>
+            <option value="Bajgain_Supp">Bajgain Suppliers</option>
+        </select>
+        @error('firm_name')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
+    </div>
+    <button type="submit">Filter</button>
+</form>
+
 
 
 <div class="container">
@@ -37,6 +71,7 @@
                          <th>Items Name</th>
             
                          <th >Quantity</th>
+                         <th >Firm Name</th>
                          <th >MRP</th>
                          <th >Extra</th>
                          <th >Show Warning</th>
@@ -54,6 +89,7 @@
                                    <td>{{ $i->itemsname }}</td>
                                  
                                    <td>{{ $i->quantity }}</td>
+                                   <td>{{ $i->firm_name }}</td>
                                    <td>{{ $i->mrp }}  &nbsp; &nbsp; <!-- Button trigger modal -->
                                     </td>
 

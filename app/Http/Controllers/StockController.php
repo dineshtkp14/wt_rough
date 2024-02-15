@@ -52,4 +52,18 @@ public function updateofs(Request $request)
 
 
 
+public function filterStocks(Request $request)
+{
+    $breadcrumb = [
+        'subtitle' => 'Stock',
+        'title' => 'View Stockss',
+        'link' => 'View Stocks'
+    ];
+
+    $firmName = $request->input('firm_name');
+    $filteredStocks = item::where('distributorname', $firmName)->paginate(10);
+
+    return view('stock.stock', compact('filteredStocks', 'breadcrumb'));
+}
+
 }

@@ -87,6 +87,9 @@ Route::delete('/pricelists/{customerinfo}',[PricelistController::class,'destroy'
 
 
 Route::get('/stocks',[StockController::class,'index'])->name('stocks.index');
+// Route::get('/stocks',[StockController::class,'filterStocks'])->name('stocks.filterfirm');
+Route::get('/stocks/filter', [StockController::class, 'filterStocks'])->name('stocks.filterfirm');
+
 
 //checkandrmeoveoutofstock
 Route::post('/stocks',[StockController::class,'updateofs'])->name('stocks.updateofs');
