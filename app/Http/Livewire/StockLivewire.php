@@ -53,23 +53,17 @@ class StockLivewire extends Component
         $count = Item::where('quantity', '>', 0)->where('check_remove_ofs', 0)->count();
         $couout = Item::where('quantity', '=', 0)->where('check_remove_ofs', 0)->count();
 
-        // Check if a firm name is selected, if yes, return only the filtered items, else return all items
-    if (!empty($this->firm_name)) {
-        dd("ok");
         return view('livewire.stock-livewire', [
             'all' => $all,
             'cou' => $count,
             'x' => $couout,
             'war' => $warning
         ]);
-    } else {
-        // dd("nonono");
-        return view('livewire.stock-livewire', [
-            'all' => Item::orderBy('id', 'DESC')->where('check_remove_ofs', 0)->paginate(7),
-            'cou' => $count,
-            'x' => $couout,
-            'war' => $warning
-        ]);
     }
-}
+    
+    public function filterByFirm()
+    {
+        // Re-render the component to apply the filtering
+        $this->render(); 
+    }
 }

@@ -17,7 +17,7 @@
 </form> --}}
 
 
-<form wire:submit.prevent="filterByFirm">
+{{-- <form wire:submit.prevent="filterByFirm">
     <div class="col-md-6">
         <label for="firm_name" class="form-label">Firm Name (CHOOSE FIRM)</label>
         <select wire:model="firm_name" class="form-select @error('firm_name') is-invalid @enderror" id="firm_name" style="border-color: red;">
@@ -32,7 +32,7 @@
         @enderror
     </div>
     <button type="submit">Filter</button>
-</form>
+</form> --}}
 
 
 
