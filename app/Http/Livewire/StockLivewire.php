@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\item;
+use App\Models\Item;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,13 +13,13 @@ class StockLivewire extends Component
     
     protected $paginationTheme = 'bootstrap';
     public $searchTerm = "";
-    public $firm_name = ''; // Define a public property to capture selected firm name
+    public $firm_name = '';
 
     public function render()
     {
-        $query = item::orderBy('id', 'DESC')
-             ->where('check_remove_ofs', 0)
-             ->select('*');//"ok"
+        $query = Item::orderBy('id', 'DESC')
+            ->where('check_remove_ofs', 0)
+            ->select('*');
 
         if (!empty($this->searchTerm)) {
             $searchTerm = strtolower(trim($this->searchTerm));
@@ -28,30 +28,37 @@ class StockLivewire extends Component
                 $query->where('quantity', 0);
             } elseif ($searchTerm === 'war') {
                 $query->where('quantity', '>=', 1)
-                      ->where('quantity', '<=', DB::raw('showwarning'));
+                    ->where('quantity', '<=', DB::raw('showwarning'));
             } else {
                 $query->where(function ($subquery) use ($searchTerm) {
                     $subquery->where('id', 'like', "%$searchTerm%")
-                             ->orWhere('distributorname', 'like', "%$searchTerm%")
-                             ->orWhere('itemsname', 'like', "%$searchTerm%")
-                             ->orWhere('mrp', 'like', "%$searchTerm%");
+                        ->orWhere('distributorname', 'like', "%$searchTerm%")
+                        ->orWhere('itemsname', 'like', "%$searchTerm%")
+                        ->orWhere('mrp', 'like', "%$searchTerm%")
+                        ->orWhere('firm_name', 'like', "%$searchTerm%");
                 });
             }
         }
-    
+
         if (!empty($this->firm_name)) {
             $query->where('firm_name', $this->firm_name);
         }
-        $all = $query->paginate(7);
-    
+
+        $all = $query->paginate(50);
+
         $warning = Item::where('showwarning', '>', 0)
-                       ->where('quantity', '>=', 1)
-                       ->where('check_remove_ofs', 0)
-                       ->where('quantity', '<=', DB::raw('showwarning'))
-                       ->count();
-    
-        $count = item::where('quantity', '>', 0)->where('check_remove_ofs', 0)->count();
-        $couout = item::where('quantity', '=', 0)->where('check_remove_ofs', 0)->count();
+            ->where('quantity', '>=', 1)
+            ->where('check_remove_ofs', 0)
+            ->where('quantity', '<=', DB::raw('showwarning'))
+            ->count();
+
+        $count = Item::where('quantity', '>', 0)
+            ->where('check_remove_ofs', 0)
+            ->count();
+
+        $couout = Item::where('quantity', '=', 0)
+            ->where('check_remove_ofs', 0)
+            ->count();
 
         return view('livewire.stock-livewire', [
             'all' => $all,
@@ -59,11 +66,5 @@ class StockLivewire extends Component
             'x' => $couout,
             'war' => $warning
         ]);
-    }
-    
-    public function filterByFirm()
-    {
-        // Re-render the component to apply the filtering
-        $this->render(); 
     }
 }
