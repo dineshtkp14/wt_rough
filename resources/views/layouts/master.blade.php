@@ -240,7 +240,7 @@
                     </button>
                     <div class="collapse" id="company-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('purorder.create') }}"
+                            <li><a href="{{ route('companys.create') }}"
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Add
                                    Add</a></li>
