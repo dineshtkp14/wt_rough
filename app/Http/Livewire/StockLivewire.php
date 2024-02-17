@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Item;
+use App\Models\item;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -17,7 +17,7 @@ class StockLivewire extends Component
 
     public function render()
     {
-        $query = Item::orderBy('id', 'DESC')
+        $query = item::orderBy('id', 'DESC')
             ->where('check_remove_ofs', 0)
             ->select('*');
 
@@ -46,17 +46,17 @@ class StockLivewire extends Component
 
         $all = $query->paginate(50);
 
-        $warning = Item::where('showwarning', '>', 0)
+        $warning = item::where('showwarning', '>', 0)
             ->where('quantity', '>=', 1)
             ->where('check_remove_ofs', 0)
             ->where('quantity', '<=', DB::raw('showwarning'))
             ->count();
 
-        $count = Item::where('quantity', '>', 0)
+        $count = item::where('quantity', '>', 0)
             ->where('check_remove_ofs', 0)
             ->count();
 
-        $couout = Item::where('quantity', '=', 0)
+        $couout = item::where('quantity', '=', 0)
             ->where('check_remove_ofs', 0)
             ->count();
 
