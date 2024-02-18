@@ -2,24 +2,25 @@
    
     <form wire:submit.prevent="filterByFirm">
         <div class="row">
-            <div class="col-md-3">
-                <label for="firm_name" class="form-label">Firm Name (CHOOSE FIRM)</label>
-                <select wire:model="firm_name" class="form-select @error('firm_name') is-invalid @enderror" id="firm_name" style="border-color: red;">
-                    <option value="">Select Firm</option>
-                    <option value="Durga">Durga And Dinesh Traders</option>
-                    <option value="Malika">Malika & Nav Durga Traders</option>
-                    <option value="OmHari">Om Hari Tradelink</option>
-                    <option value="Bajgain_Supp">Bajgain Suppliers</option>
-
-                </select>
+            <div class="col-md-5">
+                <div style="display: flex; align-items: center;">
+                    <span>CHOOSE FIRM Name</span>
+                    <select wire:model="firm_name" class="form-select @error('firm_name') is-invalid @enderror" id="firm_name" style="border-color: red;">
+                        <option value="">Select Firm</option>
+                        <option value="Durga">Durga And Dinesh Traders</option>
+                        <option value="Malika">Malika & Nav Durga Traders</option>
+                        <option value="OmHari">Om Hari Tradelink</option>
+                        <option value="Bajgain_Supp">Bajgain Suppliers</option>
+                    </select>
+                </div>
                 @error('firm_name')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
-           
         </div>
     </form>
-
+    
+    <br>
    
 
     <div class="card">
