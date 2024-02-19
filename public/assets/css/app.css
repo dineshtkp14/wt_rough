@@ -519,11 +519,10 @@ tr:nth-child(even) {
 /* //dashboard css */
 
 .custom-column:hover {
-    transform: scale(1.05) !important; /* Increase the size slightly on hover */
+    transform: scale(1.2);
     transition: transform 0.3s ease !important; /* Add smooth transition effect */
 
     background-color: rgb(210, 7, 7) !important;
-    cursor: progress !important;
 }
 
 .modal-container .modal-box {

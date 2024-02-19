@@ -1,5 +1,9 @@
 <div class="container">
    
+    <button onclick="printPage()">Print</button>
+
+
+
     <form wire:submit.prevent="filterByFirm">
         <div class="row">
             <div class="col-md-5">
@@ -135,3 +139,9 @@
         </div>
     </div>
 </div>
+
+<script>
+    function printPage() {
+        window.print();
+    }
+</script>
