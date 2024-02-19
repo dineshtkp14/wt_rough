@@ -72,7 +72,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-receipt"></i> INVOICE 
+                        <i class="fas fa-file-invoice"></i> INVOICE 
                     </button>
                     <div class="collapse" id="Invoice-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -105,7 +105,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#cnorders-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-building-columns"></i>CREDIT NOTES / SALES RETURN
+                        <i class="fas fa-file-alt"></i>CREDIT NOTES / SALES RETURN
                     </button>
                     <div class="collapse" id="cnorders-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -142,7 +142,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-building-columns"></i> Banks
+                        <i class="fas fa-university"></i> Banks
                     </button>
                     <div class="collapse" id="orders-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -165,7 +165,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#items-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-synagogue"></i> Item
+                        <i class="fas fa-box"></i> Item
                     </button>
                     <div class="collapse" id="items-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -184,7 +184,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#daybook-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-book"></i> Daybook
+                        <i class="fas fa-calendar-day"></i> Daybook
                     </button>
                     <div class="collapse" id="daybook-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -204,7 +204,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#company-collapse" aria-expanded="false">
-                        <i class="fa-regular fa-building"></i> Suppliers/Company
+                        <i class="fas fa-building"></i> Suppliers/Company
                     </button>
                     <div class="collapse" id="company-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -228,7 +228,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#PUROR-collapse" aria-expanded="false">
-                        <i class="fa-regular fa-building"></i> PURCHASE ORDER
+                        <i class="fas fa-shopping-cart"></i> PURCHASE ORDER
                     </button>
                     <div class="collapse" id="PUROR-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -253,7 +253,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#companyledger" aria-expanded="false">
-                        <i class="fa-sharp fa-solid fa-book"></i> Company Ledger
+                        <i class="fas fa-book"></i> Company Ledger
                     </button>
                     <div class="collapse" id="companyledger">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -284,7 +284,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#customer-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-person-military-pointing"></i> Customer
+                        <i class="fas fa-users"></i> Customer
                     </button>
                     <div class="collapse" id="customer-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -332,7 +332,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#price-collapse" aria-expanded="false">
-                        <i class="fa-regular fa-money-bill-1"></i> Price List
+                        <i class="fas fa-list-alt"></i> Price List
                     </button>
                     <div class="collapse" id="price-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -352,7 +352,7 @@
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#stocks" aria-expanded="false">
-                        <i class="fa-regular fa-money-bill-1"></i> Stock
+                        <i class="fas fa-cubes"></i> Stock
                     </button>
                     <div class="collapse" id="stocks">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -377,14 +377,14 @@
                     <div class="collapse" id="account-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a href="{{ route('profit') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded">CALCULATE PROFIT</a></li>
+                                    class="link-dark d-inline-flex text-decoration-none rounded "><i class="fas fa-chart-line"></i> CALCULATE PROFIT</a></li>
                             <li><a href="{{ route('totalsales.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded">CALCULATE TOTAL SALES</a></li>
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-chart-bar"></i>  CALCULATE TOTAL SALES</a></li>
                                    
                                     <li><a href="{{ route('allsalesdetails.showdetails') }}"
-                                        class="link-dark d-inline-flex text-decoration-none rounded">Show TOTAL SALES</a></li>
+                                        class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-money-bill-wave"></i>  Show TOTAL SALES</a></li>
                                             <li><a href="{{ route('showonlysalesperday.pp') }}"
-                                            class="link-dark d-inline-flex text-decoration-none rounded">Show Per Day</a></li>
+                                            class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-calendar"></i>   Show Per Day</a></li>
                                     
                                         
                         </ul>
