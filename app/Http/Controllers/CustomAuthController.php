@@ -14,7 +14,6 @@ class CustomAuthcontroller extends Controller
 {
     public function viewuser()
     {
-
         if (Auth::check()) {
 
             $users = User::orderBy('id', 'DESC')->paginate(115);
@@ -29,8 +28,6 @@ class CustomAuthcontroller extends Controller
     {
 
         $user = User::findOrFail($id);
-
-
         $user->delete();
 
         //$req->session()->flash('success','Deleted Sucessfully');
