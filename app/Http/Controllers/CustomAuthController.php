@@ -156,7 +156,7 @@ class CustomAuthcontroller extends Controller
     public function dashboard()
     {
         if (Auth::check()) {
-            return view('dashboard');
+            return view('dashboard.dashboard');
         }
         return redirect('/login');
     }
