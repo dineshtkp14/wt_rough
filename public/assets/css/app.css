@@ -516,6 +516,15 @@ tr:nth-child(even) {
     z-index: 999999;
 }
 
+/* //dashboard css */
+
+.custom-column:hover {
+    transform: scale(1.05); /* Increase the size slightly on hover */
+    transition: transform 0.3s ease; /* Add smooth transition effect */
+
+    background-color: rgb(210, 7, 7);
+}
+
 .modal-container .modal-box {
     background-color: #ffffff;
     min-width: 300px;

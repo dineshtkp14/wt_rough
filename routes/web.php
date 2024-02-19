@@ -250,7 +250,7 @@ Route::get('/showsalesperday', [showperday_controller::class, 'showonlysalesperd
 
 
 
- Route::get('/dashboard', [CustomAuthController::class, 'dashboard']); 
+//  Route::get('/dashboard', [CustomAuthController::class, 'dashboard']); 
  Route::get('login', [CustomAuthController::class, 'index'])->name('login');
  Route::post('postlogin', [CustomAuthController::class, 'login'])->name('postlogin'); 
  Route::get('signup', [CustomAuthController::class, 'signup'])->name('register-user');

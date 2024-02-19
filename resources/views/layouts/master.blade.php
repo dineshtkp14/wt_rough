@@ -63,7 +63,7 @@
                 <li class="mb-1">
                     <button class=" btn btn-toggle d-inline-flex align-items-center  border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-gauge"></i><a href="{{ route('dashboard.index') }}"> Dashboard</a>
+                        <i class="fa-solid fa-gauge"></i><a href="{{ route('dashboard.index') }}" class="text-decoration-none text-white"> Dashboard</a>
                     </button>
                     
                 </li>
