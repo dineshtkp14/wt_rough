@@ -63,23 +63,9 @@
                 <li class="mb-1">
                     <button class=" btn btn-toggle d-inline-flex align-items-center  border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-gauge"></i> Dashboard
+                        <i class="fa-solid fa-gauge"></i><a href="{{ route('dashboard.index') }}"> Dashboard</a>
                     </button>
-                    <div class="collapse" id="dashboard-collapse">
-                      <a href="/dashaboard">  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"> </a>
-                            {{-- <li><a href="{{ route('dashboard.index') }}" --}}
-                                  {{-- <a  class="link-dark d-inline-flex text-decoration-none rounded">Dashboard</a></li>
-                            <li><a href="#"
-                                    class="link-dark d-inline-flex text-decoration-none rounded">Weekly</a></li>
-                            <li><a href="#"
-                                    class="link-dark d-inline-flex text-decoration-none rounded">Monthly</a></li>
-                            <li><a href="#"
-                                    class="link-dark d-inline-flex text-decoration-none rounded">Annually</a></li> --}}
-                       
-                                    <li><a href="{{ route('deletedcustomer.deletebillno') }}"
-                                        class="link-dark d-inline-flex text-decoration-none rounded">Searh Deleted Bill</a></li> 
-                                </ul>
-                    </div>
+                    
                 </li>
                
 
@@ -173,25 +159,7 @@
                     </div>
                 </li>
 
-                {{-- <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-building-columns"></i> Banks
-                    </button>
-                    <div class="collapse" id="orders-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('banks.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
-                                    Deposit Amount</a></li>
-                            <li><a href="{{ route('banks.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
-                                    Deposit</a></li>
-
-                        </ul>
-                    </div>
-                </li> --}}
+               
 
 
                 <li class="mb-1">

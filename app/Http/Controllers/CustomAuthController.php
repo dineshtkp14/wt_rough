@@ -77,20 +77,27 @@ class CustomAuthcontroller extends Controller
 
     public function signup()
     {
-        return view('registration');
+        if (Auth::check()) {
+
+            return view('registration');
+        }
+         return redirect('/login');
+       
     }
 
-    public function changepass()
-    {
-        return view('changepassword');
-    }
-
+    
 
     public function changePassword()
     {
         if (Auth::check()) {
+            $breadcrumb= [
+                'subtitle'=>'Password',
+                'title'=>'Change Password',
+                'link'=>'Change Password'
+            ];
+            return view('changepassword',['breadcrumb'=>$breadcrumb]);;
 
-            return view('changepassword');
+            
         }
 
 
@@ -102,7 +109,7 @@ class CustomAuthcontroller extends Controller
         # Validation
         $request->validate([
             'old_password' => 'required',
-            'new_password' => 'required|confirmed',
+            'new_password' => 'required||min:6|confirmed',
 
         ]);
 

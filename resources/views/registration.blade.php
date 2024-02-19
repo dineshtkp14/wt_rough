@@ -49,7 +49,7 @@
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand text-warning" href="">KPS</a>
+                <a class="navbar-brand text-warning" href="">WT</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -58,8 +58,8 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active text-warning" aria-current="page" href="">Kadayat Pharmacy
-                                Store</a>
+                            <a class="nav-link active text-warning" aria-current="page" href="">WholesaLe Tikapur
+                                </a>
                         </li>
 
 
@@ -94,6 +94,14 @@
                                         name="name" autofocus>
                                     @if ($errors->has('name'))
                                         <span class="text-danger">{{ $errors->first('name') }}</span>
+                                    @endif
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <input type="text" placeholder="address" id="address_address" class="form-control"
+                                        name="address" autofocus>
+                                    @if ($errors->has('address'))
+                                        <span class="text-danger">{{ $errors->first('address') }}</span>
                                     @endif
                                 </div>
 

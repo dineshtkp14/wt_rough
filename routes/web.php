@@ -18,6 +18,8 @@ use App\Http\Controllers\TotalSalesController;
 use App\Http\Controllers\Creditnotes_controller;
 use App\Http\Controllers\showperday_controller;
 use App\Http\Controllers\Purchse_controller;
+use App\Http\Controllers\Employee_controller;
+
 
 
 
@@ -98,7 +100,7 @@ Route::post('/stocks',[StockController::class,'updateofs'])->name('stocks.update
 // Route::get('/openingbalance/create',[openingbalanceController::class,'create'])->name('opeaning.create');
 // Route::get('/openingbalance',[openingbalanceController::class,'store'])->name('opeaning.store');
 
-Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard.index');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
 
 
@@ -149,6 +151,10 @@ Route::put('/companys/{companys}',[CompanyController::class,'update'])->name('co
 Route::delete('/companys/{companys}',[CompanyController::class,'destroy'])->name('companys.destroy');
 
 
+    Route::get('/employees',[Employee_controller::class,'index'])->name('employees.index');
+    Route::get('/employees/{employees}/edit',[Employee_controller::class,'edit'])->name('employees.edit');
+    Route::put('/employees/{employees}',[Employee_controller::class,'update'])->name('employees.update');
+    Route::delete('/employees/{employees}',[Employee_controller::class,'destroy'])->name('employees.destroy');
 
 
 Route::get('/purorder',[Purchse_controller::class,'index'])->name('purorder.index');
