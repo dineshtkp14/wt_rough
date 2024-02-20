@@ -5,7 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\BackupCreditnotesInvoice;
-use App\Models\CustomerInfo;
+use App\Models\customerinfo;
 
 class DeletedcninvoiceLivewire extends Component
 {
