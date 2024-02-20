@@ -77,6 +77,7 @@ Route::get('/cninvoice',[CreditnotesInvoices_controller::class,'index'])->name('
 Route::get('/cninvoice/{cninvoice}/edit',[CreditnotesInvoices_controller::class,'edit'])->name('cninvoice.edit');
 Route::put('/cninvoice/{cninvoice}',[CreditnotesInvoices_controller::class,'update'])->name('cninvoice.update');
 
+Route::get('/deletedCNinvoice',[CreditnotesInvoices_controller::class,'returndeletedcninvoice'])->name('deletedcn.invoice');
 
 
 
@@ -195,6 +196,7 @@ Route::get('companyledgerdetails/pdf/convert/',[CompanyLedgerBillEntryController
 
 
 Route::get('/deletedbillno',[CustomerLedgerHistroy::class,'returndeletedBillsDEtailsByInvoiceid'])->name('deletedcustomer.deletebillno');
+Route::get('/deletedinvoice',[CustomerLedgerHistroy::class,'returndeletedinvoice'])->name('deleted.invoice');
 
 Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])->name('customer.billno');
 Route::delete('/billno', [CustomerLedgerHistroy::class, 'deletebillfromdatabase'])->name('customer.deletebillno');

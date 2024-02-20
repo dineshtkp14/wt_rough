@@ -6,6 +6,7 @@ use App\Models\customerinfo;
 use App\Models\customerledgerdetails;
 use App\Models\invoice;
 use App\Models\item;
+
 use App\Models\salesitem;
 
 use App\Models\BackupSalesItem;
@@ -579,7 +580,7 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
         }
 
         // Generate PDF view
-        $pdfview = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])
+        $pdfview = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif', 'format' => 'A5'])
             ->loadView('customerledgerhistory.view_customerallledger_cashandcredit_PDF', [
                 'debittotalcrnotes' => $debittotalcrnotes,
                 'creditnoteledger' => $creditnoteledger,
@@ -598,7 +599,29 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
     }
 }
 
-    
+    public function returndeletedinvoice()
+    {
+        if(Auth::check()){
+
+            $breadcrumb= [
+                'subtitle'=>'View',
+                'title'=>'View Deleted Invoices',
+                'link'=>'View Deleted Invoices'
+            ];
+       
+         $alldata=BackupInvoice::orderBy('id','DESC')->get();
+       
+
+         return view('deletedbill.deletedinvoice',['all'=>$alldata,'breadcrumb'=>$breadcrumb]);
+
+       
+    }
+
+    return redirect('/login');
+    }
+
+
+
 
 
     }

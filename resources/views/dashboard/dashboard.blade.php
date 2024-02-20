@@ -21,6 +21,13 @@
                 </a>
             </div>
             <div class="col custom-column">
+                <a href="page2.html" class="text-decoration-none">
+                    <div class="p-5 border bg-primary text-white">
+                        <h5><i class="fas fa-lock"></i> Change Password</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col custom-column">
                 <a href="page3.html" class="text-decoration-none">
                     <div class="p-5 border bg-primary text-white">
                         <h5><i class="fas fa-university"></i> Banks</h5>

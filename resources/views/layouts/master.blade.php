@@ -61,10 +61,11 @@
             <ul class="list-unstyled ps-0">
 
                 <li class="mb-1">
-                    <button class=" btn btn-toggle d-inline-flex align-items-center  border-0 collapsed"
+                  <a href="{{ route('dashboard.index') }}">  <button class=" btn btn-toggle d-inline-flex align-items-center  border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-gauge"></i><a href="{{ route('dashboard.index') }}" class="text-decoration-none text-white"> Dashboard</a>
+                        <i class="fa-solid fa-gauge"></i> Dashboard
                     </button>
+                  </a>
                     
                 </li>
                
@@ -97,7 +98,11 @@
                                         <li><a href="{{ route('deletedcustomer.deletebillno') }}"
                                             class="link-dark d-inline-flex text-decoration-none rounded"><i
                                                 class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>SEARCH DELETED INVOICE</a></li>
-
+                                               
+                                                <li><a href="{{ route('deleted.invoice') }}"
+                                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View DELETED INVOICE</a></li>
+        
                         </ul>
                     </div>
                 </li>
@@ -131,6 +136,11 @@
                                       <li><a href="{{ route('deletedcncustomer.deletebillno') }}"
                                         class="link-dark d-inline-flex text-decoration-none rounded"><i
                                             class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Search CN Deleted Bill</a></li>
+
+                                            <li><a href="{{ route('deletedcn.invoice') }}"
+                                                class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                                    class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View DELETED Credit Notes INVOICE</a></li>
+    
 
 
                         </ul>

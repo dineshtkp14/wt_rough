@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\CreditnotesInvoice;
+use App\Models\BackupCreditnotesInvoice;
+
 
 class CreditnotesInvoices_controller extends Controller
 {
@@ -100,6 +102,30 @@ class CreditnotesInvoices_controller extends Controller
     return redirect('/login');
 }
 }
+
+
+public function returndeletedcninvoice()
+{
+    if(Auth::check()){
+
+        $breadcrumb= [
+            'subtitle'=>'View',
+            'title'=>'View Deleted Invoices',
+            'link'=>'View Deleted Invoices'
+        ];
+   
+     $alldata=BackupCreditnotesInvoice::orderBy('id','DESC')->get();
+   
+
+     return view('creditnote.viewdeletedcreditnotesinvoice',['all'=>$alldata,'breadcrumb'=>$breadcrumb]);
+
+   
+}
+
+return redirect('/login');
+}
+
+
 
 public function update($id, Request $req)
 {
