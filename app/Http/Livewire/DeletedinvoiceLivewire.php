@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Invoice;
 use App\Models\CustomerInfo;
 
-class DeletedInvoiceLivewire extends Component
+class DeletedinvoiceLivewire extends Component
 {
     use WithPagination;
 
@@ -39,3 +39,10 @@ class DeletedInvoiceLivewire extends Component
         ]);
     }
 }
+
+
+
+
+
+
+
