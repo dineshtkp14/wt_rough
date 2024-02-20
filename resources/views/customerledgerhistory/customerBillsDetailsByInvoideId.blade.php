@@ -5,14 +5,14 @@
 <div class="main-content">
     @yield('breadcrumb')
 
-    {{-- <div class="container">
+    <div class="container">
         @if (Session::has('success'))
             <div class="alert alert-success w-50">
                 {{ Session::get('success') }}
             </div>
         @endif
 
-</div> --}}
+</div>
 
 
 <div class="container">
@@ -246,6 +246,18 @@
                     </div>
                 </a>
             </div>
+
+{{-- //for print --}}
+<div class="col-12 d-flex justify-content-end align-items-center pt-4">
+    <a href="#" onclick="openPdfAndPrint('{{ route('invoicebillno.convert') }}')" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">Print
+        <div class="icon-box d-flex justify-content-center align-items-center">
+            <i class="fa-solid fa-print"></i>
+        </div>
+    </a>
+</div>
+
+
+            
         </span>
     </div>
 
@@ -304,6 +316,34 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update the content of the element with the words
     totalAmountElement.textContent = words;
 });
+
+
+
+
+//print
+function openPdfAndPrint(pdfUrl) {
+        // Open a new tab
+        var newTab = window.open('', '_blank');
+        
+        // Once the new tab is opened, redirect it to the PDF generation route
+        fetch(pdfUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                // Create a URL for the blob
+                var fileURL = URL.createObjectURL(blob);
+                // Set the new tab's location to the PDF URL
+                newTab.location.href = fileURL;
+                // After the PDF is loaded, trigger the print function
+                newTab.onload = function() {
+                    newTab.print();
+                };
+            })
+            .catch(error => console.error('Error generating PDF:', error));
+    }
+
+
+
+
     </script>
 </div>
 @stop

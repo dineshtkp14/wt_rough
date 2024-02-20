@@ -114,8 +114,9 @@ class ItemsalesController extends Controller
         $cus_data->added_by = session('user_email');
 
         $cus_data->save();
+        
 
-        return redirect()->route('itemsales.index')->with('success','Invoice Created Sucessfully !!');
+        return redirect()->route('customer.billno', ['invoiceid' => $invoice_data->id])->with('success', 'Invoice Created Successfully !!');
                                 
        
 
