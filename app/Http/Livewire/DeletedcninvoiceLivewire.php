@@ -10,7 +10,6 @@ use App\Models\customerinfo;
 class DeletedcninvoiceLivewire extends Component
 {
     use WithPagination;
-
     protected $paginationTheme = 'bootstrap';
     public $searchTerm = "";
 

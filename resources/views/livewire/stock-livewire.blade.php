@@ -1,6 +1,5 @@
 <div class="container">
    
-    <button onclick="printPage()">Print</button>
 
 
 
@@ -140,8 +139,3 @@
     </div>
 </div>
 
-<script>
-    function printPage() {
-        window.print();
-    }
-</script>
