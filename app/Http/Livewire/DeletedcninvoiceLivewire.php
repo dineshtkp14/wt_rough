@@ -4,7 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Invoice;
+use App\Models\BackupCreditnotesInvoice;
 use App\Models\CustomerInfo;
 
 class DeletedcninvoiceLivewire extends Component
@@ -16,13 +16,13 @@ class DeletedcninvoiceLivewire extends Component
 
     public function render()
     {
-        $alldata = Invoice::select('invoices.*', 'customerinfos.name as customer_name')
-            ->leftJoin('customerinfos', 'invoices.customerid', '=', 'customerinfos.id')
+        $alldata = BackupCreditnotesInvoice::select('backupcreditnotes_invoices.*', 'customerinfos.name as customer_name')
+            ->leftJoin('customerinfos', 'backupcreditnotes_invoices.customerid', '=', 'customerinfos.id')
             ->where('customerinfos.name', 'like', "%" . $this->searchTerm . "%")
-            ->orWhere('invoices.subtotal', 'like', "%" . $this->searchTerm . "%")
-            ->orWhere('invoices.discount', 'like', "%" . $this->searchTerm . "%")
-            ->orWhere('invoices.total', 'like', "%" . $this->searchTerm . "%")
-            ->orderBy('invoices.id', 'DESC')
+            ->orWhere('backupcreditnotes_invoices.subtotal', 'like', "%" . $this->searchTerm . "%")
+            ->orWhere('backupcreditnotes_invoices.discount', 'like', "%" . $this->searchTerm . "%")
+            ->orWhere('backupcreditnotes_invoices.total', 'like', "%" . $this->searchTerm . "%")
+            ->orderBy('backupcreditnotes_invoices.id', 'DESC')
             ->paginate(10);
 
         foreach ($alldata as $data) {
