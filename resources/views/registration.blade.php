@@ -96,9 +96,9 @@
                                         <span class="text-danger">{{ $errors->first('name') }}</span>
                                     @endif
                                 </div>
-
+                                <input type="hidden" value="{{ session('user_email') }}" name="user_email">
                                 <div class="form-group mb-3">
-                                    <input type="text" placeholder="address" id="address_address" class="form-control"
+                                    <input type="text" placeholder="address" id="address" class="form-control"
                                         name="address" autofocus>
                                     @if ($errors->has('address'))
                                         <span class="text-danger">{{ $errors->first('address') }}</span>

@@ -60,7 +60,8 @@
             </a>
             <ul class="list-unstyled ps-0">
 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5 
+                ">
                   <a href="{{ route('dashboard.index') }}">  <button class=" btn btn-toggle d-inline-flex align-items-center  border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
                         <i class="fa-solid fa-gauge"></i> Dashboard
@@ -70,7 +71,7 @@
                 </li>
                
 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5 ">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapse" aria-expanded="false">
                         <i class="fas fa-file-invoice"></i> INVOICE 
@@ -107,7 +108,7 @@
                     </div>
                 </li>
 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#cnorders-collapse" aria-expanded="false">
                         <i class="fas fa-file-alt"></i>CREDIT NOTES / SALES RETURN
@@ -149,7 +150,7 @@
 
 
 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
                         <i class="fas fa-university"></i> Banks
@@ -172,7 +173,7 @@
                
 
 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#items-collapse" aria-expanded="false">
                         <i class="fas fa-box"></i> Item
@@ -191,7 +192,7 @@
                         </ul>
                     </div>
                 </li>
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#daybook-collapse" aria-expanded="false">
                         <i class="fas fa-calendar-day"></i> Daybook
@@ -211,7 +212,7 @@
                     </div>
                 </li>
 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#company-collapse" aria-expanded="false">
                         <i class="fas fa-building"></i> Suppliers/Company
@@ -235,7 +236,7 @@
 
 
 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#PUROR-collapse" aria-expanded="false">
                         <i class="fas fa-shopping-cart"></i> PURCHASE ORDER
@@ -260,7 +261,7 @@
 
 
 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#companyledger" aria-expanded="false">
                         <i class="fas fa-book"></i> Company Ledger
@@ -291,7 +292,7 @@
                     </div>
                 </li>
 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#customer-collapse" aria-expanded="false">
                         <i class="fas fa-users"></i> Customer
@@ -339,7 +340,35 @@
                     </div>
                 </li>
 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#price-collapse" aria-expanded="false">
+                        <i class="fas fa-list-alt"></i> Price List
+                    </button>
+                    <div class="collapse" id="price-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><a href="{{ route('pricelists.create') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Add
+                                    Items Price List </a></li>
+                            <li><a href="{{ route('pricelists.index') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
+                                    Items Price List</a></li>
+
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="mb-1 border border-success border-5">
+                  <a href="{{ route('employees.index') }}">  <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#emp" aria-expanded="false">
+                        <i class="fas fa-list-alt"></i> View Employee
+                    </button>
+                  </a>
+                </li>
+
+                 <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#price-collapse" aria-expanded="false">
                         <i class="fas fa-list-alt"></i> Price List
@@ -359,7 +388,7 @@
                     </div>
                 </li>
                 
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#stocks" aria-expanded="false">
                         <i class="fas fa-cubes"></i> Stock
@@ -379,7 +408,7 @@
                     </div>
                 </li>
                 <li style="border-bottom:1px solid #e5e7eb7e;"></li>
-                <li class="mb-1">
+                <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
                         <i class="fa-solid fa-user"></i> EXTRA
