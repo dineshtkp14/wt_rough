@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\Validator;
 class CustomerLedgerHistroy extends Controller
 {
     
-    
 
     public function returncusbills(Request $req){
         
@@ -298,15 +297,6 @@ class CustomerLedgerHistroy extends Controller
     }
 }
 
-    
-   
-    
-
-
-
-
-
-
 
             public function returnBillsDEtailsByInvoiceid(Request $req)
             {
@@ -410,47 +400,93 @@ class CustomerLedgerHistroy extends Controller
 
         return redirect('/login');
     }
-        public function showPDF_InvoiveBillByBillno(Request $req){
-            if(Auth::check()){
+    //     public function showPDF_InvoiveBillByBillno(Request $req){
+    //         if(Auth::check()){
 
-            $invoiceid= $req->invoiceid;
-            $allInvoices=invoice::where('id',$req->invoiceid)->get();
-            $allcusbyid=salesitem::where('invoiceid',$req->invoiceid)->get();
+    //         $invoiceid= $req->invoiceid;
+    //         $allInvoices=invoice::where('id',$req->invoiceid)->get();
+    //         $allcusbyid=salesitem::where('invoiceid',$req->invoiceid)->get();
 
+    //         $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
+    //         $forinvoicetype = $cusleddetaiforinvoicetype->first(); 
+
+    //        foreach($allcusbyid as  $data){
+
+    //         $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+    //             if ($item) {
+    //                 $data->itemid = $item->itemsname;
+    //                 $data->mrp = $item->mrp;
+    //             } else {
+    //                 $data->itemid = $data->unstockedname;
+    //             }
+         
+    //     }
+    //     foreach($allInvoices as  $data){
+    //         if($data->customerid){
+    //             $customerinfodetails=customerinfo::where('id',$data->customerid)->get();
+              
+    //         }
+    //     }
+        
+    //     $pdfviewe=FacadePdf::setOptions(['dpi' => 150,'defaultFont' => 'dejavu serif'])->loadView('customerledgerhistory.customerbillnoinvoiceconvertpdf',['allinvoices'=>$allInvoices,'allcusbyid'=>$allcusbyid,'invoiceid'=>$invoiceid,'cinfodetails'=>$customerinfodetails,  'forinvoicetype'=>$forinvoicetype,
+    // ]);     
+
+    //        return $pdfviewe->download('invoice.pdf');
+
+    //     }
+       
+    //     return redirect('/login');
+    // }
+
+
+
+
+    public function showPDF_InvoiveBillByBillno(Request $req)
+    {
+        if (Auth::check()) {
+            $invoiceid = $req->invoiceid;
+            $allInvoices = invoice::where('id', $req->invoiceid)->get();
+            $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
+    
             $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
-            $forinvoicetype = $cusleddetaiforinvoicetype->first(); 
-
-           foreach($allcusbyid as  $data){
-
-            $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+            $forinvoicetype = $cusleddetaiforinvoicetype->first();
+    
+            $customerinfodetails = []; // Initialize as empty array
+    
+            foreach ($allcusbyid as $data) {
+                $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
                 if ($item) {
                     $data->itemid = $item->itemsname;
                     $data->mrp = $item->mrp;
                 } else {
                     $data->itemid = $data->unstockedname;
                 }
-
-         
-        }
-        foreach($allInvoices as  $data){
-            if($data->customerid){
-                $customerinfodetails=customerinfo::where('id',$data->customerid)->get();
-              
             }
+            foreach ($allInvoices as $data) {
+                if ($data->customerid) {
+                    $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
+                }
+            }
+    
+            // Load the Blade view for the PDF
+            $pdfView = view('customerledgerhistory.customerbillnoinvoiceconvertpdf', [
+                'allinvoices' => $allInvoices,
+                'allcusbyid' => $allcusbyid,
+                'invoiceid' => $invoiceid,
+                'cinfodetails' => $customerinfodetails, // Pass $customerinfodetails to the view
+                'forinvoicetype' => $forinvoicetype,
+            ]);
+    
+            // Generate PDF using FacadePdf
+            $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfView);
+    
+            // Return the PDF content for display in a new tab
+            return $pdf->stream('invoice.pdf');
         }
-        
-        $pdfviewe=FacadePdf::setOptions(['dpi' => 150,'defaultFont' => 'dejavu serif'])->loadView('customerledgerhistory.customerbillnoinvoiceconvertpdf',['allinvoices'=>$allInvoices,'allcusbyid'=>$allcusbyid,'invoiceid'=>$invoiceid,'cinfodetails'=>$customerinfodetails,  'forinvoicetype'=>$forinvoicetype,
-    ]);     
-
-           return $pdfviewe->download('invoice.pdf');
-
-        }
-       
-        return redirect('/login');
     }
+    
 
-
-
+    
 
 
 
@@ -485,14 +521,10 @@ class CustomerLedgerHistroy extends Controller
             if($from == "" || $to==""){
 
                 $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)->get();
-
                 $querycheck=customerledgerdetails::where('customerid',$req->customerid)->get();
-
                 $debittotalsumwithdate = $querycheck->sum('debit');
                 $credittotalsumwithdate = $querycheck->sum('credit');
                 $debitnotcash = $querycheck->where('invoicetype', '!=', 'cash')->sum('debit');
-
-
 
                
             }else{
