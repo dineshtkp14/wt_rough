@@ -5,7 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\invoice;
-use App\Models\CustomerInfo;
+use App\Models\customerinfo;
 
 class DeletedinvoiceLivewire extends Component
 {
@@ -27,7 +27,7 @@ class DeletedinvoiceLivewire extends Component
 
         foreach ($alldata as $data) {
             if ($data->customerid) {
-                $item = CustomerInfo::where('id', $data->customerid)->select('name')->first();
+                $item = customerinfo::where('id', $data->customerid)->select('name')->first();
                 if ($item) {
                     $data->name = $item->name;
                 }
