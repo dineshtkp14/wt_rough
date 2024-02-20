@@ -441,50 +441,55 @@ class CustomerLedgerHistroy extends Controller
 
 
 
-    public function showPDF_InvoiveBillByBillno(Request $req)
-    {
-        if (Auth::check()) {
-            $invoiceid = $req->invoiceid;
-            $allInvoices = invoice::where('id', $req->invoiceid)->get();
-            $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
-    
-            $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
-            $forinvoicetype = $cusleddetaiforinvoicetype->first();
-    
-            $customerinfodetails = []; // Initialize as empty array
-    
-            foreach ($allcusbyid as $data) {
-                $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
-                if ($item) {
-                    $data->itemid = $item->itemsname;
-                    $data->mrp = $item->mrp;
-                } else {
-                    $data->itemid = $data->unstockedname;
-                }
+public function showPDF_InvoiveBillByBillno(Request $req)
+{
+    if (Auth::check()) {
+        $invoiceid = $req->invoiceid;
+        $allInvoices = invoice::where('id', $req->invoiceid)->get();
+        $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
+
+        $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
+        $forinvoicetype = $cusleddetaiforinvoicetype->first();
+
+        foreach ($allcusbyid as  $data) {
+            $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+            if ($item) {
+                $data->itemid = $item->itemsname;
+                $data->mrp = $item->mrp;
+            } else {
+                $data->itemid = $data->unstockedname;
             }
-            foreach ($allInvoices as $data) {
-                if ($data->customerid) {
-                    $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
-                }
-            }
-    
-            // Load the Blade view for the PDF
-            $pdfView = view('customerledgerhistory.customerbillnoinvoiceconvertpdf', [
-                'allinvoices' => $allInvoices,
-                'allcusbyid' => $allcusbyid,
-                'invoiceid' => $invoiceid,
-                'cinfodetails' => $customerinfodetails, // Pass $customerinfodetails to the view
-                'forinvoicetype' => $forinvoicetype,
-            ]);
-    
-            // Generate PDF using FacadePdf
-            $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfView);
-    
-            // Return the PDF content for display in a new tab
-            return $pdf->stream('invoice.pdf');
         }
+        foreach ($allInvoices as  $data) {
+            if ($data->customerid) {
+                $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
+            }
+        }
+
+        // Load the Blade view for the PDF
+        $pdfView = view('customerledgerhistory.customerbillnoinvoiceconvertpdf', [
+            'allinvoices' => $allInvoices,
+            'allcusbyid' => $allcusbyid,
+            'invoiceid' => $invoiceid,
+            'cinfodetails' => $customerinfodetails,
+            'forinvoicetype' => $forinvoicetype,
+        ]);
+
+        // Generate PDF using FacadePdf
+        $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfView);
+
+        // Save the PDF to a temporary file
+        $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
+        $pdf->save($pdfFile);
+
+        // Send headers to instruct the browser to open the PDF in a new tab
+        return response()->file($pdfFile, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="invoice.pdf"',
+        ]);
     }
-    
+}
+
 
     
 
