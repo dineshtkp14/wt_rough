@@ -4,7 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Invoice;
+use App\Models\invoice;
 use App\Models\CustomerInfo;
 
 class DeletedinvoiceLivewire extends Component
@@ -16,7 +16,7 @@ class DeletedinvoiceLivewire extends Component
 
     public function render()
     {
-        $alldata = Invoice::select('invoices.*', 'customerinfos.name as customer_name')
+        $alldata = invoice::select('invoices.*', 'customerinfos.name as customer_name')
             ->leftJoin('customerinfos', 'invoices.customerid', '=', 'customerinfos.id')
             ->where('customerinfos.name', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('invoices.subtotal', 'like', "%" . $this->searchTerm . "%")
