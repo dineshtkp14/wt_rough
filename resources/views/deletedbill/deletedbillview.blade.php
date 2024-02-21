@@ -148,6 +148,7 @@
 
        @if(isset($displayaddedby))
     <b style="float: right; margin-right: 100px;">Deleted By: {{ $displayaddedby }}</b>
+    <b style="float: right; margin-right: 100px;">Date: {{ $displayaddedbydate }}</b>
 @endif
 
    

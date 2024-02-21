@@ -366,6 +366,8 @@ class CustomerLedgerHistroy extends Controller
             
                 $allcusbyid = BackupSalesItem::where('invoiceid', $req->invoiceid)->get();
                 $displayaddedby = BackupSalesItem::where('invoiceid', $req->invoiceid)->pluck('added_by')->first();
+                $displayaddedbydate = BackupSalesItem::where('invoiceid', $req->invoiceid)->pluck('created_at')->first();
+
                 $customerinfodetails = null;
 
                 $cusleddetaiforinvoicetype = BackupCustomerLedgerDetails::where('invoiceid', $req->invoiceid)->get();
@@ -395,6 +397,8 @@ class CustomerLedgerHistroy extends Controller
                     'cinfodetails' => $customerinfodetails,
                     'forinvoicetype'=>$forinvoicetype,
                     'displayaddedby' => $displayaddedby,
+                    'displayaddedbydate' => $displayaddedbydate,
+
                     'breadcrumb' => $breadcrumb
                 ]);
             }
