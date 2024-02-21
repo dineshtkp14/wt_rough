@@ -13,6 +13,7 @@
                     <thead>
                         <tr>
                             <th>IDE</th>
+                            <th>Invoice Id</th>
                             <th>Customer Id</th>
                             <th>Customer Name</th>
                             <th>Subtotal</th>
@@ -29,6 +30,8 @@
                             @foreach ($all as $sale)
                                 <tr>
                                     <td>{{ $sale->id }}</td>
+                                    <td>{{ $sale->invoice_id }}</td>
+
                                     <td>{{ $sale->customerid }}</td>
                                     <td>{{ $sale->name }}</td>
                                     <td>{{ $sale->subtotal }}</td>

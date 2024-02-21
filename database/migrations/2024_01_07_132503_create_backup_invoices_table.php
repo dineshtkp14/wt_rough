@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('backup_invoices', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('customerid');
+            $table->bigInteger('invoice_id');
             $table->float('subtotal',20,2);
             $table->float('discount',20,2);
             $table->float('total',20,2);

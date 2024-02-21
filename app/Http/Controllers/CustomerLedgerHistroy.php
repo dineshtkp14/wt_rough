@@ -199,6 +199,7 @@ class CustomerLedgerHistroy extends Controller
                 $backupInvoice->discount = $invoice->discount;
                 $backupInvoice->total = $invoice->total;
                 $backupInvoice->notes = $invoice->notes;
+                $backupInvoice->invoice_id = $req->invoiceid;
                 $backupInvoice->added_by = session('user_email');
 
 
@@ -364,6 +365,7 @@ class CustomerLedgerHistroy extends Controller
                 $allInvoices = BackupInvoice::where('id', $req->invoiceid)->get();
             
                 $allcusbyid = BackupSalesItem::where('invoiceid', $req->invoiceid)->get();
+                $displayaddedby = BackupSalesItem::where('invoiceid', $req->invoiceid)->pluck('added_by');
                 $customerinfodetails = null;
 
                 $cusleddetaiforinvoicetype = BackupCustomerLedgerDetails::where('invoiceid', $req->invoiceid)->get();
@@ -392,6 +394,7 @@ class CustomerLedgerHistroy extends Controller
                     'invoiceid' => $invoiceid,
                     'cinfodetails' => $customerinfodetails,
                     'forinvoicetype'=>$forinvoicetype,
+                    'displayaddedby' => $displayaddedby,
                     'breadcrumb' => $breadcrumb
                 ]);
             }

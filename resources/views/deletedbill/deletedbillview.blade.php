@@ -20,7 +20,7 @@
         <div class="col-md-4">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">Search Invoice</h5>
+                    <h5 class="card-title">Search Invoiceok</h5>
                     @if (Session::has('error'))
                     <div class="alert alert-success w-50">
                         {{ Session::get('error') }}
@@ -141,10 +141,23 @@
             <div class="toogle-box p-3 d-flex justify-content-center align-items-center" id="toggleBox" data-toggle="close">
                 <i class="fas fa-user"></i>
             </div>
-        </div>
+        </div>displayaddedby
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
-        <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
+        <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }} {{ $forinvoicetype->invoicetype }}</b>
        @endif
+
+       @if(isset($displayaddedby) && !empty($displayaddedby))
+       <ul style="float: right; list-style: none; margin-right: 100px; padding: 0;">
+           @foreach($displayaddedby as $email)
+           <span style="float: right; margin-right: 100px; font-weight: bold;
+           ">Deleted By:   {{ $email }}</span>
+           
+           @endforeach
+       </ul>
+   @endif
+   
+
+
         @if ($cinfodetails !=null)
             @foreach($cinfodetails as $i)
                 Name:  {{$i->name}}<br>
