@@ -6,6 +6,7 @@ function getData(url, successCb) {
         success: successCb,
     });
 }
+
 const BASE_URL = window.location.origin + "/api/";
 const CUSTOMER_SEARCH_API_URL =
     window.location.origin + "/api/customer_search/";

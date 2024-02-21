@@ -216,7 +216,8 @@
                             </tr>
                             <tr>
                                 
-                                <td colspan="5" id="totalAmountWords">{{$i->total}}</td>
+                                {{-- <td colspan="5" id="totalAmountWords">{{$i->total}}</td> --}}
+                                <td colspan="5" id="totalAmountWords">{{ floor($i->total) }}</td>
 
 
                                 <td class="text-center"><b>Total Amount:</b></td>

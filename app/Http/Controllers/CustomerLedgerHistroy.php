@@ -483,6 +483,8 @@ class CustomerLedgerHistroy extends Controller
 
             $customeridfor=$req->customerid;
 
+            $numberintowords=$req->numberintowords;
+
             $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
             $debittotalcrnotes = $creditnoteledger->sum('debit');
 
