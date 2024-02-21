@@ -72,7 +72,7 @@
                     @foreach ($all as $i)
                         <tr>
                             <td data-label="Id">{{ $i->id }}</td>
-						   <td data-label="Name">{{ $i->created_at }}</td>
+						   <td data-label="Name">{{ $i->date }}</td>
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
 						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>

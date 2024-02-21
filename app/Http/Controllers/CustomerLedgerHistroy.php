@@ -200,6 +200,13 @@ class CustomerLedgerHistroy extends Controller
                 $backupInvoice->total = $invoice->total;
                 $backupInvoice->notes = $invoice->notes;
                 $backupInvoice->invoice_id = $req->invoiceid;
+
+
+                $backupInvoice->inv_type = $invoice->inv_type;
+                $backupInvoice->inv_date = $invoice->inv_date;
+
+
+                
                 $backupInvoice->added_by = session('user_email');
 
 
@@ -516,7 +523,7 @@ class CustomerLedgerHistroy extends Controller
 
            
             return view('customerledgerhistory.view_customerallledger_cashandcredit',['cusinfoforpdfok' => $cusinfoforpdf,
-            'debittotalcrnotes'=>$debittotalcrnotes,'creditnoteledger'=>$creditnoteledger,'allnotcash'=>$debitnotcash,'all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb, 'cid' => $customeridfor]);      
+            'debittotalcrnotes'=>$debittotalcrnotes,'creditnoteledger'=>$creditnoteledger,'allnotcash'=>$debitnotcash,'all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb, 'cid' => $customeridfor,'from' => $from,'to' => $to]);      
         }
 
      

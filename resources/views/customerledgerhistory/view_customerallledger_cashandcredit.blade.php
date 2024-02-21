@@ -99,17 +99,49 @@
 	  </form>
 	</div>
 
-
+<div class="row">
+  <div class="col-md-8">
 	@foreach ($cusinfoforpdfok as $i)
-	<div>
-		<h3>Customer Id: {{$i->id}}</h3> 
-		<h3>Name: {{$i->name}}</h3> 
-		<h3>Address: {{$i->address}}</h3>
-		<h3>Phone No: {{$i->phoneno}}</h3>
-		<h3>Email: {{$i->email}}</h3>
+		<div>
+			<h3>Customer Id: {{$i->id}}</h3> 
+			<h3>Name: {{$i->name}}</h3> 
+			<h3>Address: {{$i->address}}</h3>
+			<h3>Phone No: {{$i->phoneno}}</h3>
+			<h3>Email: {{$i->email}}</h3>
 
-	</div>
-@endforeach
+		</div>
+	@endforeach
+  </div>
+
+  <div class="col-md-3">
+	<span> 
+		{{-- <div class="col-12 d-flex justify-content-end align-items-center pt-4">
+			<a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
+				<div class="icon-box d-flex justify-content-center align-items-center">
+					<i class="fa-solid fa-print"></i>
+				</div>
+			</a>
+		</div> --}}
+
+		<div class="col-12 d-flex justify-content-end align-items-center pt-4">
+			<a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
+				<div class="icon-box d-flex justify-content-center align-items-center">
+					<i class="fa-solid fa-print"></i>
+				</div>
+			</a>
+		</div>
+		
+		
+	</span>
+  </div>
+
+</div>
+	
+
+
+
+
+
 
 <table>
 	<thead>
@@ -262,13 +294,6 @@
 
 
 
-<div class="col-12 d-flex justify-content-end align-items-center pt-4">
-	<a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">Print
-		<div class="icon-box d-flex justify-content-center align-items-center">
-			<i class="fa-solid fa-print"></i>
-		</div>
-	</a>
-</div>
 
 
 </div>
