@@ -141,13 +141,13 @@
             <div class="toogle-box p-3 d-flex justify-content-center align-items-center" id="toggleBox" data-toggle="close">
                 <i class="fas fa-user"></i>
             </div>
-        </div>displayaddedby
+        </div>
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
         <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }} {{ $forinvoicetype->invoicetype }}</b>
        @endif
 
        @if(isset($displayaddedby))
-    <b style="float: right; margin-right: 100px;">Email: {{ $displayaddedby }}</b>
+    <b style="float: right; margin-right: 100px;">Deleted By: {{ $displayaddedby }}</b>
 @endif
 
    
