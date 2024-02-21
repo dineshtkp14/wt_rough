@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>Print</title>
     <style>
         table, th, td {
             border: 1px solid green;

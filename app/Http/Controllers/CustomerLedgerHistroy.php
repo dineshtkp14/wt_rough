@@ -400,98 +400,59 @@ class CustomerLedgerHistroy extends Controller
 
         return redirect('/login');
     }
-    //     public function showPDF_InvoiveBillByBillno(Request $req){
-    //         if(Auth::check()){
-
-    //         $invoiceid= $req->invoiceid;
-    //         $allInvoices=invoice::where('id',$req->invoiceid)->get();
-    //         $allcusbyid=salesitem::where('invoiceid',$req->invoiceid)->get();
-
-    //         $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
-    //         $forinvoicetype = $cusleddetaiforinvoicetype->first(); 
-
-    //        foreach($allcusbyid as  $data){
-
-    //         $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
-    //             if ($item) {
-    //                 $data->itemid = $item->itemsname;
-    //                 $data->mrp = $item->mrp;
-    //             } else {
-    //                 $data->itemid = $data->unstockedname;
-    //             }
-         
-    //     }
-    //     foreach($allInvoices as  $data){
-    //         if($data->customerid){
-    //             $customerinfodetails=customerinfo::where('id',$data->customerid)->get();
-              
-    //         }
-    //     }
-        
-    //     $pdfviewe=FacadePdf::setOptions(['dpi' => 150,'defaultFont' => 'dejavu serif'])->loadView('customerledgerhistory.customerbillnoinvoiceconvertpdf',['allinvoices'=>$allInvoices,'allcusbyid'=>$allcusbyid,'invoiceid'=>$invoiceid,'cinfodetails'=>$customerinfodetails,  'forinvoicetype'=>$forinvoicetype,
-    // ]);     
-
-    //        return $pdfviewe->download('invoice.pdf');
-
-    //     }
-       
-    //     return redirect('/login');
-    // }
-
-
-
-
-public function showPDF_InvoiveBillByBillno(Request $req)
-{
-    if (Auth::check()) {
-        $invoiceid = $req->invoiceid;
-        $allInvoices = invoice::where('id', $req->invoiceid)->get();
-        $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
-
-        $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
-        $forinvoicetype = $cusleddetaiforinvoicetype->first();
-
-        foreach ($allcusbyid as  $data) {
-            $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
-            if ($item) {
-                $data->itemid = $item->itemsname;
-                $data->mrp = $item->mrp;
-            } else {
-                $data->itemid = $data->unstockedname;
-            }
-        }
-        foreach ($allInvoices as  $data) {
-            if ($data->customerid) {
-                $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
-            }
-        }
-
-        // Load the Blade view for the PDF
-        $pdfView = view('customerledgerhistory.customerbillnoinvoiceconvertpdf', [
-            'allinvoices' => $allInvoices,
-            'allcusbyid' => $allcusbyid,
-            'invoiceid' => $invoiceid,
-            'cinfodetails' => $customerinfodetails,
-            'forinvoicetype' => $forinvoicetype,
-        ]);
-
-        // Generate PDF using FacadePdf
-        $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfView);
-
-        // Save the PDF to a temporary file
-        $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
-        $pdf->save($pdfFile);
-
-        // Send headers to instruct the browser to open the PDF in a new tab
-        return response()->file($pdfFile, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="invoice.pdf"',
-        ]);
-    }
-}
-
-
     
+
+
+    public function showPDF_InvoiveBillByBillno(Request $req)
+    {
+        if (Auth::check()) {
+            $invoiceid = $req->invoiceid;
+            $allInvoices = invoice::where('id', $req->invoiceid)->get();
+            $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
+    
+            $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
+            $forinvoicetype = $cusleddetaiforinvoicetype->first();
+    
+            foreach ($allcusbyid as  $data) {
+                $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+                if ($item) {
+                    $data->itemid = $item->itemsname;
+                    $data->mrp = $item->mrp;
+                } else {
+                    $data->itemid = $data->unstockedname;
+                }
+            }
+            foreach ($allInvoices as  $data) {
+                if ($data->customerid) {
+                    $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
+                }
+            }
+    
+            // Load the Blade view for the PDF
+            $pdfView = view('customerledgerhistory.customerbillnoinvoiceconvertpdf', [
+                'allinvoices' => $allInvoices,
+                'allcusbyid' => $allcusbyid,
+                'invoiceid' => $invoiceid,
+                'cinfodetails' => $customerinfodetails,
+                'forinvoicetype' => $forinvoicetype,
+            ]);
+    
+            // Generate PDF using FacadePdf
+            $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfView);
+    
+            // Save the PDF to a temporary file
+            $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
+            $pdf->save($pdfFile);
+    
+            // Send headers to instruct the browser to open the PDF in a new tab
+            return response()->file($pdfFile, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="invoice.pdf"',
+            ]);
+        }
+    }
+
+
 
 
 
@@ -506,6 +467,7 @@ public function showPDF_InvoiveBillByBillno(Request $req)
                 'link'=>' Customers Ledger Details (CASH / CREDIT)'
             ];
 
+            $customeridfor=$req->customerid;
 
             $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
             $debittotalcrnotes = $creditnoteledger->sum('debit');
@@ -547,13 +509,94 @@ public function showPDF_InvoiveBillByBillno(Request $req)
 
            
             return view('customerledgerhistory.view_customerallledger_cashandcredit',['cusinfoforpdfok' => $cusinfoforpdf,
-            'debittotalcrnotes'=>$debittotalcrnotes,'creditnoteledger'=>$creditnoteledger,'allnotcash'=>$debitnotcash,'all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
+            'debittotalcrnotes'=>$debittotalcrnotes,'creditnoteledger'=>$creditnoteledger,'allnotcash'=>$debitnotcash,'all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb, 'cid' => $customeridfor]);      
         }
 
      
 
         }
     
+
+
+
+// public function pdfreturnchoosendatehistroycashandcredit(Request $req)
+// {
+//     // Check if user is authenticated
+//     if (Auth::check()) {
+        
+//         // Breadcrumb information
+//         $breadcrumb = [
+//             'subtitle' => 'View',
+//             'title' => 'Customers Ledger Details Cash Credit',
+//             'link' => 'Customers Ledger Details'
+//         ];
+
+//         // Fetch credit note ledger details
+//         $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
+//         $debittotalcrnotes = $creditnoteledger->sum('debit');
+
+//         // Get date range from request
+//         $from = date($req->date1);
+//         $to = date($req->date2);
+
+//         $cusinfoforpdf= customerinfo::where('id',$req->customerid)->get();
+       
+
+
+//         // Initialize variables
+//         $cusledgertails = null;
+//         $debittotalsumwithdate = null;
+//         $credittotalsumwithdate = null;
+//         $debitnotcash = null;
+
+//         // Get all customer information
+//         $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();
+
+//         if ($from == "" || $to == "") {
+//             // No date range specified, fetch data without filtering by date
+
+//             $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)->get();
+
+//             $querycheck = customerledgerdetails::where('customerid', $req->customerid)->get();
+
+//             // Calculate sums for debit and credit without date filtering
+//             $debittotalsumwithdate = $querycheck->sum('debit');
+//             $credittotalsumwithdate = $querycheck->sum('credit');
+//             $debitnotcash = $querycheck->where('invoicetype', '!=', 'cash')->sum('debit');
+//         } else {
+//             // Date range specified, fetch data within the date range
+
+//             $betweendate = customerledgerdetails::where('customerid', $req->customerid)->get();
+
+//             // Calculate sums for debit and credit within the specified date range
+//             $debittotalsumwithdate = $betweendate->sum('debit');
+//             $credittotalsumwithdate = $betweendate->sum('credit');
+
+//             $debitnotcash = $betweendate->where('invoicetype', '!=', 'cash')->sum('debit');
+
+//             // Fetch customer ledger details within the specified date range
+//             $cusledgertails = customerledgerdetails::whereBetween('date', [$from, $to])->where('customerid', $req->customerid)->get();
+//         }
+
+//         // Generate PDF view
+//         $pdfview = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif', 'format' => 'A5'])
+//             ->loadView('customerledgerhistory.view_customerallledger_cashandcredit_PDF', [
+//                 'debittotalcrnotes' => $debittotalcrnotes,
+//                 'creditnoteledger' => $creditnoteledger,
+//                 'allnotcash' => $debitnotcash,
+//                 'all' => $cusledgertails,
+//                 'allcus' => $allcusinfo,
+//                 'dts' => $debittotalsumwithdate,
+//                 'cts' => $credittotalsumwithdate,
+//                 'cusinfoforpdfok' => $cusinfoforpdf,
+
+//                 'breadcrumb' => $breadcrumb
+//             ]);
+
+//         // Download the PDF
+//         return $pdfview->download('invoice.pdf');
+//     }
+// }
 
 
 
@@ -569,6 +612,7 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
             'link' => 'Customers Ledger Details'
         ];
 
+        $customeridfor=$req->customerid;
         // Fetch credit note ledger details
         $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
         $debittotalcrnotes = $creditnoteledger->sum('debit');
@@ -578,9 +622,6 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
         $to = date($req->date2);
 
         $cusinfoforpdf= customerinfo::where('id',$req->customerid)->get();
-       
-
-
         // Initialize variables
         $cusledgertails = null;
         $debittotalsumwithdate = null;
@@ -617,24 +658,42 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
         }
 
         // Generate PDF view
-        $pdfview = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif', 'format' => 'A5'])
-            ->loadView('customerledgerhistory.view_customerallledger_cashandcredit_PDF', [
-                'debittotalcrnotes' => $debittotalcrnotes,
-                'creditnoteledger' => $creditnoteledger,
-                'allnotcash' => $debitnotcash,
-                'all' => $cusledgertails,
-                'allcus' => $allcusinfo,
-                'dts' => $debittotalsumwithdate,
-                'cts' => $credittotalsumwithdate,
-                'cusinfoforpdfok' => $cusinfoforpdf,
+        $pdfview = view('customerledgerhistory.view_customerallledger_cashandcredit_PDF', [
+            'debittotalcrnotes' => $debittotalcrnotes,
+            'creditnoteledger' => $creditnoteledger,
+            'allnotcash' => $debitnotcash,
+            'all' => $cusledgertails,
+            'allcus' => $allcusinfo,
+            'dts' => $debittotalsumwithdate,
+            'cts' => $credittotalsumwithdate,
+            'cusinfoforpdfok' => $cusinfoforpdf,
+            'breadcrumb' => $breadcrumb,
+            'cid' => $customeridfor
+        ]);
 
-                'breadcrumb' => $breadcrumb
-            ]);
+        // Generate PDF using FacadePdf
+        $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfview);
+    
+        // Save the PDF to a temporary file
+        $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
+        $pdf->save($pdfFile);
 
-        // Download the PDF
-        return $pdfview->download('invoice.pdf');
+        // Send headers to instruct the browser to open the PDF in a new tab
+        return response()->file($pdfFile, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="invoice.pdf"',
+        ]);
     }
 }
+
+
+
+
+
+
+
+
+
 
     public function returndeletedinvoice()
     {

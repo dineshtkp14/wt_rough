@@ -142,7 +142,7 @@
         <b style="float: right; margin-right: 100px;">Date: {{ $forinvoicetype->date }}</b>
 
         {{-- <b style="float: right; margin-right: 100px;">Sales Return: {{ $forinvoicetype->salesreturn }}</b> --}}
-
+        
                 @if($forinvoicetype->salesreturn=="yes")
                     <b style="float: right; margin-right: 100px; color: green;" class="h5">Sales Return/Credit Notes Bill no :{{ $forinvoicetype->returnidforcreditnotes }}</b>
                 @endif
@@ -156,7 +156,15 @@
                 ContactNo:  {{$i->phoneno}}<br>
             @endforeach
         @endif
-
+<span class="float-end mb-5">
+    <div class="col-12 d-flex justify-content-end align-items-center pt-4">
+        <a href="{{ route('invoicebillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">Print
+            <div class="icon-box d-flex justify-content-center align-items-center">
+                <i class="fa-solid fa-print"></i>
+            </div>
+        </a>
+    </div>
+ </span>
         Invoice Id: {{$invoiceid}} <br>
 
         @if ($allinvoices !=null)
@@ -239,13 +247,7 @@
             
             <br>
             
-            <div class="col-12 d-flex justify-content-end align-items-center pt-4">
-                <a href="{{ route('invoicebillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">Print
-                    <div class="icon-box d-flex justify-content-center align-items-center">
-                        <i class="fa-solid fa-download"></i>
-                    </div>
-                </a>
-            </div>
+          
            
 
             

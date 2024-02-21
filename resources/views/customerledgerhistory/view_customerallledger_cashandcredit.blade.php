@@ -102,10 +102,11 @@
 
 	@foreach ($cusinfoforpdfok as $i)
 	<div>
+		<h3>Customer Id: {{$i->id}}</h3> 
 		<h3>Name: {{$i->name}}</h3> 
 		<h3>Address: {{$i->address}}</h3>
 		<h3>Phone No: {{$i->phoneno}}</h3>
-		<h3>Phone No: {{$i->email}}</h3>
+		<h3>Email: {{$i->email}}</h3>
 
 	</div>
 @endforeach
@@ -261,38 +262,13 @@
 
 
 
-
-
-
-
-{{-- <div class="col-12 d-flex justify-content-end align-items-center pt-4"> --}}
-	{{-- <a href="{{route('PdfGenerateCustomerDetailsallcashandcredit.convert')}}" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">convert To PDF --}}
-        {{-- <a href="{{route('PdfGenerateCustomerDetailsallcashandcredit.convert')}}" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">convert To PDF
-
+<div class="col-12 d-flex justify-content-end align-items-center pt-4">
+	<a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">Print
 		<div class="icon-box d-flex justify-content-center align-items-center">
-			<i class="fa-solid fa-download"></i>
+			<i class="fa-solid fa-print"></i>
 		</div>
 	</a>
-</div> --}}
-
-<div class="col-12 d-flex justify-content-end align-items-center pt-4">
-	<a href="{{route('pdfreturnchoosendatehistroycashandcredit.convert')}}" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : ''  }}" id="pdfLink">convert To PDF
-	<div class="icon-box d-flex justify-content-center align-items-center">
-	<i class="fa-solid fa-download"></i>
-	</div>
-	</a>
 </div>
-
-{{-- //for print --}}
-<div class="col-12 d-flex justify-content-end align-items-center pt-4">
-    <a href="#" onclick="openPdfAndPrint('{{ route('pdfreturnchoosendatehistroycashandcredit.convert') }}')" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">Print
-        <div class="icon-box d-flex justify-content-center align-items-center">
-            <i class="fa-solid fa-print"></i>
-        </div>
-    </a>
-</div>
-
-
 
 
 </div>
@@ -302,43 +278,13 @@
 
 
 <script>
-		document.getElementById('pdfLink').addEventListener('click', function(e) {
-        e.preventDefault(); 
-		var query=window.location.search;
-		var param=new URLSearchParams(query);
 
-        var url = "{{ route('pdfreturnchoosendatehistroycashandcredit.convert') }}?customerid=" + param.get('customerid') + "&date1=" + param.get('date1') + "&date2=" + param.get('date2');
-		window.location.href = url;
-
-    });
-
-
-
-
-	function openPdfAndPrint(pdfUrl) {
-        // Open a new tab
-        var newTab = window.open('', '_blank');
-        
-        // Once the new tab is opened, redirect it to the PDF generation route
-        fetch(pdfUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                // Create a URL for the blob
-                var fileURL = URL.createObjectURL(blob);
-                // Set the new tab's location to the PDF URL
-                newTab.location.href = fileURL;
-                // After the PDF is loaded, trigger the print function
-                newTab.onload = function() {
-                    newTab.print();
-                };
-            })
-            .catch(error => console.error('Error generating PDF:', error));
+	
+function openPdfInNewTab(event, url) {
+        event.preventDefault();
+        var newTab = window.open(url, '_blank');
+        newTab.focus();
     }
-
-
-
-
-
 
 
 </script>
