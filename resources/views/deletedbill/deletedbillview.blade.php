@@ -146,15 +146,10 @@
         <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }} {{ $forinvoicetype->invoicetype }}</b>
        @endif
 
-       @if(isset($displayaddedby) && !empty($displayaddedby))
-       <ul style="float: right; list-style: none; margin-right: 100px; padding: 0;">
-           @foreach($displayaddedby as $email)
-           <span style="float: right; margin-right: 100px; font-weight: bold;
-           ">Deleted By:   {{ $email }}</span>
-           
-           @endforeach
-       </ul>
-   @endif
+       @if(isset($displayaddedby))
+    <b style="float: right; margin-right: 100px;">Email: {{ $displayaddedby }}</b>
+@endif
+
    
 
 

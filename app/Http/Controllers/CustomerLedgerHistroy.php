@@ -365,7 +365,7 @@ class CustomerLedgerHistroy extends Controller
                 $allInvoices = BackupInvoice::where('id', $req->invoiceid)->get();
             
                 $allcusbyid = BackupSalesItem::where('invoiceid', $req->invoiceid)->get();
-                $displayaddedby = BackupSalesItem::where('invoiceid', $req->invoiceid)->pluck('added_by');
+                $displayaddedby = BackupSalesItem::where('invoiceid', $req->invoiceid)->pluck('added_by')->first();
                 $customerinfodetails = null;
 
                 $cusleddetaiforinvoicetype = BackupCustomerLedgerDetails::where('invoiceid', $req->invoiceid)->get();
