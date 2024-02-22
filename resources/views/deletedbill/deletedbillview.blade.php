@@ -154,13 +154,29 @@
             </table>
             
             <br>
-            <div class="" {{ url('index.html', []) }}
 
-            
         </span>
     </div>
 
     <script>
+// You can also add this if you want to execute the conversion when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+
+
+// Get the element by its ID
+var totalAmountElement = document.getElementById('totalAmountWords');
+
+// Get the numerical value from the element's content
+var numericalValue = parseFloat(totalAmountElement.textContent.trim());
+
+// Convert the numerical value to words
+var words = convertNumberToWords(numericalValue);
+
+// Update the content of the element with the words
+totalAmountElement.textContent = words;
+});
+
+
 // JavaScript for Delete Form
 document.getElementById('deleteForm').addEventListener('submit', function(e) {
     // Get the value entered by the user in the input field
@@ -199,25 +215,11 @@ document.getElementById('pdfLink').addEventListener('click', function(e) {
     var param = new URLSearchParams(query);
     var url = "{{ route('invoicebillno.convert') }}?invoiceid=" + param.get('invoiceid');
     window.location.href = url;
-
 });
 
 
 
-// You can also add this if you want to execute the conversion when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the element by its ID
-    var totalAmountElement = document.getElementById('totalAmountWords');
-    
-    // Get the numerical value from the element's content
-    var numericalValue = parseFloat(totalAmountElement.textContent.trim());
 
-    // Convert the numerical value to words
-    var words = convertNumberToWords(numericalValue);
-
-    // Update the content of the element with the words
-    totalAmountElement.textContent = words;
-});
     </script>
 </div>
 @stop

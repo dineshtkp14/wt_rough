@@ -20,7 +20,7 @@
         <div class="col-md-4">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">Search ok Invoice</h5>
+                    <h5 class="card-title">Search in ok Invoice</h5>
                     <form action="{{ route('creditnotescustomer.billno') }}" method="get" id="chosendatepdfform">
                         <div class="mb-3">
                             <label for="invoiceid" class="form-label">Enter Bill No</label>
@@ -139,6 +139,14 @@
         </div>
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
         <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
+        <b style="float: right; margin-right: 100px;">Date: {{ $forinvoicetype->date }}</b>
+
+        {{-- <b style="float: right; margin-right: 100px;">Sales Return: {{ $forinvoicetype->salesreturn }}</b> --}}
+        
+                @if($forinvoicetype->salesreturn=="yes")
+                    <b style="float: right; margin-right: 100px; color: green;" class="h5">Sales Return/Credit Notes Bill no :{{ $forinvoicetype->returnidforcreditnotes }}</b>
+                @endif
+
        @endif
         @if ($cinfodetails !=null)
             @foreach($cinfodetails as $i)
@@ -148,7 +156,17 @@
                 ContactNo:  {{$i->phoneno}}<br>
             @endforeach
         @endif
-
+        abc
+<span class="float-end mb-5">
+    <div class="col-12 d-flex justify-content-end align-items-center pt-4 p-4">
+        <a href="{{ route('creditnotesbillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
+            <div class="icon-box d-flex justify-content-center align-items-center" style="font-size: 34px;">
+                <i class="fa-solid fa-print"></i>
+            </div>
+        </a>
+    </div>
+    
+ </span>
         Invoice Id: {{$invoiceid}} <br>
 
         @if ($allinvoices !=null)
@@ -157,83 +175,71 @@
             @endforeach
         @endif
         <span class="my-4">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">ITEM Name</th>
-                        <th scope="col">Original Price</th>
-                        <th scope="col">Sold Price</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Discount</th>
-                        <th scope="col">Sub-Total</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    @if ($allcusbyid != null)
-                        @foreach($allcusbyid as $i)
-                            <tr>
-                                <td>{{$i->itemid}}</td>
-                                <td>{{$i->mrp}}</td>
-                                <td>{{$i->price}}</td>
-                                <td>{{$i->quantity}}</td>
-                                <td>{{$i->price*$i->quantity}}</td>
-                                <td>{{$i->discount}}</td>
-                                <td>{{$i->subtotal}}</td>
-                                {{-- <td>{{$i->total}}</td> --}}
-                            </tr>
-                        @endforeach
-                    @endif
-            
-                    @if ($allinvoices != null)
-                        @foreach($allinvoices as $i)
-                            <tr>
-                                 <td colspan="5"></td>
-                                 <td class="text-center"><b>Sub-Total:</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->subtotal}}</b></td>                            </tr>
-                            <tr>
-                                <td colspan="5"></td>
-                                <td class="text-center"><b>Extra Discount: -</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->discount}}</b></td>
-                            </tr>
-                            <tr>
-                                <td colspan="5">Twelve Lakh Thirty Four Thousand Five Hundred Thirty Two </td>
-                                <td class="text-center"><b>Total Amount:</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->total}}</b></td>
-                            </tr>
-
-                            <tr>
-                               
-                                <td colspan="7">
-                                   <b> Notes: {{$i->notes}}</b>
-                                 
-                                 </td>
+           
+     <table>
+        <thead>
+            <tr>
+                <th>ITEM Name</th>
+                <th>Original Price</th>
+                <th>Sold Price</th>
+                <th>Quantity</th>
+                {{-- <th>Total</th>
+                <th>Discount</th> --}}
+                <th>Amount</th>
             </tr>
+        </thead>
+        <tbody>
+            @if ($allcusbyid != null)
+                @foreach($allcusbyid as $i)
+                    <tr>
+                        <td>{{$i->itemid}}</td>
+                        <td>{{$i->mrp}}</td>
+                        <td>{{$i->price}}</td>
+                        <td>{{$i->quantity}}</td>
+                        {{-- <td>{{$i->price*$i->quantity}}</td>
+                        <td>{{$i->discount}}</td> --}}
+                        <td>{{$i->subtotal}}</td>
+                    </tr>
+                @endforeach
+            @endif
 
+            @if ($allinvoices != null)
+                @foreach($allinvoices as $i)
+                    <tr>
+                        <td colspan="3"></td>
+                        <td class="text-right"><b>Sub-Total:</b></td>
+                        <td><b>{{$i->subtotal}}</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"></td>
+                        <td class="text-right"><b>Extra Discount:</b></td>
+                        <td><b>{{$i->discount}}</b></td>
+                    </tr>
+                    <tr>
+                        
+                        <td colspan="3" id="totalAmountWords">{{$i->total}}</td>
 
-            
-                           
-        </tr>
-
-       
-                        @endforeach
-                    @endif
-                </tbody>
-               
+                        <td class="text-right"><b>Total Amount:</b></td>
+                        <td><b>{{$i->total}}</b></td>
+                    </tr>
                    
-               
-            </table>
+                    <tr>
+                        <td colspan="5" class="notes"><b>Notes:</b> {{$i->notes}}</td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
             
             <br>
 
-            <div class="col-12 d-flex justify-content-end align-items-center pt-4">
+            {{-- <div class="col-12 d-flex justify-content-end align-items-center pt-4">
                 <a href="{{route('invoicebillno.convert')}}" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">convert To PDF
                     <div class="icon-box d-flex justify-content-center align-items-center">
                         <i class="fa-solid fa-download"></i>
                     </div>
                 </a>
-            </div>
+            </div> --}}
         </span>
     </div>
 
@@ -273,6 +279,24 @@ document.getElementById('pdfLink').addEventListener('click', function(e) {
     var url = "{{ route('invoicebillno.convert') }}?invoiceid=" + param.get('invoiceid');
     window.location.href = url;
 });
+
+
+
+// You can also add this if you want to execute the conversion when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the element by its ID
+    var totalAmountElement = document.getElementById('totalAmountWords');
+    
+    // Get the numerical value from the element's content
+    var numericalValue = parseFloat(totalAmountElement.textContent.trim());
+
+    // Convert the numerical value to words
+    var words = convertNumberToWords(numericalValue);
+
+    // Update the content of the element with the words
+    totalAmountElement.textContent = words;
+});
+
     </script>
 </div>
 @stop

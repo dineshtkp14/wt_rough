@@ -267,6 +267,75 @@ class Creditnotes_controller extends Controller
 
 
 
+//viewing create note
+public function PDF_returnBillsDEtailsByInvoiceidforviewingcreditnotebill(Request $req)
+{
+    if(Auth::check()){
+
+    $breadcrumb = [
+        'subtitle' => 'Credit Notes',
+        'title' => 'Search Bill No / Sales Return',
+        'link' => 'Search Bill No / Sales Return'
+    ];
+
+    $itemsname = item::where('id', $req->customerid)->get();
+    $invoiceid = $req->invoiceid;
+
+    $allInvoices = CreditnotesInvoice::where('id', $req->invoiceid)->get();
+
+    $allcusbyid = CreditnotesSalesitem::where('invoiceid', $req->invoiceid)->get();
+    $customerinfodetails = null;
+
+    $cusleddetaiforinvoicetype = CreditnotesCustomerledgerdetail::where('invoiceid', $req->invoiceid)->get();
+    $forinvoicetype = $cusleddetaiforinvoicetype->first();           
+
+    foreach ($allcusbyid as $data) {
+        $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+        if ($item) {
+            $data->itemid = $item->itemsname;
+            $data->mrp = $item->mrp;
+        } else {
+            $data->itemid = $data->unstockedname;
+        }
+    }
+
+    foreach ($allInvoices as $data) {
+        if ($data->customerid) {
+            $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
+        }
+    }
+
+    $pdfView= view('creditnotesinvoice.searchcreditnotebillnoPdf', [
+        'allinvoices' => $allInvoices,
+        'allcusbyid' => $allcusbyid,
+        'itemsname' => $itemsname,
+        'invoiceid' => $invoiceid,
+        'cinfodetails' => $customerinfodetails,
+        'forinvoicetype'=>$forinvoicetype,
+        'breadcrumb' => $breadcrumb
+    ]);
+
+
+     
+    // Generate PDF using FacadePdf
+    $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfView);
+
+    // Save the PDF to a temporary file
+    $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
+    $pdf->save($pdfFile);
+
+    // Send headers to instruct the browser to open the PDF in a new tab
+    return response()->file($pdfFile, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="invoice.pdf"',
+    ]);
+}
+}
+
+
+
+
+
 public function returndeletedcnBillsDEtailsByInvoiceid(Request $req)
 {
     if(Auth::check()){

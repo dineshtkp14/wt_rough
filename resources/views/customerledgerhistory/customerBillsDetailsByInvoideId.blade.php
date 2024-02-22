@@ -276,6 +276,7 @@ document.getElementById('updateForm').addEventListener('submit', function(e) {
 
 // You can also add this if you want to execute the conversion when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    
     // Get the element by its ID
     var totalAmountElement = document.getElementById('totalAmountWords');
     

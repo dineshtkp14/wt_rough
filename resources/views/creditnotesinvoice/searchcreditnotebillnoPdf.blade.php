@@ -169,12 +169,7 @@
 </div>
 
 <script>
-// Function to convert number to words
-function convertNumberToWords(number) {
-    // Your implementation of number to words conversion
-    // For example:
-    return "One Thousand Forty One only"; // Replace this with your actual implementation
-}
+
 
 document.addEventListener('DOMContentLoaded', function() {
     var totalAmountElement = document.getElementById('totalAmountWords');
