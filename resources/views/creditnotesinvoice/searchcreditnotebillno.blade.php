@@ -271,21 +271,11 @@ document.getElementById('updateForm').addEventListener('submit', function(e) {
     }
 });
 
-// JavaScript for PDF Link
-document.getElementById('pdfLink').addEventListener('click', function(e) {
-    e.preventDefault();
-    var query = window.location.search;
-    var param = new URLSearchParams(query);
-    var url = "{{ route('creditnotesbillno.convert') }}?invoiceid=" + param.get('invoiceid');
-    window.location.href = url;
-});
-
 function openPdfInNewTab(event, url) {
         event.preventDefault();
         var newTab = window.open(url, '_blank');
         newTab.focus();
     }
-
 
 // You can also add this if you want to execute the conversion when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
