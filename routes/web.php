@@ -70,7 +70,7 @@ Route::get('/creditnotesbillno',[Creditnotes_controller::class,'returnBillsDEtai
 Route::delete('/creditnotesbillno', [Creditnotes_controller::class, 'deletebillfromdatabaseforcreditnotes'])->name('creditnotescustomers.deletebillno');
 Route::put('/creditnotesbillno', [Creditnotes_controller::class, 'updateinvoiicetypeforcreditnotes'])->name('creditnotescustomers.updatebillinvoicetype');
 
-Route::get('creditnotesbillno/pdf/convert/',[Creditnotes_controller::class,'PDF_returnBillsDEtailsByInvoiceidforviewingcreditnotebill'])->name('creditnotesbillno.convert');
+Route::get('/creditnotesbillno/pdf/convert/',[Creditnotes_controller::class,'PDF_returnBillsDEtailsByInvoiceidforviewingcreditnotebill'])->name('creditnotesbillno.convert');
 
 
 Route::get('/deletedcnbillno',[Creditnotes_controller::class,'returndeletedcnBillsDEtailsByInvoiceid'])->name('deletedcncustomer.deletebillno');

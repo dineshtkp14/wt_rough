@@ -156,7 +156,7 @@
                 ContactNo:  {{$i->phoneno}}<br>
             @endforeach
         @endif
-        abc
+
 <span class="float-end mb-5">
     <div class="col-12 d-flex justify-content-end align-items-center pt-4 p-4">
         <a href="{{ route('creditnotesbillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
@@ -276,10 +276,15 @@ document.getElementById('pdfLink').addEventListener('click', function(e) {
     e.preventDefault();
     var query = window.location.search;
     var param = new URLSearchParams(query);
-    var url = "{{ route('invoicebillno.convert') }}?invoiceid=" + param.get('invoiceid');
+    var url = "{{ route('creditnotesbillno.convert') }}?invoiceid=" + param.get('invoiceid');
     window.location.href = url;
 });
 
+function openPdfInNewTab(event, url) {
+        event.preventDefault();
+        var newTab = window.open(url, '_blank');
+        newTab.focus();
+    }
 
 
 // You can also add this if you want to execute the conversion when the DOM is loaded
@@ -296,6 +301,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update the content of the element with the words
     totalAmountElement.textContent = words;
 });
+
+
 
     </script>
 </div>
