@@ -96,7 +96,7 @@ class ItemsalesController extends Controller
             }
 
             $data->price = $value->price;
-            $data->discount = $value->discount == "" ? 0.00 : $value->discount;
+            // $data->discount = $value->discount == "" ? 0.00 : $value->discount;
             $data->subtotal = $value->subtotal;
             $data->added_by = session('user_email');
 
@@ -163,7 +163,7 @@ class ItemsalesController extends Controller
              $item->unstockedname = $req->unstockedname;
              $item->quantity = $req->quantity;
              $item->price = $req->price;
-             $item->discount = $req->discount;
+            //  $item->discount = $req->discount;
              $item->subtotal = $req->subtotal;
              // Update other fields as needed
              $item->added_by = session('user_email');

@@ -23,7 +23,6 @@ return new class extends Migration
             $table->float('price',20,2);
             $table->date('date');
 
-            $table->float('discount',20,2);
             $table->float('subtotal',20,2);
            
             $table->timestamps();

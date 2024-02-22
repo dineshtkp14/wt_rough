@@ -29,6 +29,8 @@ okkkkkkkkkk
                             <th>Profit</th>
                             <th>Action</th>
 
+                            <th>Particulas</th>
+
                         </tr>
                     </thead>
                     <tbody>

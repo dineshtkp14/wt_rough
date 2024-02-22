@@ -98,17 +98,16 @@
             @endforeach
         @endif
         <span class="my-4">
-            <table class="table">
+            <table>
                 <thead>
                     <tr>
-                        <th scope="col">ITEM Name</th>
-                        <th scope="col">Original Price</th>
-                        <th scope="col">Sold Price</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Discount</th>
-                        <th scope="col">Sub-Total</th>
-                        
+                        <th>ITEM Name</th>
+                        <th>Original Price</th>
+                        <th>Sold Price</th>
+                        <th>Quantity</th>
+                        {{-- <th>Total</th>
+                        <th>Discount</th> --}}
+                        <th>Amount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,54 +118,43 @@
                                 <td>{{$i->mrp}}</td>
                                 <td>{{$i->price}}</td>
                                 <td>{{$i->quantity}}</td>
-                                <td>{{$i->price*$i->quantity}}</td>
-                                <td>{{$i->discount}}</td>
+                                {{-- <td>{{$i->price*$i->quantity}}</td>
+                                <td>{{$i->discount}}</td> --}}
                                 <td>{{$i->subtotal}}</td>
-                                {{-- <td>{{$i->total}}</td> --}}
                             </tr>
                         @endforeach
                     @endif
-            
+        
                     @if ($allinvoices != null)
                         @foreach($allinvoices as $i)
                             <tr>
-                                 <td colspan="5"></td>
-                                 <td class="text-center"><b>Sub-Total:</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->subtotal}}</b></td>                            </tr>
-                            <tr>
-                                <td colspan="5"></td>
-                                <td class="text-center"><b>Extra Discount: -</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->discount}}</b></td>
+                                <td colspan="3"></td>
+                                <td class="text-right"><b>Sub-Total:</b></td>
+                                <td><b>{{$i->subtotal}}</b></td>
                             </tr>
                             <tr>
-                                <td colspan="5">Twelve Lakh Thirty Four Thousand Five Hundred Thirty Two </td>
-                                <td class="text-center"><b>Total Amount:</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->total}}</b></td>
+                                <td colspan="3"></td>
+                                <td class="text-right"><b>Extra Discount:</b></td>
+                                <td><b>{{$i->discount}}</b></td>
                             </tr>
-
                             <tr>
-                               
-                                <td colspan="7">
-                                   <b> Notes: {{$i->notes}}</b>
-                                 
-                                 </td>
-            </tr>
-
-
-            
-                           
-        </tr>
-
-       
+                                
+                                <td colspan="3" id="totalAmountWords">{{$i->total}}</td>
+        
+                                <td class="text-right"><b>Total Amount:</b></td>
+                                <td><b>{{$i->total}}</b></td>
+                            </tr>
+                            
+                            <tr>
+                                <td colspan="5" class="notes"><b>Notes:</b> {{$i->notes}}</td>
+                            </tr>
                         @endforeach
                     @endif
                 </tbody>
-               
-                   
-               
             </table>
             
             <br>
+            <div class="" {{ url('index.html', []) }}
 
             
         </span>
@@ -186,6 +174,8 @@ document.getElementById('deleteForm').addEventListener('submit', function(e) {
         e.preventDefault(); // Prevent the form from submitting if the user clicks Cancel
     }
 });
+
+
 // JavaScript for Update Form
 document.getElementById('updateForm').addEventListener('submit', function(e) {
     // Get the value entered by the user in the input field
@@ -200,6 +190,8 @@ document.getElementById('updateForm').addEventListener('submit', function(e) {
     }
 });
 
+
+
 // JavaScript for PDF Link
 document.getElementById('pdfLink').addEventListener('click', function(e) {
     e.preventDefault();
@@ -207,6 +199,24 @@ document.getElementById('pdfLink').addEventListener('click', function(e) {
     var param = new URLSearchParams(query);
     var url = "{{ route('invoicebillno.convert') }}?invoiceid=" + param.get('invoiceid');
     window.location.href = url;
+
+});
+
+
+
+// You can also add this if you want to execute the conversion when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the element by its ID
+    var totalAmountElement = document.getElementById('totalAmountWords');
+    
+    // Get the numerical value from the element's content
+    var numericalValue = parseFloat(totalAmountElement.textContent.trim());
+
+    // Convert the numerical value to words
+    var words = convertNumberToWords(numericalValue);
+
+    // Update the content of the element with the words
+    totalAmountElement.textContent = words;
 });
     </script>
 </div>

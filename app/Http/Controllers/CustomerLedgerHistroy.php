@@ -182,7 +182,7 @@ class CustomerLedgerHistroy extends Controller
                 $backupSalesItem->unstockedname = $item->unstockedname;
                 $backupSalesItem->quantity = $item->quantity;
                 $backupSalesItem->price = $item->price;
-                $backupSalesItem->discount = $item->discount;
+                // $backupSalesItem->discount = $item->discount;
                 $backupSalesItem->subtotal = $item->subtotal;
                 $backupSalesItem->added_by = session('user_email');
 
@@ -369,7 +369,7 @@ class CustomerLedgerHistroy extends Controller
                 $itemsname = item::where('id', $req->customerid)->get();
                 $invoiceid = $req->invoiceid;
             
-                $allInvoices = BackupInvoice::where('id', $req->invoiceid)->get();
+                $allInvoices = BackupInvoice::where('invoice_id', $req->invoiceid)->get();
             
                 $allcusbyid = BackupSalesItem::where('invoiceid', $req->invoiceid)->get();
                 $displayaddedby = BackupSalesItem::where('invoiceid', $req->invoiceid)->pluck('added_by')->first();
@@ -483,7 +483,7 @@ class CustomerLedgerHistroy extends Controller
 
             $customeridfor=$req->customerid;
 
-            $numberintowords=$req->numberintowords;
+            
 
             $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
             $debittotalcrnotes = $creditnoteledger->sum('debit');

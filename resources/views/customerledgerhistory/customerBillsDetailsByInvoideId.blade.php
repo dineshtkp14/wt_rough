@@ -157,13 +157,14 @@
             @endforeach
         @endif
 <span class="float-end mb-5">
-    <div class="col-12 d-flex justify-content-end align-items-center pt-4">
-        <a href="{{ route('invoicebillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">Print
-            <div class="icon-box d-flex justify-content-center align-items-center">
+    <div class="col-12 d-flex justify-content-end align-items-center pt-4 p-4">
+        <a href="{{ route('invoicebillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
+            <div class="icon-box d-flex justify-content-center align-items-center" style="font-size: 34px;">
                 <i class="fa-solid fa-print"></i>
             </div>
         </a>
     </div>
+    
  </span>
         Invoice Id: {{$invoiceid}} <br>
 
@@ -174,77 +175,63 @@
         @endif
         <span class="my-4">
            
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">ITEM Name</th>
-                        <th scope="col">Original Price</th>
-                        <th scope="col">Sold Price</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Discount</th>
-                        <th scope="col">Sub-Total</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    @if ($allcusbyid != null)
-                        @foreach($allcusbyid as $i)
-                            <tr>
-                                <td>{{$i->itemid}}</td>
-                                <td>{{$i->mrp}}</td>
-                                <td>{{$i->price}}</td>
-                                <td>{{$i->quantity}}</td>
-                                <td>{{$i->price*$i->quantity}}</td>
-                                <td>{{$i->discount}}</td>
-                                <td>{{$i->subtotal}}</td>
-                                {{-- <td>{{$i->total}}</td> --}}
-                            </tr>
-                        @endforeach
-                    @endif
-            
-                    @if ($allinvoices != null)
-                        @foreach($allinvoices as $i)
-                            <tr>
-                                 <td colspan="5"></td>
-                                 <td class="text-center"><b>Sub-Total:</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->subtotal}}</b></td>                            </tr>
-                            <tr>
-                                <td colspan="5"></td>
-                                <td class="text-center"><b>Extra Discount: -</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->discount}}</b></td>
-                            </tr>
-                            <tr>
-                                
-                                {{-- <td colspan="5" id="totalAmountWords">{{$i->total}}</td> --}}
-                                <td colspan="5" id="totalAmountWords">{{ floor($i->total) }}</td>
-
-
-                                <td class="text-center"><b>Total Amount:</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->total}}</b></td>
-                            </tr>
-
-                            <tr>
-                               
-                                <td colspan="7">
-                                   <b> Notes: {{$i->notes}}</b>
-                                 
-                                 </td>
+     <table>
+        <thead>
+            <tr>
+                <th>ITEM Name</th>
+                <th>Original Price</th>
+                <th>Sold Price</th>
+                <th>Quantity</th>
+                {{-- <th>Total</th>
+                <th>Discount</th> --}}
+                <th>Amount</th>
             </tr>
+        </thead>
+        <tbody>
+            @if ($allcusbyid != null)
+                @foreach($allcusbyid as $i)
+                    <tr>
+                        <td>{{$i->itemid}}</td>
+                        <td>{{$i->mrp}}</td>
+                        <td>{{$i->price}}</td>
+                        <td>{{$i->quantity}}</td>
+                        {{-- <td>{{$i->price*$i->quantity}}</td>
+                        <td>{{$i->discount}}</td> --}}
+                        <td>{{$i->subtotal}}</td>
+                    </tr>
+                @endforeach
+            @endif
 
+            @if ($allinvoices != null)
+                @foreach($allinvoices as $i)
+                    <tr>
+                        <td colspan="3"></td>
+                        <td class="text-right"><b>Sub-Total:</b></td>
+                        <td><b>{{$i->subtotal}}</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"></td>
+                        <td class="text-right"><b>Extra Discount:</b></td>
+                        <td><b>{{$i->discount}}</b></td>
+                    </tr>
+                    <tr>
+                        
+                        <td colspan="3" id="totalAmountWords">{{$i->total}}</td>
 
-            
-                           
-        </tr>
-
-       
-                        @endforeach
-                    @endif
-                </tbody>
-               
+                        <td class="text-right"><b>Total Amount:</b></td>
+                        <td><b>{{$i->total}}</b></td>
+                    </tr>
                    
-               
-            </table>
+                    <tr>
+                        <td colspan="5" class="notes"><b>Notes:</b> {{$i->notes}}</td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+
+    <p style="margin-top: 20px; font-size: 14px; text-align: center;">Notes:  Goods once sold won't be returned</p>
+</div>
             
             <br>
             
@@ -282,15 +269,6 @@ document.getElementById('updateForm').addEventListener('submit', function(e) {
         e.preventDefault(); // Prevent the form from submitting if the user clicks Cancel
     }
 });
-
-// // JavaScript for PDF Link
-// document.getElementById('pdfLink').addEventListener('click', function(e) {
-//     e.preventDefault();
-//     var query = window.location.search;
-//     var param = new URLSearchParams(query);
-//     var url = "{{ route('invoicebillno.convert') }}?invoiceid=" + param.get('invoiceid');
-//     window.location.href = url;
-// });
 
 
 
