@@ -273,37 +273,78 @@ class CustomerLedgerHistroy extends Controller
             return redirect()->route('customer.billno')->withErrors($validator)->withInput();
         }
     }
-    
 
 
 
 
-
-
-
-
-    public function updateinvoiicetype(Request $req)
+//updatecustomername
+public function updatecustomername(Request $req)
 {
    
+  
+    $validator = Validator::make($req->all(), [
+        'Bill_No' => 'required',
+        'cid' => 'required',
+    ]);
+   
+    if ($validator->passes()) {
+        // Check if the selected value is not the default "Open this select menu"
+       
+       
+        $invoiceExists = DB::table('customerledgerdetails')->where('invoiceid', $req->Bill_No)->exists();
+
+        if ($invoiceExists) {
+            DB::table('customerledgerdetails')
+                ->where('invoiceid', $req->Bill_No)
+                ->update(['customerid' => $req->customerid]);
+
+
+                 // Update invoices table
+            DB::table('invoices')
+            ->where('id', $req->Bill_No)
+            ->update(['customerid' => $req->customerid]);
+
+            return redirect()->route('customer.billno')->with('updatesuccesscusname', 'Updated customer name  Successfully !!');
+        } else {
+            return redirect()->route('customer.billno')->with('updateerrorcusname', 'No records found for the provided invoiceid');
+        }
+    } else {
+       
+        // Redirect with an error message if validation fails
+        return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+    }
+}
+
+
+
+
+
+
+public function updateinvoiicetype(Request $req)
+{
     $validator = Validator::make($req->all(), [
         'updateinvoiceid' => 'required',
         'invoicetype' => 'required|in:credit,cash',
     ]);
 
     if ($req->invoicetype == 'check') {
-       
         return redirect()->route('customer.billno')->with('updateerror', 'Please select a valid invoice type');
     }
+
     if ($validator->passes()) {
         // Check if the selected value is not the default "Open this select menu"
-       
-       
         $invoiceExists = DB::table('customerledgerdetails')->where('invoiceid', $req->updateinvoiceid)->exists();
 
         if ($invoiceExists) {
+            // Update customerledgerdetails table
             DB::table('customerledgerdetails')
                 ->where('invoiceid', $req->updateinvoiceid)
                 ->update(['invoicetype' => $req->invoicetype]);
+
+            // Update invoices table
+            DB::table('invoices')
+                ->where('id', $req->updateinvoiceid)
+                ->update(['inv_type' => $req->invoicetype]);
 
             return redirect()->route('customer.billno')->with('updatesuccess', 'Updated Invoice Type Successfully !!');
         } else {
@@ -317,39 +358,8 @@ class CustomerLedgerHistroy extends Controller
 
 
 
-//updatecustomername
-public function updateinvoiicecustomername(Request $req)
-{
-   
-    $validator = Validator::make($req->all(), [
-        'updateinvoiceid' => 'required',
-        'invoicetype' => 'required|in:credit,cash',
-    ]);
 
-    if ($req->invoicetype == 'check') {
-       
-        return redirect()->route('customer.billno')->with('updateerror', 'Please select a valid customer nmame type');
-    }
-    if ($validator->passes()) {
-        // Check if the selected value is not the default "Open this select menu"
-       
-       
-        $invoiceExists = DB::table('customerledgerdetails')->where('invoiceid', $req->updateinvoiceid)->exists();
 
-        if ($invoiceExists) {
-            DB::table('customerledgerdetails')
-                ->where('invoiceid', $req->updateinvoiceid)
-                ->update(['customerid' => $req->customerid]);
-
-            return redirect()->route('customer.billno')->with('updatesuccess', 'Updated customer name  Successfully !!');
-        } else {
-            return redirect()->route('customer.billno')->with('updateerror', 'No records found for the provided invoiceid');
-        }
-    } else {
-        // Redirect with an error message if validation fails
-        return redirect()->route('customer.billno')->withErrors($validator)->withInput();
-    }
-}
 
 
 

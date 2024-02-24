@@ -112,34 +112,40 @@
     <div class="card mb-3">
         <div class="card-body">
             <h5 class="card-title">Update Customer name </h5>
-            @if (Session::has('updateerror'))
+            @if (Session::has('updateerrorcusname'))
                 <div class="alert bg-danger text-white">
-                    {{ Session::get('updateerror') }}
+                    {{ Session::get('updateerrorcusname') }}
                 </div>
             @endif
-            @if (Session::has('updatesuccess'))
+            @if (Session::has('updatesuccesscusname'))
             <div class="alert bg-success text-white">
-                {{ Session::get('updatesuccess') }}
+                {{ Session::get('updatesuccesscusname') }}
             </div>
         @endif
 
-            <form action="{{ route('customer.updatebillcustomername') }}" method="POST" id="updateForm">
+            <form action="{{ route('abc') }}" method="POST" id="updateFormsci">
                 @csrf
                 @method('put')
                 <div class="mb-3">
-                    <label for="updateInvoiceId" class="form-label text-danger">Enter Bill No To Update:</label>
-                    <input type="number" value="{{ old('updateinvoiceid') }}" class="form-control @error('updateinvoiceid') is-invalid @enderror" id="updateInvoiceId" name="updateinvoiceid" value="{{ old('updateinvoiceid') }}" placeholder="Enter Bill No" required>
-                    @error('updateinvoiceid')
+                    <label for="Bill_No" class="form-label text-danger">Enter Bill No To Update:</label>
+                    <input type="number" value="{{ old('Bill_No') }}" class="form-control @error('Bill_No') is-invalid @enderror" id="Bill_No" name="Bill_No" value="{{ old('Bill_No') }}" placeholder="Enter Bill No" required>
+                    @error('Bill_No')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="mb-3">
+                    
                     <label for="invoiceType" class="form-label text-danger">Select Invoice Type:</label>
                     <div style="width: 300px">
                         <div class="search-box">
-                           <input type="text" class="search-input" placeholder="Search Customer"
-                                id="searchCustomerInput" data-api="customer_search" autocomplete="off">
+                            <input id="customerIdInput" name="customerid" hidden  >
+
+                           <input type="text" class="search-input  @error('Bill_No') is-invalid @enderror" placeholder="Search Customer"
+                                id="searchCustomerInput" data-api="customer_search" autocomplete="off" name="cid" id="cid" required>
+                                @error('cid')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                             <i class="fas fa-search search-icon"> </i>
                             <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
                                 <div class="result-box d-flex justify-content-start align-items-center"
