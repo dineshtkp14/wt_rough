@@ -17,7 +17,6 @@
 
 <div class="container">
     <div class="row">
-        
         <div class="col-md-3">
             <div class="card mb-3">
                 <div class="card-body">
@@ -108,69 +107,64 @@
         </div>
 
 
+{{-- //updatecustomername --}}
+<div class="col-md-3">
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Update Customer name </h5>
+            @if (Session::has('updateerror'))
+                <div class="alert bg-danger text-white">
+                    {{ Session::get('updateerror') }}
+                </div>
+            @endif
+            @if (Session::has('updatesuccess'))
+            <div class="alert bg-success text-white">
+                {{ Session::get('updatesuccess') }}
+            </div>
+        @endif
 
-        {{-- //updatecustomername --}}
-        <div class="col-md-3">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Update Customer Name</h5>
-                    @if (Session::has('updateerror'))
-                        <div class="alert bg-danger text-white">
-                            {{ Session::get('updateerror') }}
-                        </div>
-                    @endif
-                    @if (Session::has('updatesuccess'))
-                    <div class="alert bg-success text-white">
-                        {{ Session::get('updatesuccess') }}
-                    </div>
-                @endif
+            <form action="{{ route('customer.updatebillcustomername') }}" method="POST" id="updateForm">
+                @csrf
+                @method('put')
+                <div class="mb-3">
+                    <label for="updateInvoiceId" class="form-label text-danger">Enter Bill No To Update:</label>
+                    <input type="number" value="{{ old('updateinvoiceid') }}" class="form-control @error('updateinvoiceid') is-invalid @enderror" id="updateInvoiceId" name="updateinvoiceid" value="{{ old('updateinvoiceid') }}" placeholder="Enter Bill No" required>
+                    @error('updateinvoiceid')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
 
-                    <form action="{{ route('updateinvoicename') }}" method="POST" id="updateForm">
-                        @csrf
-                        @method('put')
-                        <div class="mb-3">
-                            <label for="updateInvoiceId" class="form-label text-danger">Enter Bill No To Update:</label>
-                            <input type="number" value="{{ old('updateinvoiceid') }}" class="form-control @error('updateinvoiceid') is-invalid @enderror" id="updateInvoiceId" name="updateinvoiceid" value="{{ old('updateinvoiceid') }}" placeholder="Enter Bill No" required>
-                            @error('updateinvoiceid')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                <div class="mb-3">
+                    <label for="invoiceType" class="form-label text-danger">Select Invoice Type:</label>
+                    <div style="width: 300px">
+                        <div class="search-box">
+                           <input type="text" class="search-input" placeholder="Search Customer"
+                                id="searchCustomerInput" data-api="customer_search" autocomplete="off">
+                            <i class="fas fa-search search-icon"> </i>
+                            <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
+                                <div class="result-box d-flex justify-content-start align-items-center"
+                                    id="customerLoadingResultBox">
+                                    <i class="fas fa-spinner" id="spinnerIcon"> </i>
+                                    <h1 class="m-0 px-2"> Loading</h1>
+                                </div>
 
-                        <div class="mb-3">
-                            <label for="invoiceType" class="form-label text-danger">Select Invoice Type:</label>
-                            <div style="width: 300px">
-                                <div class="search-box">
-                                   <input type="text" class="search-input" placeholder="Search Customer"
-                                        id="searchCustomerInput" data-api="customer_search" autocomplete="off">
-                                    <i class="fas fa-search search-icon"> </i>
-                                    <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
-                                        <div class="result-box d-flex justify-content-start align-items-center"
-                                            id="customerLoadingResultBox">
-                                            <i class="fas fa-spinner" id="spinnerIcon"> </i>
-                                            <h1 class="m-0 px-2"> Loading</h1>
-                                        </div>
-        
-                                        <div class="result-box d-flex justify-content-start align-items-center d-none"
-                                            id="customerNotFoundResultBox">
-                                            <i class="fas fa-triangle-exclamation"> </i>
-                                            <h1 class="m-0 px-2"> Record Not Found</h1>
-                                        </div>
-        
-                                        <div id="customerResultList">
-                                        </div>
-                                    </div>
+                                <div class="result-box d-flex justify-content-start align-items-center d-none"
+                                    id="customerNotFoundResultBox">
+                                    <i class="fas fa-triangle-exclamation"> </i>
+                                    <h1 class="m-0 px-2"> Record Not Found</h1>
+                                </div>
+
+                                <div id="customerResultList">
                                 </div>
                             </div>
-                            @error('invoicetype')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
-                        <button type="submit" class="btn btn-danger btn-lg btn-block" style="width: 100%;">Update</button>
-                    </form>
+                    </div>
                 </div>
-            </div>
+                <button type="submit" class="btn btn-danger btn-lg btn-block" style="width: 100%;">Update</button>
+            </form>
         </div>
-
+    </div>
+</div>
 
     </div>
 </div>
