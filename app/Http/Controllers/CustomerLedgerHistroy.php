@@ -48,7 +48,7 @@ class CustomerLedgerHistroy extends Controller
 
                     $breadcrumb= [
                         'subtitle'=>'View',
-                        'title'=>' Customers Ledger Details (ONLY CREDIT)',
+                        'title'=>' Customers Ledger Details (ONLY CREDIT) ',
                         'link'=>' Customers Ledger Details (ONLY CREDIT)'
                     ];
 
@@ -64,14 +64,24 @@ class CustomerLedgerHistroy extends Controller
                 
                     if($from == "" || $to==""){
 
-                        $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)
-                        ->where('invoicetype', 'credit')
+                        $cusledgertails = Customerledgerdetails::where('customerid', $req->customerid)
+                        ->where(function($query) {
+                            $query->where('invoicetype', 'credit')
+                                  ->orWhere('invoicetype', 'payment');
+                        })
                         ->get();
+
 
                 
 
-                        $querycheck=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
-                        $debittotalsumwithdate = $querycheck->sum('debit');
+                        $querycheck = customerledgerdetails::where('customerid', $req->customerid)
+                        ->where(function($query) {
+                            $query->where('invoicetype', 'credit')
+                                  ->orWhere('invoicetype', 'payment');
+                        })
+                        ->get();
+
+            $debittotalsumwithdate = $querycheck->sum('debit');
                         $credittotalsumwithdate = $querycheck->sum('credit');
 
 
@@ -306,6 +316,44 @@ class CustomerLedgerHistroy extends Controller
 }
 
 
+
+
+public function updatecustomername(Request $req)
+{
+   
+    $validator = Validator::make($req->all(), [
+        'updateinvoiceid' => 'required',
+        'customerid' => 'required',
+    ]);
+
+    if ($req->invoicetype == 'check') {
+       
+        return redirect()->route('customer.updatebillinvoicecustomername')->with('updateerror', 'Please select a customer name');
+    }
+    if ($validator->passes()) {
+        // Check if the selected value is not the default "Open this select menu"
+       
+       
+        $invoiceExists = DB::table('customerledgerdetails')->where('invoiceid', $req->updateinvoiceid)->exists();
+
+        if ($invoiceExists) {
+            DB::table('customerledgerdetails')
+                ->where('invoiceid', $req->updateinvoiceid)
+                ->update(['customerid' => $req->invoicetype]);
+
+            return redirect()->route('customer.updatebillinvoicecustomername')->with('updatesuccess', 'Updated Invoice Type Successfully !!');
+        } else {
+            return redirect()->route('customer.updatebillinvoicecustomername')->with('updateerror', 'No records found for the provided invoiceid');
+        }
+    } else {
+        // Redirect with an error message if validation fails
+        return redirect()->route('customer.updatebillinvoicecustomername')->withErrors($validator)->withInput();
+    }
+}
+
+
+
+
             public function returnBillsDEtailsByInvoiceid(Request $req)
             {
                 if(Auth::check()){
@@ -328,10 +376,11 @@ class CustomerLedgerHistroy extends Controller
                 $forinvoicetype = $cusleddetaiforinvoicetype->first();           
             
                 foreach ($allcusbyid as $data) {
-                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
                     if ($item) {
                         $data->itemid = $item->itemsname;
                         $data->mrp = $item->mrp;
+                        $data->unit = $item->unit;
                     } else {
                         $data->itemid = $data->unstockedname;
                     }
@@ -381,10 +430,11 @@ class CustomerLedgerHistroy extends Controller
                 $forinvoicetype = $cusleddetaiforinvoicetype->first();           
             
                 foreach ($allcusbyid as $data) {
-                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
                     if ($item) {
                         $data->itemid = $item->itemsname;
                         $data->mrp = $item->mrp;
+                        $data->unit = $item->unit;
                     } else {
                         $data->itemid = $data->unstockedname;
                     }
@@ -428,10 +478,11 @@ class CustomerLedgerHistroy extends Controller
             $forinvoicetype = $cusleddetaiforinvoicetype->first();
     
             foreach ($allcusbyid as  $data) {
-                $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+                $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
                 if ($item) {
                     $data->itemid = $item->itemsname;
                     $data->mrp = $item->mrp;
+                    $data->unit = $item->unit;
                 } else {
                     $data->itemid = $data->unstockedname;
                 }

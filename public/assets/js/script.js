@@ -164,10 +164,19 @@ function inputHTML(counter) {
                     <input type="text" placeholder="Quantity  " class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
                 </td>
 
+            <td>
+
+                <input type="text" placeholder="unit  " class="form-control sales-input" id="unitInput" value="" data-id="${counter}" data-name="unit" disabled>
+
+             </td>
+
+
+                
+
                 <td>
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">Rs.</span>
-                        <input type="text" placeholder="Price" class="form-control sales-input" id="priceInput" value="" data-id="${counter}" data-name="price">
+                        <input type="text"  placeholder="Price" class="form-control sales-input" id="priceInput" value="" data-id="${counter}" data-name="price" >
                     </div>
                 </td>
                 
@@ -422,6 +431,10 @@ function triggerProductResultClick() {
 
             $(`#inputRow${currentID} #priceInput`).val(data.mrp);
             salesData[currentIndex]["price"] = `${data.mrp}`;
+
+            //mywork
+            $(`#inputRow${currentID} #unitInput`).val(data.unit);
+            salesData[currentIndex]["unit"] = `${data.unit}`;
 
             $(`#inputRow${currentID} #quantityInput`).attr(
                 "placeholder",

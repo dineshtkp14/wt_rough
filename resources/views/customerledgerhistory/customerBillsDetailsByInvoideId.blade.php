@@ -17,7 +17,8 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
+        
+        <div class="col-md-3">
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Search ok Invoice</h5>
@@ -32,7 +33,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Delete Invoice</h5>
@@ -63,7 +64,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Update Invoice Type</h5>
@@ -105,6 +106,72 @@
                 </div>
             </div>
         </div>
+
+
+
+        {{-- //updatecustomername --}}
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Update Invoice Type</h5>
+                    @if (Session::has('updateerror'))
+                        <div class="alert bg-danger text-white">
+                            {{ Session::get('updateerror') }}
+                        </div>
+                    @endif
+                    @if (Session::has('updatesuccess'))
+                    <div class="alert bg-success text-white">
+                        {{ Session::get('updatesuccess') }}
+                    </div>
+                @endif
+
+                    <form action="{{ route('customer.updatebillinvoicecustomername') }}" method="POST" id="updateForm">
+                        @csrf
+                        @method('put')
+                        <div class="mb-3">
+                            <label for="updateInvoiceId" class="form-label text-danger">Enter Bill No To Update:</label>
+                            <input type="number" value="{{ old('updateinvoiceid') }}" class="form-control @error('updateinvoiceid') is-invalid @enderror" id="updateInvoiceId" name="updateinvoiceid" value="{{ old('updateinvoiceid') }}" placeholder="Enter Bill No" required>
+                            @error('updateinvoiceid')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="invoiceType" class="form-label text-danger">Select Invoice Type:</label>
+                            <div style="width: 300px">
+                                <div class="search-box">
+                                   <input type="text" class="search-input" placeholder="Search Customer"
+                                        id="searchCustomerInput" data-api="customer_search" autocomplete="off">
+                                    <i class="fas fa-search search-icon"> </i>
+                                    <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
+                                        <div class="result-box d-flex justify-content-start align-items-center"
+                                            id="customerLoadingResultBox">
+                                            <i class="fas fa-spinner" id="spinnerIcon"> </i>
+                                            <h1 class="m-0 px-2"> Loading</h1>
+                                        </div>
+        
+                                        <div class="result-box d-flex justify-content-start align-items-center d-none"
+                                            id="customerNotFoundResultBox">
+                                            <i class="fas fa-triangle-exclamation"> </i>
+                                            <h1 class="m-0 px-2"> Record Not Found</h1>
+                                        </div>
+        
+                                        <div id="customerResultList">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @error('invoicetype')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-lg btn-block" style="width: 100%;">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 
@@ -141,6 +208,7 @@
         <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
         <b style="float: right; margin-right: 100px;">Date: {{ $forinvoicetype->date }}</b>
 
+
         {{-- <b style="float: right; margin-right: 100px;">Sales Return: {{ $forinvoicetype->salesreturn }}</b> --}}
         
                 @if($forinvoicetype->salesreturn=="yes")
@@ -167,10 +235,9 @@
     
  </span>
         Invoice Id: {{$invoiceid}} <br>
-
         @if ($allinvoices !=null)
             @foreach($allinvoices as $i)
-                Customer Id: {{$i->customerid}}
+                Customer Id: {{$i->customerid}} <br>
             @endforeach
         @endif
         <span class="my-4">
@@ -182,6 +249,7 @@
                 <th>Original Price</th>
                 <th>Sold Price</th>
                 <th>Quantity</th>
+                <th>Unit</th>
                 {{-- <th>Total</th>
                 <th>Discount</th> --}}
                 <th>Amount</th>
@@ -195,8 +263,8 @@
                         <td>{{$i->mrp}}</td>
                         <td>{{$i->price}}</td>
                         <td>{{$i->quantity}}</td>
-                        {{-- <td>{{$i->price*$i->quantity}}</td>
-                        <td>{{$i->discount}}</td> --}}
+                        <td>{{$i->unit}}</td>
+                        
                         <td>{{$i->subtotal}}</td>
                     </tr>
                 @endforeach
@@ -205,18 +273,18 @@
             @if ($allinvoices != null)
                 @foreach($allinvoices as $i)
                     <tr>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                         <td class="text-right"><b>Sub-Total:</b></td>
                         <td><b>{{$i->subtotal}}</b></td>
                     </tr>
                     <tr>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                         <td class="text-right"><b>Extra Discount:</b></td>
                         <td><b>{{$i->discount}}</b></td>
                     </tr>
                     <tr>
                         
-                        <td colspan="3" id="totalAmountWords">{{$i->total}}</td>
+                        <td colspan="4" id="totalAmountWords">{{$i->total}}</td>
 
                         <td class="text-right"><b>Total Amount:</b></td>
                         <td><b>{{$i->total}}</b></td>
@@ -229,6 +297,13 @@
             @endif
         </tbody>
     </table>
+<br>
+    @if ($allinvoices !=null)
+    @foreach($allinvoices as $i)
+      
+      Bill Created_by: {{$i->added_by}}
+    @endforeach
+@endif
 
     <p style="margin-top: 20px; font-size: 14px; text-align: center;">Notes:  Goods once sold won't be returned</p>
 </div>

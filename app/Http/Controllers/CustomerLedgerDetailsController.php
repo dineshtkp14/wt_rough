@@ -74,7 +74,7 @@ class CustomerLedgerDetailsController extends Controller
          $cl->customerid=$req->customerid;
          $cl->date=$req->date;
          $cl->particulars=$req->particulars;
-         $cl->invoicetype="credit";
+         $cl->invoicetype="payment";
          $cl->voucher_type=$req->vt;
          $cl->credit=$req->amount;
          $cl->notes=$req->notes;
@@ -124,9 +124,9 @@ public function showallcuscreditdetails()
 
       
        
-        $query=customerledgerdetails::orderBy('id','DESC')->get();
+       // $query=customerledgerdetails::orderBy('id','DESC')->get();
        
-        return view('allsalesdetails.allcustomercreditlist', ['all' => $query, 'breadcrumb' => $breadcrumb]);
+        return view('allsalesdetails.allcustomercreditlist', [ 'breadcrumb' => $breadcrumb]);
         
 
 }

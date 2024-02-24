@@ -20,6 +20,8 @@ return new class extends Migration
            
 
             $table->float('quantity',20,2);
+            $table->string('unit')->nullable();;
+
             $table->float('costprice',20,2);
             $table->float('mrp',20,2);
             $table->string('wholesale_price')->nullable();;

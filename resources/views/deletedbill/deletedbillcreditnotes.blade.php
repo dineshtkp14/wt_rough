@@ -142,8 +142,17 @@
                 <i class="fas fa-user"></i>
             </div>
         </div>
+
+        <h1 class="text-center"> Credit Notes/Sales Return</h1>
+
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
-        <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
+        <b style="float: right; margin-right: 100px;">Date: {{ $forinvoicetype->date }}</b>
+
+        
+                @if($forinvoicetype->salesreturn=="yes")
+                    <b style="float: right; margin-right: 100px; color: green;" class="h5">Sales Return/Credit Notes Bill no :{{ $forinvoicetype->returnidforcreditnotes }}</b>
+                @endif
+
        @endif
         @if ($cinfodetails !=null)
             @foreach($cinfodetails as $i)
@@ -154,6 +163,7 @@
             @endforeach
         @endif
 
+
         Invoice Id: {{$invoiceid}} <br>
 
         @if ($allinvoices !=null)
@@ -162,122 +172,89 @@
             @endforeach
         @endif
         <span class="my-4">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">ITEM Name</th>
-                        <th scope="col">Original Price</th>
-                        <th scope="col">Sold Price</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Discount</th>
-                        <th scope="col">Sub-Total</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    @if ($allcusbyid != null)
-                        @foreach($allcusbyid as $i)
-                            <tr>
-                                <td>{{$i->itemid}}</td>
-                                <td>{{$i->mrp}}</td>
-                                <td>{{$i->price}}</td>
-                                <td>{{$i->quantity}}</td>
-                                <td>{{$i->price*$i->quantity}}</td>
-                                <td>{{$i->discount}}</td>
-                                <td>{{$i->subtotal}}</td>
-                                {{-- <td>{{$i->total}}</td> --}}
-                            </tr>
-                        @endforeach
-                    @endif
-            
-                    @if ($allinvoices != null)
-                        @foreach($allinvoices as $i)
-                            <tr>
-                                 <td colspan="5"></td>
-                                 <td class="text-center"><b>Sub-Total:</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->subtotal}}</b></td>                            </tr>
-                            <tr>
-                                <td colspan="5"></td>
-                                <td class="text-center"><b>Extra Discount: -</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->discount}}</b></td>
-                            </tr>
-                            <tr>
-                                <td colspan="5">Twelve Lakh Thirty Four Thousand Five Hundred Thirty Two </td>
-                                <td class="text-center"><b>Total Amount:</b></td>
-                                <td style="border: none; background-color: #f0f0f0;"><b> {{$i->total}}</b></td>
-                            </tr>
-
-                            <tr>
-                               
-                                <td colspan="7">
-                                   <b> Notes: {{$i->notes}}</b>
-                                 
-                                 </td>
+           
+     <table>
+        <thead>
+            <tr>
+                <th>ITEM Name</th>
+                <th>Original Price</th>
+                <th>Sold Price</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+             
+                <th>Amount</th>
             </tr>
+        </thead>
+        <tbody>
+            @if ($allcusbyid != null)
+                @foreach($allcusbyid as $i)
+                    <tr>
+                        <td>{{$i->itemid}}</td>
+                        <td>{{$i->mrp}}</td>
+                        <td>{{$i->price}}</td>
+                        <td>{{$i->quantity}}</td>
+                        <td>{{$i->unit}}</td>
+                      
+                        <td>{{$i->subtotal}}</td>
+                    </tr>
+                @endforeach
+            @endif
 
+            @if ($allinvoices != null)
+                @foreach($allinvoices as $i)
+                    <tr>
+                        <td colspan="4"></td>
+                        <td class="text-right"><b>Sub-Total:</b></td>
+                        <td><b>{{$i->subtotal}}</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td class="text-right"><b>Extra Discount:</b></td>
+                        <td><b>{{$i->discount}}</b></td>
+                    </tr>
+                    <tr>
+                        
+                        <td colspan="4" id="totalAmountWords">{{$i->total}}</td>
 
-            
-                           
-        </tr>
-
-       
-                        @endforeach
-                    @endif
-                </tbody>
-               
+                        <td class="text-right"><b>Total Amount:</b></td>
+                        <td><b>{{$i->total}}</b></td>
+                    </tr>
                    
-               
-            </table>
+                    <tr>
+                        <td colspan="5" class="notes"><b>Notes:</b> {{$i->notes}}</td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
             
             <br>
 
-            <div class="col-12 d-flex justify-content-end align-items-center pt-4">
-                <a href="{{route('invoicebillno.convert')}}" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">convert To PDF
-                    <div class="icon-box d-flex justify-content-center align-items-center">
-                        <i class="fa-solid fa-download"></i>
-                    </div>
-                </a>
-            </div>
+           
         </span>
     </div>
 
     <script>
-// JavaScript for Delete Form
-document.getElementById('deleteForm').addEventListener('submit', function(e) {
-    // Get the value entered by the user in the input field
-    var deleteId = document.getElementById('deleteInvoiceId').value;
 
-    // Prompt the user with a confirmation message including the entered ID
-    var confirmation = confirm('Are you sure you want to delete Invoice ID=' + deleteId + '?');
+// You can also add this if you want to execute the conversion when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Get the element by its ID
+    var totalAmountElement = document.getElementById('totalAmountWords');
+    
+    // Get the numerical value from the element's content
+    var numericalValue = parseFloat(totalAmountElement.textContent.trim());
 
-    // If the user confirms, proceed with form submission; otherwise, prevent it
-    if (!confirmation) {
-        e.preventDefault(); // Prevent the form from submitting if the user clicks Cancel
-    }
-});
-// JavaScript for Update Form
-document.getElementById('updateForm').addEventListener('submit', function(e) {
-    // Get the value entered by the user in the input field
-    var updateId = document.getElementById('updateInvoiceId').value;
+    // Convert the numerical value to words
+    var words = convertNumberToWords(numericalValue);
 
-    // Prompt the user with a confirmation message including the entered ID
-    var confirmation = confirm('Are you sure you want to update Invoice ID=' + updateId + '?');
-
-    // If the user confirms, proceed with form submission; otherwise, prevent it
-    if (!confirmation) {
-        e.preventDefault(); // Prevent the form from submitting if the user clicks Cancel
-    }
+    // Update the content of the element with the words
+    totalAmountElement.textContent = words;
 });
 
-// JavaScript for PDF Link
-document.getElementById('pdfLink').addEventListener('click', function(e) {
-    e.preventDefault();
-    var query = window.location.search;
-    var param = new URLSearchParams(query);
-    var url = "{{ route('invoicebillno.convert') }}?invoiceid=" + param.get('invoiceid');
-    window.location.href = url;
-});
+
+
+
     </script>
 </div>
 @stop

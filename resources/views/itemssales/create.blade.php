@@ -99,10 +99,11 @@
                             <th style="width: 18%;"> Product</th>
                             <th>Unstocked Name</th>
                             <th>Quantity</th>
+                            <th style="width: 10%; ">Unit</th>
 
-                            <th>Price</th>
+                            <th style="width: 18%;">Price</th>
                             {{-- <th>Discount</th> --}}
-                            <th>Subtotal</th>
+                            <th style="width: 18%;">Subtotal</th>
                         </tr>
                     </tbody>
                 </table>

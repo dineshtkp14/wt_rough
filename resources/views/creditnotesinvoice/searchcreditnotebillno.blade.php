@@ -137,8 +137,10 @@
                 <i class="fas fa-user"></i>
             </div>
         </div>
+
+
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
-        <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
+        <b style="float: right; margin-right: 100px;">Invoice Type: Credit Notes/Sales Return</b>
         <b style="float: right; margin-right: 100px;">Date: {{ $forinvoicetype->date }}</b>
 
         {{-- <b style="float: right; margin-right: 100px;">Sales Return: {{ $forinvoicetype->salesreturn }}</b> --}}
@@ -183,8 +185,8 @@
                 <th>Original Price</th>
                 <th>Sold Price</th>
                 <th>Quantity</th>
-                {{-- <th>Total</th>
-                <th>Discount</th> --}}
+                <th>Unit</th>
+             
                 <th>Amount</th>
             </tr>
         </thead>
@@ -196,8 +198,8 @@
                         <td>{{$i->mrp}}</td>
                         <td>{{$i->price}}</td>
                         <td>{{$i->quantity}}</td>
-                        {{-- <td>{{$i->price*$i->quantity}}</td>
-                        <td>{{$i->discount}}</td> --}}
+                        <td>{{$i->unit}}</td>
+                      
                         <td>{{$i->subtotal}}</td>
                     </tr>
                 @endforeach
@@ -206,18 +208,18 @@
             @if ($allinvoices != null)
                 @foreach($allinvoices as $i)
                     <tr>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                         <td class="text-right"><b>Sub-Total:</b></td>
                         <td><b>{{$i->subtotal}}</b></td>
                     </tr>
                     <tr>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                         <td class="text-right"><b>Extra Discount:</b></td>
                         <td><b>{{$i->discount}}</b></td>
                     </tr>
                     <tr>
                         
-                        <td colspan="3" id="totalAmountWords">{{$i->total}}</td>
+                        <td colspan="4" id="totalAmountWords">{{$i->total}}</td>
 
                         <td class="text-right"><b>Total Amount:</b></td>
                         <td><b>{{$i->total}}</b></td>
@@ -232,14 +234,13 @@
     </table>
             
             <br>
-
-            {{-- <div class="col-12 d-flex justify-content-end align-items-center pt-4">
-                <a href="{{route('invoicebillno.convert')}}" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink">convert To PDF
-                    <div class="icon-box d-flex justify-content-center align-items-center">
-                        <i class="fa-solid fa-download"></i>
-                    </div>
-                </a>
-            </div> --}}
+            @if ($allinvoices !=null)
+            @foreach($allinvoices as $i)
+              
+              Bill Created_by: {{$i->added_by}}
+            @endforeach
+        @endif
+            
         </span>
     </div>
 

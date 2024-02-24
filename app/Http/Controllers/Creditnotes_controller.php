@@ -239,10 +239,11 @@ class Creditnotes_controller extends Controller
                 $forinvoicetype = $cusleddetaiforinvoicetype->first();           
             
                 foreach ($allcusbyid as $data) {
-                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
                     if ($item) {
                         $data->itemid = $item->itemsname;
                         $data->mrp = $item->mrp;
+                        $data->unit = $item->unit;
                     } else {
                         $data->itemid = $data->unstockedname;
                     }
@@ -291,10 +292,13 @@ public function PDF_returnBillsDEtailsByInvoiceidforviewingcreditnotebill(Reques
     $forinvoicetype = $cusleddetaiforinvoicetype->first();           
 
     foreach ($allcusbyid as $data) {
-        $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+        $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
         if ($item) {
             $data->itemid = $item->itemsname;
             $data->mrp = $item->mrp;
+            $data->unit = $item->unit;
+
+            
         } else {
             $data->itemid = $data->unstockedname;
         }
@@ -350,7 +354,7 @@ public function returndeletedcnBillsDEtailsByInvoiceid(Request $req)
     $itemsname = item::where('id', $req->customerid)->get();
     $invoiceid = $req->invoiceid;
 
-    $allInvoices = BackupCreditnotesInvoice::where('id', $req->invoiceid)->get();
+    $allInvoices = BackupCreditnotesInvoice::where('invoice_id', $req->invoiceid)->get();
 
     $allcusbyid = BackupCreditnotesSalesItem::where('invoiceid', $req->invoiceid)->get();
     $customerinfodetails = null;
@@ -359,10 +363,11 @@ public function returndeletedcnBillsDEtailsByInvoiceid(Request $req)
     $forinvoicetype = $cusleddetaiforinvoicetype->first();           
 
     foreach ($allcusbyid as $data) {
-        $item = item::where('id', $data->itemid)->select('itemsname', 'mrp')->first();
+        $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
         if ($item) {
             $data->itemid = $item->itemsname;
             $data->mrp = $item->mrp;
+            $data->unit = $item->unit;
         } else {
             $data->itemid = $data->unstockedname;
         }
@@ -424,6 +429,8 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
         if ($invoice) {
             $backupInvoice = new BackupCreditnotesInvoice();
             $backupInvoice->customerid = $invoice->customerid;
+            $backupInvoice->invoice_id = $req->invoiceid;
+
             $backupInvoice->subtotal = $invoice->subtotal;
             $backupInvoice->discount = $invoice->discount;
             $backupInvoice->total = $invoice->total;

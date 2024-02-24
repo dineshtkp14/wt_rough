@@ -60,8 +60,10 @@
                         <th>Distributor Name</th>
                         <th>Items Name</th>
                         <th>Quantity</th>
+                        <th>Unit</th>
                         <th>Firm Name</th>
                         <th>MRP</th>
+                        <th>Update Price</th>
                         <th>Extra</th>
                         <th>Show Warning</th>
                         <th>Action</th>
@@ -76,6 +78,7 @@
                         <td>{{ $i->distributorname }}</td>
                         <td>{{ $i->itemsname }}</td>
                         <td>{{ $i->quantity }}</td>
+                        <td>{{ $i->unit }}</td>
                         <td>{{ $i->firm_name }}</td>
                         <td>{{ $i->mrp }} &nbsp; &nbsp; <!-- Button trigger modal --></td>
                         <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $i->id }}">Extra</button>
@@ -83,21 +86,78 @@
                             <div class="modal fade" id="exampleModal{{ $i->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">View Addtional Details  (Excluding VAT 13%)</h1>
+                                        <div class="modal-header bg-primary text-light">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">View Additional Details (Excluding VAT 13%)</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <h2>Cost Price: {{ $i->costprice }}  /-</h2>
-                                            <h2> WholeSale Price: {{ $i->wholesale_price }}  /-</h2>
-                                            <h2> Competitive Retail Sale Price: {{ $i->com_Retail_price }}  /-</h2>
-                                            <h2> Competitive Wholesale Sale Price: <span class="text-success">{{ $i->com_wholesale_price }}</span> /-</h2>
+                                            <h4>Cost Price: <b>{{ $i->costprice }} </b>/-</h4>
+                                            <h4>Wholesale Price: <b>{{ $i->wholesale_price }}</b> /-</h4>
+                                            <h4>Competitive Retail Sale Price:<b> {{ $i->com_Retail_price }}</b> /-</h4>
+                                            <h4>Competitive Wholesale Sale Price: <span class="text-success"><b>{{ $i->com_wholesale_price }}</b></span> /-</h4>
+                                        </div>
+                                        <div class="modal-footer">
+                                           
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </td>
+
+                      
+
+                        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eexampleModal{{ $i->id }}">Update Price</button>
+                            <!-- Modal 222-->
+                            <div class="modal fade" id="eexampleModal{{ $i->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel"><h2>PRICE UPDATE FORM</h2></h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="updateForm{{ $i->id }}" class="row gx-3 gy-3" action="{{ route('stockpriceupdate', $i->id) }}" method="post">
+                                                @csrf
+                                                @method('PUT')
+                                                
+                                                <div class="col-md-12">
+                                                    <label for="wp" class="form-label" style="color: #333;"><b>$Wholesale Price Per (PCS/kg)</b></label>
+                                                    <input type="text" id="wp" name="wp" class="form-control border border-primary @error('wp') is-invalid @enderror" value="{{ old('wp') ?? $i->wholesale_price }}" required >
+                                                    @error('wp')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                
+                                                <div class="col-md-12">
+                                                    <label for="competetiveretail" class="form-label" style="color: #333;"><b>$Competitive Retail Sale Price Per (PCS/kg)</b></label>
+                                                    <input type="text" id="competetiveretail" name="competetiveretail" class="form-control border border-primary @error('competetiveretail') is-invalid @enderror" value="{{ old('competetiveretail')?? $i->com_Retail_price }}"required >
+                                                    @error('competetiveretail')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                
+                                                <div class="col-md-12">
+                                                    <label for="competetivewholesale" class="form-label" style="color: #333;"><b>$Competitive Wholesale Sale Price Per (PCS/kg)</b></label>
+                                                    <input type="text" id="competetivewholesale" name="competetivewholesale" class="form-control border border-primary @error('competetivewholesale') is-invalid @enderror" value="{{ old('competetivewholesale')?? $i->com_wholesale_price }}"required >
+                                                    @error('competetivewholesale')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                
+                                                <div class="col-md-12">
+                                                    <button type="submit" class="btn btn-lg btn-block text-center btn-success w-100">Update Prices</button>
+                                                </div>
+                                            </form>
                                         </div>
                                         <div class="modal-footer"></div>
                                     </div>
                                 </div>
                             </div>
                         </td>
+
+
                         <td>{{ $i->showwarning }}</td>
                         <td>
                             @if ($i->quantity <= $i->showwarning  and $i->quantity >= 1)
@@ -139,3 +199,26 @@
     </div>
 </div>
 
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+        @foreach($all as $item)
+            var updateForm{{ $item->id }} = document.getElementById('updateForm{{ $item->id }}');
+            updateForm{{ $item->id }}.addEventListener('submit', function (event) {
+                var inputs = this.querySelectorAll('input[type="text"]');
+                var isValid = true;
+
+                inputs.forEach(function (input) {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            });
+        @endforeach
+    });
+     </script>

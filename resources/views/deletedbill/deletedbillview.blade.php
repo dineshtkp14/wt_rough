@@ -105,8 +105,8 @@
                         <th>Original Price</th>
                         <th>Sold Price</th>
                         <th>Quantity</th>
-                        {{-- <th>Total</th>
-                        <th>Discount</th> --}}
+                        <th>Unit</th>
+                       
                         <th>Amount</th>
                     </tr>
                 </thead>
@@ -118,8 +118,8 @@
                                 <td>{{$i->mrp}}</td>
                                 <td>{{$i->price}}</td>
                                 <td>{{$i->quantity}}</td>
-                                {{-- <td>{{$i->price*$i->quantity}}</td>
-                                <td>{{$i->discount}}</td> --}}
+                                <td>{{$i->unit}}</td>
+                               
                                 <td>{{$i->subtotal}}</td>
                             </tr>
                         @endforeach
@@ -128,18 +128,18 @@
                     @if ($allinvoices != null)
                         @foreach($allinvoices as $i)
                             <tr>
-                                <td colspan="3"></td>
+                                <td colspan="4"></td>
                                 <td class="text-right"><b>Sub-Total:</b></td>
                                 <td><b>{{$i->subtotal}}</b></td>
                             </tr>
                             <tr>
-                                <td colspan="3"></td>
+                                <td colspan="4"></td>
                                 <td class="text-right"><b>Extra Discount:</b></td>
                                 <td><b>{{$i->discount}}</b></td>
                             </tr>
                             <tr>
                                 
-                                <td colspan="3" id="totalAmountWords">{{$i->total}}</td>
+                                <td colspan="4" id="totalAmountWords">{{$i->total}}</td>
         
                                 <td class="text-right"><b>Total Amount:</b></td>
                                 <td><b>{{$i->total}}</b></td>
@@ -152,6 +152,7 @@
                     @endif
                 </tbody>
             </table>
+            
             
             <br>
 

@@ -86,6 +86,17 @@
         </div>
 
         <div class="col-md-6">
+            <label for="inputPassword4" class="form-label">Date</label>
+            <input type="date" class="form-control @error('date') is-invalid @enderror" 
+                name="date" value="{{now()->format('Y-m-d')}}" id="">
+            @error('date')
+                <p class="invalid-feedback">{{ $message }}</p>
+            @enderror
+    </div>  
+           
+
+
+        <div class="col-md-6">
             <label for="inputPassword4" class="form-label">Firm Name (CHOOSE FIRM)</label>
             <select class="form-select @error('firm_name') is-invalid @enderror" name="firm_name" id="firm_name" stye="border-color: red;">
                 <option value="Durga">Durga And Dinesh Traders</option>
@@ -99,15 +110,7 @@
         </div>
         
 
-        <div class="col-md-6">
-            <label for="inputPassword4" class="form-label">Date</label>
-            <input type="date" class="form-control @error('date') is-invalid @enderror" 
-                name="date" value="{{now()->format('Y-m-d')}}" id="">
-            @error('date')
-                <p class="invalid-feedback">{{ $message }}</p>
-            @enderror
-    </div>  
-           
+     
     
        
                  
@@ -144,6 +147,14 @@
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">unit(PCS/kg/etc)</label>
+                <input type="unit" class="form-control @error('unit') is-invalid @enderror" 
+                    name="unit" value="{{ old('unit') }}">
+                @error('unit')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+        </div>
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Show Stock Warning</label>

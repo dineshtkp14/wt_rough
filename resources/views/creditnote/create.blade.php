@@ -102,6 +102,7 @@
                             <th style="width: 18%;"> Product</th>
                             <th>Unstocked Name</th>
                             <th>Quantity</th>
+                            <th>Unit</th>
 
                             <th>Price</th>
                             {{-- <th>Discount</th> --}}

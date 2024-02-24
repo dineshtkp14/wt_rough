@@ -96,6 +96,8 @@ Route::get('/stocks',[StockController::class,'index'])->name('stocks.index');
 // Route::get('/stocks',[StockController::class,'filterStocks'])->name('stocks.filterfirm');
 Route::get('/stocks/filter', [StockController::class, 'filterStocks'])->name('stocks.filterfirm');
 
+Route::put('/stocks/{id}', [StockController::class, 'update'])->name('stockpriceupdate');
+
 
 //checkandrmeoveoutofstock
 Route::post('/stocks',[StockController::class,'updateofs'])->name('stocks.updateofs');
@@ -204,6 +206,7 @@ Route::get('/deletedinvoice',[CustomerLedgerHistroy::class,'returndeletedinvoice
 Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])->name('customer.billno');
 Route::delete('/billno', [CustomerLedgerHistroy::class, 'deletebillfromdatabase'])->name('customer.deletebillno');
 Route::put('/billno', [CustomerLedgerHistroy::class, 'updateinvoiicetype'])->name('customer.updatebillinvoicetype');
+Route::put('/billno', [CustomerLedgerHistroy::class, 'updatecustomername'])->name('customer.updatebillinvoicecustomername');
 
 
 Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_InvoiveBillByBillno'])->name('invoicebillno.convert');
@@ -245,6 +248,7 @@ Route::get('/totalsales', [TotalSalesController::class, 'index'])->name('totalsa
 
 Route::get('/allsalesdetails', [CustomerLedgerDetailsController::class, 'showdetails'])->name('allsalesdetails.showdetails');
 Route::get('/accl', [CustomerLedgerDetailsController::class, 'showallcuscreditdetails'])->name('allsalesdetails.showallcuscreditdetails');
+Route::get('/accl/pdf/convert', [CustomerLedgerDetailsController::class, 'showallcuscreditdetails'])->name('accl.convert');
 
 
 

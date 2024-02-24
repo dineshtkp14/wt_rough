@@ -7,6 +7,9 @@ use App\Models\item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StockUpdatePriceRequest;
+
 
 class StockController extends Controller
 {
@@ -51,19 +54,51 @@ public function updateofs(Request $request)
 }
 
 
-
-// public function filterStocks(Request $request)
+// public function update(StockUpdatePriceRequest $request, $id)
 // {
-//     $breadcrumb = [
-//         'subtitle' => 'Stock',
-//         'title' => 'View Stockss',
-//         'link' => 'View Stocks'
-//     ];
+    
+//         $pricelistobj = item::find($id);
+//         if ($pricelistobj) {
+//             $pricelistobj->wholesale_price = $request->wp;
+//             $pricelistobj->com_Retail_price = $request->competetiveretail;
+//             $pricelistobj->com_wholesale_price = $request->competetivewholesale;
+//             $pricelistobj->save();
 
-//     $firmName = $request->input('firm_name');
-//     $filteredStocks = item::where('distributorname', $firmName)->paginate(10);
-
-//     return view('stock.stock', compact('filteredStocks', 'breadcrumb'));
+//             return redirect()->route('stocks.index')->with('success', 'Items Price Updated Successfully !!');
+//         } else {
+//             return redirect()->back()->with('error', 'Item not found.');
+//         }
+   
 // }
+
+
+
+public function update(Request $request, $id)
+{
+    // Validate the request data
+    $validator = Validator::make($request->all(), [
+        'wp' => 'required|numeric', // Example validation rules, adjust as needed
+        'competetiveretail' => 'required|numeric',
+        'competetivewholesale' => 'required|numeric',
+    ]);
+
+    // If validation fails, return the validation errors to the view
+    if ($validator->fails()) {
+        return back()->withErrors($validator)->withInput()->with('error', 'Error !!! Price Not Update !!');
+    }
+
+    // If validation passes, continue with your logic to update the prices
+    // You can access validated data using $request->input('fieldname')
+
+    // Example:
+    $product = item::findOrFail($id);
+    $product->wholesale_price = $request->input('wp');
+    $product->com_Retail_price = $request->input('competetiveretail');
+    $product->com_wholesale_price = $request->input('competetivewholesale');
+    $product->save();
+
+    // Redirect the user or do whatever is appropriate for your application
+    return redirect()->route('stocks.index')->with('success', 'Price Updated Sucessfully  !!!');
+}
 
 }

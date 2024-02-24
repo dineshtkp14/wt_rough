@@ -55,6 +55,8 @@ class Itemscontroller extends Controller
              'quantity' => 'required',
              'mrp' => 'required',
              'showwarning' => 'required',
+             'unit' => 'required',
+
 
          ]);
  
@@ -70,6 +72,8 @@ class Itemscontroller extends Controller
                 $itemsdetails->date = $req->date;
                 $itemsdetails->itemsname = $req->itemsname;
                 $itemsdetails->quantity = $req->quantity;
+                $itemsdetails->unit = $req->unit;
+
                 $itemsdetails->costprice = $req->costprice;
                 $itemsdetails->mrp = $req->mrp;
                 $itemsdetails->notes = $req->notes;

@@ -75,7 +75,7 @@
 
 <div class="container">
     <div class="letterhead">
-        <h1>OM HARI TRADELINK</h1>
+        <h1>OM HARI TRADELINK</h1> (sales Return/credit note)
     </div>
 
     <div class="address-info">
@@ -87,10 +87,10 @@
 
         <div class="row">
             <div class="firstdiv"> 
-                        @if(isset($forinvoicetype) && !empty($forinvoicetype))
-                        <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+                       
+                        <p>Invoice Type:Credit Notes/Sales Return</p>
                         <p>Date: {{ $forinvoicetype->date }}</p>
-                        @endif
+                        
             </div>
        
        
@@ -122,6 +122,7 @@
                 {{-- <th>Original Price</th> --}}
                 <th>Sold Price</th>
                 <th>Quantity</th>
+                <th>Unit</th>
                 <th>Amount</th>
             </tr>
         </thead>
@@ -133,6 +134,7 @@
                         {{-- <td>{{$i->mrp}}</td> --}}
                         <td>{{$i->price}}</td>
                         <td>{{$i->quantity}}</td>
+                        <td>{{$i->unit}}</td>
                         <td>{{$i->subtotal}}</td>
                     </tr>
                 @endforeach
@@ -141,29 +143,36 @@
             @if ($allinvoices != null)
                 @foreach($allinvoices as $i)
                     <tr>
-                        <td colspan="2"></td>
+                        <td colspan="3"></td>
                         <td class="text-right"><b>Sub-Total:</b></td>
                         <td><b>{{$i->subtotal}}</b></td>
                     </tr>
                     <tr>
-                        <td colspan="2"></td>
+                        <td colspan="3"></td>
                         <td class="text-right"><b>Extra Discount:</b></td>
                         <td><b>{{$i->discount}}</b></td>
                     </tr>
                     <tr>
                         
-                        <td colspan="2" class="">Amount in Words: Notes: Notes:  Goods once sold won't be returned Goods once sold won't be returned</td>
+                        <td colspan="3" class="">Amount in Words: Notes: Notes:  Goods once sold won't be returned Goods once sold won't be returned</td>
                         <td class="text-right"><b>Total Amount:</b></td>
                         <td><b>{{$i->total}}</b></td>
                     </tr>
                     
                     <tr>
-                        <td colspan="4" class="notes"><b>Notes:</b> {{$i->notes}}</td>
+                        <td colspan="5" class="notes"><b>Notes:</b> {{$i->notes}}</td>
                     </tr>
                 @endforeach
             @endif
         </tbody>
     </table>
+
+    <br>@if ($allinvoices !=null)
+    @foreach($allinvoices as $i)
+      
+      Bill Created_by: {{$i->added_by}}
+    @endforeach
+@endif
 
     <p style="margin-top: 20px; font-size: 14px; text-align: center;">Notes:  Goods once sold won't be returned</p>
 </div>
