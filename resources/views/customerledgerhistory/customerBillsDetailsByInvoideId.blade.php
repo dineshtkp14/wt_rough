@@ -113,7 +113,7 @@
         <div class="col-md-3">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">Update Invoice Type</h5>
+                    <h5 class="card-title">Update Customer Name</h5>
                     @if (Session::has('updateerror'))
                         <div class="alert bg-danger text-white">
                             {{ Session::get('updateerror') }}
@@ -125,7 +125,7 @@
                     </div>
                 @endif
 
-                    <form action="{{ route('customer.updatebillinvoicecustomername') }}" method="POST" id="updateForm">
+                    <form action="{{ route('updateinvoicename') }}" method="POST" id="updateForm">
                         @csrf
                         @method('put')
                         <div class="mb-3">

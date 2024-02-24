@@ -206,7 +206,7 @@ Route::get('/deletedinvoice',[CustomerLedgerHistroy::class,'returndeletedinvoice
 Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])->name('customer.billno');
 Route::delete('/billno', [CustomerLedgerHistroy::class, 'deletebillfromdatabase'])->name('customer.deletebillno');
 Route::put('/billno', [CustomerLedgerHistroy::class, 'updateinvoiicetype'])->name('customer.updatebillinvoicetype');
-Route::put('/billno', [CustomerLedgerHistroy::class, 'updatecustomername'])->name('customer.updatebillinvoicecustomername');
+Route::put('/billno', [CustomerLedgerHistroy::class, 'updatecustomername'])->name('updateinvoicename');
 
 
 Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_InvoiveBillByBillno'])->name('invoicebillno.convert');
