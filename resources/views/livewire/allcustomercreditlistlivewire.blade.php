@@ -25,7 +25,7 @@
         </div>
         <div class="card-body">
             <table>
-                <thead>
+                <thead> name + huduhhuds nd
                     <tr>
                         <th>Customer Id</th>
                         <th>Customer Name</th>
