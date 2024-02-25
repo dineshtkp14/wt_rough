@@ -69,13 +69,15 @@
      
 
 
-                    <div style="width: 300px">
+                    <div style="width: 300px" class="">
                         <select name="invoice_type" class="d-inline form-select select-background" aria-label="Default select example" onchange="changeBackgroundColor(this)">
-                            <option value="credit">Credit </option>
-                            <option value="cash" selected>Cash </option>
+                            <option value="credit">CREDIT (Invoice Type)</option>
+                            <option value="cash" selected>CASH (Invoice Type) </option>
                         </select>
                         <small style="font-size: 14px; padding:20px; color:#02090f;"> Choose mode of invoice &nbsp;    (cash / Credit) </small>
                     </div>
+
+                    
 
                     <div style="width: 300px">
                         <div class="input-group mb-1">

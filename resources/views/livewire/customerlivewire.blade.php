@@ -7,7 +7,7 @@
               <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search Name, phoneno, email" style="width: 250px;" wire:model="searchTerm" >
          </div>
          <div class="card-body">
-              <table class="table">
+              <table class="table text-center">
                    <thead>
                         <tr>
                             <th >Id </th>
@@ -16,21 +16,22 @@
                             <th >Email</th>
                             <th >Phoneno</th>
                             <th>Remarks</th>
-                            <th>Action</th>
+                            <th style="width: 160px;" >Action</th>
+                            <th>Added By</th>
 
                         </tr>
                    </thead>
-                   <tbody>
-                        @if ($all->count())
+                   <tbody class="text-center">
+                    @if ($all->count())
                              @foreach ($all as $i)
                                   <tr>
-                                     <td>{{ $i->id }}</td>
-                                      <td>{{ $i->name }}</td>
-                                      <td>{{ $i->address }}</td>
-                                      <td>{{ $i->email }}</td>
-                                      <td>{{ $i->phoneno }}</td>
-                                      <td>{{ $i->remarks}}</td>
-                                      <td>
+                                     <td class="text-center">{{ $i->id }}</td>
+                                      <td class="text-center">{{ $i->name }}</td>
+                                      <td class="text-center">{{ $i->address }}</td>
+                                      <td class="text-center">{{ $i->email }}</td>
+                                      <td class="text-center">{{ $i->phoneno }}</td>
+                                      <td class="text-center">{{ $i->remarks}}</td>
+                                      <td style="width: 160px;" class="text-center">
                                         <a href="{{Route('customerinfos.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
                          
                                   
@@ -41,6 +42,7 @@
                          
                          </form>
                                         </td>
+                                        <td>{{ $i->added_by}}</td>
                                   </tr>
                              @endforeach
                         @else

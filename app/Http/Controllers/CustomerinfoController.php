@@ -16,7 +16,7 @@ class CustomerinfoController extends Controller
         if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'View',
-            'title'=>'View All Customerssss',
+            'title'=>'View All Customer',
             'link'=>'View All Customers'
         ];
    

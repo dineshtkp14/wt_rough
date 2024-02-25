@@ -53,6 +53,13 @@
         <div class="flex-shrink-0 p-3" style="width: 280px;">
             <a class="nav-link text-white btn btn-danger p-2 mb-3" href="{{ route('signout') }}"><h4>LOG OUT</h4></a>
             <h6 class="text-white">Hello!!  {{ session('user_email'); }}</h6>
+            @auth
+    <!-- User is authenticated, show content here -->
+    <div class="text-white">Welcome, {{ Auth::user()->name }}</div>
+@else
+    <!-- User is not authenticated, redirect to login page -->
+    <script>window.location = "{{ route('login') }}";</script>
+@endauth
 
             <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none "
                 style="border-bottom:1px solid #e5e7eb7e;">
@@ -491,6 +498,11 @@
 
     <script src="{{ asset('assets/js/script.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/game.js') }}"></script> --}}
+
+
+
+    {{-- //checkauth --}}
+    
 </body>
 
 </html>

@@ -33,6 +33,8 @@ use App\Http\Controllers\Employee_controller;
 
 
 use App\Http\Controllers\CustomerLedgerDetailsController;
+use App\Http\Controllers\trackinvoiceController;
+
 use App\Http\Controllers\CustomerLedgerHistroy;
 use App\Http\Controllers\CustomerPdfGenerator;
 use App\Http\Controllers\DashboardController;
@@ -206,12 +208,13 @@ Route::get('/deletedinvoice',[CustomerLedgerHistroy::class,'returndeletedinvoice
 Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])->name('customer.billno');
 Route::delete('/billno', [CustomerLedgerHistroy::class, 'deletebillfromdatabase'])->name('customer.deletebillno');
 Route::put('/billno', [CustomerLedgerHistroy::class, 'updateinvoiicetype'])->name('customer.updatebillinvoicetype');
-
-Route::put('/billno/updatecusname', [CustomerLedgerHistroy::class, 'updatecustomername'])->name('abc');
+Route::put('/billno/updatecusname', [CustomerLedgerHistroy::class, 'updatecustomername'])->name('updatecustomername');
 
 
 Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_InvoiveBillByBillno'])->name('invoicebillno.convert');
 
+//trackinvoice
+Route::get('/trackinvoice',[trackinvoiceController::class,'index'])->name('trackinvoice.index');
 
 
 

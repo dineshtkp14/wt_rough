@@ -70,7 +70,7 @@
             </div>
         </div>
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
-        <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }} {{ $forinvoicetype->invoicetype }}</b>
+        <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }} </b>
        @endif
 
        @if(isset($displayaddedby))

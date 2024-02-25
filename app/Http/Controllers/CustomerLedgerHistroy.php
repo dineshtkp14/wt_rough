@@ -277,39 +277,91 @@ class CustomerLedgerHistroy extends Controller
 
 
 
-//updatecustomername
-public function updatecustomername(Request $req)
-{
+// //updatecustomername
+// public function updatecustomername(Request $req)
+// {
    
   
+//     $validator = Validator::make($req->all(), [
+//         'Bill_No' => 'required',
+//         'cid' => 'required',
+//     ]);
+   
+//     if ($validator->passes()) {
+//         // Check if the selected value is not the default "Open this select menu"
+       
+       
+//         $invoiceExists = DB::table('customerledgerdetails')->where('invoiceid', $req->Bill_No)->exists();
+
+//         if ($invoiceExists) {
+//             DB::table('customerledgerdetails')
+//                 ->where('invoiceid', $req->Bill_No)
+//                 ->update(['customerid' => $req->customerid]);
+
+
+//                  // Update invoices table
+//             DB::table('invoices')
+//             ->where('id', $req->Bill_No)
+//             ->update(['customerid' => $req->customerid]);
+
+//              // Insert into track table
+//              DB::table('trackinvoice')->insert([
+//                 'bill_no' => $req->Bill_No,
+//                 'customer_id' => $req->customerid,
+//                 'title' => "customer_name_updated",
+//                 'updated_by' => session('user_email')
+//             ]);
+
+//             return redirect()->route('customer.billno')->with('updatesuccesscusname', 'Updated customer name  Successfully !!');
+//         } else {
+//             return redirect()->route('customer.billno')->with('updateerrorcusname', 'No records found for the provided invoiceid');
+//         }
+//     } else {
+       
+//         // Redirect with an error message if validation fails
+//         return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+//     }
+
+
+public function updatecustomername(Request $req)
+{
     $validator = Validator::make($req->all(), [
         'Bill_No' => 'required',
-        'cid' => 'required',
+        'customerid' => 'required',
     ]);
-   
+
     if ($validator->passes()) {
-        // Check if the selected value is not the default "Open this select menu"
-       
-       
-        $invoiceExists = DB::table('customerledgerdetails')->where('invoiceid', $req->Bill_No)->exists();
+        // Retrieve the initial customer ID from customerledgerdetails
+        $initialCustomerId = DB::table('customerledgerdetails')
+            ->where('invoiceid', $req->Bill_No)
+            ->value('customerid');
 
-        if ($invoiceExists) {
-            DB::table('customerledgerdetails')
-                ->where('invoiceid', $req->Bill_No)
-                ->update(['customerid' => $req->customerid]);
+        if ($initialCustomerId === null) {
+            return redirect()->route('customer.billno')->with('updateerrorcusname', 'No records found for the provided invoiceid');
+        }
 
+        // Update customerledgerdetails table
+        DB::table('customerledgerdetails')
+            ->where('invoiceid', $req->Bill_No)
+            ->update(['customerid' => $req->customerid]);
 
-                 // Update invoices table
-            DB::table('invoices')
+        // Update invoices table
+        DB::table('invoices')
             ->where('id', $req->Bill_No)
             ->update(['customerid' => $req->customerid]);
 
-            return redirect()->route('customer.billno')->with('updatesuccesscusname', 'Updated customer name  Successfully !!');
-        } else {
-            return redirect()->route('customer.billno')->with('updateerrorcusname', 'No records found for the provided invoiceid');
-        }
+        // Insert into track table
+        DB::table('trackinvoice')->insert([
+            'bill_no' => $req->Bill_No,
+                            'customer_id' => $req->customerid,
+                            'title' => "customer_name_updated",
+                            'updated_by' => session('user_email'),
+                            'initial_customer_id' => $initialCustomerId,
+                            'notes' => 'Initial customer Id: ' . $initialCustomerId . ' is updated to customerid: ' . $req->customerid . ' of invoice/bill No ('.$req->Bill_No.') of the title customer_name_updated by ' . session('user_email')
+                        ]);
+
+        return redirect()->route('customer.billno')->with('updatesuccesscusname', 'Updated customer name Successfully !!');
     } else {
-       
         // Redirect with an error message if validation fails
         return redirect()->route('customer.billno')->withErrors($validator)->withInput();
     }
