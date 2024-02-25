@@ -19,6 +19,7 @@ return new class extends Migration
 
             $table->string('title');
             $table->text('updated_by');
+            $table->text('notes');
             $table->timestamps();
         });
     }
