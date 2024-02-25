@@ -19,20 +19,28 @@ class Itemscontroller extends Controller
             'link' => 'View Items Details'
         ];
     
-        // Fetch all items with their associated company names
-        $allitems = item::orderBy('id', 'DESC')->get();
+        $allitems = Item::orderBy('id', 'DESC')->get();
     
-        // Loop through each item to fetch the associated company name
-        foreach ($allitems as $item) {
-            $company = company::find($item->companyid);
-            $item->company_name = $company ? $company->name : 'N/A';
-        }
+        $allitems = $allitems->map(function ($data) {
+            $company = Company::where('id', $data->companyid)->select('name')->first();
     
-        return view('items.list', ['all' => $allitems, 'breadcrumb' => $breadcrumb]);
+            $data = $data->toArray(); // Convert the item to an array
+    
+            if ($company) {
+                $data['company_name'] = $company->name;
+            } else {
+                $data['company_name'] = 'N/A';
+            }
+    
+            return $data;
+        });
+    
+        // Convert the modified collection to an array
+        $allitemsArray = $allitems->toArray();
+        return view('items.list', ['dinesh' => $allitemsArray, 'breadcrumb' => $breadcrumb]);
     }
     
 
-    
 
     public function create()
     {

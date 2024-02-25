@@ -8,7 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class item extends Model
 {
     use HasFactory;
-    protected $fillable=[
-        'quantity'
-    ];
+
+    protected $table = 'items'; // Specify the actual table name if it's different
+
+    // protected $fillable=[
+    //     'quantity'
+    // ];
+
+
+    public function company()
+    {
+        return $this->belongsTo(company::class, 'companyid');
+    }
 }
