@@ -352,7 +352,7 @@
                     </div>
                 </li>
 
-                <li class="mb-1 border border-success border-5">
+                {{-- <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#price-collapse" aria-expanded="false">
                         <i class="fas fa-list-alt"></i> Price List
@@ -370,7 +370,7 @@
 
                         </ul>
                     </div>
-                </li>
+                </li> --}}
 
                 <li class="mb-1 border border-success border-5">
                   <a href="{{ route('employees.index') }}">  <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"

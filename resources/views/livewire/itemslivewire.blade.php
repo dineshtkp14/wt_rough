@@ -16,6 +16,7 @@
                         <th>Items Id</th>
                         <th>Bill No</th>
                         <th>Distributors Name</th>
+                        <th> Company Id</th>
                         <th>Date</th>
                         <th>Items Name</th>
                         <th>Quantity</th>
@@ -42,7 +43,12 @@
                     <tr>
                         <td data-label="Id">{{ $i->id }}</td>
                         <td data-label="Name">{{ $i->billno }}</td>
-                        <td data-label="Address">{{ $i->distributorname}}</td>
+                        {{-- <td data-label="Address">{{ $i->distributorname}}</td>
+                        <td data-label="Company Name">comany id{{ $i->companyid }}</td> <!-- Display Company Name --> --}}
+                        <td data-label="Company Name">com name{{ $i->company_name  }} ok</td> <!-- Display Company Name -->
+                        <td data-label="Company Name">{{ $i->company_name }}</td> <!-- Display Company Name -->
+                        <td data-label="Company Name">{{ $i->company_name }}</td> <!-- Display Company Name -->
+
                         <td data-label="Contact No.">{{ $i->date }}</td>
                         <td data-label="Amount">{{ $i->itemsname }}</td>
                         <td data-label="Paisa">{{ $i->quantity}}</td>

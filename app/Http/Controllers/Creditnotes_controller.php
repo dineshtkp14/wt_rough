@@ -484,6 +484,15 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
 
         // Check if any records were deleted
         if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
+
+             // Insert into track table
+             DB::table('trackcreditnotes')->insert([
+                
+                'Cn_bill_no' => $req->invoiceid,
+                'title' => "CreditNotes_Bill_deleted",
+                'updated_by' => session('user_email'),
+                'notes' => ' Credit Notes Invoice No : ' . $req->invoiceid . ' is deleted  by ' . session('user_email')
+            ]);
             return redirect()->route('creditnotescustomer.billno')->with('deletesuccess', 'Deleted Successfully !!');
         } else {
             return redirect()->route('creditnotescustomer.billno')->with('error', 'No records found for the provided invoiceid');
@@ -495,8 +504,50 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
 }
 
 
+//updatecreditnotescustomername
+public function updatecustomernameCN(Request $req)
+{
+   
+    $validator = Validator::make($req->all(), [
+        'Bill_No' => 'required',
+        'customerid' => 'required',
+    ]);
 
+    if ($validator->passes()) {
+        // Retrieve the initial customer ID from customerledgerdetails
+        $initialCustomerId = DB::table('creditnotes_customerledgerdetails')
+            ->where('invoiceid', $req->Bill_No)
+            ->value('customerid');
 
+        if ($initialCustomerId === null) {
+            return redirect()->route('creditnotescustomer.billno')->with('updateerrorcusname', 'No records found for the provided invoiceid');
+        }
+
+        // Update customerledgerdetails table
+        DB::table('creditnotes_customerledgerdetails')
+            ->where('invoiceid', $req->Bill_No)
+            ->update(['customerid' => $req->customerid]);
+
+        // Update invoices table
+        DB::table('creditnotes_invoices')
+            ->where('id', $req->Bill_No)
+            ->update(['customerid' => $req->customerid]);
+
+        // Insert into track table
+        DB::table('trackcreditnotes')->insert([
+            
+                            'Cn_bill_no' => $req->Bill_No,
+                            'title' => "CN_customer_name_updated",
+                            'updated_by' => session('user_email'),
+                            'notes' => 'Initial customer Id: ' . $initialCustomerId . ' is updated to customerid: ' . $req->customerid . ' of invoice/bill No ('.$req->Bill_No.') of the title customer_name_updated by ' . session('user_email')
+                        ]);
+
+        return redirect()->route('creditnotescustomer.billno')->with('updatesuccesscusname', 'Updated customer name Successfully !!');
+    } else {
+        // Redirect with an error message if validation fails
+        return redirect()->route('creditnotescustomer.billno')->withErrors($validator)->withInput();
+    }
+}
 
 
 

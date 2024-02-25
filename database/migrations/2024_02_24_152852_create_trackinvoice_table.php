@@ -15,9 +15,6 @@ return new class extends Migration
         Schema::create('trackinvoice', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('bill_no');
-            $table->bigInteger('customer_id');
-            $table->bigInteger('initial_customer_id');
-
             $table->string('title');
             $table->text('updated_by');
             $table->text('notes');

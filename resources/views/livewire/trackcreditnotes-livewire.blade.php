@@ -11,10 +11,9 @@
                    <thead>
                         <tr>
                             <th >Id </th>
-                            <th>Bill No</th>
-                            <th class="w-25">Title</th>
+                            <th>Credit Notes Bill No</th>
+                            <th class="">Title</th>
                             <th >Created At</th>
-                           
                             <th class="w-50" >Notes</th>
                            
 
@@ -25,7 +24,7 @@
                              @foreach ($all as $i)
                                   <tr>
                                      <td class="text-center">{{ $i->id }}</td>
-                                      <td class="text-center">{{ $i->bill_no }}</td>
+                                      <td class="text-center">{{ $i->Cn_bill_no }}</td>
                                       <td class="text-center">{{ $i->title }}</td>
                                       <td class="text-center">{{ $i->created_at }}</td>
                                     

@@ -13,23 +13,27 @@ class Itemscontroller extends Controller
 {
     public function index()
     {
-        if(Auth::check()){
-        $breadcrumb= [
-            'subtitle'=>'View ',
-            'title'=>'View Items Details',
-            'link'=>'View Items Details'
+        $breadcrumb = [
+            'subtitle' => 'View',
+            'title' => 'View Items Details',
+            'link' => 'View Items Details'
         ];
-
-      
-         $cus=item::orderBy('id','DESC')->get();
-
-         
-         return view('items.list',['all'=>$cus,'breadcrumb'=>$breadcrumb]);
-
-       
+    
+        // Fetch all items with their associated company names
+        $allitems = item::orderBy('id', 'DESC')->get();
+    
+        // Loop through each item to fetch the associated company name
+        foreach ($allitems as $item) {
+            $company = company::find($item->companyid);
+            $item->company_name = $company ? $company->name : 'N/A';
+        }
+    
+        return view('items.list', ['all' => $allitems, 'breadcrumb' => $breadcrumb]);
     }
-    return redirect('/login');
-}
+    
+
+    
+
     public function create()
     {
         if(Auth::check()){
@@ -69,6 +73,9 @@ class Itemscontroller extends Controller
                  $itemsdetails = new item();
                  $itemsdetails->billno = $req->billno;
                 $itemsdetails->distributorname = $companyName; // Update with the company name
+
+                $itemsdetails->companyid = $req->companyid; // Update with the company name
+
                 $itemsdetails->date = $req->date;
                 $itemsdetails->itemsname = $req->itemsname;
                 $itemsdetails->quantity = $req->quantity;
@@ -147,6 +154,8 @@ public function update($id, Request $req)
                 $itemsdetails = item::find($id);
                 $itemsdetails->billno = $req->billno;
                 $itemsdetails->distributorname = $companyName; // Update with the company name
+                $itemsdetails->companyid = $req->companyid; // Update with the company name
+
                 $itemsdetails->date = $req->date;
                 $itemsdetails->itemsname = $req->itemsname;
                 $itemsdetails->quantity = $req->quantity;

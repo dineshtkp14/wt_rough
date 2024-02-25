@@ -262,8 +262,23 @@ class CustomerLedgerHistroy extends Controller
             // Delete records from customerledgerdetails_tbl
             $ledgerDetailsDeleted = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->delete();
     
+
+
+    
+
             // Check if any records were deleted
             if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
+       
+            // Insert into track table
+            DB::table('trackinvoice')->insert([
+                
+                'bill_no' => $req->invoiceid,
+                'title' => "invoice_deleted",
+                'updated_by' => session('user_email'),
+                'notes' => ' Invoice Id : ' . $req->invoiceid . ' is deleted  by ' . session('user_email')
+            ]);
+    
+
                 return redirect()->route('customer.billno')->with('deletesuccess', 'Deleted Successfully !!');
             } else {
                 return redirect()->route('customer.billno')->with('error', 'No records found for the provided invoiceid');
@@ -352,11 +367,10 @@ public function updatecustomername(Request $req)
 
         // Insert into track table
         DB::table('trackinvoice')->insert([
-            'bill_no' => $req->Bill_No,
-                            'customer_id' => $req->customerid,
+            
+                            'bill_no' => $req->Bill_No,
                             'title' => "customer_name_updated",
                             'updated_by' => session('user_email'),
-                            'initial_customer_id' => $initialCustomerId,
                             'notes' => 'Initial customer Id: ' . $initialCustomerId . ' is updated to customerid: ' . $req->customerid . ' of invoice/bill No ('.$req->Bill_No.') of the title customer_name_updated by ' . session('user_email')
                         ]);
 
@@ -388,6 +402,13 @@ public function updateinvoiicetype(Request $req)
         $invoiceExists = DB::table('customerledgerdetails')->where('invoiceid', $req->updateinvoiceid)->exists();
 
         if ($invoiceExists) {
+
+            // Retrieve the initial customer ID from customerledgerdetails
+        $initialinvoicetype = DB::table('customerledgerdetails')
+        ->where('invoiceid', $req->updateinvoiceid)
+        ->value('invoicetype');
+
+
             // Update customerledgerdetails table
             DB::table('customerledgerdetails')
                 ->where('invoiceid', $req->updateinvoiceid)
@@ -397,6 +418,15 @@ public function updateinvoiicetype(Request $req)
             DB::table('invoices')
                 ->where('id', $req->updateinvoiceid)
                 ->update(['inv_type' => $req->invoicetype]);
+
+                 // Insert into track table
+        DB::table('trackinvoice')->insert([
+          
+                            'bill_no' => $req->updateinvoiceid,
+                            'title' => "invoice_type_updated",
+                            'updated_by' => session('user_email'),
+                            'notes' => 'Initial invoice type : ' . $initialinvoicetype . ' is updated to invoicetype: ' .$req->invoicetype . ' of invoice/bill No ('.$req->updateinvoiceid.') of the title invoice_type_updated by ' . session('user_email')
+                        ]);
 
             return redirect()->route('customer.billno')->with('updatesuccess', 'Updated Invoice Type Successfully !!');
         } else {
@@ -518,7 +548,6 @@ public function updateinvoiicetype(Request $req)
                     'forinvoicetype'=>$forinvoicetype,
                     'displayaddedby' => $displayaddedby,
                     'displayaddedbydate' => $displayaddedbydate,
-
                     'breadcrumb' => $breadcrumb
                 ]);
             }

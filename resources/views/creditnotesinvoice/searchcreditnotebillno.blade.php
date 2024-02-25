@@ -63,48 +63,77 @@
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Update Invoice Type</h5>
-                    @if (Session::has('updateerror'))
-                    <div class="alert bg-danger text-white w-100">
-                        {{ Session::get('updateerror') }}
-                        </div>
-                    @endif
-                    @if (Session::has('updatesuccess'))
-                    <div class="alert bg-success text-white w-100">
-                        {{ Session::get('updatesuccess') }}
-                    </div>
-                @endif
+       
 
-                    <form action="{{ route('creditnotescustomers.updatebillinvoicetype') }}" method="POST" id="updateForm">
-                        @csrf
-                        @method('put')
-                        <div class="mb-3">
-                            <label for="updateInvoiceId" class="form-label text-danger">Enter Bill No To Update:</label>
-                            <input type="number" value="{{ old('updateinvoiceid') }}" class="form-control @error('updateinvoiceid') is-invalid @enderror" id="updateInvoiceId" name="updateinvoiceid" value="{{ old('updateinvoiceid') }}" placeholder="Enter Bill No" required>
-                            @error('updateinvoiceid')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="invoiceType" class="form-label text-danger">Select Invoice Type:</label>
-                            <select class="form-select @error('invoicetype') is-invalid @enderror" id="invoiceType" name="invoicetype" required>
-                                <option value="check" selected>Please Select Invoice Type</option>
-                                <option value="credit">Credit</option>
-                                <option value="cash">Cash</option>
-                            </select>
-                            @error('invoicetype')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <button type="submit" class="btn btn-danger btn-lg btn-block" style="width: 100%;">Update</button>
-                    </form>
+{{-- //updatecustomername --}}
+<div class="col-md-4">
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Update Customer name </h5>
+            @if (Session::has('updateerrorcusname'))
+                <div class="alert bg-danger text-white">
+                    {{ Session::get('updateerrorcusname') }}
                 </div>
+            @endif
+            @if (Session::has('updatesuccesscusname'))
+            <div class="alert bg-success text-white">
+                {{ Session::get('updatesuccesscusname') }}
             </div>
+        @endif
+
+            <form action="{{ route('updatecustomernameCN') }}" method="POST" id="updateFormsci">
+                @csrf
+                @method('put')
+                <div class="mb-3">
+                    <label for="Bill_No" class="form-label text-danger">Enter Bill No To Update:</label>
+                    <input type="number" value="{{ old('Bill_No') }}" class="form-control @error('Bill_No') is-invalid @enderror" id="Bill_No" name="Bill_No" value="{{ old('Bill_No') }}" placeholder="Enter Bill No" required>
+                    @error('Bill_No')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    
+                    <label for="invoiceType" class="form-label text-danger">Enter Customer Name:</label>
+                    <div style="">
+                        <div class="search-box">
+                            <input id="customerIdInput" name="customerid" hidden  >
+
+                           <input type="text" class="search-input  @error('Bill_No') is-invalid @enderror" placeholder="Search Customer"
+                                id="searchCustomerInput" data-api="customer_search" autocomplete="off" name="cid" id="cid" required>
+                                @error('cid')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <i class="fas fa-search search-icon"> </i>
+                            <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
+                                <div class="result-box d-flex justify-content-start align-items-center"
+                                    id="customerLoadingResultBox">
+                                    <i class="fas fa-spinner" id="spinnerIcon"> </i>
+                                    <h1 class="m-0 px-2"> Loading</h1>
+                                </div>
+
+                                <div class="result-box d-flex justify-content-start align-items-center d-none"
+                                    id="customerNotFoundResultBox">
+                                    <i class="fas fa-triangle-exclamation"> </i>
+                                    <h1 class="m-0 px-2"> Record Not Found</h1>
+                                </div>
+
+                                <div id="customerResultList">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-danger btn-lg btn-block" style="width: 100%;">Update</button>
+            </form>
         </div>
+    </div>
+</div>
+
+
+
+
+
     </div>
 </div>
 

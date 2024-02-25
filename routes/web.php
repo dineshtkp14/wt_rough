@@ -19,6 +19,8 @@ use App\Http\Controllers\Creditnotes_controller;
 use App\Http\Controllers\showperday_controller;
 use App\Http\Controllers\Purchse_controller;
 use App\Http\Controllers\Employee_controller;
+use App\Http\Controllers\ViewwholeitembillController;
+
 
 
 
@@ -43,6 +45,8 @@ use App\Http\Controllers\openingbalanceController;
 use App\Http\Controllers\PricelistController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\trackCreditnotesController;
+
 
 
 Route::get('/', function () {
@@ -55,7 +59,6 @@ Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.i
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
 Route::get('/itemsales/{itemsales}/edit',[ItemsalesController::class,'edit'])->name('itemsales.edit');
 Route::put('/itemsales/{itemsales}',[ItemsalesController::class,'update'])->name('itemsales.update');
-// Route::get('/exam_manage_ajax',[ItemsalesController::class,'examshow_ajax'])->name('itemsales.ajax');
 Route::post('/itemsales',[ItemsalesController::class,'store'])->name('itemsales.store');
 
 
@@ -65,12 +68,16 @@ Route::get('/creditnotes',[Creditnotes_controller::class,'index'])->name('credit
 Route::get('/creditnotes/create',[Creditnotes_controller::class,'create'])->name('creditnotes.create');
 Route::get('/creditnotes/{creditnotes}/edit',[Creditnotes_controller::class,'edit'])->name('creditnotes.edit');
 Route::put('/creditnotes/{creditnotes}',[Creditnotes_controller::class,'update'])->name('creditnotes.update');
-// Route::get('/exam_manage_ajax',[ItemsalesController::class,'examshow_ajax'])->name('itemsales.ajax');
 Route::post('/creditnotes',[Creditnotes_controller::class,'store'])->name('creditnotes.store');
 
 Route::get('/creditnotesbillno',[Creditnotes_controller::class,'returnBillsDEtailsByInvoiceidforviewingcreditnotebill'])->name('creditnotescustomer.billno');
 Route::delete('/creditnotesbillno', [Creditnotes_controller::class, 'deletebillfromdatabaseforcreditnotes'])->name('creditnotescustomers.deletebillno');
 Route::put('/creditnotesbillno', [Creditnotes_controller::class, 'updateinvoiicetypeforcreditnotes'])->name('creditnotescustomers.updatebillinvoicetype');
+
+//updatecredtnotes customername
+Route::put('/creditnotesbillno/updatecusnameCN', [Creditnotes_controller::class, 'updatecustomernameCN'])->name('updatecustomernameCN');
+
+
 
 Route::get('/creditnotesbillno/pdf/convert/',[Creditnotes_controller::class,'PDF_returnBillsDEtailsByInvoiceidforviewingcreditnotebill'])->name('creditnotesbillno.convert');
 
@@ -148,8 +155,10 @@ Route::get('/items/{items}/edit',[Itemscontroller::class,'edit'])->name('items.e
 Route::put('/items/{items}',[Itemscontroller::class,'update'])->name('items.update');
 Route::delete('/items/{items}',[Itemscontroller::class,'destroy'])->name('items.destroy');
 
+//itemviewwholebilllist
+Route::get('/wholebilllist', [ViewwholeitembillController::class, 'returnWholebillitems'])->name('ViewWholeitemsBill.index');
 
-
+// Route::get('/wholebilllist-page', [ViewWholeitemsBill::class, 'showwholebilllistpage'])->name('ViewWholeitemsBill.page');
 
 Route::get('/companys',[CompanyController::class,'index'])->name('companys.index');
 Route::get('/companys/create',[CompanyController::class,'create'])->name('companys.create');
@@ -215,6 +224,7 @@ Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_Invoive
 
 //trackinvoice
 Route::get('/trackinvoice',[trackinvoiceController::class,'index'])->name('trackinvoice.index');
+Route::get('/trackcreditnotes',[trackCreditnotesController::class,'index'])->name('trackcreditnotes.index');
 
 
 
