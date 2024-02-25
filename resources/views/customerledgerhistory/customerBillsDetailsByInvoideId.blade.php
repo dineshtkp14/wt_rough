@@ -123,7 +123,7 @@
             </div>
         @endif
 
-            <form action="{{ route('abc') }}" method="POST" id="updateFormsci">
+            <form action="{{ route('updatecustomername') }}" method="POST" id="updateFormsci">
                 @csrf
                 @method('put')
                 <div class="mb-3">
