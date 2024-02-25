@@ -26,6 +26,12 @@
                         <h5><i class="fas fa-file-alt"></i> Track Invoice</h5>
                     </div>
                 </a>
+                <div class="col custom-column">
+                    <a href="page2.html" class="text-decoration-none">
+                        <div class="p-5 border bg-primary text-white">
+                            <h5><i class="fas fa-file-alt"></i> Whole Bill List</h5>
+                        </div>
+                    </a>
             </div>
             <div class="col custom-column">
                 <a href="page2.html" class="text-decoration-none">

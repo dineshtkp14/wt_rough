@@ -14,11 +14,8 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('billno')->nullable();
-            $table->string('distributorname');
             $table->date('date');
             $table->string('itemsname');
-           
-
             $table->float('quantity',20,2);
             $table->string('unit')->nullable();;
 
@@ -36,18 +33,7 @@ return new class extends Migration
             $table->string('notes')->nullable();
             $table->string('added_by')->nullable();
             $table->string('firm_name')->nullable();
-
             $table->string('check_remove_ofs')->default(0);
-
-
-          
-
-
-
-          
-         
-           
-           
             $table->timestamps();
         });
     }

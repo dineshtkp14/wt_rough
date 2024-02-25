@@ -13,35 +13,23 @@ class Itemscontroller extends Controller
 {
     public function index()
     {
-        $breadcrumb = [
-            'subtitle' => 'View',
-            'title' => 'View Items Details',
-            'link' => 'View Items Details'
+        if(Auth::check()){
+        $breadcrumb= [
+            'subtitle'=>'View ',
+            'title'=>'View Items Details',
+            'link'=>'View Items Details'
         ];
-    
-        $allitems = Item::orderBy('id', 'DESC')->get();
-    
-        $allitems = $allitems->map(function ($data) {
-            $company = Company::where('id', $data->companyid)->select('name')->first();
-    
-            $data = $data->toArray(); // Convert the item to an array
-    
-            if ($company) {
-                $data['company_name'] = $company->name;
-            } else {
-                $data['company_name'] = 'N/A';
-            }
-    
-            return $data;
-        });
-    
-        // Convert the modified collection to an array
-        $allitemsArray = $allitems->toArray();
-        return view('items.list', ['dinesh' => $allitemsArray, 'breadcrumb' => $breadcrumb]);
+
+      
+         $allitem=item::orderBy('id','DESC')->get();
+
+       
+         return view('items.list',['breadcrumb'=>$breadcrumb]);
+
+       
     }
-    
-
-
+    return redirect('/login');
+}
     public function create()
     {
         if(Auth::check()){
@@ -76,11 +64,10 @@ class Itemscontroller extends Controller
              $company = company::find($req->companyid);
  
              if ($company) {
-                 $companyName = $company->name;
+               
  
                  $itemsdetails = new item();
                  $itemsdetails->billno = $req->billno;
-                $itemsdetails->distributorname = $companyName; // Update with the company name
 
                 $itemsdetails->companyid = $req->companyid; // Update with the company name
 
@@ -157,11 +144,9 @@ public function update($id, Request $req)
 
             // Check if the company is found
             if ($company) {
-                $companyName = $company->name; // Replace 'name' with the actual column name for the company name
 
                 $itemsdetails = item::find($id);
                 $itemsdetails->billno = $req->billno;
-                $itemsdetails->distributorname = $companyName; // Update with the company name
                 $itemsdetails->companyid = $req->companyid; // Update with the company name
 
                 $itemsdetails->date = $req->date;

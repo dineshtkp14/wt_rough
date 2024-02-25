@@ -55,8 +55,17 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-9">
+                <div>
+                    <h4>Bill Number: {{ $billNo }}</h4>
+                    <h4>Company Name: {{ $companyName }}</h4>
+                </div>
+            </div>
         </div>
     </div>
+
+   
 
     <div class="container">
         <div class="card customer-card mb-4" id="customerCard" style="display: none;">
@@ -70,7 +79,7 @@
         </div>
 
         @if ($all->isEmpty())
-            <p>No items found.</p>
+           <h3>No items found. !!!!</h3>
         @else
             <table>
                 <thead>
@@ -94,10 +103,18 @@
                             <td>{{$i->total}}</td>
                         </tr>
                     @endforeach
+                    <tr>
+                        <td colspan="5"></td>
+                        <td><b>Total-: {{ $totalSum }}</b></td>
+
+                    </tr>
+                  
                 </tbody>
             </table>
         @endif
 
+        
+        
         <p style="margin-top: 20px; font-size: 14px; text-align: center;">Notes:  Goods once sold won't be returned</p>
     </div>
 </div>
