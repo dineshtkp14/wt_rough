@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\trackinvoice;
+use App\Models\Trackinvoice;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,7 +15,7 @@ class TrackinvoiceLivewire extends Component
  
    public function render(){ 
 
-       $trackinvoice = trackinvoice::orderby('id','DESC')->select('*');
+       $trackinvoice = Trackinvoice::orderby('id','DESC')->select('*');
         if(!empty($this->searchTerm)){
 
             $trackinvoice->orWhere('id','like',"%".$this->searchTerm."%");
