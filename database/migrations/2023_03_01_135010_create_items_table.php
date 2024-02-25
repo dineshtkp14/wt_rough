@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->float('costprice',20,2);
             $table->float('mrp',20,2);
-            $table->bigInteger('customerid');
+            $table->bigInteger('companyid');
 
             $table->string('wholesale_price')->nullable();;
             $table->string('com_Retail_price')->nullable();;
