@@ -15,11 +15,10 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('customerid');
             $table->bigInteger('invoice_id');
-
             $table->float('subtotal',20,2);
             $table->float('discount',20,2);
             $table->float('total',20,2);
-            $table->string('notes')->nullable();;
+            $table->text('notes')->nullable();;
             $table->string('inv_type')->nullable();;
             $table->date('inv_date')->nullable();
 

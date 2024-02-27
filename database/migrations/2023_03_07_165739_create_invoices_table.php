@@ -13,20 +13,15 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-          
             $table->bigInteger('customerid');
-           
-          
             $table->float('subtotal',20,2);
             $table->float('discount',20,2);
             $table->float('total',20,2);
             $table->string('inv_type')->nullable();;
-            $table->string('notes')->nullable();;
+            $table->text('notes')->nullable();;
             $table->string('salesreturn')->nullable();;
-            $table->date('inv_date')->nullable();
+            $table->date('inv_date');
             $table->string('returnidforcreditnotes')->nullable();;
-
-
             $table->timestamps();
             $table->string('added_by')->nullable();
 

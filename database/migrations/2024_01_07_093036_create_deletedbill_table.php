@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('deletedbill', function (Blueprint $table) {
-            $table->integer('invoiceid');
-            $table->integer('itemid');
-            $table->integer('quantity');
+            $table->id();
+            $table->bigInteger('invoiceid');
+            $table->bigInteger('itemid')->nullable();
+            $table->bigInteger('quantity');
             // Add other columns as needed
             $table->timestamps();
         });

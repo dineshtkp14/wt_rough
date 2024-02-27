@@ -6,6 +6,10 @@ use App\Models\item;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Models\salesitem;
+use App\Models\company;
+
+
 
 class StockLivewire extends Component
 {
@@ -46,6 +50,26 @@ class StockLivewire extends Component
 
         $all = $query->paginate(50);
 
+
+ // Loop through each item to fetch the associated company name
+ foreach ($all as $item) {
+    $company = company::where('id', $item->companyid)->select('name')->first();
+    if ($company) {
+        // Assign the company name to the item
+        $item->companyname = $company->name;
+       
+    }
+}
+
+        //foroutqantity
+                $sellsquantity = [];
+
+        foreach ($all as $item) {
+            $sellsquantity[$item->id] = salesitem::where('itemid', $item->id)->sum('quantity');
+        }
+
+
+
         $warning = item::where('showwarning', '>', 0)
             ->where('quantity', '>=', 1)
             ->where('check_remove_ofs', 0)
@@ -64,7 +88,8 @@ class StockLivewire extends Component
             'all' => $all,
             'cou' => $count,
             'x' => $couout,
-            'war' => $warning
+            'war' => $warning,
+            'sellsquantity_out' => $sellsquantity,
         ]);
     }
 }

@@ -164,6 +164,27 @@
 
                 <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#trackorders-collapse" aria-expanded="false">
+                        <i class="fas fa-university"></i> Track
+                    </button>
+                    <div class="collapse" id="trackorders-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><a href="{{ route('trackinvoice.index') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
+                                   Track Invoice</a></li>
+                            <li><a href="{{ route('trackcreditnotes.index') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
+                                   Track Credit Notes</a></li>
+
+                        </ul>
+                    </div>
+                </li>
+
+
+                <li class="mb-1 border border-success border-5">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
                         <i class="fas fa-university"></i> Banks
                     </button>

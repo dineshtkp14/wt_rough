@@ -88,6 +88,7 @@ class Itemscontroller extends Controller
                 $itemsdetails->showwarning = $req->showwarning;
 
                 $itemsdetails->total = $req->quantity * $req->costprice;
+                $itemsdetails->opening_stock = $req->quantity;
                 $itemsdetails->added_by = session('user_email');
 
               
@@ -166,6 +167,8 @@ public function update($id, Request $req)
 
                 $itemsdetails->total = $req->quantity * $req->costprice;
                 $itemsdetails->added_by = session('user_email');
+                $itemsdetails->opening_stock = $req->quantity;
+
 
                 $itemsdetails->save();
 

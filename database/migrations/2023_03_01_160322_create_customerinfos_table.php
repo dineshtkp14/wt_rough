@@ -17,13 +17,9 @@ return new class extends Migration
             $table->string('address');
             $table->string('email')->nullable();
             $table->string('phoneno');
-         
-           
-          
-            $table->string('remarks')->nullable();
-
+            $table->text('remarks')->nullable();
             $table->timestamps();
-            $table->string('added_by')->nullable();
+            $table->string('added_by');
 
         });
     }

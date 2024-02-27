@@ -54,22 +54,7 @@ public function updateofs(Request $request)
 }
 
 
-// public function update(StockUpdatePriceRequest $request, $id)
-// {
-    
-//         $pricelistobj = item::find($id);
-//         if ($pricelistobj) {
-//             $pricelistobj->wholesale_price = $request->wp;
-//             $pricelistobj->com_Retail_price = $request->competetiveretail;
-//             $pricelistobj->com_wholesale_price = $request->competetivewholesale;
-//             $pricelistobj->save();
 
-//             return redirect()->route('stocks.index')->with('success', 'Items Price Updated Successfully !!');
-//         } else {
-//             return redirect()->back()->with('error', 'Item not found.');
-//         }
-   
-// }
 
 
 

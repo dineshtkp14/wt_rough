@@ -30,7 +30,9 @@ return new class extends Migration
             $table->string('com_wholesale_price')->nullable();;
             $table->float('total',20,2);
             $table->float('showwarning',20,2);
-            $table->string('notes')->nullable();
+            $table->float('opening_stock',40,2);
+
+            $table->text('notes')->nullable();
             $table->string('added_by')->nullable();
             $table->string('firm_name')->nullable();
             $table->string('check_remove_ofs')->default(0);

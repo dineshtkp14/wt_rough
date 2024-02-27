@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('inv_type')->nullable();;
             $table->date('inv_date')->nullable();
 
-            $table->string('notes')->nullable();;
+            $table->text('notes')->nullable();;
             $table->timestamps();
             $table->string('added_by')->nullable();
 

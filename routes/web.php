@@ -157,6 +157,7 @@ Route::delete('/items/{items}',[Itemscontroller::class,'destroy'])->name('items.
 
 //itemviewwholebilllist
 Route::get('/wholebilllist', [ViewwholeitembillController::class, 'returnWholebillitems'])->name('ViewWholeitemsBill.index');
+Route::get('/wholebilllist/pdf/convert/',[ViewwholeitembillController::class,'PDF_returnWholebillitems'])->name('wholebilllist.convert');
 
 // Route::get('/wholebilllist-page', [ViewWholeitemsBill::class, 'showwholebilllistpage'])->name('ViewWholeitemsBill.page');
 

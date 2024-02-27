@@ -16,15 +16,12 @@ return new class extends Migration
             $table->bigInteger('invoiceid');
            
             $table->bigInteger('itemid')->nullable();
-           // $table->string('itemname')->nullable();
 
-            $table->string('unstockedname');
+            $table->string('unstockedname')->nullable();
             $table->float('quantity',20,2);
             $table->float('price',20,2);
             $table->date('date');
-
             $table->float('subtotal',20,2);
-           
             $table->timestamps();
             $table->string('added_by')->nullable();
         });

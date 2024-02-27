@@ -55,11 +55,15 @@
                 
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>Item Id</th>
                         <th>Date</th>
                         <th>Distributor Name</th>
                         <th>Items Name</th>
-                        <th>Quantity</th>
+                        <th>Opening Stock</th>
+                        <th>Balance(I+O)</th>
+                        <th class=" bg-danger">Quantity (IN) org</th>
+                        <th>Check (in)</th>
+                        <th>Out</th>
                         <th>Unit</th>
                         <th>Firm Name</th>
                         <th>MRP</th>
@@ -75,11 +79,21 @@
                     <tr>
                         <td>{{ $i->id }}</td>
                         <td>{{ $i->date }}</td>
-                        <td>{{ $i->distributorname }}</td>
+                        <td>{{ $i->companyname }}</td>
                         <td>{{ $i->itemsname }}</td>
-                        <td>{{ $i->quantity }}</td>
+                        <td>{{ $i->opening_stock }}</td>
+                        <td>{{ ($i->opening_stock-$sellsquantity_out[$i->id] ?? '')+ $sellsquantity_out[$i->id] ?? '' }}</td>
+
+                       
+                        <td><button class="btn btn-danger">{{ $i->quantity }} </button></td>
+                        
+                        <td>{{ $i->opening_stock-$sellsquantity_out[$i->id] ?? '' }}</td>
+                        <td>{{ $sellsquantity_out[$i->id] ?? '' }}</td>
+
                         <td>{{ $i->unit }}</td>
                         <td>{{ $i->firm_name }}</td>
+                      
+
                         <td>{{ $i->mrp }} &nbsp; &nbsp; <!-- Button trigger modal --></td>
                         <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $i->id }}">Extra</button>
                             <!-- Modal -->
@@ -178,7 +192,7 @@
                                 <span class="btn btn-primary">Data in Minus</span>
                             </div>
                             @else
-                            <div class="span-box">
+                            <div class="span-bo">
                                 <span class="btn btn-success">Available</span>
                             </div>
                             @endif

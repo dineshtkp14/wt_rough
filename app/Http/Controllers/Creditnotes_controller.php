@@ -378,9 +378,8 @@ public function returndeletedcnBillsDEtailsByInvoiceid(Request $req)
             $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
         }
     }
-
     return view('deletedbill.deletedbillcreditnotes', [
-        'allinvoices' => $allInvoices,
+        'allinvoicesdetails' => $allInvoices,
         'allcusbyid' => $allcusbyid,
         'itemsname' => $itemsname,
         'invoiceid' => $invoiceid,
@@ -388,6 +387,8 @@ public function returndeletedcnBillsDEtailsByInvoiceid(Request $req)
         'forinvoicetype'=>$forinvoicetype,
         'breadcrumb' => $breadcrumb
     ]);
+
+    
 }
 
 
@@ -457,7 +458,7 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
             $backupLedger->date = $ledger->date;
             $backupLedger->debit = $ledger->debit;
             $backupLedger->credit = $ledger->credit;
-            $backupLedger->invoicetype = $ledger->invoicetype;
+            // $backupLedger->invoicetype = $ledger->invoicetype;
             $backupLedger->notes = $ledger->notes;
             $backupLedger->added_by = session('user_email');
 

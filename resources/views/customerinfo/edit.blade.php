@@ -41,7 +41,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">PhoneNo</label>
-                    <input type="number" class="form-control @error('phoneno') is-invalid @enderror" 
+                    <input type="text" class="form-control @error('phoneno') is-invalid @enderror" 
                         name="phoneno" value="{{ old('phoneno',$cus->phoneno) }}">
                     @error('phoneno')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -52,8 +52,8 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Remarks</label>
-                    <input type="text" class="form-control @error('remarks') is-invalid @enderror" 
-                        name="remarks" value="{{ old('remarks',$cus->remarks) }}">
+                    <textarea type="text" class="form-control @error('remarks') is-invalid @enderror" 
+                        name="remarks" value="{{ old('remarks',$cus->remarks) }}" rows="4" cols="50">value="{{ old('remarks',$cus->remarks) }}"</textarea>
                     @error('remarks')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror

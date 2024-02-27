@@ -114,13 +114,27 @@
         @endif
 
         
+        <span class="float-end mb-5">
+            <div class="col-12 d-flex justify-content-end align-items-center pt-4 p-4">
+                <a href="{{ route('wholebilllist.convert', ['billno' => $billNo, 'companyid' => $companyid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print</a>
+                <div class="icon-box d-flex justify-content-center align-items-center" style="font-size: 34px;">
+                        <i class="fa-solid fa-print"></i>
+                    </div>
+                </a>
+            </div>
+            
+         </span>
         
         <p style="margin-top: 20px; font-size: 14px; text-align: center;">Notes:  Goods once sold won't be returned</p>
     </div>
 </div>
 
 <script>
-    // JavaScript for Delete Form, Update Form, and numerical value conversion
+    function openPdfInNewTab(event, url) {
+        event.preventDefault();
+        var newTab = window.open(url, '_blank');
+        newTab.focus();
+    }
 </script>
 
 @stop

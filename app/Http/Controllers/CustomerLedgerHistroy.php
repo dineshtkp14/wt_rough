@@ -504,7 +504,7 @@ public function updateinvoiicetype(Request $req)
 
                 $breadcrumb = [
                     'subtitle' => '',
-                    'title' => 'Search Deleted Bill No',
+                    'title' => 'Search Deleted Bill No00o',
                     'link' => 'Search Deleted Bill No'
                 ];
             
@@ -538,7 +538,7 @@ public function updateinvoiicetype(Request $req)
                         $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
                     }
                 }
-            
+               
                 return view('deletedbill.deletedbillview', [
                     'allinvoices' => $allInvoices,
                     'allcusbyid' => $allcusbyid,
