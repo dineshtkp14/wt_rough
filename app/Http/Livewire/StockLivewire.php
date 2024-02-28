@@ -36,7 +36,6 @@ class StockLivewire extends Component
             } else {
                 $query->where(function ($subquery) use ($searchTerm) {
                     $subquery->where('id', 'like', "%$searchTerm%")
-                        ->orWhere('distributorname', 'like', "%$searchTerm%")
                         ->orWhere('itemsname', 'like', "%$searchTerm%")
                         ->orWhere('mrp', 'like', "%$searchTerm%")
                         ->orWhere('firm_name', 'like', "%$searchTerm%");
