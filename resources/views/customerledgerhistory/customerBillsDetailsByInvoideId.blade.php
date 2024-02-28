@@ -250,9 +250,10 @@
             <tr>
                 <th>ITEM Name</th>
                 <th>Original Price</th>
-                <th>Sold Price</th>
+               
                 <th>Quantity</th>
                 <th>Unit</th>
+                <th>Sold Price</th>
                 {{-- <th>Total</th>
                 <th>Discount</th> --}}
                 <th>Amount</th>
@@ -263,10 +264,11 @@
                 @foreach($allcusbyid as $i)
                     <tr>
                         <td>{{$i->itemid}}</td>
-                        <td>{{$i->mrp}}</td>
+                       
                         <td>{{$i->price}}</td>
                         <td>{{$i->quantity}}</td>
                         <td>{{$i->unit}}</td>
+                        <td>{{$i->mrp}}</td>
                         
                         <td>{{$i->subtotal}}</td>
                     </tr>

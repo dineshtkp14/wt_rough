@@ -212,9 +212,10 @@
             <tr>
                 <th>ITEM Name</th>
                 <th>Original Price</th>
-                <th>Sold Price</th>
+              
                 <th>Quantity</th>
                 <th>Unit</th>
+                <th>Sold Price</th>
              
                 <th>Amount</th>
             </tr>
@@ -225,9 +226,10 @@
                     <tr>
                         <td>{{$i->itemid}}</td>
                         <td>{{$i->mrp}}</td>
-                        <td>{{$i->price}}</td>
+                      
                         <td>{{$i->quantity}}</td>
                         <td>{{$i->unit}}</td>
+                        <td>{{$i->price}}</td>
                       
                         <td>{{$i->subtotal}}</td>
                     </tr>

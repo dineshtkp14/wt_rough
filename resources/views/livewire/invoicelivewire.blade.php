@@ -13,15 +13,16 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>IDE</th>
+                            <th>ID</th>
                             <th>Customer Id</th>
+                            <th>Date</th>
                             <th>Customer Name</th>
                             <th>Subtotal</th>
                             <th>Discount</th>
                             <th>Total</th>
                             <th>Notes</th>
-                            <th>Date</th>
-                            <th>Action</th>
+                       
+                            {{-- <th>Action</th> --}}
                             {{-- <th>Action</th> --}}
                         </tr>
                     </thead>
@@ -30,22 +31,23 @@
                             @foreach ($all as $sale)
                                 <tr>
                                     <td>{{ $sale->id }}</td>
+                                    <td>{{ $sale->inv_date }}</td>
                                     <td>{{ $sale->customerid }}</td>
                                     <td>{{ $sale->name }}</td>
                                     <td>{{ $sale->subtotal }}</td>
                                     <td>{{ $sale->discount }}</td>
                                     <td>{{ $sale->total }}</td>
                                     <td>{{ $sale->notes }}</td>
-                                    <td>{{ $sale->inv_date }}</td>
-                                    <td>
+                                  
+                                    {{-- <td>
                                         <a href="{{ route('invoice.edit', $sale->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a>
     
-                                        {{-- <a href="#" onclick="delfunctionsales({{ $sale->id }})" class="btn btn-danger">Delete</a>
+                                        <a href="#" onclick="delfunctionsales({{ $sale->id }})" class="btn btn-danger">Delete</a>
                                         <form id="eea{{ $sale->id }}" action="{{ route('itemssales.destroy', $sale->id) }}" method="post">
                                             @csrf
                                             @method('delete')
-                                        </form> --}}
-                                    </td>
+                                        </form>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         @else

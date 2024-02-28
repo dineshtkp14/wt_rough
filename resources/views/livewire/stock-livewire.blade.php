@@ -49,7 +49,7 @@
            <span class="float-end"> <span class="p-1">Type "war" to see warning items</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
             <span class="p-1">Type "out" to see out of stock items</span> </span>
         </div>
-        <div class="card-body">
+        <div class="card-body overflow-auto">
             
             <table class="table">
                 
@@ -67,8 +67,8 @@
                         <th>Unit</th>
                         <th>Firm Name</th>
                         <th>MRP</th>
-                        <th>Update Price</th>
-                        <th>Extra</th>
+                      
+                        <th >Extra</th>
                         <th>Show Warning</th>
                         <th>Action</th>
                     </tr>
@@ -82,7 +82,7 @@
                         <td>{{ $i->companyname }}</td>
                         <td>{{ $i->itemsname }}</td>
                         <td>{{ $i->opening_stock }}</td>
-                        <td>{{ ($i->opening_stock-$sellsquantity_out[$i->id] ?? '')+ $sellsquantity_out[$i->id] ?? '' }}</td>
+                        <td>{{ $i->opening_stock-$sellsquantity_out[$i->id] ?? ''+ $sellsquantity_out[$i->id] ?? '' }}</td>
 
                        
                         <td><button class="btn btn-danger">{{ $i->quantity }} </button></td>
@@ -95,7 +95,7 @@
                       
 
                         <td>{{ $i->mrp }} &nbsp; &nbsp; <!-- Button trigger modal --></td>
-                        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $i->id }}">Extra</button>
+                        <td><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $i->id }}">Extra</button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal{{ $i->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
@@ -118,11 +118,13 @@
                                 </div>
                             </div>
                             
-                        </td>
+                     
+
+                        {{-- //forupdatebutton --}}
 
                       
 
-                        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eexampleModal{{ $i->id }}">Update Price</button>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#eexampleModal{{ $i->id }}">Update Price</button>
                             <!-- Modal 222-->
                             <div class="modal fade" id="eexampleModal{{ $i->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">

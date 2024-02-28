@@ -48,7 +48,9 @@ function productResultHTML(value) {
          value
      )}'> 
      <i class="fa-solid fa-boxes-stacked"></i>
-            <h1 class="m-0 px-2">${value.itemsname} ${value.quantity}</h1>
+     <h1 class="m-0 px-2">${
+         value.itemsname
+     }   &nbsp; &nbsp; (<span style="color: red">${value.quantity}</span>)</h1>
      </div>`;
 }
 

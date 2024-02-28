@@ -25,10 +25,9 @@
                             <th>Cost Price</th>
                             <th>Original Sell Price</th>
                             <th>Sold Price</th>
-                            {{-- <th>Discount</th> --}}
                             <th>Sub-Total</th>
                             <th>Profit</th>
-                            <th>Action</th>
+                            {{-- <th>Action</th> --}}
 
                         </tr>
                     </thead>
@@ -46,17 +45,19 @@
 
                                     <td data-label="Originl Price">{{ $item->itemprice ? $item->itemprice : '-' }}</td>
                                     <td data-label="sold Price">{{ $item->price }}</td>
-                                    {{-- <td data-label="Discount">{{ $item->discount }}</td> --}}
                                     <td data-label="Sub-Total">{{ $item->subtotal }}</td>
-                                    <td data-label="profit">{{ ($item->price-$item->itemdlp)*$item->quantity }}</td>
-                                    <td><a href="{{ route('itemsales.edit', $item->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a> </td>
+                                    {{-- <td data-label="profit">{{ ($item->price-$item->itemdlp)*$item->quantity }}</td> --}}
+                                    <td data-label="Sub-Total">{{ !empty($item->itemdlp) ? ($item->price - $item->itemdlp) * $item->quantity : '-' }}  </td>
+                                  
+
+                                    {{-- <td><a href="{{ route('itemsales.edit', $item->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a> </td> --}}
                                    
 
                                 </tr>
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="8"><h3>Database is Empty !! Please add items to view the list.</h3></td>
+                                <td colspan="8"><h3>No Record Found.</h3></td>
                             </tr>
                         @endif
                     </tbody>

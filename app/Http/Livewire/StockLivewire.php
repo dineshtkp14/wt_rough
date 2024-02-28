@@ -21,8 +21,15 @@ class StockLivewire extends Component
 
     public function render()
     {
+        // $query = item::orderBy('id', 'DESC')
+        //     ->where('check_remove_ofs', 0)
+        //     ->select('*');
+
         $query = item::orderBy('id', 'DESC')
-            ->where('check_remove_ofs', 0)
+            ->where(function ($query) {
+                $query->where('check_remove_ofs', 0)
+                      ->orWhere('check_remove_ofs', '<', 0);
+            })
             ->select('*');
 
         if (!empty($this->searchTerm)) {
@@ -38,7 +45,13 @@ class StockLivewire extends Component
                     $subquery->where('id', 'like', "%$searchTerm%")
                         ->orWhere('itemsname', 'like', "%$searchTerm%")
                         ->orWhere('mrp', 'like', "%$searchTerm%")
+                        ->orWhere('companyid', 'like', "%$searchTerm%")
                         ->orWhere('firm_name', 'like', "%$searchTerm%");
+
+                                    // Add the condition for searching company name based on companyid
+                $subquery->orWhereHas('company', function ($companyQuery) use ($searchTerm) {
+                    $companyQuery->where('name', 'like', "%$searchTerm%");
+                });
                 });
             }
         }
