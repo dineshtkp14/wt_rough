@@ -115,24 +115,24 @@
                         <div class="">
                             <label class="my-3"><b>Amount in words: </b><span id="totalAmountWords"
                                     style="text-transform: capitalize;">...</span></label><br>
-                            <textarea placeholder="Additional notes" class="form-control" id="noteInput" rows="3" cols="20"></textarea>
+                            <textarea autocomplete="off" placeholder="Additional notes" class="form-control" id="noteInput" rows="3" cols="20"></textarea>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="">
                             <div class="input-group mb-1">
                                 <span class="input-group-text">Sub Total (Rs.)</span>
-                                <input type="text" class="form-control" placeholder="0.00" id="subTotalInputFinal"
+                                <input autocomplete="off" type="text" class="form-control" placeholder="0.00" id="subTotalInputFinal"
                                     data-name="subtotal" name="test" disabled>
                             </div>
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Discount (Rs.)</span>
-                                <input type="text" class="form-control sales-input-final" placeholder="0.00"
+                                <input autocomplete="off" type="text" class="form-control sales-input-final" placeholder="0.00"
                                     id="discountInputFinal" data-name="discount">
                             </div>
                             <div class="input-group">
                                 <span class="input-group-text">Total (Rs.)</span>
-                                <input type="text" class="form-control" placeholder="0.00" id="totalInputFinal"
+                                <input autocomplete="off" type="text" class="form-control" placeholder="0.00" id="totalInputFinal"
                                     data-name="total" disabled>
                             </div>
                             <br>

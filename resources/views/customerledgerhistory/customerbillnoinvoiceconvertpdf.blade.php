@@ -52,10 +52,11 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 14px;
         }
         th, td {
             border: 1px solid #000; /* Set border color to black */
-            padding: 10px;
+            padding: 6px;
         }
         th {
             background-color: white; /* Set background color to white */

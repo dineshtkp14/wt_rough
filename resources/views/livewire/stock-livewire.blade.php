@@ -10,10 +10,9 @@
                     <span>CHOOSE FIRM Name</span>
                     <select wire:model="firm_name" class="form-select @error('firm_name') is-invalid @enderror" id="firm_name" style="border-color: red;">
                         <option value="">Select Firm</option>
-                        <option value="Durga">Durga And Dinesh Traders</option>
-                        <option value="Malika">Malika & Nav Durga Traders</option>
-                        <option value="OmHari">Om Hari Tradelink</option>
-                        <option value="Bajgain_Supp">Bajgain Suppliers</option>
+                        @foreach($allfirmlist as $firm)
+                        <option value="{{ $firm->nick_name }}">{{ $firm->firm_name }}</option>
+                    @endforeach
                     </select>
                 </div>
                 @error('firm_name')
@@ -56,15 +55,11 @@
                 <thead>
                     <tr>
                         <th>Item Id</th>
-                        <th>Date</th>
-                        <th>Distributor Name</th>
                         <th>Items Name</th>
-                        <th>Opening Stock</th>
-                        <th>Balance(I+O)</th>
-                        <th class=" bg-danger">Quantity (IN) org</th>
-                        <th>Check (in)</th>
-                        <th>Out</th>
+                        <th class=" bg-danger">Quantity</th>
+                       
                         <th>Unit</th>
+                        <th>Item Store Area</th>
                         <th>Firm Name</th>
                         <th>MRP</th>
                       
@@ -78,19 +73,14 @@
                     @foreach ($all as $i)
                     <tr>
                         <td>{{ $i->id }}</td>
-                        <td>{{ $i->date }}</td>
-                        <td>{{ $i->companyname }}</td>
                         <td>{{ $i->itemsname }}</td>
-                        <td>{{ $i->opening_stock }}</td>
-                        <td>{{ $i->opening_stock-$sellsquantity_out[$i->id] ?? ''+ $sellsquantity_out[$i->id] ?? '' }}</td>
-
+                       
                        
                         <td><button class="btn btn-danger">{{ $i->quantity }} </button></td>
                         
-                        <td>{{ $i->opening_stock-$sellsquantity_out[$i->id] ?? '' }}</td>
-                        <td>{{ $sellsquantity_out[$i->id] ?? '' }}</td>
-
+                       
                         <td>{{ $i->unit }}</td>
+                        <td>{{ $i->item_store_area }}</td>
                         <td>{{ $i->firm_name }}</td>
                       
 
@@ -193,6 +183,11 @@
                             <div class="span-box">
                                 <span class="btn btn-primary">Data in Minus</span>
                             </div>
+                            <form id="removeForm{{ $i->id }}" action="{{ route('stocks.updateofs') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="item_id" value="{{ $i->id }}">
+                                <button type="submit" class="btn btn-info" onclick="confirmRemove({{ $i->id }})">remove</button>
+                            </form>
                             @else
                             <div class="span-bo">
                                 <span class="btn btn-success">Available</span>

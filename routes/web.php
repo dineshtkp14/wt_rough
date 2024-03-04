@@ -20,6 +20,14 @@ use App\Http\Controllers\showperday_controller;
 use App\Http\Controllers\Purchse_controller;
 use App\Http\Controllers\Employee_controller;
 use App\Http\Controllers\ViewwholeitembillController;
+use App\Http\Controllers\AdminstockController;
+use App\Http\Controllers\TrackitemstableController;
+use App\Http\Controllers\MyfirmController;
+use App\Http\Controllers\TransferGoodsController;
+
+
+
+
 
 
 
@@ -112,6 +120,15 @@ Route::put('/stocks/{id}', [StockController::class, 'update'])->name('stockprice
 Route::post('/stocks',[StockController::class,'updateofs'])->name('stocks.updateofs');
 
 
+//adminstockcontroller
+Route::get('/adminstocks',[AdminstockController::class,'index'])->name('adminstocks.index');
+
+Route::get('adminstocks/pdf/convert',[AdminstockController::class,'adminstockpdfgenerate'])->name('adminstock.convert');
+
+
+
+
+
 // Route::get('/openingbalance/create',[openingbalanceController::class,'create'])->name('opeaning.create');
 // Route::get('/openingbalance',[openingbalanceController::class,'store'])->name('opeaning.store');
 
@@ -127,6 +144,25 @@ Route::post('/customerinfos',[CustomerinfoController::class,'store'])->name('cus
 Route::get('/customerinfos/{customerinfo}/edit',[CustomerinfoController::class,'edit'])->name('customerinfos.edit');
 Route::put('/customerinfos/{customerinfo}',[CustomerinfoController::class,'update'])->name('customerinfos.update');
 Route::delete('/customerinfos/{customerinfo}',[CustomerinfoController::class,'destroy'])->name('customerinfos.destroy');
+
+//myfirmcontroller
+Route::get('/myfirm',[MyfirmController::class,'index'])->name('myfirm.index');
+Route::get('/myfirm/create',[MyfirmController::class,'create'])->name('myfirm.create');
+Route::post('/myfirm',[MyfirmController::class,'store'])->name('myfirm.store');
+Route::get('/myfirm/{myfirm}/edit',[MyfirmController::class,'edit'])->name('myfirm.edit');
+Route::put('/myfirm/{myfirm}',[MyfirmController::class,'update'])->name('myfirm.update');
+Route::delete('/myfirm/{myfirm}',[MyfirmController::class,'destroy'])->name('myfirm.destroy');
+
+
+//myfirmcontroller
+Route::get('/transfergoods',[TransferGoodsController::class,'index'])->name('transfergoods.index');
+Route::get('/transfergoods/create',[TransferGoodsController::class,'create'])->name('transfergoods.create');
+Route::post('/transfergoods',[TransferGoodsController::class,'store'])->name('transfergoods.store');
+Route::get('/transfergoods/{transfergoods}/edit',[TransferGoodsController::class,'edit'])->name('transfergoods.edit');
+Route::put('/transfergoods/{transfergoods}',[TransferGoodsController::class,'update'])->name('transfergoods.update');
+Route::delete('/transfergoods/{transfergoods}',[TransferGoodsController::class,'destroy'])->name('transfergoods.destroy');
+
+
 
 
 //opeaningbalance
@@ -144,6 +180,7 @@ Route::delete('/openingbalances/{customerinfo}',[openingbalanceController::class
 // //forhtmltopdf
 Route::get('/pdf/view',[CustomerPdfGenerator::class,'pdfview'])->name('pdf.view');
 Route::get('/pdf/convert',[CustomerPdfGenerator::class,'pdfgenerate'])->name('pdf.convert');
+
 
 
 
@@ -226,6 +263,9 @@ Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_Invoive
 //trackinvoice
 Route::get('/trackinvoice',[trackinvoiceController::class,'index'])->name('trackinvoice.index');
 Route::get('/trackcreditnotes',[trackCreditnotesController::class,'index'])->name('trackcreditnotes.index');
+
+//trackitemstable
+Route::get('/trackitemstable',[TrackitemstableController::class,'index'])->name('trackitemstable.index');
 
 
 

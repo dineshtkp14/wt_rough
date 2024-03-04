@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('transfergoods', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('itemid');
+            $table->float('quantity');
+            $table->date('date');
+            $table->string('shiftArea');
+            $table->string('shiftBy');
+            $table->text('notes')->nullable();
+            $table->string('added_by')->nullable();
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('transfergoods');
+    }
+};

@@ -1,12 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\item;
+use App\Models\Myfirm;
+use App\Models\trackitemstable;
+use Illuminate\Support\Facades\DB; //
+
+
 use Illuminate\Support\Facades\Auth;
 
 class Itemscontroller extends Controller
@@ -20,10 +24,6 @@ class Itemscontroller extends Controller
             'link'=>'View Items Details'
         ];
 
-      
-         $allitem=item::orderBy('id','DESC')->get();
-
-       
          return view('items.list',['breadcrumb'=>$breadcrumb]);
 
        
@@ -39,7 +39,10 @@ class Itemscontroller extends Controller
             'link'=>'Add Items'
         ];
 
-        return view('items.create',['breadcrumb'=>$breadcrumb]);
+        $all=Myfirm::orderBy('id','DESC')->get();
+
+
+        return view('items.create',['breadcrumb'=>$breadcrumb,'all'=>$all]);
     }
 
     return redirect('/login');
@@ -56,6 +59,7 @@ class Itemscontroller extends Controller
              'mrp' => 'required',
              'showwarning' => 'required',
              'unit' => 'required',
+             'itemstorearea' => 'required',
 
 
          ]);
@@ -89,12 +93,42 @@ class Itemscontroller extends Controller
 
                 $itemsdetails->total = $req->quantity * $req->costprice;
                 $itemsdetails->opening_stock = $req->quantity;
+                $itemsdetails->item_store_area = $req->itemstorearea;
+
                 $itemsdetails->added_by = session('user_email');
-
-              
-
-
                 $itemsdetails->save();
+
+//insertintotracktable
+// Concatenate all the attributes of $itemsdetails
+$additional_info = 'billno: ' . $itemsdetails->billno . ', ' .
+                   'companyid: ' . $itemsdetails->companyid . ', ' .
+                   'date: ' . $itemsdetails->date . ', ' .
+                   'itemsname: ' . $itemsdetails->itemsname . ', ' .
+                   'quantity: ' . $itemsdetails->quantity . ', ' .
+                   'unit: ' . $itemsdetails->unit . ', ' .
+                   'costprice: ' . $itemsdetails->costprice . ', ' .
+                   'mrp: ' . $itemsdetails->mrp . ', ' .
+                   'notes: ' . $itemsdetails->notes . ', ' .
+                   'firm_name: ' . $itemsdetails->firm_name . ', ' .
+                   'com_Retail_price: ' . $itemsdetails->com_Retail_price . ', ' .
+                   'com_wholesale_price: ' . $itemsdetails->com_wholesale_price . ', ' .
+                   'wholesale_price: ' . $itemsdetails->wholesale_price . ', ' .
+                   'showwarning: ' . $itemsdetails->showwarning . ', ' .
+                   'total: ' . $itemsdetails->total . ', ' .
+                   'opening_stock: ' . $itemsdetails->opening_stock . ', ' .
+                   'added_by: ' . $itemsdetails->added_by;
+
+
+                // Insert into track table
+DB::table('trackitemstable')->insert([
+
+    'title' => "data inserted",
+    'updated_by' => session('user_email'),
+    'notes' => $additional_info,
+   
+
+]);
+                
  
                  return redirect()->route('items.create')->with('success', 'Items Added Successfully !!');
              } else {
@@ -145,32 +179,75 @@ public function update($id, Request $req)
 
             // Check if the company is found
             if ($company) {
+  // Fetch the existing item details before updating
+  $oldItemDetails = Item::find($id);
 
-                $itemsdetails = item::find($id);
-                $itemsdetails->billno = $req->billno;
-                $itemsdetails->companyid = $req->companyid; // Update with the company name
+   // Construct the additional_info string with old and new values
+   $additional_info = 'Initial: ' . 
+   'billno: <strong>' . $oldItemDetails->billno . '</strong>, ' .
+   'Updated to: ' . 'billno: ' . $req->billno . ', ' .
+   'companyid: <strong>' . $oldItemDetails->companyid . '</strong>, ' .
+   'Updated to: ' . 'companyid: ' . $req->companyid . ', ' .
+   'date: <strong>' . $oldItemDetails->date . '</strong>, ' .
+   'Updated to: ' . 'date: ' . $req->date . ', ' .
+   'itemsname: <strong>' . $oldItemDetails->itemsname . '</strong>, ' .
+   'Updated to: ' . 'itemsname: ' . $req->itemsname . ', ' .
+   'quantity: <strong>' . $oldItemDetails->quantity . '</strong>, ' .
+   'Updated to: ' . 'quantity: ' . $req->quantity . ', ' .
+   'costprice: <strong>' . $oldItemDetails->costprice . '</strong>, ' .
+   'Updated to: ' . 'costprice: ' . $req->costprice . ', ' .
+   'mrp: <strong>' . $oldItemDetails->mrp . '</strong>, ' .
+   'Updated to: ' . 'mrp: ' . $req->mrp . ', ' .
+   'showwarning: <strong>' . $oldItemDetails->showwarning . '</strong>, ' .
+   'Updated to: ' . 'showwarning: ' . $req->showwarning . ', ' .
+   'notes: <strong>' . $oldItemDetails->notes . '</strong>, ' .
+   'Updated to: ' . 'notes: ' . $req->notes . ', ' .
+   'firm_name: <strong>' . $oldItemDetails->firm_name . '</strong>, ' .
+   'Updated to: ' . 'firm_name: ' . $req->firm_name . ', ' .
+   'com_Retail_price: <strong>' . $oldItemDetails->com_Retail_price . '</strong>, ' .
+   'Updated to: ' . 'com_Retail_price: ' . $req->competetiveretail . ', ' .
+   'com_wholesale_price: <strong>' . $oldItemDetails->com_wholesale_price . '</strong>, ' .
+   'Updated to: ' . 'com_wholesale_price: ' . $req->competetivewholesale . ', ' .
+   'wholesale_price: <strong>' . $oldItemDetails->wholesale_price . '</strong>, ' .
+   'Updated to: ' . 'wholesale_price: ' . $req->wp . ', ' .
+   'total: <strong>' . $oldItemDetails->total . '</strong>, ' .
+   'Updated to: ' . 'total: ' . $req->quantity * $req->costprice . ', ' .
+   'opening_stock: <strong>' . $oldItemDetails->opening_stock . '</strong>, ' .
+   'Updated to: ' . 'opening_stock: ' . $req->quantity . ', ' .
+   'added_by: <strong>' . $oldItemDetails->added_by . '</strong>, ' .
+   'Updated to: ' . 'added_by: ' . session('user_email');
 
-                $itemsdetails->date = $req->date;
-                $itemsdetails->itemsname = $req->itemsname;
-                $itemsdetails->quantity = $req->quantity;
-                $itemsdetails->costprice = $req->costprice;
-                $itemsdetails->mrp = $req->mrp;
-                $itemsdetails->showwarning = $req->showwarning;
+  // Update the item details
+  $itemsdetails = Item::find($id);
+  $itemsdetails->billno = $req->billno;
+  $itemsdetails->companyid = $req->companyid; // Update with the company name
+  $itemsdetails->date = $req->date;
+  $itemsdetails->itemsname = $req->itemsname;
+  $itemsdetails->quantity = $req->quantity;
+  $itemsdetails->costprice = $req->costprice;
+  $itemsdetails->mrp = $req->mrp;
+  $itemsdetails->showwarning = $req->showwarning;
+  $itemsdetails->notes = $req->notes;
+  $itemsdetails->firm_name = $req->firm_name;
+  $itemsdetails->com_Retail_price = $req->competetiveretail;
+  $itemsdetails->com_wholesale_price = $req->competetivewholesale;
+  $itemsdetails->wholesale_price = $req->wp;
+  $itemsdetails->total = $req->quantity * $req->costprice;
+  $itemsdetails->item_store_area = $req->itemstorearea;
 
-                $itemsdetails->notes = $req->notes;
-                $itemsdetails->firm_name = $req->firm_name;
+  $itemsdetails->added_by = session('user_email');
+  $itemsdetails->opening_stock = $req->quantity;
 
+  // Save the updated item details
+  $itemsdetails->save();
 
-                $itemsdetails->com_Retail_price = $req->competetiveretail;
-                $itemsdetails->com_wholesale_price = $req->competetivewholesale;
-                $itemsdetails->wholesale_price = $req->wp;
+  // Insert into track table
+  DB::table('trackitemstable')->insert([
+      'title' => "data updated",
+      'updated_by' => session('user_email'),
+      'notes' => $additional_info,
+  ]);
 
-                $itemsdetails->total = $req->quantity * $req->costprice;
-                $itemsdetails->added_by = session('user_email');
-                $itemsdetails->opening_stock = $req->quantity;
-
-
-                $itemsdetails->save();
 
                 return redirect()->route('items.index')->with('success', 'Updated Successfully!');
             } else {
@@ -188,8 +265,41 @@ public function update($id, Request $req)
 
 public function destroy($id){
 
-    $pricelistid=item::findOrFail($id);
-    $pricelistid->delete();
+    $itemsdetails=item::findOrFail($id);
+    $itemsdetails->delete();
+
+
+                    //insertintotracktable
+// Concatenate all the attributes of $itemsdetails
+$additional_info = 'billno: ' . $itemsdetails->billno . ', ' .
+'itemid: ' . $itemsdetails->id . ', ' .
+'companyid: ' . $itemsdetails->companyid . ', ' .
+'date: ' . $itemsdetails->date . ', ' .
+'itemsname: ' . $itemsdetails->itemsname . ', ' .
+'quantity: ' . $itemsdetails->quantity . ', ' .
+'unit: ' . $itemsdetails->unit . ', ' .
+'costprice: ' . $itemsdetails->costprice . ', ' .
+'mrp: ' . $itemsdetails->mrp . ', ' .
+'notes: ' . $itemsdetails->notes . ', ' .
+'firm_name: ' . $itemsdetails->firm_name . ', ' .
+'com_Retail_price: ' . $itemsdetails->com_Retail_price . ', ' .
+'com_wholesale_price: ' . $itemsdetails->com_wholesale_price . ', ' .
+'wholesale_price: ' . $itemsdetails->wholesale_price . ', ' .
+'showwarning: ' . $itemsdetails->showwarning . ', ' .
+'total: ' . $itemsdetails->total . ', ' .
+'opening_stock: ' . $itemsdetails->opening_stock . ', ' .
+'added_by: ' . $itemsdetails->added_by;
+
+
+// Insert into track table
+DB::table('trackitemstable')->insert([
+
+'title' => "data Deleted",
+'updated_by' => session('user_email'),
+'notes' => $additional_info,
+
+
+]);
 
 
       return redirect()->route('items.index')->with('success','Deleted Sucesfully !!'); 

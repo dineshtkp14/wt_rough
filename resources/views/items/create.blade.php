@@ -99,10 +99,9 @@
         <div class="col-md-6">
             <label for="inputPassword4" class="form-label">Firm Name (CHOOSE FIRM)</label>
             <select class="form-select @error('firm_name') is-invalid @enderror" name="firm_name" id="firm_name" stye="border-color: red;">
-                <option value="Durga">Durga And Dinesh Traders</option>
-                <option value="Malika">Malika & Nav durga Tradersh</option>
-                <option value="OmHari">Om Hari Tradelink</option>
-                <option value="Bajgain_Supp">Bajgain Suppliers</option>
+                @foreach($all as $firm)
+                <option value="{{ $firm->nick_name }}">{{ $firm->firm_name }}</option>
+            @endforeach
             </select>
             @error('firm_name')
                 <p class="invalid-feedback">{{ $message }}</p>
@@ -221,9 +220,9 @@
 
 <div class="col-md-6">
     <label for="inputPassword4" class="form-label">Iteam Store Area</label>
-    <input type="text" class="form-control @error('isa') is-invalid @enderror" 
-        name="isa" value="{{ old('isa') }}">
-    @error('isa')
+    <input type="text" class="form-control @error('itemstorearea') is-invalid @enderror" 
+        name="itemstorearea" value="{{ old('itemstorearea') }}">
+    @error('itemstorearea')
         <p class="invalid-feedback">{{ $message }}</p>
     @enderror
 </div>

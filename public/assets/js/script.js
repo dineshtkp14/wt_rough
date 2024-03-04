@@ -159,16 +159,16 @@ function inputHTML(counter) {
                     </a>
                 </td>
                 <td>
-                    <input type="text" placeholder="Unstocked Name" class="form-control sales-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
+                    <input autocomplete="off" type="text" placeholder="Unstocked Name" class="form-control sales-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
                 </td>
                 <td>
 
-                    <input type="text" placeholder="Quantity  " class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
+                    <input autocomplete="off" type="text" placeholder="Quantity  " class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
                 </td>
 
             <td>
 
-                <input type="text" placeholder="unit  " class="form-control sales-input" id="unitInput" value="" data-id="${counter}" data-name="unit" disabled>
+                <input autocomplete="off" type="text" placeholder="unit  " class="form-control sales-input" id="unitInput" value="" data-id="${counter}" data-name="unit" disabled>
 
              </td>
 
@@ -178,7 +178,7 @@ function inputHTML(counter) {
                 <td>
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">Rs.</span>
-                        <input type="text"  placeholder="Price" class="form-control sales-input" id="priceInput" value="" data-id="${counter}" data-name="price" >
+                        <input autocomplete="off" type="text"  placeholder="Price" class="form-control sales-input" id="priceInput" value="" data-id="${counter}" data-name="price" >
                     </div>
                 </td>
                 
@@ -192,7 +192,7 @@ function inputHTML(counter) {
                 <td>
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">Rs.</span>
-                        <input type="text" placeholder="0.00" class="form-control" id="subTotalInput" value="" data-id="${counter}" data-name="subtotal" disabled>
+                        <input autocomplete="off" type="text" placeholder="0.00" class="form-control" id="subTotalInput" value="" data-id="${counter}" data-name="subtotal" disabled>
                     </div>
                 </td>
             </tr>`;

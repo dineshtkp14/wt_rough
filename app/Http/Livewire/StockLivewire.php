@@ -8,6 +8,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\salesitem;
 use App\Models\company;
+use App\Models\Myfirm;
+
 
 
 
@@ -37,7 +39,11 @@ class StockLivewire extends Component
 
             if ($searchTerm === 'out') {
                 $query->where('quantity', 0);
-            } elseif ($searchTerm === 'war') {
+
+            } elseif ($searchTerm === 'ava') {
+                $query->where('quantity', '>', 0);
+            }
+             elseif ($searchTerm === 'war') {
                 $query->where('quantity', '>=', 1)
                     ->where('quantity', '<=', DB::raw('showwarning'));
             } else {
@@ -96,12 +102,19 @@ class StockLivewire extends Component
             ->where('check_remove_ofs', 0)
             ->count();
 
+
+            //forselctfirmname
+            $allfirmlist=Myfirm::orderBy('id','DESC')->get();
+
+
         return view('livewire.stock-livewire', [
             'all' => $all,
             'cou' => $count,
             'x' => $couout,
             'war' => $warning,
             'sellsquantity_out' => $sellsquantity,
+            'allfirmlist' => $allfirmlist,
+
         ]);
     }
 }

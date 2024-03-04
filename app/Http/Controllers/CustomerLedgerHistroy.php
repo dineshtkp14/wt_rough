@@ -607,6 +607,8 @@ public function updateinvoiicetype(Request $req)
                 'Content-Disposition' => 'inline; filename="invoice.pdf"',
             ]);
         }
+
+        
     }
 
 
