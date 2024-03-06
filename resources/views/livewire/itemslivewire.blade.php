@@ -23,13 +23,11 @@
                         <th>MRP</th>
                         <th>Total</th>
                         <th>notes</th>
+                        <th>My Firm</th>
 
                         <th>WholeSale Price</th>
                         <th>Competitive Retail Sale Price</th>
                         <th>Competitive Wholesale Sale Price</th>
-
-
-                      
                          <th>Action</th>
             
                         
@@ -51,6 +49,7 @@
                         <td data-label="Remarks">{{ $i->mrp }}</td>
                         <td data-label="Remarks">{{ $i->total }}</td>
                         <td data-label="Remarks">{{ $i->notes }}</td>
+                        <td data-label="Remarks">{{ $i->firm_name }}</td>
 
                         <td data-label="Remarks">{{ $i->wholesale_price }}</td>
                         <td data-label="Remarks">{{ $i->com_Retail_price }}</td>

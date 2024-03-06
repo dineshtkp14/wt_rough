@@ -5,7 +5,7 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <a href="" class="btn btn-primary text-center ms-5">Add New Sale</a>
+                <a href="" class="h3 text-center ms-5 text-dark " style="text-decoration: none">ITEMSALES INVOICE  TABLE</a>
     
                 <input type="text" class="form-control float-end border-warning border border-5" placeholder="Search..." style="width: 250px;" wire:model="searchTerm">
             </div>
@@ -14,8 +14,8 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Customer Id</th>
                             <th>Date</th>
+                            <th>Customer Id</th>
                             <th>Customer Name</th>
                             <th>Subtotal</th>
                             <th>Discount</th>

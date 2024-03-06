@@ -119,6 +119,7 @@
     <table>
         <thead>
             <tr>
+                <th>Serial No.</th>
                 <th>ITEM Name</th>
                 {{-- <th>Original Price</th> --}}
               
@@ -129,9 +130,11 @@
             </tr>
         </thead>
         <tbody>
+            @php $serialNo = 1; @endphp
             @if ($allcusbyid != null)
                 @foreach($allcusbyid as $i)
                     <tr>
+                        <td>{{ $serialNo++ }}</td>
                         <td>{{$i->itemid}}</td>
                         {{-- <td>{{$i->mrp}}</td> --}}
                        
@@ -146,18 +149,18 @@
             @if ($allinvoices != null)
                 @foreach($allinvoices as $i)
                     <tr>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                         <td class="text-right"><b>Sub-Total:</b></td>
                         <td><b>{{$i->subtotal}}</b></td>
                     </tr>
                     <tr>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                         <td class="text-right"><b>Extra Discount:</b></td>
                         <td><b>{{$i->discount}}</b></td>
                     </tr>
                     <tr>
                         
-                        <td colspan="3" class="">Amount in Words: 
+                        <td colspan="4" class="">Amount in Words: 
                         @php
                             function convertNumberToWords($num) {
                                 $ones = array(
@@ -222,7 +225,7 @@
                     </tr>
                     
                     <tr>
-                        <td colspan="5" class="notes"><b>Notes:</b> {{$i->notes}}</td>
+                        <td colspan="6" class="notes"><b>Notes:</b> {{$i->notes}}</td>
                     </tr>
                 @endforeach
 

@@ -116,6 +116,7 @@ $additional_info = 'billno: ' . $itemsdetails->billno . ', ' .
                    'showwarning: ' . $itemsdetails->showwarning . ', ' .
                    'total: ' . $itemsdetails->total . ', ' .
                    'opening_stock: ' . $itemsdetails->opening_stock . ', ' .
+                   'opening_stock: ' . $itemsdetails->item_store_area . ', ' .
                    'added_by: ' . $itemsdetails->added_by;
 
 
@@ -154,8 +155,9 @@ public function edit($id)
     ];
 
     $items=item::findOrfail($id);
+    $all=Myfirm::orderBy('id','DESC')->get();
 
-    return view('items.edit',['item'=>$items,'breadcrumb'=>$breadcrumb]);   
+    return view('items.edit',['item'=>$items,'breadcrumb'=>$breadcrumb,'all'=>$all]);   
     
     return redirect('/login');
 }
@@ -185,36 +187,42 @@ public function update($id, Request $req)
    // Construct the additional_info string with old and new values
    $additional_info = 'Initial: ' . 
    'billno: <strong>' . $oldItemDetails->billno . '</strong>, ' .
-   'Updated to: ' . 'billno: ' . $req->billno . ', ' .
-   'companyid: <strong>' . $oldItemDetails->companyid . '</strong>, ' .
-   'Updated to: ' . 'companyid: ' . $req->companyid . ', ' .
-   'date: <strong>' . $oldItemDetails->date . '</strong>, ' .
-   'Updated to: ' . 'date: ' . $req->date . ', ' .
-   'itemsname: <strong>' . $oldItemDetails->itemsname . '</strong>, ' .
-   'Updated to: ' . 'itemsname: ' . $req->itemsname . ', ' .
-   'quantity: <strong>' . $oldItemDetails->quantity . '</strong>, ' .
-   'Updated to: ' . 'quantity: ' . $req->quantity . ', ' .
-   'costprice: <strong>' . $oldItemDetails->costprice . '</strong>, ' .
-   'Updated to: ' . 'costprice: ' . $req->costprice . ', ' .
-   'mrp: <strong>' . $oldItemDetails->mrp . '</strong>, ' .
-   'Updated to: ' . 'mrp: ' . $req->mrp . ', ' .
-   'showwarning: <strong>' . $oldItemDetails->showwarning . '</strong>, ' .
-   'Updated to: ' . 'showwarning: ' . $req->showwarning . ', ' .
-   'notes: <strong>' . $oldItemDetails->notes . '</strong>, ' .
-   'Updated to: ' . 'notes: ' . $req->notes . ', ' .
-   'firm_name: <strong>' . $oldItemDetails->firm_name . '</strong>, ' .
-   'Updated to: ' . 'firm_name: ' . $req->firm_name . ', ' .
-   'com_Retail_price: <strong>' . $oldItemDetails->com_Retail_price . '</strong>, ' .
-   'Updated to: ' . 'com_Retail_price: ' . $req->competetiveretail . ', ' .
-   'com_wholesale_price: <strong>' . $oldItemDetails->com_wholesale_price . '</strong>, ' .
-   'Updated to: ' . 'com_wholesale_price: ' . $req->competetivewholesale . ', ' .
-   'wholesale_price: <strong>' . $oldItemDetails->wholesale_price . '</strong>, ' .
-   'Updated to: ' . 'wholesale_price: ' . $req->wp . ', ' .
-   'total: <strong>' . $oldItemDetails->total . '</strong>, ' .
+   'Updated to: ' . 'billno: ' . $req->billno . ', ||' .
+   ' companyid: <strong>' . $oldItemDetails->companyid . '</strong>, ' .
+   'Updated to: ' . 'companyid: ' . $req->companyid . ', ||' .
+   ' date: <strong>' . $oldItemDetails->date . '</strong>, ' .
+   'Updated to: ' . 'date: ' . $req->date . ',  ||' .
+   ' itemsname: <strong>' . $oldItemDetails->itemsname . '</strong>, ' .
+   'Updated to: ' . 'itemsname: ' . $req->itemsname . ',  ||' .
+   ' quantity: <strong>' . $oldItemDetails->quantity . '</strong>, ' .
+   'Updated to: ' . 'quantity: ' . $req->quantity . ',  ||' .
+   ' costprice: <strong>' . $oldItemDetails->costprice . '</strong>, ' .
+   'Updated to: ' . 'costprice: ' . $req->costprice . ',  ||' .
+   ' mrp: <strong>' . $oldItemDetails->mrp . '</strong>, ' .
+   'Updated to: ' . 'mrp: ' . $req->mrp . ',  ||' .
+   ' showwarning: <strong>' . $oldItemDetails->showwarning . '</strong>, ' .
+   'Updated to: ' . 'showwarning: ' . $req->showwarning . ', ||'.
+   ' notes: <strong>' . $oldItemDetails->notes . '</strong>, ' .
+   'Updated to: ' . 'notes: ' . $req->notes . ', || ' .
+   ' firm_name: <strong>' . $oldItemDetails->firm_name . '</strong>, ' .
+   'Updated to: ' . 'firm_name: ' . $req->firm_name . ', || ' .
+   ' com_Retail_price: <strong>' . $oldItemDetails->com_Retail_price . '</strong>, ' .
+   'Updated to: ' . 'com_Retail_price: ' . $req->competetiveretail . ', || ' .
+   ' com_wholesale_price: <strong>' . $oldItemDetails->com_wholesale_price . '</strong>, ' .
+   'Updated to: ' . 'com_wholesale_price: ' . $req->competetivewholesale . ', || ' .
+   ' wholesale_price: <strong>' . $oldItemDetails->wholesale_price . '</strong>, ' .
+   'Updated to: ' . 'wholesale_price: ' . $req->wp . ', ||' .
+   ' total: <strong>' . $oldItemDetails->total . '</strong>, ' .
    'Updated to: ' . 'total: ' . $req->quantity * $req->costprice . ', ' .
-   'opening_stock: <strong>' . $oldItemDetails->opening_stock . '</strong>, ' .
-   'Updated to: ' . 'opening_stock: ' . $req->quantity . ', ' .
-   'added_by: <strong>' . $oldItemDetails->added_by . '</strong>, ' .
+   ' opening_stock: <strong>' . $oldItemDetails->opening_stock . '</strong>, ' .
+   'Updated to: ' . 'opening_stock: ' . $req->quantity . ', ||' .
+   ' added_by: <strong>' . $oldItemDetails->added_by . '</strong>, ' .
+   'Updated to: ' . 'opening_stock: ' . $req->quantity . ', ||' .
+   ' added_by: <strong>' . $oldItemDetails->added_by . '</strong>, ' .
+   
+   'Item Store Area: <strong>' . $oldItemDetails->item_store_area . '</strong>, ' .
+   'Updated to: ' . 'Item Store Area: ' . $req->item_store_area . ', ||' .
+
    'Updated to: ' . 'added_by: ' . session('user_email');
 
   // Update the item details

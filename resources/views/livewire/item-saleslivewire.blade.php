@@ -5,8 +5,12 @@
     <div class="container">
         <div class="card ">
             <div class="card-header">
-                <div class="row float-end">
-                    <div class="col-12 float-end">
+                <div class="row "> 
+                    <div class="col-md-6 ">
+                            <a href="" style="width: 200px; text-decoration:none" class=" text-center ms-5 h3 text-dark"> ITEMSALES  TABLE</a>
+                    </div>
+
+                    <div class="col-md-6 float-end">
                         <input type="text" class="form-control float-end border-warning border border-5" 
                             placeholder="Search Here" style="width: 250px;" 
                             wire:model.debounce.500ms="searchTerm" />

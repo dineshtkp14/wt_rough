@@ -61,12 +61,7 @@
             </div>
                
             <div class="col-md-6">
-                {{-- <label for="inputPassword4" class="form-label">Distributor Name</label>
-                <input type="text" class="form-control @error('disname') is-invalid @enderror" 
-                    name="disname" value="{{ old('disname') }}">
-                @error('disname')
-                    <p class="invalid-feedback">{{ $message }}</p>
-                @enderror --}}
+              
                 
                  <div class="search-box">
                     <input id="customerIdInput" name="companyid"  hidden>
@@ -96,6 +91,24 @@
                         </div>
         </div>
            
+
+
+        <div class="col-md-6">
+            <label for="firm_name" class="form-label">My Firm Name{{$item->firm_name}} (CHOOSE FIRM)</label>
+            <select class="form-select @error('firm_name') is-invalid @enderror" name="firm_name" id="firm_name">
+                @foreach($all as $firm)
+                    <option value="{{ $firm->nick_name }}" {{ $firm->nick_name == old('firm_name', $item->firm_name) ? 'selected' : '' }}>
+                        {{ $firm->firm_name }}
+                    </option>
+                @endforeach
+            </select>
+            @error('firm_name')
+                <p class="invalid-feedback">{{ $message }}</p>
+            @enderror
+        </div>
+        
+
+
            
                 <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Bill No</label>
@@ -155,6 +168,15 @@
                     @error('mrp')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
+            </div>
+
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Iteam Store Area</label>
+                <input type="text" class="form-control @error('itemstorearea') is-invalid @enderror" 
+                    name="itemstorearea" value="{{ old('itemstorearea',$item->item_store_area) }}">
+                @error('itemstorearea')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="col-md-6">

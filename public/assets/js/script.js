@@ -148,7 +148,12 @@ $("#toggleBox")
     });
 
 function inputHTML(counter) {
+    var serialNo = counter;
+
     return `<tr id="inputRow${counter}">
+
+    <td>${serialNo}</td> <!-- Serial number column -->
+
                 <td><button class="btn btn-danger remove-row-btn" data-id="${counter}"><i class="fa-solid fa-xmark"></i></button></td>
                 <td>
                 <a href="#" class="select-product-link" id="selectProductLink" style="text-decoration: none;" data-id="${counter}" data-query="">

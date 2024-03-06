@@ -20,6 +20,9 @@ class DeletedinvoiceLivewire extends Component
             ->leftJoin('customerinfos', 'backup_invoices.customerid', '=', 'customerinfos.id')
             ->where('customerinfos.name', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('backup_invoices.subtotal', 'like', "%" . $this->searchTerm . "%")
+            ->orWhere('backup_invoices.invoice_id', 'like', "%" . $this->searchTerm . "%")
+            ->orWhere('backup_invoices.inv_date', 'like', "%" . $this->searchTerm . "%")
+
             ->orWhere('backup_invoices.discount', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('backup_invoices.total', 'like', "%" . $this->searchTerm . "%")
             ->orderBy('backup_invoices.id', 'DESC')

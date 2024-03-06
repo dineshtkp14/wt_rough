@@ -3,7 +3,10 @@
 @section('content')
 
     <div class="main-content">
-        
+
+
+
+
         <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
             <div class="card-body">
                 <h5 class="card-title">Customer Info</h5>
@@ -29,14 +32,34 @@
             </div>
         </div>
         @yield('breadcrumb')
+        
       
+            
+        
+        
+
+
+
         <div class="container-fluid">
-           <span class="h1"> Invoice N0: {{ $nextgenid }} </span>
+           <span class="h4"> Invoice N0: <span class="h3">{{ $nextgenid }}</span> </span>
+
+        <span class="float-end" style="margin-top: -100px; margin-right:500px;">
+            <a href="{{ route('customerinfos.create') }}" class="btn btn-primary m"> <i class="fa-solid fa-plus"></i> Add New Customer</a>
+            <a href="{{ route('customer.billno') }}" class="btn ms-5" style="background-color: #556B2F; border-color:rgb(29, 3, 3); color: #ffffff;"> <i class="fa-solid fa-eye"></i> Search Invoice</a>
+        </span>
             <form action="{{ route('itemsales.store') }}" method="post">
+
+
+                
+
+               
+
+
+
                 @csrf
                 <div class="py-4 d-flex justify-content-between align-items-start">
-                    <a href="{{ route('customerinfos.create') }}" class="btn btn-primary"> <i class="fa-solid fa-plus"></i> Add New Customer</a>
-                    <div style="width: 300px">
+                    
+                    <div style="width: 400px">
                         <div class="search-box">
                            <input type="text" class="search-input" placeholder="Search Customer"
                                 id="searchCustomerInput" data-api="customer_search" autocomplete="off">
@@ -62,14 +85,10 @@
 
 
                     
-                    
 
 
-            
-     
 
-
-                    <div style="width: 300px" class="">
+                    <div style="width: 300px"   >
                         <select name="invoice_type" class="d-inline form-select select-background" aria-label="Default select example" onchange="changeBackgroundColor(this)">
                             <option value="credit">CREDIT (Invoice Type)</option>
                             <option value="cash" selected>CASH (Invoice Type) </option>
@@ -78,8 +97,7 @@
                     </div>
 
                     
-
-                    <div style="width: 300px">
+                    <div style="width: 300px; " class="">
                         <div class="input-group mb-1">
                             <span class="input-group-text">Date:</span>
                             <input type="date" class="form-control" placeholder="" id="salesDate"
@@ -87,6 +105,7 @@
                         </div>
                         
                     </div>
+                  
                    
 
                 </div>
@@ -95,9 +114,12 @@
                 <table class="invoicetable table-responsive bg-white">
                     <tbody id="invoiceTableBody" style="max-height: none;">
                         <tr>
+                            <th>#</th> <!-- Serial number column -->
+
                             <th>
                                 <a class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></a>
                             </th>
+                            
                             <th style="width: 18%;"> Product</th>
                             <th>Unstocked Name</th>
                             <th>Quantity</th>
@@ -205,6 +227,10 @@ $(document).ready(function () {
     
         // Set the initial background color based on the default selected value
         changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
+
+
+
+
     </script>
     
     <style>

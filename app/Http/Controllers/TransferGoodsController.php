@@ -61,7 +61,7 @@ class TransferGoodsController extends Controller
                 // Check if the itemid exists in the items table
                 $item = item::find($value);
                 if (!$item) {
-                    $fail('The selected itemid is invalid.');
+                    $fail('No Record Found For this itmeid');
                 }
             }
         ],
@@ -69,8 +69,20 @@ class TransferGoodsController extends Controller
             'shiftArea' => 'required',
             'shiftBy' => 'required',
             'notes' => 'nullable',
+            'quantity' => [
+                'required',
+                function ($attribute, $value, $fail) use ($req) {
+                    // Assuming $request->input('itemid') is the itemid you want to reference
+                    $item = item::find($req->input('itemid'));
+
+                    if ($item && $value > $item->quantity) {
+                        $fail("Quantity should be less than or equal to {$item->quantity}");
+                    }
+                }
+            ]
+        ]);
            
-    ]);
+  
 
     if($validator->passes()){
 
@@ -118,13 +130,35 @@ class TransferGoodsController extends Controller
     {
         if(Auth::check()){
         $validator=Validator::make($req->all(),[
-            'itemid' => 'required',
+           'itemid' => 'required',
+        'itemid' => [
+            'required',
+            function ($attribute, $value, $fail) {
+                // Check if the itemid exists in the items table
+                $item = item::find($value);
+                if (!$item) {
+                    $fail('No Record Found For this itmeid');
+                }
+            }
+        ],
             'date' => 'required|date',
             'shiftArea' => 'required',
             'shiftBy' => 'required',
             'notes' => 'nullable',
-               
+            'quantity' => [
+                'required',
+                function ($attribute, $value, $fail) use ($req) {
+                    // Assuming $request->input('itemid') is the itemid you want to reference
+                    $item = item::find($req->input('itemid'));
+                    
+                    if ($item && $value > $item->quantity) {
+                        $fail("Quantity should be less than or equal to {$item->quantity}");
+                    }
+                }
+            ]
         ]);
+               
+      
     
         if($validator->passes()){
     

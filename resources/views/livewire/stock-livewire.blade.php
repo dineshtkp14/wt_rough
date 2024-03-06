@@ -56,14 +56,14 @@
                     <tr>
                         <th>Item Id</th>
                         <th>Items Name</th>
-                        <th class=" bg-danger">Quantity</th>
+                        <th class=" bg-info">Quantity</th>
                        
                         <th>Unit</th>
                         <th>Item Store Area</th>
                         <th>Firm Name</th>
                         <th>MRP</th>
                       
-                        <th >Extra</th>
+                        <th style="width: 200px;" >Extra</th>
                         <th>Show Warning</th>
                         <th>Action</th>
                     </tr>
@@ -76,7 +76,7 @@
                         <td>{{ $i->itemsname }}</td>
                        
                        
-                        <td><button class="btn btn-danger">{{ $i->quantity }} </button></td>
+                        <td><button class="btn btn-info text-white">{{ $i->quantity }} </button></td>
                         
                        
                         <td>{{ $i->unit }}</td>
@@ -85,7 +85,7 @@
                       
 
                         <td>{{ $i->mrp }} &nbsp; &nbsp; <!-- Button trigger modal --></td>
-                        <td><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $i->id }}">Extra</button>
+                        <td style="width: 200px;"><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $i->id }}">Extra</button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal{{ $i->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">

@@ -13,18 +13,23 @@
         @endif
 
 </div>
+<a href="{{ route('itemsales.create') }}" class="btn btn-primary float-end me-5" style="margin-top: -100px; background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-file-invoice"></i> ADD NEW INVOICE</a>
+
 
 
 <div class="container">
-    <div class="row">
+    <span class="thisisforhideandshow">
+
+
+        <div class="row">
         <div class="col-md-3">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">Search ok Invoice</h5>
+                    <h5 class="card-title">SEARCH INVOICE</h5>
                     <form action="{{ route('customer.billno') }}" method="get" id="chosendatepdfform">
                         <div class="mb-3">
-                            <label for="invoiceid" class="form-label">Enter Bill No</label>
-                            <input type="number" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Bill No" required>
+                            <label for="invoiceid" class="form-label">Enter Invoice No</label>
+                            <input type="number" autocomplete="off" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Invoice No" required>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg btn-block" style="width: 100%;">Search</button>
                     </form>
@@ -52,7 +57,7 @@
                         @method('DELETE')
                         <div class="mb-3">
                             <label for="deleteInvoiceId" class="form-label text-danger">Enter Bill No To Delete:</label>
-                            <input type="number" class="form-control @error('invoiceid') is-invalid @enderror" id="deleteInvoiceId" name="invoiceid" value="{{ old('invoiceid') }}" placeholder="Enter Bill No" required>
+                            <input  autocomplete="off" type="number" class="form-control @error('invoiceid') is-invalid @enderror" id="deleteInvoiceId" name="invoiceid" value="{{ old('invoiceid') }}" placeholder="Enter Bill No" required>
                             @error('invoiceid')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -83,7 +88,7 @@
                         @method('put')
                         <div class="mb-3">
                             <label for="updateInvoiceId" class="form-label text-danger">Enter Bill No To Update:</label>
-                            <input type="number" value="{{ old('updateinvoiceid') }}" class="form-control @error('updateinvoiceid') is-invalid @enderror" id="updateInvoiceId" name="updateinvoiceid" value="{{ old('updateinvoiceid') }}" placeholder="Enter Bill No" required>
+                            <input autocomplete="off" type="number" value="{{ old('updateinvoiceid') }}" class="form-control @error('updateinvoiceid') is-invalid @enderror" id="updateInvoiceId" name="updateinvoiceid" value="{{ old('updateinvoiceid') }}" placeholder="Enter Bill No" required>
                             @error('updateinvoiceid')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -107,6 +112,7 @@
         </div>
 
 
+
 {{-- //updatecustomername --}}
 <div class="col-md-3">
     <div class="card mb-3">
@@ -128,7 +134,7 @@
                 @method('put')
                 <div class="mb-3">
                     <label for="Bill_No" class="form-label text-danger">Enter Bill No To Update:</label>
-                    <input type="number" value="{{ old('Bill_No') }}" class="form-control @error('Bill_No') is-invalid @enderror" id="Bill_No" name="Bill_No" value="{{ old('Bill_No') }}" placeholder="Enter Bill No" required>
+                    <input autocomplete="off" type="number" value="{{ old('Bill_No') }}" class="form-control @error('Bill_No') is-invalid @enderror" id="Bill_No" name="Bill_No" value="{{ old('Bill_No') }}" placeholder="Enter Bill No" required>
                     @error('Bill_No')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -136,7 +142,7 @@
 
                 <div class="mb-3">
                     
-                    <label for="invoiceType" class="form-label text-danger">Select Invoice Type:</label>
+                    <label for="invoiceType" class="form-label text-danger">Select Customer Name:</label>
                     <div style="width: 300px">
                         <div class="search-box">
                             <input id="customerIdInput" name="customerid" hidden  >
@@ -175,7 +181,7 @@
     </div>
 </div>
 
-
+</span>
        
           
 
@@ -234,7 +240,7 @@
     </div>
     
  </span>
-        Invoice Id: {{$invoiceid}} <br>
+       <b> Invoice Id: <span class=" bg-dark px-3 text-white">{{$invoiceid}} </span></b> <br>
         @if ($allinvoices !=null)
             @foreach($allinvoices as $i)
                 Customer Id: {{$i->customerid}} <br>
@@ -248,8 +254,9 @@
      <table>
         <thead>
             <tr>
+                <th>S.N.</th>
                 <th>ITEM Name</th>
-                <th>Original Price</th>
+                <th>MRP</th>
                
                 <th>Quantity</th>
                 <th>Unit</th>
@@ -260,15 +267,16 @@
             </tr>
         </thead>
         <tbody>
+            @php $serialNo = 1; @endphp
             @if ($allcusbyid != null)
                 @foreach($allcusbyid as $i)
                     <tr>
+                        <td>{{ $serialNo++ }}</td>
                         <td>{{$i->itemid}}</td>
-                       
-                        <td>{{$i->price}}</td>
+                        <td>{{$i->mrp}}</td>
                         <td>{{$i->quantity}}</td>
                         <td>{{$i->unit}}</td>
-                        <td>{{$i->mrp}}</td>
+                        <td>{{$i->price}}</td>
                         
                         <td>{{$i->subtotal}}</td>
                     </tr>
@@ -282,18 +290,18 @@
             @if ($allinvoices != null)
                 @foreach($allinvoices as $i)
                     <tr>
-                        <td colspan="4"></td>
+                        <td colspan="5"></td>
                         <td class="text-right"><b>Sub-Total:</b></td>
                         <td><b>{{$i->subtotal}}</b></td>
                     </tr>
                     <tr>
-                        <td colspan="4"></td>
+                        <td colspan="5"></td>
                         <td class="text-right"><b>Extra Discount:</b></td>
                         <td><b>{{$i->discount}}</b></td>
                     </tr>
                     <tr>
                         
-                        <td colspan="4">
+                        <td colspan="5">
 
 
                             @php
@@ -444,6 +452,9 @@ function openPdfInNewTab(event, url) {
         var newTab = window.open(url, '_blank');
         newTab.focus();
     }
+
+
+    
     </script>
 </div>
 @stop

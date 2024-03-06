@@ -43,20 +43,24 @@
 <div class="container">
 
 
-<form class="row gx-5 gy-3" action="{{ route('items.store') }}" method="post">
+<form class="row gx-5 gy-3" action="{{ route('items.store') }}" method="post" style="margin-top:-150px;">
                 @csrf
 
-               
-                
-               
+                <div class="col-md-6 float-end"></div>
+                <div class="col-md-6 float-end">
+                    <label for="inputPassword4" class="form-label">Date</label>
+                    <input type="date" class="form-control @error('date') is-invalid @enderror" 
+                        name="date" value="{{now()->format('Y-m-d')}}" id="">
+                    @error('date')
+                        <p class="invalid-feedback">{{ $message }}</p>
+                    @enderror
+                </div> 
+
+                <div class="col-md-12">-</div>
+
+
             <div class="col-md-6">
-                {{-- <label for="inputPassword4" class="form-label">Distributor Name</label>
-                <input type="text" class="form-control @error('disname') is-invalid @enderror" 
-                    name="disname" value="{{ old('disname') }}">
-                @error('disname')
-                    <p class="invalid-feedback">{{ $message }}</p>
-                @enderror --}}
-                
+               
                  <div class="search-box">
                             <input id="customerIdInput" name="companyid" hidden>
                             <input type="text"  class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name"
@@ -85,19 +89,12 @@
                         </div>
         </div>
 
-        <div class="col-md-6">
-            <label for="inputPassword4" class="form-label">Date</label>
-            <input type="date" class="form-control @error('date') is-invalid @enderror" 
-                name="date" value="{{now()->format('Y-m-d')}}" id="">
-            @error('date')
-                <p class="invalid-feedback">{{ $message }}</p>
-            @enderror
-    </div>  
+        
            
 
 
         <div class="col-md-6">
-            <label for="inputPassword4" class="form-label">Firm Name (CHOOSE FIRM)</label>
+            <label for="inputPassword4" class="form-label">My Firm Name (CHOOSE FIRM)</label>
             <select class="form-select @error('firm_name') is-invalid @enderror" name="firm_name" id="firm_name" stye="border-color: red;">
                 @foreach($all as $firm)
                 <option value="{{ $firm->nick_name }}">{{ $firm->firm_name }}</option>
@@ -180,7 +177,17 @@
                 @error('mrp')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
-        </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Iteam Store Area</label>
+                <input type="text" class="form-control @error('itemstorearea') is-invalid @enderror" 
+                    name="itemstorearea" value="{{ old('itemstorearea') }}">
+                @error('itemstorearea')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+            </div>
 
         <div class="col-md-12">
             <label for="inputPassword4" class="form-label">Notes</label>
@@ -218,14 +225,7 @@
         @enderror
 </div>
 
-<div class="col-md-6">
-    <label for="inputPassword4" class="form-label">Iteam Store Area</label>
-    <input type="text" class="form-control @error('itemstorearea') is-invalid @enderror" 
-        name="itemstorearea" value="{{ old('itemstorearea') }}">
-    @error('itemstorearea')
-        <p class="invalid-feedback">{{ $message }}</p>
-    @enderror
-</div>
+
 
            
             
