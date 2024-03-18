@@ -2,19 +2,20 @@
    
 
 
-    <button wire:click="generatePDF">Generate PDF</button>
 
+    <button class="button float-end btn btn-success" wire:click="generatePDF">
+        <i class="fas fa-file-pdf icon"></i> DOWNLOAD PDF
+      </button>
     <form wire:submit.prevent="filterByFirm">
         <div class="row">
             <div class="col-md-5">
                 <div style="display: flex; align-items: center;">
-                    <span>CHOOSE FIRM Name</span>
+                    <span style="white-space: nowrap; " class="me-3">CHOOSE FIRM Name : </span>
                     <select wire:model="firm_name" class="form-select @error('firm_name') is-invalid @enderror" id="firm_name" style="border-color: red;">
                         <option value="">Select Firm</option>
-                        <option value="Durga">Durga And Dinesh Traders</option>
-                        <option value="Malika">Malika & Nav Durga Traders</option>
-                        <option value="OmHari">Om Hari Tradelink</option>
-                        <option value="Bajgain_Supp">Bajgain Suppliers</option>
+                        @foreach($allfirmlist as $firm)
+                        <option value="{{ $firm->nick_name }}">{{ $firm->firm_name }}</option>
+                    @endforeach
                     </select>
                 </div>
                 @error('firm_name')
@@ -64,7 +65,7 @@
                         <th>Items Name</th>
                         <th>Opening Stock</th>
                         <th>Balance(I+O)</th>
-                        <th class=" bg-danger">Quantity (IN) org</th>
+                        <th class=" bg-dark">Quantity (IN) org</th>
                         <th>Check (in)</th>
                         <th>Out</th>
                         <th>Unit</th>
@@ -93,7 +94,7 @@
                         <td>{{ ($i->opening_stock - ($sellsquantity_out[$i->id] ?? 0)) + ($sellsquantity_out[$i->id] ?? 0) }}</td>
 
                        
-                        <td><button class="btn btn-danger">{{ $i->quantity }} </button></td>
+                        <td><button class="btn btn-dark">{{ $i->quantity }} </button></td>
                         
                         <td>{{ $i->opening_stock-$sellsquantity_out[$i->id] ?? '' }}</td>
                         <td>{{ $sellsquantity_out[$i->id] ?? '' }}</td>
@@ -112,14 +113,16 @@
 
                         <td>{{ $i->showwarning }}</td>
                         <td>
-                            @if ($i->quantity <= $i->showwarning  and $i->quantity >= 1)
+                            @if ($i->quantity <= $i->showwarning  and $i->quantity > 0)
                             <div class="span-box">
                                 <span class="btn btn-warning">warning</span>
                             </div>
-                            @elseif($i->quantity == 0)
+                            @elseif($i->quantity <= 0)
                             <div class="span-box">
                                 <span class="btn btn-danger">outofstock</span>
-                                
+                                @if($i->quantity < 0)
+                                <span class="btn btn-primary">Data in Minus</span>
+                                @endif
                             </div>
                             @elseif($i->quantity < 0)
                             <div class="span-box">

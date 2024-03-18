@@ -27,7 +27,7 @@ class TrackcreditnotesLivewire extends Component
             
         }
 
-       $trackcn =$trackcn->paginate(5);
+       $trackcn =$trackcn->paginate(50);
 
         return view('livewire.trackcreditnotes-livewire', [
              'all' =>$trackcn,

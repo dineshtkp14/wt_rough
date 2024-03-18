@@ -34,7 +34,7 @@ class CreditnotesSalesitemsLivewire extends Component
             // ->orWhere('creditnotes_salesitems.discount', 'like', '%' . $this->searchTerm . '%')
             ->orWhere('creditnotes_salesitems.subtotal', 'like', '%' . $this->searchTerm . '%')
             ->orderBy('creditnotes_salesitems.id', 'DESC')
-            ->paginate(20);
+            ->paginate(50);
 
             foreach ($cus as $data) {
                 if ($data->itemid) {

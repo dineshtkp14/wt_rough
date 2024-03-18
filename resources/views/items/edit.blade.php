@@ -144,6 +144,15 @@
             </div>
 
             <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Unit(PCS/kg/etc)</label>
+                <input type="unit" class="form-control @error('unit') is-invalid @enderror" 
+                    name="unit" value="{{ old('unit',$item->unit) }}">
+                @error('unit')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+        </div>
+
+            <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Show Stock Warning</label>
                 <input type="showwarning" class="form-control @error('showwarning') is-invalid @enderror" 
                     name="showwarning" value="{{ old('showwarning',$item->showwarning) }}">

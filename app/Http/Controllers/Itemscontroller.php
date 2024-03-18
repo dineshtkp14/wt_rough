@@ -173,6 +173,8 @@ public function update($id, Request $req)
             'costprice' => 'required',
             'quantity' => 'required',
             'mrp' => 'required',
+            'unit' => 'required',
+            'itemstorearea' => 'required',
         ]);
 
         if ($validator->passes()) {

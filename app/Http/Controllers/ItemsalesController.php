@@ -57,7 +57,7 @@ class ItemsalesController extends Controller
     public function store(Request $req)
     {
         if(Auth::check()){
-
+           
         $sales_arr = json_decode($req->sales_arr); //rowdetails
         $final_arr = json_decode($req->final_arr); //finaltotalinvoice
         // invoice insert
@@ -85,7 +85,10 @@ class ItemsalesController extends Controller
             $data->itemid = $value->product == "" ? null : $value->product;
 
             $data->unstockedname = $value->unstocked;
+            $data->date = $req->date;
+
             $data->quantity = $value->quantity;
+            $data->unit = $value->unit;
 
             if ($data->itemid) {
               
@@ -116,7 +119,7 @@ class ItemsalesController extends Controller
         $cus_data->save();
         
 
-        return redirect()->route('customer.billno', ['invoiceid' => $invoice_data->id])->with('success', 'Invoice Created Successfully !!');
+        return redirect()->route('onlyviewbillafterbill', ['invoiceid' => $invoice_data->id])->with('success', 'Invoice Created Successfully !!');
                                 
        
 
@@ -163,6 +166,8 @@ class ItemsalesController extends Controller
              $item->unstockedname = $req->unstockedname;
              $item->quantity = $req->quantity;
              $item->price = $req->price;
+             $data->unit = $value->unit;
+
             //  $item->discount = $req->discount;
              $item->subtotal = $req->subtotal;
              // Update other fields as needed

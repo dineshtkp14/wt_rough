@@ -13,4 +13,9 @@ class customerledgerdetails extends Model
     {
         return $this->belongsTo(customerinfo::class, 'customerid', 'id');
     }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customerinfo::class, 'customerid');
+    }
 }

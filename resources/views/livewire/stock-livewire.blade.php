@@ -1,13 +1,16 @@
-<div class="container">
+<div class="container" style="">
    
 
-
+    <button wire:click="generatePDF" class="float-end btn btn-primary">
+        <i class="fas fa-file-pdf"></i> DOWNLOAD PDF
+    </button>
+    
 
     <form wire:submit.prevent="filterByFirm">
         <div class="row">
             <div class="col-md-5">
                 <div style="display: flex; align-items: center;">
-                    <span>CHOOSE FIRM Name</span>
+                    <span style="white-space: nowrap; " class="me-3">CHOOSE FIRM Name : </span>
                     <select wire:model="firm_name" class="form-select @error('firm_name') is-invalid @enderror" id="firm_name" style="border-color: red;">
                         <option value="">Select Firm</option>
                         @foreach($allfirmlist as $firm)
@@ -36,7 +39,7 @@
                     <p class="text-success">Total Number of Stock Items: <span class="h4 text-primary">{{ $cou }}</span></p>
                 </div>
                 <div class="col-3">
-                    <p class="text-success">Total out Of Stock Items <span class="text-danger"><b>(OUT)</b></span>: <span class="h4 text-primary">{{ $x }}</span></p>
+                    <p class="text-success">Total out Of Stock Items <span class="text-danger"><b>(OUT)</b></span>: <span class="h4 text-primary">{{ $totalnofoutofstock }}</span></p>
                 </div>
                 <div class="col-3">
                     <p class="text-success">Total Warning Items <span class="text-danger"><b>(WAR)</b></span>: <span class="h4 text-primary">{{ $war }}</span></p>
@@ -54,29 +57,36 @@
                 
                 <thead>
                     <tr>
+                        <th>S.N</th> <!-- Updated this line -->
+
                         <th>Item Id</th>
                         <th>Items Name</th>
-                        <th class=" bg-info">Quantity</th>
+                        <th class=" bg-dark">Quantity</th>
                        
                         <th>Unit</th>
                         <th>Item Store Area</th>
                         <th>Firm Name</th>
                         <th>MRP</th>
-                      
                         <th style="width: 200px;" >Extra</th>
                         <th>Show Warning</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                            $sn = ($all->currentPage() - 1) * $all->perPage() + 1;
+
+                        @endphp
+
                     @if ($all->count())
                     @foreach ($all as $i)
                     <tr>
+                        <td>{{ $sn++ }}</td>
                         <td>{{ $i->id }}</td>
                         <td>{{ $i->itemsname }}</td>
                        
                        
-                        <td><button class="btn btn-info text-white">{{ $i->quantity }} </button></td>
+                        <td><button class="btn btn-dark text-white">{{ $i->quantity }} </button></td>
                         
                        
                         <td>{{ $i->unit }}</td>
@@ -166,13 +176,16 @@
 
                         <td>{{ $i->showwarning }}</td>
                         <td>
-                            @if ($i->quantity <= $i->showwarning  and $i->quantity >= 1)
+                            @if ($i->quantity <= $i->showwarning  and $i->quantity  > 0)
                             <div class="span-box">
                                 <span class="btn btn-warning">warning</span>
                             </div>
-                            @elseif($i->quantity == 0)
+                            @elseif($i->quantity <= 0)
                             <div class="span-box">
                                 <span class="btn btn-danger">outofstock</span>
+                                @if($i->quantity < 0)
+                                <span class="btn btn-primary">Data in Minus</span>
+                                @endif
                                 <form id="removeForm{{ $i->id }}" action="{{ route('stocks.updateofs') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="item_id" value="{{ $i->id }}">

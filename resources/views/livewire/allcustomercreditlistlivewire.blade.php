@@ -1,61 +1,79 @@
-@php
-                $totalNegativeDebitCreditDifference = $all->filter(function($item) {
-                    return $item->debit_credit_difference < 0;
-                })->sum('debit_credit_difference');
- @endphp
-            
 <div class="container">
+    <button class="button mb-2 btn btn-primary" wire:click="generateallcustomerPDF">
+        <i class="fas fa-file-pdf icon"></i> DOWNLOAD PDF
+    </button>
+
+    <span> 
+        @if (!$all->isEmpty())
+    <!-- Content to display when $all is not empty -->
+    <!-- For example, you can display the count of items -->
+    Total Credit Customer No: {{ $all->count() }}
+@else
+    <!-- Content to display when $all is empty -->
+    No items found.
+@endif
+    </span>
 
     <div class="card">
         <div class="card-header">
             <a href="{{ route('companys.create') }}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
-            Total Credit of all Customer: <span class="h3"><b>{{ $totalDebitCreditDifference }}</b></span>
+            <span class="me-5 fw-bold">Total Credit: <span class="h2 text-success">{{$totalDebitCreditDifferencewhole}} </span> </span>
+
+            Total Credit of This Page: <span class="h5"><b>{{ $totalDebitCreditDifference  }}</b></span><i class="fas fa-arrow-down"></i>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Advance Payment: <span class="h3"><b>{{ $totalNegativeDebitCreditDifference }}</b></span>
-
-
-
-            <input type="text" class="form-control float-end border-warning border border-5" placeholder="Search By Name" style="width: 250px;" wire:model="searchTerm">
             
             <!-- Filter dropdown for sorting -->
             <select class="form-select float-end border-warning border border-5" style="width: 150px;" wire:model="sortBy">
                 <option value="">Sort By</option>
                 <option value="asc">Low to High</option>
-                <option value="desc">High to Low</option>  
+                <option value="desc">High to Low</option> 
+                <option value="date_asc">Oldest First</option>
+                <option value="date_desc">Newest First</option> 
             </select>
         </div>
         <div class="card-body">
             <table>
                 <thead> 
                     <tr>
+                        <th>S.N</th>
                         <th>Customer Id</th>
                         <th>Customer Name</th>
                         <th>Total Due Amount</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tbody>
-                        @if (!$all->isEmpty())
-                            @foreach ($all as $i)
-                                @if ($i->debit_credit_difference != 0)
-                                    <tr>
-                                        <td data-label="Customer Id"><b>{{ $i->customerid }}</b></td>
-                                        <td data-label="Customer Id"><b>{{ $i->cname }}</b>  &nbsp; ({{ $i->cphoneno }})</td>
-                                        <td data-label="Invoice Id"><b>{{ $i->debit_credit_difference }}</b></td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="3"><h3>No Record Found !!!!</h3></td>
-                            </tr>
-                        @endif
-                    </tbody>
-                    
+                    @php
+                        $sn = ($all->currentPage() - 1) * $all->perPage() + 1;
+                    @endphp
+
+                    @if (!$all->isEmpty())
+                        @foreach ($all as $item)
+                            @if ($item->debit_credit_difference != 0)
+                                <tr>
+                                    <td>{{ $sn++ }}</td>
+                                    <td data-label="Customer Id"><b>{{ $item->customerid }}</b></td>
+                                    <td data-label="Customer Name"><b>{{ $item->cname }}</b>  &nbsp; ({{ $item->cphoneno }})</td>
+                                    <td data-label="Total Due Amount"><b>{{ $item->debit_credit_difference }}</b></td>
+                                    <td data-label="Total Due Amount"><b>{{ $item->latest_date  }}</b></td>
+
+                                </tr>
+                            @endif
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="4"><h3>No Record Found !!!!</h3></td>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
         </div>
         <div class="card-footer text-muted">
             {{ $all->links() }}
         </div>
+
+        <button class="button  mb-2 btn btn-primary " wire:click="generateallcustomerPDF">
+            <i class="fas fa-file-pdf icon"></i> DOWNLOAD PDF
+        </button>
     </div>
 </div>

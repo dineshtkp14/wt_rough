@@ -47,7 +47,7 @@
                     <div class="input-group mb-1">
                         <div class="search-box">
                             <input id="customerIdInput" name="customerid" hidden>
-                            <input type="text"  class="search-input @error('customerid') is-invalid @enderror" placeholder="Search Company Name"
+                            <input type="text"  class="search-input @error('customerid') is-invalid @enderror" placeholder="Search Customer Name"
                                 id="searchCustomerInput"  data-api="customer_search" autocomplete="off">
                                 @error('customerid')
                                     <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>

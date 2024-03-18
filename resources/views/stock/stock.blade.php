@@ -15,7 +15,6 @@
                 @endif
 
                 
-        <h1>okoko </h1>
         @if (Session::has('error'))
                 <div class="alert alert-danger w-50">
                 {{ Session::get('error') }}

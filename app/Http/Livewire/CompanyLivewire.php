@@ -27,7 +27,7 @@ class CompanyLivewire extends Component
             
         }
 
-       $cus =$cus->paginate(10);
+       $cus =$cus->paginate(50);
 
         return view('livewire.company-livewire', [ 'all' =>$cus, ]);
 }

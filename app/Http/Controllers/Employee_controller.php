@@ -71,7 +71,7 @@ class Employee_controller extends Controller
         }
         else{
           
-            dd("failed");
+          
 
             return redirect()->route('employees.index')->withErrors($validator)->withInput();
     

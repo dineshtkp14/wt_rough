@@ -18,15 +18,18 @@
             padding: 20px;
             background-color: white;
         }
+        p{
+            font-size: 16px !important;;
+        }
         .letterhead {
-            background-color: black;
-            color: white;
+            /* background-color: black; */
+            color: black;
             padding: 20px;
             text-align: center;
         }
         .letterhead h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 30px;
             text-decoration: underline;
         }
         .address-info {
@@ -103,6 +106,8 @@
                                 <p>Email: {{$i->email}}</p>
                                 <p>Contact No: {{$i->phoneno}}</p>
                             @endforeach
+
+                          
                         @endif
 
                         <p>Invoice Id: {{$invoiceid}}</p>
@@ -120,8 +125,8 @@
         <thead>
             <tr>
                 <th>Serial No.</th>
+                <th>ITEM ID</th>
                 <th>ITEM Name</th>
-                {{-- <th>Original Price</th> --}}
               
                 <th>Quantity</th>
                 <th>Unit</th>
@@ -135,8 +140,9 @@
                 @foreach($allcusbyid as $i)
                     <tr>
                         <td>{{ $serialNo++ }}</td>
+                        <td>{{$i->itemidorg}}</td>
+                        
                         <td>{{$i->itemid}}</td>
-                        {{-- <td>{{$i->mrp}}</td> --}}
                        
                         <td>{{$i->quantity}}</td>
                         <td>{{$i->unit}}</td>
@@ -149,18 +155,18 @@
             @if ($allinvoices != null)
                 @foreach($allinvoices as $i)
                     <tr>
-                        <td colspan="4"></td>
+                        <td colspan="5"></td>
                         <td class="text-right"><b>Sub-Total:</b></td>
                         <td><b>{{$i->subtotal}}</b></td>
                     </tr>
                     <tr>
-                        <td colspan="4"></td>
+                        <td colspan="5"></td>
                         <td class="text-right"><b>Extra Discount:</b></td>
                         <td><b>{{$i->discount}}</b></td>
                     </tr>
                     <tr>
                         
-                        <td colspan="4" class="">Amount in Words: 
+                        <td colspan="5" class="">Amount in Words: 
                         @php
                             function convertNumberToWords($num) {
                                 $ones = array(
@@ -225,7 +231,7 @@
                     </tr>
                     
                     <tr>
-                        <td colspan="6" class="notes"><b>Notes:</b> {{$i->notes}}</td>
+                        <td colspan="7" class="notes"><b>Notes:</b> {{$i->notes}}</td>
                     </tr>
                 @endforeach
 
@@ -238,7 +244,7 @@
     <br>@if ($allinvoices !=null)
     @foreach($allinvoices as $i)
       
-      Bill Created_by: {{$i->added_by}}
+      <p>Bill Created_by: {{$i->added_by}} </p>
     @endforeach
 @endif
     <p style="margin-top: 20px; font-size: 14px; text-align: center;">Notes:  Goods once sold won't be returned</p>

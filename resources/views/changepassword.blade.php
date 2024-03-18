@@ -11,12 +11,12 @@
     <div class="container-fluid">
 
 
-            <div class="container mt-5 ">
+            <div class="container ">
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <div class="card">
+                    <div class="card border border-5 border-primary">
                         <div class="card-header text-center ">
-                            <h3>{{ __('Change Password') }}</h3>
+                           
                         </div>
 
                         <form action="{{ route('update-password') }}" method="POST">

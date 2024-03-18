@@ -37,7 +37,7 @@ class Allsalesdetailslivewire extends Component
         }
     
         // Get the results after applying the conditions
-        $results = $cus->paginate(20);
+        $results = $cus->paginate(50);
     
         // Iterate over the results and fetch related data
         foreach ($results as $data) {

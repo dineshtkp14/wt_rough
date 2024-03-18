@@ -102,6 +102,28 @@
 
                     </div>
 
+                    
+                    <div class="col">
+                        <table class="table h5">
+                            <thead>
+                                <tr>
+                                    <th>Date (Payment)</th>
+                                    <th>Total Cash only </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($payment as $pay)
+                                <tr @if(now()->format('Y-m-d') == $pay->date) style="color: red; font-weight: bold;" @endif>
+                                    <td>{{ $pay->date }}</td>
+                                    <td>{{ $pay->total }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        {{ $salesPerDaycrnotes->links() }}
+
+                    </div>
+
                 </div>
             </div>
             {{-- <div class="card-footer text-muted">

@@ -45,6 +45,7 @@
 </head>
 
 <body>
+   
 
     <main class="side-nav d-flex flex-nowrap">
         <h1 class="visually-hidden">Sidebars </h1>
@@ -65,6 +66,9 @@
                 style="border-bottom:1px solid #e5e7eb7e;">
                 {{-- <img src="{{ asset('assets/images/logo.png') }}" class="logo-img" alt="logo" style="height: ;"> --}}
             </a>
+
+        @if(Auth::user()->email == 'dineshtkp14@gmail.com')
+     
             <ul class="list-unstyled ps-0">
 
                 <li class="mb-1 border border-success border-5 
@@ -183,10 +187,7 @@
                                         class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
                                    Track Items</a></li>
 
-                                   {{-- <li><a href="{{ route('transfergoods.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                   Track Transfer Goods</a></li> --}}
+                                 
 
                         </ul>
                     </div>
@@ -326,7 +327,7 @@
                                     class="fa-solid fa-money-check-dollar px-2  d-flex justify-content-center align-items-center"></i>
                                VIEW COMPANY LEDGER</a></li>
 
-                               <li><a href="{{route('companyLedgers.create') }}"
+                               <li><a href="{{route('companyLedgerspay.create') }}"
                                 class="link-dark d-inline-flex text-decoration-none rounded"><i
                                     class="fa-solid fa-money-check-dollar px-2  d-flex justify-content-center align-items-center"></i>
                                COMPANY PAYMENENT</a></li>
@@ -383,25 +384,7 @@
                     </div>
                 </li>
 
-                {{-- <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#price-collapse" aria-expanded="false">
-                        <i class="fas fa-list-alt"></i> Price List
-                    </button>
-                    <div class="collapse" id="price-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('pricelists.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>Add
-                                    Items Price List </a></li>
-                            <li><a href="{{ route('pricelists.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
-                                    Items Price List</a></li>
-
-                        </ul>
-                    </div>
-                </li> --}}
+               
 
                 <li class="mb-1 border border-success border-5">
                   <a href="{{ route('employees.index') }}">  <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
@@ -442,11 +425,42 @@
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
                                    VIEW STOCK </a></li>
+
+                                   <li><a href="{{ route('adminstocks.index') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
+                                   VIEW ADMIN STOCK </a></li>
                             
 
                         </ul>
                     </div>
                 </li>
+
+                <li class="mb-1 border border-success border-5">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#expenses" aria-expanded="false">
+                        <i class="fas fa-cubes"></i> Expenses
+                    </button>
+                    <div class="collapse" id="expenses">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><a href="{{ route('expenses.create') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
+                                   ADD EXPENSES </a></li>
+
+
+
+                                   <li><a href="{{ route('expenses.index') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
+                                   VIEW EXPENSES </a></li>
+                            
+
+                        </ul>
+                    </div>
+                </li>
+
+
                 <li style="border-bottom:1px solid #e5e7eb7e;"></li>
                 <li class="mb-1 border border-success border-5">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
@@ -470,15 +484,62 @@
                     </div>
                 </li>
             </ul>
-        </div>
         
-        <div class="game-wrapper d-none">
-            <div class="game-modal" id="gameModal">
-            </div>
-        </div>
+        
+        {{-- foruseronlynav --}}
 
+        @else
+
+        <ul class="list-unstyled ps-0">
+           
+        
+            <li class="mb-1 border border-success border-5">
+                <a href="{{ route('itemsales.create') }}" style="text-decoration:none;" class="text-white">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
+                        <i class="fas fa-file-invoice"></i> INVOICE
+                    </button>
+                </a>
+            </li>
+
+            <li class="mb-1 border border-success border-5">
+                <a href="{{ route('userdash') }}" style="text-decoration:none;" class="text-white">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
+                        <i class="fas fa-file-plus"></i> DashBoard
+                    </button>
+                </a>
+            </li>
+
+
+                                   
+
+                    </ul>
+                </div>
+            </li>
+
+
+        </ul>
+        
+
+        @endif
+
+        
+        
+        
+        
+        
+        
+        
+        
+        </div>
     </main>
 
+
+
+
+
+    
     @yield('content')
     <script>
         $(document).ready(function() {
@@ -525,6 +586,15 @@
 
     <script>
         var ITEMS_DATA = @json($items_data);
+
+
+        //forsidenavbarcollpse
+        $(document).ready(function() {
+            // Toggle side nav bar when button is clicked
+            $('#toggleSidebarBtn').click(function() {
+                $('.side-nav').toggleClass('collapsed');
+            });
+        });
     </script>
 
     <script src="{{ asset('assets/js/script.js') }}"></script>

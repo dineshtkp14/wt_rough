@@ -25,7 +25,7 @@ class TrackinvoiceLivewire extends Component
             
         }
 
-       $trackinvoice =$trackinvoice->paginate(5);
+       $trackinvoice =$trackinvoice->paginate(50);
 
         return view('livewire.trackinvoice-livewire', [
              'all' =>$trackinvoice,

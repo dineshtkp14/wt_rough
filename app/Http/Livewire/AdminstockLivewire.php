@@ -8,6 +8,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\salesitem;
 use App\Models\company;
+use App\Models\myfirm;
+
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 
@@ -35,14 +37,14 @@ class AdminstockLivewire extends Component
             $searchTerm = strtolower(trim($this->searchTerm));
         
             if ($searchTerm === 'out') {
-                $query->where('quantity', 0);
+                $query->where('quantity', '<=', 0);
             } elseif ($searchTerm === 'ava') {
                 $query->where('quantity', '>', 0);
             } elseif ($searchTerm === 'minus') {
                 $query->where('quantity', '<', 0);
             } elseif ($searchTerm === 'war') {
-                $query->where('quantity', '>=', 1)
-                      ->where('quantity', '<=', DB::raw('showwarning'));
+                $query->where('quantity', '>', 0)
+          ->whereRaw('quantity <= showwarning');
             } 
             else {
                 $query->where(function ($subquery) use ($searchTerm) {
@@ -100,12 +102,17 @@ class AdminstockLivewire extends Component
             ->where('check_remove_ofs', 0)
             ->count();
 
+              //forselctfirmname
+              $allfirmlist=Myfirm::orderBy('id','DESC')->get();
+
+
         return view('livewire.adminstock-livewire', [
             'all' => $all,
             'cou' => $count,
             'x' => $couout,
             'war' => $warning,
             'sellsquantity_out' => $sellsquantity,
+            'allfirmlist' => $allfirmlist,
         ]);
     }
 

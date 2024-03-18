@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
           
             $table->bigInteger('customerid');
-            $table->bigInteger('invoiceid');
+            $table->bigInteger('invoiceid')->nullable();
             $table->string('particulars');
             $table->string('voucher_type');
             $table->date('date');

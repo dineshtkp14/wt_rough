@@ -30,11 +30,13 @@ class ItemSaleslivewire extends Component
             ->orWhere('salesitems.unstockedname', 'like', '%' . $this->searchTerm . '%')
             ->orWhere('salesitems.quantity', 'like', '%' . $this->searchTerm . '%')
             ->orWhere('salesitems.invoiceid', 'like', '%' . $this->searchTerm . '%')
+            ->orWhere('salesitems.date', 'like', '%' . $this->searchTerm . '%')
+
             ->orWhere('salesitems.price', 'like', '%' . $this->searchTerm . '%')
             // ->orWhere('salesitems.discount', 'like', '%' . $this->searchTerm . '%')
             ->orWhere('salesitems.subtotal', 'like', '%' . $this->searchTerm . '%')
             ->orderBy('salesitems.id', 'DESC')
-            ->paginate(20);
+            ->paginate(50);
 
             foreach ($cus as $data) {
                 if ($data->itemid) {

@@ -105,9 +105,9 @@
             </div>
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Bill No</label>
-                    <input type="text" class="form-control @error('vt') is-invalid @enderror" 
-                        name="vt" value="{{ old('vt') }}">
-                    @error('vt')
+                    <input type="text" class="form-control @error('voucherno') is-invalid @enderror" 
+                        name="voucherno" value="{{ old('voucherno') }}">
+                    @error('voucherno')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>

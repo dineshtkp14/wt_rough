@@ -86,9 +86,16 @@ body {
     overflow-y: auto;
 }
 
+.mainbreadcrumb {
+    text-transform: uppercase !important;
+}
 .result-wrapper.modal-result-wrapper {
     position: relative;
     top: 0;
+}
+
+th {
+    text-transform: uppercase;
 }
 
 .result-box {

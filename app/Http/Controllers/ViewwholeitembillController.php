@@ -28,7 +28,8 @@ class ViewwholeitembillController extends Controller
 
     // Fetch the company name based on the company ID
     $companyName = company::where('id', $companyId)->value('name');
-                        
+    $companyall = company::where('id', $req->companyid)->orderBy('id', 'DESC')->get();
+              
             // Check if items exist for the provided bill number and company name
             $items = item::where('billno',$req->billno ) ->where('companyid', $req->companyid) ->get();
            
@@ -40,7 +41,9 @@ class ViewwholeitembillController extends Controller
                 'billNo' => $billNo,
                 'companyName' => $companyName,
                 'totalSum' => $totalSum,
-                'companyid' => $req->companyid
+                'companyid' => $req->companyid,
+                'companyall' => $companyall,
+
             ]);
     }
 

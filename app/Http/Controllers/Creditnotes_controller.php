@@ -44,10 +44,14 @@ class Creditnotes_controller extends Controller
 }  
 
 
+  
+
 
     public function create()
     {
-        if(Auth::check()){
+        
+        $enableQuantityInput = true; // or false based on your conditions
+
         $breadcrumb= [
             'subtitle'=>'Create Credit Notes / Sales Return',
             'title'=>'Credit Notes Invoice / Sales Return',
@@ -60,10 +64,10 @@ class Creditnotes_controller extends Controller
         $nextUserId = $statement[0]->Auto_increment;
 
         $itemsdata = item::all();
-        return view('creditnote.create', ['page' => 'isc', 'all' => $cus, 'data' => $itemsdata,'nextgenid' => $nextUserId,'breadcrumb'=>$breadcrumb]);
-    }
+        return view('creditnote.create', ['page' => 'isc', 'all' => $cus, 'data' => $itemsdata,'nextgenid' => $nextUserId,'breadcrumb'=>$breadcrumb,'enableQuantityInput' => $enableQuantityInput,]);
+    
 
-    return redirect('/login');
+   
  }
     public function store(Request $req)
     {
@@ -94,6 +98,9 @@ class Creditnotes_controller extends Controller
             $data = new CreditnotesSalesitem();
             $data->invoiceid = $invoice_data->id;
             $data->itemid = $value->product == "" ? null : $value->product;
+            $data->date = $req->date;
+            $data->unit = $value->unit;
+
 
             $data->unstockedname = $value->unstocked;
             $data->quantity = $value->quantity;
@@ -239,8 +246,10 @@ class Creditnotes_controller extends Controller
                 $forinvoicetype = $cusleddetaiforinvoicetype->first();           
             
                 foreach ($allcusbyid as $data) {
-                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
+                    $item = item::where('id', $data->itemid)->select('id','itemsname', 'mrp','unit')->first();
                     if ($item) {
+                        $data->itemidorg = $item->id;
+
                         $data->itemid = $item->itemsname;
                         $data->mrp = $item->mrp;
                         $data->unit = $item->unit;
@@ -292,8 +301,10 @@ public function PDF_returnBillsDEtailsByInvoiceidforviewingcreditnotebill(Reques
     $forinvoicetype = $cusleddetaiforinvoicetype->first();           
 
     foreach ($allcusbyid as $data) {
-        $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
+        $item = item::where('id', $data->itemid)->select('id','itemsname', 'mrp','unit')->first();
         if ($item) {
+            $data->itemidorg = $item->id;
+
             $data->itemid = $item->itemsname;
             $data->mrp = $item->mrp;
             $data->unit = $item->unit;
@@ -363,8 +374,9 @@ public function returndeletedcnBillsDEtailsByInvoiceid(Request $req)
     $forinvoicetype = $cusleddetaiforinvoicetype->first();           
 
     foreach ($allcusbyid as $data) {
-        $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
+        $item = item::where('id', $data->itemid)->select('id','itemsname', 'mrp','unit')->first();
         if ($item) {
+            $data->itemidorg=$item->id;
             $data->itemid = $item->itemsname;
             $data->mrp = $item->mrp;
             $data->unit = $item->unit;
@@ -417,6 +429,8 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
             $backupSalesItem->unstockedname = $item->unstockedname;
             $backupSalesItem->quantity = $item->quantity;
             $backupSalesItem->price = $item->price;
+            $backupSalesItem->unit = $item->unit;
+
             // $backupSalesItem->discount = $item->discount;
             $backupSalesItem->subtotal = $item->subtotal;
             $backupSalesItem->added_by = session('user_email');

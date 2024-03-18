@@ -26,7 +26,7 @@ class DeletedinvoiceLivewire extends Component
             ->orWhere('backup_invoices.discount', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('backup_invoices.total', 'like', "%" . $this->searchTerm . "%")
             ->orderBy('backup_invoices.id', 'DESC')
-            ->paginate(10);
+            ->paginate(50);
 
         foreach ($alldata as $data) {
             if ($data->customerid) {

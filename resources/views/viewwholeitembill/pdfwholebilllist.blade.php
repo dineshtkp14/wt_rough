@@ -89,12 +89,12 @@
         <p>Contact No: {{$i->phoneno}}</p>
         @endforeach
         @endif
-        @if ($all !=null)
+        @if ($all !=null && !$all->isEmpty())
             @foreach($all as $i)
-        <p style="float: right;">Date: {{$i->date}}</p>
-
-        
-        @endforeach
+                @if (!$loop->first)
+                    <p style="float: right;">Date: {{ $i->date }}</p>
+                @endif
+            @endforeach
         @endif
     </div>
 
@@ -121,12 +121,6 @@
         </div>
     </div>
 
-    {{-- <div class="col-md-9">
-        <div>
-            <h4>Bill Number: {{ $billNo }}</h4>
-            <h4>Company Name: {{ $companyName }}</h4>
-        </div>
-    </div> --}}
 </div>
 </div>
 

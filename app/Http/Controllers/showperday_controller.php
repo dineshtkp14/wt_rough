@@ -8,10 +8,9 @@ use Session;
 use App\Models\invoice;
 use App\Models\CreditnotesInvoice;
 use App\Models\customerledgerdetails;
-
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
 class showperday_controller extends Controller
 {
     public function showonlysalesperday()
@@ -49,9 +48,17 @@ class showperday_controller extends Controller
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
                 ->paginate(100);
+
+
+                $payment = customerledgerdetails::select(DB::raw('DATE(date) as date'), DB::raw('SUM(credit) as total'))
+                ->where('invoicetype', 'payment')
+                ->groupBy('date')
+                ->orderBy('date', 'DESC')
+                ->paginate(100);
     
+ 
       
-            return view('invoice.perday', ['salesPerDayCredit' => $salesPerDayCredit,'salesPerDayCash' => $salesPerDayCash,'salesPerDay' => $salesPerDay,'salesPerDaycrnotes' => $salesPerDaycr, 'breadcrumb' => $breadcrumb]);
+            return view('invoice.perday', ['salesPerDayCredit' => $salesPerDayCredit,'salesPerDayCash' => $salesPerDayCash,'salesPerDay' => $salesPerDay,'salesPerDaycrnotes' => $salesPerDaycr, 'payment' => $payment,'breadcrumb' => $breadcrumb]);
         }
     
         return redirect('/login');

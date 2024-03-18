@@ -23,6 +23,8 @@ return new class extends Migration
             $table->date('date');
             $table->float('subtotal',20,2);
             $table->timestamps();
+            $table->string('unit')->nullable();
+
             $table->string('added_by')->nullable();
         });
     }

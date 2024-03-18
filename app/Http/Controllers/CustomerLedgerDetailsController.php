@@ -27,12 +27,15 @@ class CustomerLedgerDetailsController extends Controller
             'link'=>'All Customers Payment Histrory'
         ];
         $cus=customerledgerdetails::orderBy('id','DESC')->get(); 
-        foreach($cus as  $data){
+        foreach($cus as $data){
             if($data->customerid){
-                $cus_name=company::where('id',$data->customerid)->select('name')->first();
-                $data->customerid = $cus_name->name;
+                $cus_name = customerinfo::where('id', $data->customerid)->select('name')->first();
+                if ($cus_name) {
+                    $data->customerid = $cus_name->name;
+                } else {
+                    $data->customerid = 'Unknown'; // or any default value
+                }
             }
-
         }
          return view('customerdetails.list',['all'=>$cus,'breadcrumb'=>$breadcrumb]);   
     }

@@ -95,7 +95,7 @@
                 <input type="hidden" id="finalArrInput" name="final_arr" value="" />
                 <table class="invoicetable table-responsive bg-white">
                     <tbody id="invoiceTableBody" style="max-height: none;">
-                        <tr>
+                        <tr>  <th>S.N</th>
                             <th>
                                 <a class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></a>
                             </th>
@@ -103,9 +103,8 @@
                             <th>Unstocked Name</th>
                             <th>Quantity</th>
                             <th>Unit</th>
-
                             <th>Price</th>
-                            {{-- <th>Discount</th> --}}
+                            
                             <th>Subtotal</th>
                         </tr>
                     </tbody>
@@ -206,6 +205,9 @@ $(document).ready(function () {
     
         // Set the initial background color based on the default selected value
         changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
+
+        var enableQuantityInput = {{ $enableQuantityInput ? 'true' : 'false' }};
+
     </script>
     
     <style>

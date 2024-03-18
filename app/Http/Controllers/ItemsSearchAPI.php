@@ -9,14 +9,45 @@ class ItemsSearchAPI extends Controller
 {
     public function index(Request $req)
     {
-
+        $items=null;
         //old data
-        // $items = item::where('itemsname', 'LIKE', '%'.$req->name.'%')->get();
-        // return json_encode($items);
 
-        $items = item::where('itemsname', 'LIKE', '%'.$req->name.'%')->where('quantity', '>', 0) ->get();
+        // $items = Item::where('itemsname', 'LIKE', '%'.$req->name.'%')
+        // ->orWhere('id', 'LIKE', '%'.$req->name.'%')
+        // ->where('quantity', '>', 0)
+        // ->get();
+
+
+//also you van check all and limited for itemsales and creditnotes
+        $quantity_case = $req->input('quantity');
+
+        if ($quantity_case == 'all') {
+            $items = Item::where('itemsname', 'LIKE', '%'.$req->name.'%')
+                        ->orWhere('id', 'LIKE', '%'.$req->name.'%')
+                        ->get();
+        } else {
+            $items = Item::where(function($query) use ($req) {
+                            $query->where('itemsname', 'LIKE', '%'.$req->name.'%')
+                                  ->orWhere('id', 'LIKE', '%'.$req->name.'%');
+                        })
+                        ->where('quantity', '>', 0)
+                        ->get();
+        }
+        
+        
+        return json_encode($items);
+        
+        
+        
+
+         
        
-                return json_encode($items);
+ 
+
+
+        
+        
+        
 
       
 

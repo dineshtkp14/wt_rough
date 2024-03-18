@@ -23,7 +23,7 @@ class Invoicelivewire extends Component
             ->orWhere('invoices.discount', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('invoices.total', 'like', "%" . $this->searchTerm . "%")
             ->orderBy('invoices.id', 'DESC')
-            ->paginate(10);
+            ->paginate(50);
 
         // $alldata = $query->paginate(10);
 

@@ -1,8 +1,8 @@
 
 
-<div class="container">
-    <div class="card ">
-         <div class="card-header">
+<div class="container" style=" overflow-x: auto;">
+    <div class="card" style="overflow-x: auto;">
+        <div class="card-header">
             <a href="{{route('items.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
              Total No Of Items {{ $all->total() }}
 

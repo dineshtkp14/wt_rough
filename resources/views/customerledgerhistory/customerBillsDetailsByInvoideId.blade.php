@@ -210,9 +210,10 @@
                 <i class="fas fa-user"></i>
             </div>
         </div>
+        
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
-        <b style="float: right; margin-right: 100px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
-        <b style="float: right; margin-right: 100px;">Date: {{ $forinvoicetype->date }}</b>
+        <b style="float: right; margin-right: 100px; " class="makered">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
+        <b style="float: right; margin-right: 100px;" class="makered">Date: {{ $forinvoicetype->date }}</b>
 
 
         {{-- <b style="float: right; margin-right: 100px;">Sales Return: {{ $forinvoicetype->salesreturn }}</b> --}}
@@ -221,7 +222,20 @@
                     <b style="float: right; margin-right: 100px; color: green;" class="h5">Sales Return/Credit Notes Bill no :{{ $forinvoicetype->returnidforcreditnotes }}</b>
                 @endif
 
+                @if($forinvoicetype->invoicetype == "credit")
+                <style>
+                    .makered,.cusdetails {
+                        background-color: rgb(216, 18, 141) !important;
+                        color: white !important;
+                        padding: 10px;
+                        
+                    }
+                   
+                </style>
+            @endif
+
        @endif
+       <div class="cusdetails">
         @if ($cinfodetails !=null)
             @foreach($cinfodetails as $i)
                 Name:  {{$i->name}}<br>
@@ -230,6 +244,7 @@
                 ContactNo:  {{$i->phoneno}}<br>
             @endforeach
         @endif
+       </div>
 <span class="float-end mb-5">
     <div class="col-12 d-flex justify-content-end align-items-center pt-4 p-4">
         <a href="{{ route('invoicebillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
@@ -255,6 +270,7 @@
         <thead>
             <tr>
                 <th>S.N.</th>
+                <th>ITEM ID</th>
                 <th>ITEM Name</th>
                 <th>MRP</th>
                
@@ -272,7 +288,10 @@
                 @foreach($allcusbyid as $i)
                     <tr>
                         <td>{{ $serialNo++ }}</td>
+                        <td>{{$i->itemidorg}}</td>
                         <td>{{$i->itemid}}</td>
+                        
+
                         <td>{{$i->mrp}}</td>
                         <td>{{$i->quantity}}</td>
                         <td>{{$i->unit}}</td>
@@ -290,18 +309,18 @@
             @if ($allinvoices != null)
                 @foreach($allinvoices as $i)
                     <tr>
-                        <td colspan="5"></td>
+                        <td colspan="6"></td>
                         <td class="text-right"><b>Sub-Total:</b></td>
                         <td><b>{{$i->subtotal}}</b></td>
                     </tr>
                     <tr>
-                        <td colspan="5"></td>
+                        <td colspan="6"></td>
                         <td class="text-right"><b>Extra Discount:</b></td>
                         <td><b>{{$i->discount}}</b></td>
                     </tr>
                     <tr>
                         
-                        <td colspan="5">
+                        <td colspan="6">
 
 
                             @php

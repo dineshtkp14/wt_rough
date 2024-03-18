@@ -26,7 +26,7 @@ class TrackitemstableLivewire extends Component
             
         }
 
-       $trackitemstable =$trackitemstable->paginate(5);
+       $trackitemstable =$trackitemstable->paginate(50);
 
         return view('livewire.trackitemstable-livewire', [
              'all' =>$trackitemstable,

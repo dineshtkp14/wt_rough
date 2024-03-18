@@ -49,22 +49,53 @@
     @csrf  
     @method('put')
 
-               
-           
-           
-                  <div class="py-4 d-flex justify-content-between align-items-center">
+    <div class="py-4 d-flex justify-content-between align-items-center">
+        <div style="width: 300px">
+          
+            <div class="input-group mb-1">
+                <div class="search-box">
                    
-                    <div style="width: 300px">
-                      
-                        <div class="input-group mb-1">
-                            <span class="input-group-text">Date:</span>
-                            <input type="date" class="form-control  @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
-                            @error('date')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
+                    <input id="customerIdInput"  name="companyid" hidden required value="{{ old('customerid',$com->companyid) }}" >
+
+                    <input type="text" required class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company"
+                        id="searchCustomerInput"  data-api="company_search" autocomplete="off"  value="{{ old('customerid',$com->companyid) }}">
+                        @error('customerid')
+                            <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
+                        @enderror  
+                        
+                    <i class="fas fa-search search-icon"> </i>
+                    <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
+                        <div class="result-box d-flex justify-content-start align-items-center"
+                            id="customerLoadingResultBox">
+                            <i class="fas fa-spinner" id="spinnerIcon"> </i>
+                            <h1 class="m-0 px-2"> Loading</h1>
+                        </div>
+
+                        <div class="result-box d-flex justify-content-start align-items-center d-none"
+                            id="customerNotFoundResultBox">
+                            <i class="fas fa-triangle-exclamation"> </i>
+                            <h1 class="m-0 px-2"> Record Not Found</h1>
+                        </div>
+
+                        <div id="customerResultList">
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div style="width: 300px">
+          
+            <div class="input-group mb-1">
+                <span class="input-group-text">Date:</span>
+                <input type="date" class="form-control  @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
+                @error('date')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
+            </div>
+        </div>
+    </div>
+           
+           
 
                 <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Particulars</label>
@@ -76,7 +107,7 @@
             </div>
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Bill No</label>
-                    <input type="text" value="{{ old('voucher_type',$com->voucher_type)}}" class="form-control @error('vt') is-invalid @enderror" 
+                    <input type="text" value="{{ old('voucher_no',$com->voucher_no)}}" class="form-control @error('vt') is-invalid @enderror" 
                         name="vt" >
                     @error('vt')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -86,8 +117,8 @@
             
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Amount</label>
-                    <input type="number" value="{{ old('debit',$com->debit) }}" class="form-control @error('amount') is-invalid @enderror" 
+                    <label for="inputPassword4" class="form-label">Amountt</label>
+                    <input type="number" value="{{ old('debit',$com->credit) }}" class="form-control @error('amount') is-invalid @enderror" 
                         name="amount" >
                     @error('amount')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -108,7 +139,7 @@
            
 
             <div class="d-grid gap-2 pt-2 pb-4">
-                    <button type="submit" class="btn btn-lg btn-primary">Save</button>
+                    <button type="submit" class="btn btn-lg btn-primary">Update</button>
             </div>
 </form>
 </div>

@@ -5,7 +5,7 @@
 <div class="main-content"> 
 	@yield('breadcrumb')
 <div class="container">
-	ok
+
     <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
         <div class="card-body">
             <h5 class="card-title">Customer Info</h5>
@@ -103,11 +103,11 @@
   <div class="col-md-8">
 	@foreach ($cusinfoforpdfok as $i)
 		<div>
-			<h3>Customer Id: {{$i->id}}</h3> 
-			<h3>Name: {{$i->name}}</h3> 
-			<h3>Address: {{$i->address}}</h3>
-			<h3>Phone No: {{$i->phoneno}}</h3>
-			<h3>Email: {{$i->email}}</h3>
+			<h5>Customer Id: {{$i->id}}</h5> 
+			<h5>Name: {{$i->name}}</h5> 
+			<h5>Address: {{$i->address}}</h5>
+			<h5>Phone No: {{$i->phoneno}}</h5>
+			<h5>Email: {{$i->email}}</h5>
 
 		</div>
 	@endforeach
@@ -115,13 +115,7 @@
 
   <div class="col-md-3">
 	<span> 
-		{{-- <div class="col-12 d-flex justify-content-end align-items-center pt-4">
-			<a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
-				<div class="icon-box d-flex justify-content-center align-items-center">
-					<i class="fa-solid fa-print"></i>
-				</div>
-			</a>
-		</div> --}}
+		
 
 		<div class="col-12 d-flex justify-content-end align-items-center pt-4">
 			<a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
@@ -219,11 +213,74 @@
 
 <BR>
 
-<h4 class="floatleft">Total Transcation Amount: <span class="forunderline">{{$dts}} /-</span></h4>
+<h5 class="floatleft">Total Transcation Amount: <span class="forunderline">{{$dts}} /-</span></h5>
 
-<h1 class="floatleft">Total Due Amount: <span class="forunderline">{{$allnotcash - $cts}} /-</span></h1>
+<h1 class="floatleft btn btn-success btn-lg">Total Due Amount: <span class="forunderline">{{$allnotcash - $cts}} /-</span></h1>
+(
+@php
+              function convertNumberToWords($num) {
+    $ones = array(
+        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+    );
+    $tens = array(
+        "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
+    );
 
+    // Handle negative numbers
+    if ($num < 0) {
+        return "Minus " . convertNumberToWords(abs($num));
+    }
 
+    if ($num == 0) {
+        return "Zero";
+    }
+
+    $words = "";
+
+    if ($num >= 10000000) {
+        $words .= convertNumberToWords(floor($num / 10000000)) . " Crore ";
+        $num %= 10000000;
+    }
+
+    if ($num >= 100000) {
+        $words .= convertNumberToWords(floor($num / 100000)) . " Lakh ";
+        $num %= 100000;
+    }
+
+    if ($num >= 1000) {
+        $words .= convertNumberToWords(floor($num / 1000)) . " Thousand ";
+        $num %= 1000;
+    }
+
+    if ($num >= 100) {
+        $words .= convertNumberToWords(floor($num / 100)) . " Hundred ";
+        $num %= 100;
+    }
+
+    if ($num >= 20) {
+        $words .= $tens[floor($num / 10)] . " ";
+        $num %= 10;
+    }
+
+    if ($num > 0) {
+        $words .= $ones[$num] . " ";
+    }
+
+    return $words;
+}
+
+// Retrieve the numerical value from your data
+$number = $allnotcash - $cts;
+// Convert the numerical value to words
+$words = convertNumberToWords($number);
+
+echo $words;
+
+            @endphp
+			only -/ 
+			
+			)
 
 
 <h2> --------------------------------Credit Notes Details---------------------------------------- </h2>
@@ -236,7 +293,7 @@
 			<th>Date</th>
 			<th>Particulars</th>
 			<th>Voucher Type</th>
-			<th>Invoice ID</th>
+			<th>CN Invoice ID</th>
 			<th>Credit</th> 
 		</tr>
 	</thead>

@@ -45,7 +45,7 @@
 <div class="container">
 
 
-<form class="row gx-5 gy-3" action="{{route('companyLedgers.store')}}" method="post">
+<form class="row gx-5 gy-3" action="{{route('companyLedgerspay.store')}}" method="post">
                 @csrf
 
                

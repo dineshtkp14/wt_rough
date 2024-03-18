@@ -32,6 +32,10 @@ let finalData = [
     },
 ];
 
+const pathname = window.location.pathname;
+const exactPathname = pathname.split("/")[1];
+const quantityCase = exactPathname === "creditnotes" ? "all" : "limited";
+
 function customerResultHTML(value) {
     return `
      <div class="result-box d-flex justify-content-start align-items-center customer-result-box" data-value='${JSON.stringify(
@@ -47,10 +51,14 @@ function productResultHTML(value) {
      <div class="result-box d-flex justify-content-start align-items-center product-result-box" data-value='${JSON.stringify(
          value
      )}'> 
-     <i class="fa-solid fa-boxes-stacked"></i>
-     <h1 class="m-0 px-2">${
-         value.itemsname
-     }   &nbsp; &nbsp; (<span style="color: red">${value.quantity}</span>)</h1>
+
+     <span style="color: blue;font-size:22px; font-weight:bold;">${
+         value.id
+     }</span> <i class="fa-solid fa-boxes-stacked"> </i>
+
+     <h1 class="m-0 px-2">${value.itemsname}   &nbsp; &nbsp; (
+        <span style="color: red;font-size:24px;">${value.quantity}</span>
+        )</h1> 
      </div>`;
 }
 
@@ -168,12 +176,12 @@ function inputHTML(counter) {
                 </td>
                 <td>
 
-                    <input autocomplete="off" type="text" placeholder="Quantity  " class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
+                    <input  autocomplete="off" type="text" placeholder="Quantity  " class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
                 </td>
 
             <td>
 
-                <input autocomplete="off" type="text" placeholder="unit  " class="form-control sales-input" id="unitInput" value="" data-id="${counter}" data-name="unit" disabled>
+                <input autocomplete="off" type="text" placeholder="unit  " class="form-control sales-input" id="unitInput" value="" data-id="${counter}" data-name="unit" >
 
              </td>
 
@@ -215,6 +223,7 @@ function appendInputRow() {
         product: "",
         unstocked: "",
         quantity: "",
+        unit: "",
         price: "",
         discount: "",
         subtotal: "",
@@ -285,6 +294,8 @@ function getFinalCalculations() {
 function addInputValue(index, inputId, dataId, dataName, value) {
     salesData[index][dataName] = value;
 
+    const unitInput = $(`#inputRow${dataId} #unitInput`);
+
     // validation
     if (dataName === "unstocked") {
         if (value.trim() !== "") {
@@ -292,7 +303,9 @@ function addInputValue(index, inputId, dataId, dataName, value) {
                 "pointer-events": "none",
                 color: "#afafaf",
             });
+            unitInput.prop("disabled", false); // Enable unit input
         } else {
+            unitInput.prop("disabled", true); // Enable unit input
             $(`#inputRow${dataId} #selectProductLink`).css({
                 "pointer-events": "all",
                 color: "#0d6efd",
@@ -327,6 +340,17 @@ function addInputValue(index, inputId, dataId, dataName, value) {
                 salesData[index][dataName] = "0";
             }
         }
+
+        // // Add validation for the "unit" field
+        // if (dataName === "unit") {
+        //     if (value.trim() === "") {
+        //         $("#errorText").attr("class", "text-danger fw-bold");
+        //         $("#errorText").text("Please enter unit !");
+        //         // You can add additional logic here if needed, such as disabling the submit button.
+        //         return; // Exit the function to prevent further execution.
+        //     }
+        // }
+
         if (dataName === "quantity") {
             const dataMax = $(`#inputRow${dataId} #${inputId}`).attr(
                 "data-max"
@@ -399,7 +423,9 @@ function getProductData() {
         $(".product-result-box").addClass("d-none");
 
         getData(
-            PRODUCT_SEARCH_API_URL + productSearchQuery,
+            PRODUCT_SEARCH_API_URL +
+                productSearchQuery +
+                `?quantity=${quantityCase}`,
             function (response) {
                 if (response) {
                     if (response.length > 0) {
@@ -426,6 +452,10 @@ function getProductData() {
 }
 
 function triggerProductResultClick() {
+    //forunit
+
+    //forcreditnotes
+    const currentUrl = window.location.href;
     $(".product-result-box")
         .off()
         .on("click", function () {
@@ -443,18 +473,23 @@ function triggerProductResultClick() {
             $(`#inputRow${currentID} #unitInput`).val(data.unit);
             salesData[currentIndex]["unit"] = `${data.unit}`;
 
-            $(`#inputRow${currentID} #quantityInput`).attr(
-                "placeholder",
-                `Quantity (Max: ${data.quantity})`
-            );
-            $(`#inputRow${currentID} #quantityInput`).attr(
-                "data-max",
-                data.quantity
-            );
+            if (currentUrl.indexOf("creditnotes/create") === -1) {
+                $(`#inputRow${currentID} #quantityInput`).attr(
+                    "placeholder",
+                    `Quantity (Max: ${data.quantity})`
+                );
+                $(`#inputRow${currentID} #quantityInput`).attr(
+                    "data-max",
+                    data.quantity
+                );
+            }
+
             $(`#inputRow${currentID} #quantityInput`).val("");
             salesData[currentIndex]["quantity"] = "";
 
             $(`#inputRow${currentID} #unstockedInput`).attr("disabled", "true");
+
+            $(`#inputRow${currentID} #unitInput`).attr("disabled", "true");
 
             $("#searchProductInput").val(data.itemsname);
             $("#productResultWrapper").slideUp();
@@ -502,6 +537,8 @@ $(".sales-input-final").on("input", function () {
 });
 
 $(window).on("load", function () {
+    const currentUrl = window.location.href;
+
     appendInputRow();
     $("#addRowBtn").on("click", function (e) {
         e.preventDefault();
@@ -511,47 +548,70 @@ $(window).on("load", function () {
     $("#verifyBtn").on("click", function (e) {
         e.preventDefault();
 
+        let hasError = false; // Flag to track if any error occurs
+
         if ($("#salesDate").val().trim() === "") {
             $("#errorText").attr("class", "text-danger fw-bold");
             $("#errorText").text("Please select Date !");
-            return false;
-        }
-
-        if (finalData[0]["customer"].trim() === "") {
+            hasError = true;
+        } else if (finalData[0]["customer"].trim() === "") {
             $("#errorText").attr("class", "text-danger fw-bold");
             $("#errorText").text("Please select customer !");
-            return false;
+            hasError = true;
+        } else if (
+            currentUrl.indexOf("creditnotes/create") === -1 &&
+            $("#invoice_type").val().trim() === ""
+        ) {
+            // Check if invoice type is selected, but only if it's not a credit note creation page
+            $("#errorText").attr("class", "text-danger fw-bold");
+            $("#errorText").text("Please choose invoice type !");
+            hasError = true;
+        } else {
+            $.each(salesData, function (index, value) {
+                if (
+                    value.product.trim() === "" &&
+                    value.unstocked.trim() === ""
+                ) {
+                    $("#errorText").attr("class", "text-danger fw-bold");
+                    $("#errorText").text("Please enter or select product !");
+                    hasError = true;
+                    return false; // Exit the loop early since there's an error
+                } else if (
+                    value.quantity.trim() === "" ||
+                    parseFloat(value.quantity) <= 0
+                ) {
+                    $("#errorText").attr("class", "text-danger fw-bold");
+                    $("#errorText").text("Please enter valid quantity !");
+                    hasError = true;
+                    return false; // Exit the loop early since there's an error
+                } else if (value.price.trim() === "") {
+                    $("#errorText").attr("class", "text-danger fw-bold");
+                    $("#errorText").text("Please enter valid price !");
+                    hasError = true;
+                    return false; // Exit the loop early since there's an error
+                } else if (value.unit.trim() === "") {
+                    $("#errorText").attr("class", "text-danger fw-bold");
+                    $("#errorText").text("Please enter unit !");
+                    hasError = true;
+                    return false; // Exit the loop early since there's an error
+                }
+            });
+
+            // If there are no errors, set success message and enable submit button
+            if (!hasError) {
+                finalData[0]["note"] = $("#noteInput").val().trim();
+                $("#salesArrInput").val(JSON.stringify(salesData));
+                $("#finalArrInput").val(JSON.stringify(finalData));
+
+                $("#errorText").attr("class", "text-success fw-bold");
+                $("#errorText").text("Success, Now you can submit !");
+                $("#submitBtn").removeAttr("disabled");
+            }
         }
 
-        $.each(salesData, function (index, value) {
-            if (value.product.trim() === "" && value.unstocked.trim() === "") {
-                $("#errorText").attr("class", "text-danger fw-bold");
-                $("#errorText").text("Please enter or select product !");
-                return false;
-            }
-
-            if (
-                value.quantity.trim() === "" ||
-                parseFloat(value.quantity) <= 0
-            ) {
-                $("#errorText").attr("class", "text-danger fw-bold");
-                $("#errorText").text("Please enter valid quantity !");
-                return false;
-            }
-
-            if (value.price.trim() === "") {
-                $("#errorText").attr("class", "text-danger fw-bold");
-                $("#errorText").text("Please enter valid price !");
-                return false;
-            }
-
-            finalData[0]["note"] = $("#noteInput").val().trim();
-            $("#salesArrInput").val(JSON.stringify(salesData));
-            $("#finalArrInput").val(JSON.stringify(finalData));
-
-            $("#errorText").attr("class", "text-success fw-bold");
-            $("#errorText").text("Success, Now you can submit !");
-            $("#submitBtn").removeAttr("disabled");
-        });
+        // If there are any errors, disable the submit button
+        if (hasError) {
+            $("#submitBtn").attr("disabled", "disabled");
+        }
     });
 });

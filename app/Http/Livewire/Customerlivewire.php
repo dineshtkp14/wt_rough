@@ -27,7 +27,7 @@ class Customerlivewire extends Component
             
         }
 
-       $cus =$cus->paginate(5);
+       $cus =$cus->paginate(50);
 
         return view('livewire.customerlivewire', [
              'all' =>$cus,

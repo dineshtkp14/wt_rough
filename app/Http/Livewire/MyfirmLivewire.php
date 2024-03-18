@@ -27,7 +27,7 @@ class MyfirmLivewire extends Component
             
         }
 
-       $cus =$cus->paginate(5);
+       $cus =$cus->paginate(50);
        return view('livewire.myfirm-livewire', [
         'all' =>$cus,
    ]);

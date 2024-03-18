@@ -6,8 +6,9 @@
         <div class="card ">
             <div class="card-header">
                 <div class="row "> 
-                    <div class="col-md-6 ">
-                            <a href="" style="width: 200px; text-decoration:none" class=" text-center ms-5 h3 text-dark"> ITEMSALES  TABLE</a>
+                    <div class="col-md-6 ">     
+                        <a href="" style="width: 200px; text-decoration:none" class=" text-center  h3 text-dark"> ITEMSALES  TABLE</a>
+                        <a href="{{ route('itemsales.create') }}" class="btn btn-primary ms-5" style="background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-file-invoice"></i> ADD NEW INVOICE</a>
                     </div>
 
                     <div class="col-md-6 float-end">
@@ -22,6 +23,8 @@
                     <thead>
                         <tr>
                             <th>Date</th>
+
+                            <th>Created at </th>
                             <th>Bill No</th>
                             <th>Items Name</th>
                             <th>Unstocked Name</th>
@@ -39,6 +42,8 @@
                         @if ($cus->isNotEmpty())
                             @foreach ($cus as $item)
                                 <tr>
+                                    <td data-label="Bill No">{{ $item->date }}</td>
+
                                     <td data-label="Bill No">{{ $item->created_at }}</td>
 
                                     <td data-label="Bill No">{{ $item->invoiceid }}</td>

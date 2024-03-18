@@ -45,7 +45,7 @@
 
         <span class="float-end" style="margin-top: -100px; margin-right:500px;">
             <a href="{{ route('customerinfos.create') }}" class="btn btn-primary m"> <i class="fa-solid fa-plus"></i> Add New Customer</a>
-            <a href="{{ route('customer.billno') }}" class="btn ms-5" style="background-color: #556B2F; border-color:rgb(29, 3, 3); color: #ffffff;"> <i class="fa-solid fa-eye"></i> Search Invoice</a>
+            <a href="{{ route('onlyviewbillafterbill') }}" class="btn ms-5" style="background-color: #556B2F; border-color:rgb(29, 3, 3); color: #ffffff;"> <i class="fa-solid fa-eye"></i> Search Invoice</a>
         </span>
             <form action="{{ route('itemsales.store') }}" method="post">
 
@@ -89,9 +89,11 @@
 
 
                     <div style="width: 300px"   >
-                        <select name="invoice_type" class="d-inline form-select select-background" aria-label="Default select example" onchange="changeBackgroundColor(this)">
+                        <select id="invoice_type" name="invoice_type" class="d-inline form-select select-background"  onchange="changeBackgroundColor(this)">
+                            <option value="">--Choose Invoice Type--</option>
+                            <option value="cash">CASH (Invoice Type)</option>
                             <option value="credit">CREDIT (Invoice Type)</option>
-                            <option value="cash" selected>CASH (Invoice Type) </option>
+                           
                         </select>
                         <small style="font-size: 14px; padding:20px; color:#02090f;"> Choose mode of invoice &nbsp;    (cash / Credit) </small>
                     </div>
@@ -176,7 +178,7 @@
                         <h1>Select Product</h1>
                     </div>
                     <div class="search-box">
-                        <input type="text" class="search-input" placeholder="Search Product" id="searchProductInput">
+                        <input type="text" class="search-input" placeholder="Search Product" id="searchProductInput" autocomplete="off">
                         <i class="fas fa-search search-icon modal-search-icon"> </i>
                         <div class="result-wrapper modal-result-wrapper" id="productResultWrapper"
                             style="display: none;">
@@ -244,9 +246,10 @@ $(document).ready(function () {
         }
     
         .credit-bg {
-            background-color: red;
+            background-color: rgb(216, 18, 141) !important;
             color: white;
         }
+        
     </style>
 
    

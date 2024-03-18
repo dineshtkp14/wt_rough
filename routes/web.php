@@ -24,6 +24,8 @@ use App\Http\Controllers\AdminstockController;
 use App\Http\Controllers\TrackitemstableController;
 use App\Http\Controllers\MyfirmController;
 use App\Http\Controllers\TransferGoodsController;
+use App\Http\Controllers\TrackcompanyledgerController;
+
 
 
 
@@ -43,6 +45,8 @@ use App\Http\Controllers\TransferGoodsController;
 
 
 use App\Http\Controllers\CustomerLedgerDetailsController;
+use App\Http\Controllers\UserdashboardController;
+
 use App\Http\Controllers\trackinvoiceController;
 
 use App\Http\Controllers\CustomerLedgerHistroy;
@@ -52,6 +56,8 @@ use App\Http\Controllers\ItemsalesController;
 use App\Http\Controllers\openingbalanceController;
 use App\Http\Controllers\PricelistController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\ExpensesController;
+
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\trackCreditnotesController;
 
@@ -61,7 +67,20 @@ Route::get('/', function () {
     return view('login');
 });
 
-//Route::get('/',[PricelistController::class,'index'])->name('home');
+
+//onlyredirctuserpages
+
+Route::get('/itemdash',[UserdashboardController::class,'itemdash'])->name('itemdash');
+Route::get('/daybookdash',[UserdashboardController::class,'daybookdash'])->name('daybookdash');
+Route::get('/companydash',[UserdashboardController::class,'companydash'])->name('companydash');
+Route::get('/purchaseorderdash',[UserdashboardController::class,'purchaseorderdash'])->name('purchaseorderdash');
+Route::get('/customerdash',[UserdashboardController::class,'customerdash'])->name('customerdash');
+Route::get('/bankdash',[UserdashboardController::class,'bankdash'])->name('bankdash');
+Route::get('/invoicedash',[UserdashboardController::class,'invoicedash'])->name('invoicedash');
+
+Route::get('/userdash',[UserdashboardController::class,'index'])->name('userdash');
+
+
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
@@ -70,7 +89,8 @@ Route::put('/itemsales/{itemsales}',[ItemsalesController::class,'update'])->name
 Route::post('/itemsales',[ItemsalesController::class,'store'])->name('itemsales.store');
 
 
-  
+Route::get('/creditnotes/create', [Creditnotes_controller::class, 'showCreditNotesPage'])->name('showCreditNotesPage.check');
+
 
 Route::get('/creditnotes',[Creditnotes_controller::class,'index'])->name('creditnotes.index');
 Route::get('/creditnotes/create',[Creditnotes_controller::class,'create'])->name('creditnotes.create');
@@ -108,6 +128,15 @@ Route::get('/pricelists/{pricelist}/edit',[PricelistController::class,'edit'])->
 Route::put('/pricelists/{pricelists}',[PricelistController::class,'update'])->name('pricelists.update');
 Route::delete('/pricelists/{customerinfo}',[PricelistController::class,'destroy'])->name('pricelists.destroy');
 
+Route::get('/expenses',[ExpensesController::class,'index'])->name('expenses.index');
+Route::get('/expenses/create',[ExpensesController::class,'create'])->name('expenses.create');
+Route::post('/expenses',[ExpensesController::class,'store'])->name('expenses.store');
+Route::get('/expenses/{pricelist}/edit',[ExpensesController::class,'edit'])->name('expenses.edit');
+Route::put('/expenses/{expenses}',[ExpensesController::class,'update'])->name('expenses.update');
+Route::delete('/expenses/{customerinfo}',[ExpensesController::class,'destroy'])->name('expenses.destroy');
+
+//searchbydate totalsum
+Route::get('/expenses/search', [ExpensesController::class, 'search'])->name('expenses.search');
 
 Route::get('/stocks',[StockController::class,'index'])->name('stocks.index');
 // Route::get('/stocks',[StockController::class,'filterStocks'])->name('stocks.filterfirm');
@@ -257,6 +286,7 @@ Route::delete('/billno', [CustomerLedgerHistroy::class, 'deletebillfromdatabase'
 Route::put('/billno', [CustomerLedgerHistroy::class, 'updateinvoiicetype'])->name('customer.updatebillinvoicetype');
 Route::put('/billno/updatecusname', [CustomerLedgerHistroy::class, 'updatecustomername'])->name('updatecustomername');
 
+Route::get('/onlyviewbill',[CustomerLedgerHistroy::class,'onlyviewbillafterbill'])->name('onlyviewbillafterbill');
 
 Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_InvoiveBillByBillno'])->name('invoicebillno.convert');
 
@@ -267,17 +297,22 @@ Route::get('/trackcreditnotes',[trackCreditnotesController::class,'index'])->nam
 //trackitemstable
 Route::get('/trackitemstable',[TrackitemstableController::class,'index'])->name('trackitemstable.index');
 
+Route::get('/trackcompanyledger',[TrackcompanyledgerController::class,'index'])->name('TrackcompanyledgerController.index');
 
 
 Route::get('/cbills',[CustomerLedgerHistroy::class,'returncusbills'])->name('cbills.returncusbills');
 
 
-Route::get('/companyLedgers',[CompanyLedgerController::class,'index'])->name('companyLedgers.index');
-Route::get('/companyLedgers/create',[CompanyLedgerController::class,'create'])->name('companyLedgers.create');
-Route::post('/companyLedgers',[CompanyLedgerController::class,'store'])->name('companyLedgers.store');
-Route::get('/companyLedgers/{companyLedgers}/edit',[CompanyLedgerController::class,'edit'])->name('companyLedgers.edit');
-Route::put('/companyLedgers/{companyLedgers}',[CompanyLedgerController::class,'update'])->name('companyLedgers.update');
-Route::delete('/companyLedgers/{companyLedgers}',[CompanyLedgerController::class,'destroy'])->name('companyLedgers.destroy');
+
+
+
+Route::get('/companyLedgerspay',[CompanyLedgerController::class,'index'])->name('companyLedgerspay.index');
+Route::get('/companyLedgerspay/create',[CompanyLedgerController::class,'create'])->name('companyLedgerspay.create');
+Route::post('/companyLedgerspay',[CompanyLedgerController::class,'store'])->name('companyLedgerspay.store');
+Route::get('/companyLedgerspay/{companyLedgerspay}/edit',[CompanyLedgerController::class,'edit'])->name('companyLedgerspay.edit');
+Route::put('/companyLedgerspay/{companyLedgerspay}',[CompanyLedgerController::class,'update'])->name('companyLedgerspay.update');
+Route::delete('/companyLedgerspay/{companyLedgerspay}',[CompanyLedgerController::class,'destroy'])->name('companyLedgerspay.destroy');
+
 
 
 
@@ -318,7 +353,8 @@ Route::get('/showsalesperday', [showperday_controller::class, 'showonlysalesperd
  Route::get('login', [CustomAuthController::class, 'index'])->name('login');
  Route::post('postlogin', [CustomAuthController::class, 'login'])->name('postlogin'); 
  Route::get('signup', [CustomAuthController::class, 'signup'])->name('register-user');
- Route::get('changepass', [CustomAuthController::class, 'changepass'])->name('user.password');
+
+//  Route::get('changepass', [CustomAuthController::class, 'changepass'])->name('user.password');
  Route::get('/change-password', [CustomAuthController::class, 'changePassword'])->name('change-password');
  Route::post('/change-password', [CustomAuthController::class, 'updatePassword'])->name('update-password');
  

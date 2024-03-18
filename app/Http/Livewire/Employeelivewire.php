@@ -22,7 +22,7 @@ class Employeelivewire extends Component
             $emp->orWhere('email', 'like', "%" . $this->searchTerm . "%");
         }
 
-        $emp = $emp->paginate(5);
+        $emp = $emp->paginate(50);
 
         return view('livewire.employeelivewire', [
             'all' => $emp,

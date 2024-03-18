@@ -24,7 +24,7 @@ class Daybooklivewire extends Component
             $list->orWhere('contact','like',"%".$this->searchTerm."%");
   
         }
-        $list =$list->paginate(10);
+        $list =$list->paginate(50);
         
 
         return view('livewire.daybooklivewire', [

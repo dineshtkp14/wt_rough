@@ -136,7 +136,7 @@
             </div>
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Quantity(PCS/kg)</label>
+                    <label for="inputPassword4" class="form-label">Quantity</label>
                     <input type="quantity" class="form-control @error('quantity') is-invalid @enderror" 
                         name="quantity" value="{{ old('quantity') }}">
                     @error('quantity')
@@ -144,7 +144,7 @@
                     @enderror
             </div>
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">unit(PCS/kg/etc)</label>
+                <label for="inputPassword4" class="form-label">Unit(PCS/kg/etc)</label>
                 <input type="unit" class="form-control @error('unit') is-invalid @enderror" 
                     name="unit" value="{{ old('unit') }}">
                 @error('unit')

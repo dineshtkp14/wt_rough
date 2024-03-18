@@ -34,7 +34,7 @@ class Bankslivewire extends Component
 
             
         }
-        $list =$list->paginate(10);
+        $list =$list->paginate(50);
         
 
 

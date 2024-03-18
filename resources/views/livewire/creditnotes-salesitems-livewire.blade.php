@@ -18,6 +18,7 @@ okkkkkkkkkk
                     <thead>
                         <tr>
                             <th>Date</th>
+                            <th>created_at</th>
                             <th>Bill No</th>
                             <th>Items Name</th>
                             <th>Unstocked Name</th>
@@ -38,6 +39,8 @@ okkkkkkkkkk
                             @foreach ($cus as $item)
                                 <tr>
                                     <td data-label="Bill N">{{ $item->date }}</td>
+                                    <td data-label="Bill N">{{ $item->created_at }}</td>
+
 
                                     <td data-label="Bill No">{{ $item->invoiceid }}</td>
                                     <td data-label="Items Name">{{ $item->itemname ? $item->itemname : '-' }}</td>

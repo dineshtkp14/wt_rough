@@ -14,15 +14,17 @@ return new class extends Migration
         Schema::create('backup_salesitems', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('invoiceid');
-           
+            $table->date('date')->nullable();;
+
             $table->bigInteger('itemid')->nullable();
            // $table->string('itemname')->nullable();
 
-            $table->string('unstockedname');
+            $table->string('unstockedname')->nullable();
             $table->float('quantity',20,2);
             $table->float('price',20,2);
             $table->float('subtotal',20,2);
-           
+            $table->string('unit')->nullable();
+
             $table->timestamps();
             $table->string('added_by')->nullable();
 

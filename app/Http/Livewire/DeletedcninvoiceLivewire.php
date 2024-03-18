@@ -22,7 +22,7 @@ class DeletedcninvoiceLivewire extends Component
             ->orWhere('backupcreditnotes_invoices.discount', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('backupcreditnotes_invoices.total', 'like', "%" . $this->searchTerm . "%")
             ->orderBy('backupcreditnotes_invoices.id', 'DESC')
-            ->paginate(10);
+            ->paginate(50);
 
         foreach ($alldata as $data) {
             if ($data->customerid) {

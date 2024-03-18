@@ -206,7 +206,6 @@
                     </table>
                 </div>
                 <div class="card-footer text-muted">
-                    {{ $all->links() }}
                 </div>
             </div>
         </div>

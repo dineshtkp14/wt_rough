@@ -32,7 +32,7 @@ class Itemslivewire extends Component
 
     }
 
-    $all = $all->paginate(7);
+    $all = $all->paginate(50);
 
     // Loop through each item to fetch the associated company name
     foreach ($all as $item) {

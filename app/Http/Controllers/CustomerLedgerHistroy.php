@@ -292,50 +292,7 @@ class CustomerLedgerHistroy extends Controller
 
 
 
-// //updatecustomername
-// public function updatecustomername(Request $req)
-// {
-   
-  
-//     $validator = Validator::make($req->all(), [
-//         'Bill_No' => 'required',
-//         'cid' => 'required',
-//     ]);
-   
-//     if ($validator->passes()) {
-//         // Check if the selected value is not the default "Open this select menu"
-       
-       
-//         $invoiceExists = DB::table('customerledgerdetails')->where('invoiceid', $req->Bill_No)->exists();
 
-//         if ($invoiceExists) {
-//             DB::table('customerledgerdetails')
-//                 ->where('invoiceid', $req->Bill_No)
-//                 ->update(['customerid' => $req->customerid]);
-
-
-//                  // Update invoices table
-//             DB::table('invoices')
-//             ->where('id', $req->Bill_No)
-//             ->update(['customerid' => $req->customerid]);
-
-//              // Insert into track table
-//              DB::table('trackinvoice')->insert([
-//                 'bill_no' => $req->Bill_No,
-//                 'customer_id' => $req->customerid,
-//                 'title' => "customer_name_updated",
-//                 'updated_by' => session('user_email')
-//             ]);
-
-//             return redirect()->route('customer.billno')->with('updatesuccesscusname', 'Updated customer name  Successfully !!');
-//         } else {
-//             return redirect()->route('customer.billno')->with('updateerrorcusname', 'No records found for the provided invoiceid');
-//         }
-//     } else {
-       
-//         // Redirect with an error message if validation fails
-//         return redirect()->route('customer.billno')->withErrors($validator)->withInput();
-//     }
 
 
 public function updatecustomername(Request $req)
@@ -456,6 +413,7 @@ public function updateinvoiicetype(Request $req)
                     'title' => 'Search Bill No',
                     'link' => 'Search Bill No'
                 ];
+                $forinvoicetype=NULL;
             
                 $itemsname = item::where('id', $req->customerid)->get();
                 $invoiceid = $req->invoiceid;
@@ -466,12 +424,19 @@ public function updateinvoiicetype(Request $req)
                 $customerinfodetails = null;
 
                 $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
-                $forinvoicetype = $cusleddetaiforinvoicetype->first();           
+                $forinvoicetype = $cusleddetaiforinvoicetype->first(); // G  
+                
+              // Check if any record is found
+
+
+       
             
                 foreach ($allcusbyid as $data) {
-                    $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
+                    $item = item::where('id', $data->itemid)->select('id','itemsname', 'mrp','unit')->first();
                     if ($item) {
                         $data->itemid = $item->itemsname;
+                        $data->itemidorg = $item->id;
+
                         $data->mrp = $item->mrp;
                         $data->unit = $item->unit;
                     } else {
@@ -570,9 +535,11 @@ public function updateinvoiicetype(Request $req)
             $forinvoicetype = $cusleddetaiforinvoicetype->first();
     
             foreach ($allcusbyid as  $data) {
-                $item = item::where('id', $data->itemid)->select('itemsname', 'mrp','unit')->first();
+                $item = item::where('id', $data->itemid)->select('id','itemsname', 'mrp','unit')->first();
                 if ($item) {
                     $data->itemid = $item->itemsname;
+                    $data->itemidorg = $item->id;
+
                     $data->mrp = $item->mrp;
                     $data->unit = $item->unit;
                 } else {
@@ -680,84 +647,6 @@ public function updateinvoiicetype(Request $req)
 
 
 
-// public function pdfreturnchoosendatehistroycashandcredit(Request $req)
-// {
-//     // Check if user is authenticated
-//     if (Auth::check()) {
-        
-//         // Breadcrumb information
-//         $breadcrumb = [
-//             'subtitle' => 'View',
-//             'title' => 'Customers Ledger Details Cash Credit',
-//             'link' => 'Customers Ledger Details'
-//         ];
-
-//         // Fetch credit note ledger details
-//         $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
-//         $debittotalcrnotes = $creditnoteledger->sum('debit');
-
-//         // Get date range from request
-//         $from = date($req->date1);
-//         $to = date($req->date2);
-
-//         $cusinfoforpdf= customerinfo::where('id',$req->customerid)->get();
-       
-
-
-//         // Initialize variables
-//         $cusledgertails = null;
-//         $debittotalsumwithdate = null;
-//         $credittotalsumwithdate = null;
-//         $debitnotcash = null;
-
-//         // Get all customer information
-//         $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();
-
-//         if ($from == "" || $to == "") {
-//             // No date range specified, fetch data without filtering by date
-
-//             $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)->get();
-
-//             $querycheck = customerledgerdetails::where('customerid', $req->customerid)->get();
-
-//             // Calculate sums for debit and credit without date filtering
-//             $debittotalsumwithdate = $querycheck->sum('debit');
-//             $credittotalsumwithdate = $querycheck->sum('credit');
-//             $debitnotcash = $querycheck->where('invoicetype', '!=', 'cash')->sum('debit');
-//         } else {
-//             // Date range specified, fetch data within the date range
-
-//             $betweendate = customerledgerdetails::where('customerid', $req->customerid)->get();
-
-//             // Calculate sums for debit and credit within the specified date range
-//             $debittotalsumwithdate = $betweendate->sum('debit');
-//             $credittotalsumwithdate = $betweendate->sum('credit');
-
-//             $debitnotcash = $betweendate->where('invoicetype', '!=', 'cash')->sum('debit');
-
-//             // Fetch customer ledger details within the specified date range
-//             $cusledgertails = customerledgerdetails::whereBetween('date', [$from, $to])->where('customerid', $req->customerid)->get();
-//         }
-
-//         // Generate PDF view
-//         $pdfview = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif', 'format' => 'A5'])
-//             ->loadView('customerledgerhistory.view_customerallledger_cashandcredit_PDF', [
-//                 'debittotalcrnotes' => $debittotalcrnotes,
-//                 'creditnoteledger' => $creditnoteledger,
-//                 'allnotcash' => $debitnotcash,
-//                 'all' => $cusledgertails,
-//                 'allcus' => $allcusinfo,
-//                 'dts' => $debittotalsumwithdate,
-//                 'cts' => $credittotalsumwithdate,
-//                 'cusinfoforpdfok' => $cusinfoforpdf,
-
-//                 'breadcrumb' => $breadcrumb
-//             ]);
-
-//         // Download the PDF
-//         return $pdfview->download('invoice.pdf');
-//     }
-// }
 
 
 
@@ -879,8 +768,57 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
 
 
 
+    public function onlyviewbillafterbill( Request $req)
+    {
+        if(Auth::check()){
 
+            $breadcrumb = [
+                'subtitle' => '',
+                'title' => 'Search Bill No',
+                'link' => 'Search Bill No'
+            ];
+        
+            $itemsname = item::where('id', $req->customerid)->get();
+            $invoiceid = $req->invoiceid;
+        
+            $allInvoices = invoice::where('id', $req->invoiceid)->get();
+        
+            $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
+            $customerinfodetails = null;
 
+            $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
+            $forinvoicetype = $cusleddetaiforinvoicetype->first();           
+        
+            foreach ($allcusbyid as $data) {
+                $item = item::where('id', $data->itemid)->select('id','itemsname', 'mrp','unit')->first();
+                if ($item) {
+                    $data->itemid = $item->itemsname;
+                    $data->itemidorg = $item->id;
+
+                    $data->mrp = $item->mrp;
+                    $data->unit = $item->unit;
+                } else {
+                    $data->itemid = $data->unstockedname;
+                }
+            }
+        
+            foreach ($allInvoices as $data) {
+                if ($data->customerid) {
+                    $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
+                }
+            }
+        
+            return view('customerledgerhistory.customerbillonlyview', [
+                'allinvoices' => $allInvoices,
+                'allcusbyid' => $allcusbyid,
+                'itemsname' => $itemsname,
+                'invoiceid' => $invoiceid,
+                'cinfodetails' => $customerinfodetails,
+                'forinvoicetype'=>$forinvoicetype,
+                'breadcrumb' => $breadcrumb
+            ]);
+        }
+    }
     }
 
 

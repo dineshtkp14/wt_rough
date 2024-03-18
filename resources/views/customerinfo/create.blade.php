@@ -6,7 +6,9 @@
     @yield('breadcrumb')
 
     <div class="container">
-        <a href="{{ url()->previous() }}" class="btn btn-primary mb-3">Back</a>
+        <a href="{{ route('itemsales.create') }}" class="btn btn-primary float-end me-5" style="margin-top: -100px; background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-file-invoice"></i> ADD NEW INVOICE</a>
+        <a href="{{ route('customerinfos.index') }}" class="btn btn-primary float-end " style="margin-top: -100px;margin-right:300px; background-color: #ef8411; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-eye"></i>  VIEW CUSTOMER NAMES</a>
+        
         <form class="row gx-5 gy-3" action="{{ route('customerinfos.store') }}" method="post">
             @csrf
 

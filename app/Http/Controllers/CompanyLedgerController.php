@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 
 use App\Models\CompanyLedger;
+use App\Models\company;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB; //
+
 
 class CompanyLedgerController extends Controller
 {
@@ -79,12 +83,29 @@ class CompanyLedgerController extends Controller
 
         $companypanyment->save();
 
+         // Construct the additional_info string with old and new values
+         $additional_info = 
+         'companyid: ' . $req->companyid . ', ' .
+         'date: ' . $req->date . ', ' .
+         'particulars: ' . $req->particulars . ', ' .
+         'voucher_type: ' . $req->vt . ', ' .
+         'debit: ' . $req->amount . ', ' .
+         'notes: ' . $req->notes . ', ' .
+         'added_by: ' . session('user_email') . '';
 
-        return redirect()->route('companyLedgers.create')->with('success','Added Sucessfully !!'); 
+
+       // Insert into track table
+   DB::table('trackcompanybillentry')->insert([
+   'title' => "companyPayment_data_Inserted",
+   'updated_by' => session('user_email'),
+   'notes' => $additional_info,
+
+]);
+        return redirect()->route('companyLedgerspay.create')->with('success','Added Sucessfully !!'); 
     }
 
     else{
-        return redirect()->route('companyLedgers.create')->withErrors($validator)->withInput();
+        return redirect()->route('companyLedgerspay.create')->withErrors($validator)->withInput();
 
     }
 
@@ -99,13 +120,26 @@ class CompanyLedgerController extends Controller
     if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Edit',
-            'title'=>'Edit Customers Details',
-            'link'=>'Edit Customers Details'
+            'title'=>'Edit COMPANY LEDGER PAYMENT',
+            'link'=>'Edit COMPANY LEDGER PAYMENT'
         ];
    
-        $customers=CompanyLedger::findOrfail($id);
+        $all=CompanyLedger::findOrfail($id);
+       
+        
+ // Retrieve the company associated with the companyid
+ $company = Company::find($all->companyid);
 
-        return view('companyLedgerPayment.edit',['cus'=>$customers,'breadcrumb'=>$breadcrumb]);   
+ // If company with given companyid exists
+ if ($company) {
+     // Assign the company name to $lastman
+     $lastman = $company->name;
+ } else {
+     // Handle case where company with given companyid doesn't exist
+     $lastman = null; // Or set it to a default value
+ }    
+
+        return view('companyLedgerPayment.edit',['all'=>$all,'breadcrumb'=>$breadcrumb,'companyname' => $lastman]);   
         
     }
     return redirect('/login');
@@ -115,29 +149,59 @@ class CompanyLedgerController extends Controller
     {
         $validator=Validator::make($req->all(),[
 
-            'name'=>'required',
-            'address'=>'required',
-            'phoneno'=>'required', 
-           
+            'companyid'=>'required',
+            'date'=>'required',
+            'particulars'=>'required',
+            'amount'=>'required',
+            'vt'=>'required',
+    
                
         ]);
     
         if($validator->passes()){
     
-            $cusinfo= CompanyLedger::find($id);
-            $cusinfo->name=$req->name;
-            $cusinfo->address=$req->address;
-            $cusinfo->email=$req->email;
-            $cusinfo->phoneno=$req->phoneno;
-            $cusinfo->remarks=$req->remarks;
-            $cusinfo->added_by = session('user_email');
+        $companypanyment= CompanyLedger::find($id);
+        $companypanyment->companyid=$req->companyid;
+        $companypanyment->date=$req->date;
+        $companypanyment->particulars=$req->particulars;
+        $companypanyment->voucher_type=$req->vt;
+        $companypanyment->debit=$req->amount;
+        $companypanyment->notes=$req->notes;
+        $companypanyment->added_by = session('user_email');
+        $companypanyment->save();
 
-            $cusinfo->save();
+           // Construct the additional_info string with old and new values
+
+           $oldItemDetails = CompanyLedger::find($id);
+           $additional_info =
+           'companyid: ' . $oldItemDetails->companyid . ', ' .
+           'date: ' . $oldItemDetails->date . ', ' .
+           'particulars: ' . $oldItemDetails->particulars . ', ' .
+           'voucher_type: ' . $oldItemDetails->voucher_type . ', ' .
+           'debit: ' . $oldItemDetails->debit . ', ' .
+           'notes: ' . $oldItemDetails->notes . ', ' .
+           'added_by: ' . $oldItemDetails->added_by . '' .
+           '<br><br>Updated to: ' .
+           'companyid: ' . $req->companyid . ', ' .
+           'date: ' . $req->date . ', ' .
+           'particulars: ' . $req->particulars . ', ' .
+           'voucher_no: ' . $req->vt . ', ' .
+           'debit: ' . $req->amount . ', ' .
+           'notes: ' . $req->notes . ', ' .
+           'added_by: ' . session('user_email') . '';
+
+       // Insert into track table
+       DB::table('trackcompanybillentry')->insert([
+           'title' => "companyPayment_data_UPDATE",
+           'updated_by' => session('user_email'),
+           'notes' => $additional_info,
+       ]);
+
     
-            return redirect()->route('companyLedgers.index')->with('success','Updated Sucessfully !!');  
+            return redirect()->route('companyLedgerspay.index')->with('success','Updated Sucessfully !!');  
         }
         else{
-            return redirect()->route('companyLedgers.create')->withErrors($validator)->withInput();
+            return redirect()->route('companyLedgerspay.create')->withErrors($validator)->withInput();
     
         }
     
@@ -151,9 +215,20 @@ class CompanyLedgerController extends Controller
 
 
         $cusiddelete=CompanyLedger::findOrFail($id);
+
+        // Log the operation before deleting
+        DB::table('trackcompanybillentry')->insert([
+            'title' => "companyPayment_DATA_DELETED",
+            'updated_by' => session('user_email'),
+            'notes' => 'Deleted companyid: ' . $cusiddelete->companyid . ', date: ' . $cusiddelete->date . ', particulars: ' . $cusiddelete->particulars . ', voucher_no: ' . $cusiddelete->voucher_no . ', credit: ' . $cusiddelete->credit . ', notes: ' . $cusiddelete->notes . ', added_by: ' . $cusiddelete->added_by,
+        ]);
+
         $cusiddelete->delete();
+
+         
+      
   
-        return redirect()->route('companyLedgers.index')->with('success','Customer Deleted sucessfully'); 
+        return redirect()->route('companyLedgerspay.index')->with('success','Customer Deleted sucessfully'); 
         
   }
 

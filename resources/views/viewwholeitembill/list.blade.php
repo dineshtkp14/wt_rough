@@ -5,6 +5,8 @@
 <div class="main-content">
     @yield('breadcrumb')
 
+
+    
     <div class="container">
         @if (Session::has('success'))
             <div class="alert alert-success w-50">
@@ -61,6 +63,21 @@
                     <h4>Bill Number: {{ $billNo }}</h4>
                     <h4>Company Name: {{ $companyName }}</h4>
                 </div>
+                <div class="seconddiv"> 
+                    @if ($companyall !=null)
+                        @foreach($companyall as $i)
+                        <p>Company Id: {{$i->id}}</p>
+                            <p>Name: {{$i->name}}</p>
+                            <p>Address: {{$i->address}}</p>
+                            <p>Email: {{$i->email}}</p>
+                            <p>Contact No: {{$i->phoneno}}</p>
+                        @endforeach
+                    @endif
+
+                    <p>Invoice Id: {{$billNo}}</p>
+
+                   
+        </div>
             </div>
         </div>
     </div>

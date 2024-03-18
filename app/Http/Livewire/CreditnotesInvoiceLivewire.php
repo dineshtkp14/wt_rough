@@ -22,7 +22,7 @@ class CreditnotesInvoiceLivewire extends Component
             ->orWhere('creditnotes_invoices.discount', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('creditnotes_invoices.total', 'like', "%" . $this->searchTerm . "%")
             ->orderBy('creditnotes_invoices.id', 'DESC')
-            ->paginate(10);
+            ->paginate(50);
 
         foreach ($alldata as $data) {
             if ($data->customerid) {
