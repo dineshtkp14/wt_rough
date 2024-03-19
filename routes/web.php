@@ -344,6 +344,7 @@ Route::get('/accl/pdf/convert', [CustomerLedgerDetailsController::class, 'showal
 
 Route::get('/showsalesperday', [showperday_controller::class, 'showonlysalesperday'])->name('showonlysalesperday.pp');
 
+Route::get('/onetable_showsalesperda', [showperday_controller::class, 'showonlysalesperdayinone_table'])->name('showonlysalesperdayinone_table.pp');
 
 
 

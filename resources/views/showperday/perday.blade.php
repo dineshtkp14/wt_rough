@@ -15,52 +15,15 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col">
-                        <table class="table h5">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Total Sales Per Day</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($salesPerDay as $sale)
-                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
-                                    <td>{{ $sale->date }}</td>
-                                    <td>{{ $sale->total }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $salesPerDay->links() }}
-
-                    </div>
 
                     <div class="col">
                         <table class="table h5">
                             <thead>
-                                <tr>
-                                    <th>Date (CREDIT NOTES)</th>
-                                    <th>Total Credit Notes Per day</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($salesPerDaycrnotes as $sale)
-                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
-                                    <td>{{ $sale->date }}</td>
-                                    <td>{{ $sale->total }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $salesPerDaycrnotes->links() }}
 
-                    </div>
+                                <center>  <SPAN class="h5 btn btn-warning fw-bold"> CREDIT SALES</SPAN> </center>
 
+                               
 
-                    <div class="col">
-                        <table class="table h5">
-                            <thead>
                                 <tr>
                                     <th>Date (CREDIT )</th>
                                     <th>Total Credit Sales Per day</th>
@@ -84,6 +47,10 @@
                     <div class="col">
                         <table class="table h5">
                             <thead>
+                                <center>  <SPAN class="h5 btn btn-warning fw-bold"> CASH SALES</SPAN> </center>
+
+                               
+
                                 <tr>
                                     <th>Date (Cash Ony)</th>
                                     <th>Total Cash only </th>
@@ -102,13 +69,70 @@
 
                     </div>
 
+
+
+
+
+                    <div class="col">
+                        <table class="table h5">
+                            <thead>
+                                <center>  <SPAN class="h5 btn btn-warning fw-bold"> TOTAL SALES PER DAY </SPAN> </center>
+
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Total Sales Per Day</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($salesPerDay as $sale)
+                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
+                                    <td>{{ $sale->date }}</td>
+                                    <td>{{ $sale->total }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        {{ $salesPerDay->links() }}
+
+                    </div>
+
+                    <div class="col">
+                        <table class="table h5">
+                            <thead>
+                                <center>  <SPAN class="h5 btn btn-warning fw-bold">CREDIT NOTES/SALES RETURN
+                                </SPAN> </center>
+
+
+                                <tr>
+                                    <th>Date (CREDIT NOTES)</th>
+                                    <th>Total Credit Notes Per day</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($salesPerDaycrnotes as $sale)
+                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
+                                    <td>{{ $sale->date }}</td>
+                                    <td>{{ $sale->total }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        {{ $salesPerDaycrnotes->links() }}
+
+                    </div>
+
+
+                  
                     
                     <div class="col">
                         <table class="table h5">
                             <thead>
+                                <center>  <SPAN class="h5 btn btn-warning fw-bold">  LEDGER PAYMENT</SPAN> </center>
+
+                          
                                 <tr>
                                     <th>Date (Payment)</th>
-                                    <th>Total Cash only </th>
+                                    <th>Total Payment only </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -126,10 +150,7 @@
 
                 </div>
             </div>
-            {{-- <div class="card-footer text-muted">
-                {{ $salesPerDay->links() }}
-                {{ $salesPerDaycrnotes->links() }}
-            </div> --}}
+           
         </div>
     </div>
 
