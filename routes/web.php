@@ -44,7 +44,9 @@ use App\Http\Controllers\TrackcompanyledgerController;
 
 
 
+use App\Http\Controllers\BankDeposit_CounterCheckController;
 use App\Http\Controllers\CustomerLedgerDetailsController;
+
 use App\Http\Controllers\UserdashboardController;
 
 use App\Http\Controllers\trackinvoiceController;
@@ -339,6 +341,15 @@ Route::get('/totalsales', [TotalSalesController::class, 'index'])->name('totalsa
 Route::get('/allsalesdetails', [CustomerLedgerDetailsController::class, 'showdetails'])->name('allsalesdetails.showdetails');
 Route::get('/accl', [CustomerLedgerDetailsController::class, 'showallcuscreditdetails'])->name('allsalesdetails.showallcuscreditdetails');
 Route::get('/accl/pdf/convert', [CustomerLedgerDetailsController::class, 'showallcuscreditdetails'])->name('accl.convert');
+
+
+//counterandbankcheckcash
+Route::get('/CheckBankDeposit/show', [BankDeposit_CounterCheckController::class, 'showBankdeposit_UpdateForm'])->name('CheckBankDeposit.index');
+Route::put('/CheckBankDeposit/update', [BankDeposit_CounterCheckController::class, 'BankDeposit_UpdateForm'])->name('CheckBankDeposit.update');
+
+Route::get('/CheckCounterDeposit/show', [BankDeposit_CounterCheckController::class, 'showCounterdeposit_UpdateForm'])->name('CheckCounterDeposit.index');
+Route::put('/CheckCounterDeposit/update', [BankDeposit_CounterCheckController::class, 'CounterDeposit_UpdateForm'])->name('CheckCounterDeposit.update');
+
 
 
 
