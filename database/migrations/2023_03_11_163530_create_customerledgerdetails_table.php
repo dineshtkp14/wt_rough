@@ -24,8 +24,13 @@ return new class extends Migration
             $table->string('invoicetype');;
             $table->string('salesreturn')->nullable();;
             $table->string('returnidforcreditnotes')->nullable();;
-
+            
             $table->text('notes')->nullable();;
+
+
+            $table->string('bank_deposit');
+            $table->string('counter_deposit');
+
 
             $table->timestamps();
             $table->string('added_by')->nullable();

@@ -25,13 +25,13 @@
                                
 
                                 <tr>
-                                    <th>Date (CREDIT )</th>
-                                    <th>Total Credit Sales Per day</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($salesPerDayCredit as $sale)
-                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
+                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: white;background:red; font-weight: bold;" @endif>
                                     <td>{{ $sale->date }}</td>
                                     <td>{{ $sale->total }}</td>
                                 </tr>
@@ -52,13 +52,13 @@
                                
 
                                 <tr>
-                                    <th>Date (Cash Ony)</th>
-                                    <th>Total Cash only </th>
+                                    <th>Date</th>
+                                    <th>Amount </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($salesPerDayCash as $sale)
-                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
+                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: white;background:red; font-weight: bold;" @endif>
                                     <td>{{ $sale->date }}</td>
                                     <td>{{ $sale->total }}</td>
                                 </tr>
@@ -80,12 +80,12 @@
 
                                 <tr>
                                     <th>Date</th>
-                                    <th>Total Sales Per Day</th>
+                                    <th>Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($salesPerDay as $sale)
-                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
+                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: white;background:red; font-weight: bold;" @endif>
                                     <td>{{ $sale->date }}</td>
                                     <td>{{ $sale->total }}</td>
                                 </tr>
@@ -104,13 +104,13 @@
 
 
                                 <tr>
-                                    <th>Date (CREDIT NOTES)</th>
-                                    <th>Total Credit Notes Per day</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($salesPerDaycrnotes as $sale)
-                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: red; font-weight: bold;" @endif>
+                                <tr @if(now()->format('Y-m-d') == $sale->date) style="color: white;background:red; font-weight: bold;" @endif>
                                     <td>{{ $sale->date }}</td>
                                     <td>{{ $sale->total }}</td>
                                 </tr>
@@ -131,15 +131,15 @@
 
                           
                                 <tr>
-                                    <th>Date (Payment)</th>
-                                    <th>Total Payment only </th>
+                                    <th>Date</th>
+                                    <th>Amount </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($payment as $pay)
-                                <tr @if(now()->format('Y-m-d') == $pay->date) style="color: red; font-weight: bold;" @endif>
+                                <tr @if(now()->format('Y-m-d') == $pay->date) style="color: white;background:red; font-weight: bold;" @endif>
                                     <td>{{ $pay->date }}</td>
-                                    <td>{{ $pay->total }}</td>
+                                    <td> <span class="">{{ $pay->total }}</span></td>
                                 </tr>
                                 @endforeach
                             </tbody>
