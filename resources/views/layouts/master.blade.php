@@ -357,7 +357,7 @@
                                     CUSTOMER LEDGER</a></li>
 
 
-                                    <li><a href="{{ route('cashreceipt.search') }}"
+                                    {{-- <li><a href="{{ route('cashreceipt.search') }}" --}}
                                         class="link-dark d-inline-flex text-decoration-none rounded"><i
                                             class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
                                        SEARCH CUSTOMER PAYMENT CASH RECEIPT </a></li>

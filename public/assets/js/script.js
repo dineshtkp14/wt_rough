@@ -556,7 +556,7 @@ $(window).on("load", function () {
             hasError = true;
         } else if (finalData[0]["customer"].trim() === "") {
             $("#errorText").attr("class", "text-danger fw-bold");
-            $("#errorText").text("Please select customer !");
+            $("#errorText").text("Please select customer Name !");
             hasError = true;
         } else if (
             currentUrl.indexOf("creditnotes/create") === -1 &&
@@ -564,7 +564,7 @@ $(window).on("load", function () {
         ) {
             // Check if invoice type is selected, but only if it's not a credit note creation page
             $("#errorText").attr("class", "text-danger fw-bold");
-            $("#errorText").text("Please choose invoice type !");
+            $("#errorText").text("Please select invoice type !");
             hasError = true;
         } else {
             $.each(salesData, function (index, value) {

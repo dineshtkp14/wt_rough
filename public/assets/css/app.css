@@ -41,6 +41,11 @@
 body {
     background-color: #f1f4f8 !important;
 }
+
+input,
+textarea {
+    border: 1px solid #8c8c8c !important;
+}
 .side-nav ul li button {
     font-size: 16px !important;
     font-family: "Urbanist", sans-serif;

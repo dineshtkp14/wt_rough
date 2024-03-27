@@ -28,8 +28,8 @@ return new class extends Migration
             $table->text('notes')->nullable();;
 
 
-            $table->string('bank_deposit');
-            $table->string('counter_deposit');
+            $table->string('bank_deposit')->nullable();;;
+            $table->string('counter_deposit')->nullable();;;
 
 
             $table->timestamps();
