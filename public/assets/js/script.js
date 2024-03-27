@@ -181,7 +181,7 @@ function inputHTML(counter) {
 
             <td>
 
-                <input autocomplete="off" type="text" placeholder="unit  " class="form-control sales-input" id="unitInput" value="" data-id="${counter}" data-name="unit" >
+                <input autocomplete="off" type="text" placeholder="pcs" class="form-control sales-input" id="unitInput" value="" data-id="${counter}" data-name="unit" >
 
              </td>
 

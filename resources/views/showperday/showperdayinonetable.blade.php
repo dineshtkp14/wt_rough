@@ -8,7 +8,7 @@
         @yield('breadcrumb')
 
         <div class="container">
-            <div class="card scrollable-table">
+            <div class="card">
                 <div class="card-header">
                     <a href="{{ route('items.create') }}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
                     Total No Of Items  <span class="h3 btn btn-dark btn-lg">In Conunter = {{ $totalCashAndPaymentToday }}</span>

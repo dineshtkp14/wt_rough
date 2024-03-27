@@ -43,7 +43,7 @@
 </div>
 
 <div class="container">
-
+<h4>Cash Receipt No  : {{$nextUserId}} </h4>
 
 <form class="row gx-5 gy-3" action="{{ route('cpayments.store') }}" method="post">
                 @csrf

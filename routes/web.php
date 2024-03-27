@@ -25,6 +25,8 @@ use App\Http\Controllers\TrackitemstableController;
 use App\Http\Controllers\MyfirmController;
 use App\Http\Controllers\TransferGoodsController;
 use App\Http\Controllers\TrackcompanyledgerController;
+use App\Http\Controllers\CashReceiptController;
+
 
 
 
@@ -274,6 +276,16 @@ Route::get('/allcashandcredit',[CustomerLedgerHistroy::class,'returnchoosendateh
 
 Route::get('clhs/pdf/convert/',[CustomerLedgerHistroy::class,'PdfGenerateCustomerDetails'])->name('clhspdf.convert');
 Route::get('allcashandcredit/pdf/convert/',[CustomerLedgerHistroy::class,'pdfreturnchoosendatehistroycashandcredit'])->name('pdfreturnchoosendatehistroycashandcredit.convert');
+
+
+
+//cashReceipt
+Route::get('/cashreceipt',[CashReceiptController::class,'returnReceiptDeyailsbyReceiptNo'])->name('cashreceipt.search');
+Route::get('cashreceipt/pdf/convert/',[CashReceiptController::class,'returnReceiptDeyailsbyReceiptNoPDF'])->name('cashreceipt.convert');
+
+
+
+
 
 //companyledgerdetails withpdfconverter
 Route::get('/companyledgerdetails',[CompanyLedgerBillEntryController::class,'returnchoosendatehistroy'])->name('companyledgerdetails.returnchoosendatehistroy');

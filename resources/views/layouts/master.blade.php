@@ -356,6 +356,12 @@
                                         class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
                                     CUSTOMER LEDGER</a></li>
 
+
+                                    <li><a href="{{ route('cashreceipt.search') }}"
+                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
+                                       SEARCH CUSTOMER PAYMENT CASH RECEIPT </a></li>
+
                                     <li><a href="{{ route('allsalesdetails.showallcuscreditdetails') }}"
                                         class="link-dark d-inline-flex text-decoration-none rounded"><i
                                             class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
@@ -454,6 +460,9 @@
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
                                    VIEW EXPENSES </a></li>
+
+
+                                 
                             
 
                         </ul>
@@ -479,7 +488,13 @@
                                             <li><a href="{{ route('showonlysalesperday.pp') }}"
                                             class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-calendar"></i> SHOW PER DAY</a></li>
                                     
+                                            <li><a href="{{ route('CheckBankDeposit.index') }}"
+                                                class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-calendar"></i> Check Bank Deposit</a></li>
                                         
+
+                                                <li><a href="{{ route('CheckCounterDeposit.index') }}"
+                                                    class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-calendar"></i> Check Counter Deposit</a></li>
+                                            
                         </ul>
                     </div>
                 </li>

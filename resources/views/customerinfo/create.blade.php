@@ -13,16 +13,16 @@
             @csrf
 
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label"> Name</label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                <label for="inputPassword4" class="form-label"> Name  <span style="color: red;">*</span></label>
+                <input type="text" placeholder="Enter Name" class="form-control @error('name') is-invalid @enderror" 
                     name="name" value="{{ old('name') }}">
                 @error('name')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Address</label>
-                <input type="text" class="form-control @error('address') is-invalid @enderror" 
+                <label for="inputPassword4" class="form-label">Address <span style="color: red;">*</span></label>
+                <input type="text" placeholder="Enter Address" class="form-control @error('address') is-invalid @enderror" 
                     name="address" value="{{ old('address') }}">
                 @error('address')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -32,15 +32,15 @@
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Email</label>
                 <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                    name="email" value="{{ old('email') }}">
+                    name="email" placeholder="Enter Email" value="{{ old('email') }}">
                 @error('email')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
 
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">PhoneNo</label>
-                <input type="text" class="form-control @error('phoneno') is-invalid @enderror" 
+                <label for="inputPassword4" class="form-label">PhoneNo (main) <span style="color: red;">*</span></label>
+                <input type="text" placeholder="Enter Phone No" class="form-control @error('phoneno') is-invalid @enderror" 
                     name="phoneno" value="{{ old('phoneno') }}">
                 @error('phoneno')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -48,9 +48,18 @@
             </div>
 
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Remarks</label>
+                <label for="inputPassword4" class="form-label">Alternate PhoneNo</label>
+                <input type="text" placeholder="Enter Alternate Phone No" class="form-control @error('alternate_phoneno') is-invalid @enderror" 
+                    name="alternate_phoneno" value="{{ old('alternate_phoneno') }}">
+                @error('alternate_phoneno')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Notes</label>
                 <textarea type="text" class="form-control @error('remarks') is-invalid @enderror" 
-                    name="remarks" value="{{ old('remarks') }}" rows="4" cols="50"> </textarea>
+                    name="remarks" placeholder="Enter Notes" value="{{ old('remarks') }}" rows="4" cols="50"> </textarea>
                 @error('remarks')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\company;
 use App\Models\customerledgerdetails;
 
+use Illuminate\Support\Facades\DB; //
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -52,8 +53,10 @@ class CustomerLedgerDetailsController extends Controller
             'link'=>'Customers Ledger Payment'
         ];
         $cus=customerinfo::orderBy('id','DESC')->get();
-       
-        return view('customerdetails.create',['all'=>$cus,'breadcrumb'=>$breadcrumb]);   ;
+
+        $statement  = DB::select("SHOW TABLE STATUS LIKE 'customerledgerdetails'");
+        $nextUserId = $statement[0]->Auto_increment;       
+        return view('customerdetails.create',['all'=>$cus,'breadcrumb'=>$breadcrumb,'nextUserId'=>$nextUserId]);   ;
     }
     return redirect('/login');
 }
@@ -73,6 +76,10 @@ class CustomerLedgerDetailsController extends Controller
  
      if($validator->passes()){
  
+        $statement  = DB::select("SHOW TABLE STATUS LIKE 'customerledgerdetails'");
+         $nextUserId = $statement[0]->Auto_increment;       
+
+         
          $cl=new customerledgerdetails();
          $cl->customerid=$req->customerid;
          $cl->date=$req->date;
@@ -86,8 +93,11 @@ class CustomerLedgerDetailsController extends Controller
          $cl->save();
  
        
- 
-         return redirect()->route('cpayments.create')->with('success','payment Sucess !!');  
+         
+
+         return redirect()->route('cashreceipt.search', ['receiptno' => $nextUserId])->with('success', 'Invoice Created Successfully !!');
+
+         return redirect()->route('cashreceipt.search')->with('success','payment Sucess !!');  
      }
      else{
          return redirect()->route('cpayments.create')->withErrors($validator)->withInput();

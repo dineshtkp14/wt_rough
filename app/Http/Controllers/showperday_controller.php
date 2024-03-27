@@ -62,8 +62,46 @@ class showperday_controller extends Controller
                 ->paginate(100);
     
  
+                        // Calculate the total of cash and payment for today's date
+                        $today = Carbon::today()->toDateString(); // Get today's date
+                        $totalCashToday = $salesPerDayCash->where('date', $today)->sum('total');
+                        $totalPaymentToday = $payment->where('date', $today)->sum('total');
+                        $totalCashAndPaymentToday = $totalCashToday + $totalPaymentToday;
+    
+    
+    
+                        //forcashand payemntable
+                        $dates = $salesPerDayCash->pluck('date')->merge($payment->pluck('date'))->unique();
+    
+                        // Initialize an array to store total sales and payments for each date
+                        $totalSalesAndPayments = [];
+                    
+                        // Loop through each date and calculate the sum for each date
+                        foreach ($dates as $date) {
+                            $salesTotal = $salesPerDayCash->where('date', $date)->sum('total');
+                            $paymentTotal = $payment->where('date', $date)->sum('total');
+    
+                            $bankDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('bank_deposit');
+                            $CounterDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('counter_deposit');
+    
+                            $totalSalesAndPayments[] = [
+                                'date' => $date,
+                                'total' => $salesTotal + $paymentTotal,
+                                'bank_deposit' => $bankDeposit,
+                                'counter_deposit' => $CounterDeposit
+                            ];
+                        }
+                    
       
-            return view('showperday.perday', ['salesPerDayCredit' => $salesPerDayCredit,'salesPerDayCash' => $salesPerDayCash,'salesPerDay' => $salesPerDay,'salesPerDaycrnotes' => $salesPerDaycr, 'payment' => $payment,'breadcrumb' => $breadcrumb]);
+            return view('showperday.perday', [
+                'totalSalesAndPayments' => $totalSalesAndPayments,
+                'totalCashAndPaymentToday' => $totalCashAndPaymentToday
+                ,'salesPerDayCredit' => $salesPerDayCredit,
+                'salesPerDayCash' => $salesPerDayCash,
+                'salesPerDay' => $salesPerDay,
+                'salesPerDaycrnotes' => $salesPerDaycr,
+                 'payment' => $payment,
+                 'breadcrumb' => $breadcrumb]);
         }
     
         return redirect('/login');

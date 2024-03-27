@@ -91,8 +91,8 @@
                     <div style="width: 300px"   >
                         <select id="invoice_type" name="invoice_type" class="d-inline form-select select-background"  onchange="changeBackgroundColor(this)">
                             <option value="">--Choose Invoice Type--</option>
-                            <option value="cash">CASH (Invoice Type)</option>
-                            <option value="credit">CREDIT (Invoice Type)</option>
+                            <option value="cash">CASH </option>
+                            <option value="credit">CREDIT </option>
                            
                         </select>
                         <small style="font-size: 14px; padding:20px; color:#02090f;"> Choose mode of invoice &nbsp;    (cash / Credit) </small>
@@ -125,7 +125,7 @@
                             <th style="width: 18%;"> Product</th>
                             <th>Unstocked Name</th>
                             <th>Quantity</th>
-                            <th style="width: 10%; ">Unit</th>
+                            <th style="width: 10%; ">Unit (pcs) </th>
 
                             <th style="width: 18%;">Price</th>
                             {{-- <th>Discount</th> --}}

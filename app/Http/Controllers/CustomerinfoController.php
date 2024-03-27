@@ -62,7 +62,7 @@ return redirect('/login');
 
         'name'=>'required',
         'address'=>'required',
-        'phoneno'=>'required', 
+        'phoneno' => 'required|unique:customerinfos,phoneno',
        
            
     ]);
@@ -74,6 +74,8 @@ return redirect('/login');
         $cusinfo->address=$req->address;
         $cusinfo->email=$req->email;
         $cusinfo->phoneno=$req->phoneno;
+        $cusinfo->alternate_phoneno=$req->alternate_phoneno;
+
         $cusinfo->remarks=$req->remarks;
         $cusinfo->added_by = session('user_email');
 

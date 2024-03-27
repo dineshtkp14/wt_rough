@@ -16,7 +16,7 @@
           <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Name</label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                        name="name" value="{{ old('name',$cus->name) }}">
+                        name="name" placeholder="Enter Name" value="{{ old('name',$cus->name) }}">
                     @error('name')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -53,7 +53,7 @@
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Remarks</label>
                     <textarea type="text" class="form-control @error('remarks') is-invalid @enderror" 
-                        name="remarks" value="{{ old('remarks',$cus->remarks) }}" rows="4" cols="50">value="{{ old('remarks',$cus->remarks) }}"</textarea>
+                        name="remarks" value="{{ old('remarks',$cus->remarks) }}" rows="4" cols="50">{{ old('remarks',$cus->remarks) }}</textarea>
                     @error('remarks')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
