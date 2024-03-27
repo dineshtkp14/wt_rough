@@ -158,8 +158,8 @@ class Creditnotes_controller extends Controller
         } 
         
 
-        return redirect()->route('creditnotes.create')->with('success','Invoice Created Sucessfully !!');
-                                
+        return redirect()->route('creditnotescustomer.billno', ['invoiceid' => $invoice_data->id])->with('success', 'Credit Notes Created Successfully !!');
+                      
        
 
     }

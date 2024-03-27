@@ -13,7 +13,7 @@
      
 
           <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Suppliers / Company Name</label>
+                    <label for="inputPassword4" class="form-label">Suppliers / Company Name  <span style="color: red;">*</span></label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" 
                         name="name" value="{{ old('name') }}">
                     @error('name')
@@ -21,7 +21,7 @@
                     @enderror
             </div>
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Address</label>
+                    <label for="inputPassword4" class="form-label">Address  <span style="color: red;">*</span></label>
                     <input type="text" class="form-control @error('address') is-invalid @enderror" 
                         name="address" value="{{ old('address') }}">
                     @error('address')
@@ -39,7 +39,7 @@
             </div>
 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">PhoneNo</label>
+                    <label for="inputPassword4" class="form-label">PhoneNo  <span style="color: red;">*</span></label>
                     <input type="text" class="form-control @error('phoneno') is-invalid @enderror" 
                         name="phoneno" value="{{ old('phoneno') }}">
                     @error('phoneno')

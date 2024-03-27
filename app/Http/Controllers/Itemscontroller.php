@@ -131,7 +131,7 @@ DB::table('trackitemstable')->insert([
 ]);
                 
  
-                 return redirect()->route('items.create')->with('success', 'Items Added Successfully !!');
+                 return redirect()->route('items.index')->with('success', 'Items Added Successfully !!');
              } else {
                  // Handle the case where the company is not found
                  return redirect()->route('items.create')->withErrors(['companyid' => 'Invalid Company'])->withInput();

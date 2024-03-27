@@ -11,7 +11,7 @@
                     @method('put')
 
         <div class="col-md-6">
-            <label for="date" class="form-label">Date</label>
+            <label for="date" class="form-label">Date  <span style="color: red;">*</span></label>
             <input type="date" class="form-control @error('date') is-invalid @enderror" name="date" value="{{ old('date',$purchaseOrder->date) }}">
             @error('date')
                 <p class="invalid-feedback">{{ $message }}</p>
@@ -19,7 +19,7 @@
         </div>
 
         <div class="col-md-8">
-            <label for="orderlist" class="form-label">Order List</label>
+            <label for="orderlist" class="form-label">Order List  <span style="color: red;">*</span></label>
             <textarea placeholder="Enter notes" class="form-control @error('orderlist') is-invalid @enderror" name="orderlist" rows="6">{{ old('orderlist', $purchaseOrder->notes) }}</textarea>
 
             @error('orderlist')

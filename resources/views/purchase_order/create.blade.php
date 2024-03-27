@@ -9,7 +9,7 @@
         <form class="row gx-5 gy-3" action="{{ route('purorder.store') }}" method="post">
             @csrf
             <div class="col-md-8">
-                <label for="orderlist" class="form-label">Order List</label>
+                <label for="orderlist" class="form-label">Order List  <span style="color: red;">*</span></label>
                 <textarea placeholder="Enter order list" class="form-control @error('orderlist') is-invalid @enderror" name="orderlist" rows="10" style="font-size: 20px;">{{ old('orderlist') }}</textarea>
                 @error('orderlist')
                     <p class="invalid-feedback">{{ $message }}</p>
