@@ -160,7 +160,7 @@ class Creditnotes_controller extends Controller
         } 
         
 
-        return redirect()->route('creditnotescustomer.billno', ['invoiceid' => $invoice_data->id])->with('success', 'Credit Notes Created Successfully !!');
+        return redirect()->route('creditnotescustomeronlyview.billno', ['invoiceid' => $invoice_data->id])->with('success', 'Credit Notes Created Successfully !!');
                       
        
 
@@ -278,6 +278,58 @@ class Creditnotes_controller extends Controller
             }
 }
 
+
+public function returnBillsDEtailsByInvoiceidforviewingcreditnotebillonlyview(Request $req)
+            {
+                if(Auth::check()){
+
+                $breadcrumb = [
+                    'subtitle' => 'Credit Notes',
+                    'title' => 'Search Bill No / Sales Return',
+                    'link' => 'Search Bill No / Sales Return'
+                ];
+            
+                $itemsname = item::where('id', $req->customerid)->get();
+                $invoiceid = $req->invoiceid;
+            
+                $allInvoices = CreditnotesInvoice::where('id', $req->invoiceid)->get();
+            
+                $allcusbyid = CreditnotesSalesitem::where('invoiceid', $req->invoiceid)->get();
+                $customerinfodetails = null;
+
+                $cusleddetaiforinvoicetype = CreditnotesCustomerledgerdetail::where('invoiceid', $req->invoiceid)->get();
+                $forinvoicetype = $cusleddetaiforinvoicetype->first();           
+            
+                foreach ($allcusbyid as $data) {
+                    $item = item::where('id', $data->itemid)->select('id','itemsname', 'mrp','unit')->first();
+                    if ($item) {
+                        $data->itemidorg = $item->id;
+
+                        $data->itemid = $item->itemsname;
+                        $data->mrp = $item->mrp;
+                        $data->unit = $item->unit;
+                    } else {
+                        $data->itemid = $data->unstockedname;
+                    }
+                }
+            
+                foreach ($allInvoices as $data) {
+                    if ($data->customerid) {
+                        $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
+                    }
+                }
+            
+                return view('creditnotesinvoice.searchbillcnonlyview', [
+                    'allinvoices' => $allInvoices,
+                    'allcusbyid' => $allcusbyid,
+                    'itemsname' => $itemsname,
+                    'invoiceid' => $invoiceid,
+                    'cinfodetails' => $customerinfodetails,
+                    'forinvoicetype'=>$forinvoicetype,
+                    'breadcrumb' => $breadcrumb
+                ]);
+            }
+}
 
 
 //viewing create note

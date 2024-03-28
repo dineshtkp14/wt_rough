@@ -104,6 +104,11 @@ Route::get('/creditnotes/{creditnotes}/edit',[Creditnotes_controller::class,'edi
 Route::put('/creditnotes/{creditnotes}',[Creditnotes_controller::class,'update'])->name('creditnotes.update');
 Route::post('/creditnotes',[Creditnotes_controller::class,'store'])->name('creditnotes.store');
 
+
+
+Route::get('/creditnotesbillnoonlyview',[Creditnotes_controller::class,'returnBillsDEtailsByInvoiceidforviewingcreditnotebillonlyview'])->name('creditnotescustomeronlyview.billno');
+
+
 Route::get('/creditnotesbillno',[Creditnotes_controller::class,'returnBillsDEtailsByInvoiceidforviewingcreditnotebill'])->name('creditnotescustomer.billno');
 Route::delete('/creditnotesbillno', [Creditnotes_controller::class, 'deletebillfromdatabaseforcreditnotes'])->name('creditnotescustomers.deletebillno');
 Route::put('/creditnotesbillno', [Creditnotes_controller::class, 'updateinvoiicetypeforcreditnotes'])->name('creditnotescustomers.updatebillinvoicetype');
