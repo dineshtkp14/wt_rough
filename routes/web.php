@@ -26,6 +26,8 @@ use App\Http\Controllers\MyfirmController;
 use App\Http\Controllers\TransferGoodsController;
 use App\Http\Controllers\TrackcompanyledgerController;
 use App\Http\Controllers\CashReceiptController;
+use App\Http\Controllers\ChequeDepositController;
+
 
 
 
@@ -215,6 +217,17 @@ Route::get('/pdf/view',[CustomerPdfGenerator::class,'pdfview'])->name('pdf.view'
 Route::get('/pdf/convert',[CustomerPdfGenerator::class,'pdfgenerate'])->name('pdf.convert');
 
 
+//chequedeposit
+Route::get('/chequedeposit',[ChequeDepositController::class,'index'])->name('chequedeposit.index');
+Route::get('/chequedeposit/create',[ChequeDepositController::class,'create'])->name('chequedeposit.create');
+Route::post('/chequedeposit',[ChequeDepositController::class,'store'])->name('chequedeposit.store');
+Route::get('/chequedeposit/{chequedeposit}/edit',[ChequeDepositController::class,'edit'])->name('chequedeposit.edit');
+Route::put('/chequedeposit/{chequedeposit}',[ChequeDepositController::class,'update'])->name('chequedeposit.update');
+Route::delete('/chequedeposit/{chequedeposit}',[ChequeDepositController::class,'destroy'])->name('chequedeposit.destroy');
+
+//chequeReceipt
+Route::get('/chequereceipt',[ChequeDepositController::class,'returnReceiptDeyailsbyReceiptNo'])->name('chequereceipt.search');
+Route::get('chequereceipt/pdf/convert/',[ChequeDepositController::class,'returnReceiptDeyailsbyReceiptNoPDF'])->name('chequereceipt.convert');
 
 
 

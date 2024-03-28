@@ -15,11 +15,13 @@
             <!-- Shop Name -->
             <h4 class="text-center mb-4">OHT</h4>
             <!-- Cash Receipt -->
-            <h5 class="text-center mb-4">Cash Receipt</h5>
-            <div class="card-body">
+
+                      
+              
+              <div class="card-body">
                 <!-- Search Receipt Form -->
                 <h5 class="card-title mb-4">Search Receipt No</h5>
-                <form action="{{ route('cashreceipt.search') }}" method="get" id="searchForm">
+                <form action="{{ route('chequereceipt.search') }}" method="get" id="searchForm">
                     <div class="input-group mb-3">
                         <input type="number" autocomplete="off" class="form-control" id="receiptno" name="receiptno" placeholder="Enter Receipt No" required>
                         <button type="submit" class="btn btn-primary">Search</button>
@@ -28,14 +30,17 @@
             </div>
             <!-- Print Button -->
             <div class="d-flex justify-content-end align-items-center pt-4 p-4">
-                <a href="{{ route('cashreceipt.convert', ['receiptno' => $receiptno]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ isset($alldetails) && count($alldetails) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
+                <a href="{{ route('chequereceipt.convert', ['receiptno' => $receiptno]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ isset($alldetails) && count($alldetails) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
                     <div class="icon-box d-flex justify-content-center align-items-center" style="font-size: 34px;">
                         <i class="fa-solid fa-print"></i>
                     </div>
                 </a>
             </div>
             <!-- CASH RECEIPT Heading -->
-            <h3 class="text-center"><strong>CASH RECEIPT</strong></h3>
+            <div class="text-center mb-4">
+                <i class="fas fa-book fa-3x"></i> <!-- Book icon -->
+                <h5 class="mb-0">Cheque Receipt</h5>
+             </div> 
             <!-- Date and Receipt No at Top Right -->
             <div class="d-flex justify-content-end mb-4">
                 <div class="mr-3">
@@ -68,10 +73,10 @@
                                     <div class="mb-4">
                                         @if (isset($data->date))
                                         @endif
-                                        <p class="mb-1"><strong>Particulars:</strong> {{ $data->particulars ?? '' }}</p>
-                                        <p class="mb-1"><strong>Voucher Type:</strong> {{ $data->voucher_type ?? '' }}</p>
-                                        <p class="mb-1"><strong>Amount:</strong> {{ $data->credit ?? '' }} </p>
-                                        <p class="mb-1"><strong>Amount:</strong>uuuuuuuuuuuuuuuuuuuuuuuuuuu  </p>
+                                        <p class="mb-1"><strong>Cheque Date:</strong> {{ $data->cheque_date ?? '' }}</p>
+                                        <p class="mb-1"><strong>Bank Name:</strong> {{ $data->bank_name ?? '' }} </p>
+                                        <p class="mb-1"><strong>Amount:</strong> {{ $data->amount ?? '' }} </p>
+                                        <p class="mb-1"><strong>Notes :</strong> {{ $data->notes ?? '' }}</p>
 
                                         </div>
                                 </div>

@@ -21,6 +21,10 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB; //
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Carbon;
+
+
 
 class CustomerLedgerHistroy extends Controller
 {
@@ -174,228 +178,288 @@ class CustomerLedgerHistroy extends Controller
 
     
 
+
     public function deletebillfromdatabase(Request $req)
     {
-        $validator = Validator::make($req->all(), [
-            'invoiceid' => 'required',
-        ]);
+        // Check if the user's email is the admin's email
+        $user_email = $req->session()->get('user_email');
     
-        if ($validator->passes()) {
-            // Retrieve the items from the bill before deleting
-            $items = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->get();
-    
-            // Backup data before deleting
-            foreach ($items as $item) {
-                $backupSalesItem = new BackupSalesItem();
-                $backupSalesItem->invoiceid = $item->invoiceid;
-                $backupSalesItem->itemid = $item->itemid;
-                $backupSalesItem->unstockedname = $item->unstockedname;
-                $backupSalesItem->quantity = $item->quantity;
-                $backupSalesItem->price = $item->price;
-                // $backupSalesItem->discount = $item->discount;
-                $backupSalesItem->subtotal = $item->subtotal;
-                $backupSalesItem->added_by = session('user_email');
-
-                $backupSalesItem->save();
-            }
-    
-            // Backup invoice data
-            $invoice = DB::table('invoices')->where('id', $req->invoiceid)->first();
-    
-            if ($invoice) {
-                $backupInvoice = new BackupInvoice();
-                $backupInvoice->customerid = $invoice->customerid;
-                $backupInvoice->subtotal = $invoice->subtotal;
-                $backupInvoice->discount = $invoice->discount;
-                $backupInvoice->total = $invoice->total;
-                $backupInvoice->notes = $invoice->notes;
-                $backupInvoice->invoice_id = $req->invoiceid;
-
-
-                $backupInvoice->inv_type = $invoice->inv_type;
-                $backupInvoice->inv_date = $invoice->inv_date;
-
-
-                
-                $backupInvoice->added_by = session('user_email');
-
-
-                $backupInvoice->save();
-            } else {
-                // Handle the case when the invoice does not exist
-                return redirect()->route('customer.billno')->with('error', 'Invalid invoiceid provided');
-            }
-    
-            // Backup customer ledger details
-            $ledgerDetails = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->get();
-            foreach ($ledgerDetails as $ledger) {
-                $backupLedger = new BackupCustomerLedgerDetails();
-                $backupLedger->customerid = $ledger->customerid;
-                $backupLedger->invoiceid = $ledger->invoiceid;
-                $backupLedger->particulars = $ledger->particulars;
-                $backupLedger->voucher_type = $ledger->voucher_type;
-                $backupLedger->date = $ledger->date;
-                $backupLedger->debit = $ledger->debit;
-                $backupLedger->credit = $ledger->credit;
-                $backupLedger->invoicetype = $ledger->invoicetype;
-                $backupLedger->notes = $ledger->notes;
-                $backupLedger->added_by = session('user_email');
-
-                $backupLedger->save();
-            }
-    
-            // Adjust stock quantities before deleting
-            foreach ($items as $item) {
-                $product = Item::find($item->itemid);
-                if ($product) {
-                    $product->quantity += $item->quantity;
-                    $product->save();
-                }
-            }
-    
-            // Delete records from salesitem_tbl
-            $salesItemsDeleted = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->delete();
-    
-            // Delete records from invoices_tbl
-            $invoicesDeleted = DB::table('invoices')->where('id', $req->invoiceid)->delete();
-    
-            // Delete records from customerledgerdetails_tbl
-            $ledgerDetailsDeleted = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->delete();
-    
-
-
-    
-
-            // Check if any records were deleted
-            if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
-       
-            // Insert into track table
-            DB::table('trackinvoice')->insert([
-                
-                'bill_no' => $req->invoiceid,
-                'title' => "invoice_deleted",
-                'updated_by' => session('user_email'),
-                'notes' => ' Invoice Id : ' . $req->invoiceid . ' is deleted  by ' . session('user_email')
+        if ($user_email === 'dineshtkp14@gmail.com') {
+            // Admin can delete without any date restrictions
+            $validator = Validator::make($req->all(), [
+                'invoiceid' => 'required',
+            ]);
+        } else {
+            // Regular users can delete only if the current date matches the date in the database
+            $validator = Validator::make($req->all(), [
+                'invoiceid' => 'required',
             ]);
     
-
-                return redirect()->route('customer.billno')->with('deletesuccess', 'Deleted Successfully !!');
-            } else {
-                return redirect()->route('customer.billno')->with('error', 'No records found for the provided invoiceid');
+            // Retrieve the date associated with the invoice from the database
+            $invoiceDate = DB::table('customerledgerdetails')
+                ->where('invoiceid', $req->invoiceid)
+                ->value('date');
+    
+            if (!empty($invoiceDate) && !Carbon::parse($invoiceDate)->isToday()) {
+                // If the date doesn't match today's date, return an error message
+                return redirect()->route('customer.billno')->with('error', 'Regular users can only delete on the current date.');
             }
-        } else {
-            // Redirect with an error message if invoiceid is not provided
+        }
+    
+        // If validation fails, redirect with an error message
+        if ($validator->fails()) {
             return redirect()->route('customer.billno')->withErrors($validator)->withInput();
         }
-    }
-
-
-
-
-
-
-
-public function updatecustomername(Request $req)
-{
-    $validator = Validator::make($req->all(), [
-        'Bill_No' => 'required',
-        'customerid' => 'required',
-    ]);
-
-    if ($validator->passes()) {
-        // Retrieve the initial customer ID from customerledgerdetails
-        $initialCustomerId = DB::table('customerledgerdetails')
-            ->where('invoiceid', $req->Bill_No)
-            ->value('customerid');
-
-        if ($initialCustomerId === null) {
-            return redirect()->route('customer.billno')->with('updateerrorcusname', 'No records found for the provided invoiceid');
+    
+        // Retrieve the items from the bill before deleting
+        $items = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->get();
+    
+        // Backup data before deleting
+        foreach ($items as $item) {
+            $backupSalesItem = new BackupSalesItem();
+            $backupSalesItem->invoiceid = $item->invoiceid;
+            $backupSalesItem->itemid = $item->itemid;
+            $backupSalesItem->unstockedname = $item->unstockedname;
+            $backupSalesItem->quantity = $item->quantity;
+            $backupSalesItem->price = $item->price;
+            $backupSalesItem->subtotal = $item->subtotal;
+            $backupSalesItem->added_by = $user_email;
+            $backupSalesItem->save();
         }
-
-        // Update customerledgerdetails table
-        DB::table('customerledgerdetails')
-            ->where('invoiceid', $req->Bill_No)
-            ->update(['customerid' => $req->customerid]);
-
-        // Update invoices table
-        DB::table('invoices')
-            ->where('id', $req->Bill_No)
-            ->update(['customerid' => $req->customerid]);
-
-        // Insert into track table
-        DB::table('trackinvoice')->insert([
-            
-                            'bill_no' => $req->Bill_No,
-                            'title' => "customer_name_updated",
-                            'updated_by' => session('user_email'),
-                            'notes' => 'Initial customer Id: ' . $initialCustomerId . ' is updated to customerid: ' . $req->customerid . ' of invoice/bill No ('.$req->Bill_No.') of the title customer_name_updated by ' . session('user_email')
-                        ]);
-
-        return redirect()->route('customer.billno')->with('updatesuccesscusname', 'Updated customer name Successfully !!');
-    } else {
-        // Redirect with an error message if validation fails
-        return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+    
+        // Backup invoice data
+        $invoice = DB::table('invoices')->where('id', $req->invoiceid)->first();
+        if ($invoice) {
+            $backupInvoice = new BackupInvoice();
+            $backupInvoice->customerid = $invoice->customerid;
+            $backupInvoice->subtotal = $invoice->subtotal;
+            $backupInvoice->discount = $invoice->discount;
+            $backupInvoice->total = $invoice->total;
+            $backupInvoice->notes = $invoice->notes;
+            $backupInvoice->invoice_id = $req->invoiceid;
+            $backupInvoice->inv_type = $invoice->inv_type;
+            $backupInvoice->inv_date = $invoice->inv_date;
+            $backupInvoice->added_by = $user_email;
+            $backupInvoice->save();
+        } else {
+            // Handle the case when the invoice does not exist
+            return redirect()->route('customer.billno')->with('error', 'Invalid invoiceid provided');
+        }
+    
+        // Backup customer ledger details
+        $ledgerDetails = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->get();
+        foreach ($ledgerDetails as $ledger) {
+            $backupLedger = new BackupCustomerLedgerDetails();
+            $backupLedger->customerid = $ledger->customerid;
+            $backupLedger->invoiceid = $ledger->invoiceid;
+            $backupLedger->particulars = $ledger->particulars;
+            $backupLedger->voucher_type = $ledger->voucher_type;
+            $backupLedger->date = $ledger->date;
+            $backupLedger->debit = $ledger->debit;
+            $backupLedger->credit = $ledger->credit;
+            $backupLedger->invoicetype = $ledger->invoicetype;
+            $backupLedger->notes = $ledger->notes;
+            $backupLedger->added_by = $user_email;
+            $backupLedger->save();
+        }
+    
+        // Adjust stock quantities before deleting
+        foreach ($items as $item) {
+            $product = Item::find($item->itemid);
+            if ($product) {
+                $product->quantity += $item->quantity;
+                $product->save();
+            }
+        }
+    
+        // Delete records from salesitem_tbl
+        $salesItemsDeleted = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->delete();
+    
+        // Delete records from invoices_tbl
+        $invoicesDeleted = DB::table('invoices')->where('id', $req->invoiceid)->delete();
+    
+        // Delete records from customerledgerdetails_tbl
+        $ledgerDetailsDeleted = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->delete();
+    
+        // Check if any records were deleted
+        if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
+            // Insert into track table
+            DB::table('trackinvoice')->insert([
+                'bill_no' => $req->invoiceid,
+                'title' => "invoice_deleted",
+                'updated_by' => $user_email,
+                'notes' => ' Invoice Id : ' . $req->invoiceid . ' is deleted  by ' . $user_email
+            ]);
+            return redirect()->route('customer.billno')->with('deletesuccess', 'Deleted Successfully !!');
+        } else {
+            return redirect()->route('customer.billno')->with('error', 'No records found for the provided invoiceid');
+        }
     }
-}
+    
 
 
 
 
 
 
-public function updateinvoiicetype(Request $req)
-{
-    $validator = Validator::make($req->all(), [
-        'updateinvoiceid' => 'required',
-        'invoicetype' => 'required|in:credit,cash',
-    ]);
 
-    if ($req->invoicetype == 'check') {
-        return redirect()->route('customer.billno')->with('updateerror', 'Please select a valid invoice type');
+
+    public function updatecustomername(Request $req)
+    {
+        // Check if the user's email is the admin's email
+        $user_email = $req->session()->get('user_email');
+    
+        if ($user_email === 'dineshtkp14@gmail.com') {
+            // Admin can update on any date
+            $validator = Validator::make($req->all(), [
+                'Bill_No' => 'required',
+                'customerid' => 'required',
+            ]);
+    
+            if ($validator->passes()) {
+                // Update customerledgerdetails table
+                DB::table('customerledgerdetails')
+                    ->where('invoiceid', $req->Bill_No)
+                    ->update(['customerid' => $req->customerid]);
+    
+                // Update invoices table
+                DB::table('invoices')
+                    ->where('id', $req->Bill_No)
+                    ->update(['customerid' => $req->customerid]);
+    
+                // Insert into track table
+                DB::table('trackinvoice')->insert([
+                    'bill_no' => $req->Bill_No,
+                    'title' => "customer_name_updated",
+                    'updated_by' => $user_email,
+                    'notes' => 'Customer ID updated by admin to ' . $req->customerid . ' for invoice/bill No ('.$req->Bill_No.')'
+                ]);
+    
+                return redirect()->route('customer.billno')->with('updatesuccesscusname', 'Updated customer name Successfully !!');
+            } else {
+                // Redirect with an error message if validation fails
+                return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+            }
+        } else {
+            // Check if the date of the request is today's date for regular users
+            $ledgerDate = DB::table('customerledgerdetails')
+                ->where('invoiceid', $req->Bill_No)
+                ->value('date');
+    
+            if (!empty($ledgerDate) && Carbon::parse($ledgerDate)->isToday()) {
+                $validator = Validator::make($req->all(), [
+                    'Bill_No' => 'required',
+                    'customerid' => 'required',
+                ]);
+    
+                if ($validator->passes()) {
+                    // Update customerledgerdetails table
+                    DB::table('customerledgerdetails')
+                        ->where('invoiceid', $req->Bill_No)
+                        ->update(['customerid' => $req->customerid]);
+    
+                    // Update invoices table
+                    DB::table('invoices')
+                        ->where('id', $req->Bill_No)
+                        ->update(['customerid' => $req->customerid]);
+    
+                    // Insert into track table
+                    DB::table('trackinvoice')->insert([
+                        'bill_no' => $req->Bill_No,
+                        'title' => "customer_name_updated",
+                        'updated_by' => $user_email,
+                        'notes' => 'Customer ID updated by user to ' . $req->customerid . ' for invoice/bill No ('.$req->Bill_No.')'
+                    ]);
+    
+                    return redirect()->route('customer.billno')->with('updatesuccesscusname', 'Updated customer name Successfully !!');
+                } else {
+                    // Redirect with an error message if validation fails
+                    return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+                }
+            } else {
+                return redirect()->route('customer.billno')->with('updateerrorcusname', 'Regular users can only update on the current date.');
+            }
+        }
     }
+    
 
-    if ($validator->passes()) {
+
+
+
+
+
+
+   
+    public function updateinvoiicetype(Request $req)
+    {
+        // Check if the user's email is the admin's email
+        $user_email = $req->session()->get('user_email');
+    
+        if ($user_email === 'dineshtkp14@gmail.com') {
+            // Admin can update without any date restrictions
+            $validator = Validator::make($req->all(), [
+                'updateinvoiceid' => 'required',
+                'invoicetype' => 'required|in:credit,cash',
+            ]);
+        } else {
+            // Regular users can update only if the current date matches the date in the database
+            $validator = Validator::make($req->all(), [
+                'updateinvoiceid' => 'required',
+                'invoicetype' => 'required|in:credit,cash',
+            ]);
+    
+            // Retrieve the date associated with the invoice type from the database
+            $invoiceDate = DB::table('customerledgerdetails')
+                ->where('invoiceid', $req->updateinvoiceid)
+                ->value('date');
+    
+            // Check if the date is today's date
+            if (!empty($invoiceDate) && Carbon::parse($invoiceDate)->isToday()) {
+                // Validation passes
+            } else {
+                // Date doesn't match today's date, return with an error message
+                return redirect()->route('customer.billno')->with('updateerror', 'Regular users can only update on the current date.');
+            }
+        }
+    
+        if ($validator->fails()) {
+            // Redirect with an error message if validation fails
+            return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+        }
+    
         // Check if the selected value is not the default "Open this select menu"
         $invoiceExists = DB::table('customerledgerdetails')->where('invoiceid', $req->updateinvoiceid)->exists();
-
-        if ($invoiceExists) {
-
-            // Retrieve the initial customer ID from customerledgerdetails
-        $initialinvoicetype = DB::table('customerledgerdetails')
-        ->where('invoiceid', $req->updateinvoiceid)
-        ->value('invoicetype');
-
-
-            // Update customerledgerdetails table
-            DB::table('customerledgerdetails')
-                ->where('invoiceid', $req->updateinvoiceid)
-                ->update(['invoicetype' => $req->invoicetype]);
-
-            // Update invoices table
-            DB::table('invoices')
-                ->where('id', $req->updateinvoiceid)
-                ->update(['inv_type' => $req->invoicetype]);
-
-                 // Insert into track table
-        DB::table('trackinvoice')->insert([
-          
-                            'bill_no' => $req->updateinvoiceid,
-                            'title' => "invoice_type_updated",
-                            'updated_by' => session('user_email'),
-                            'notes' => 'Initial invoice type : ' . $initialinvoicetype . ' is updated to invoicetype: ' .$req->invoicetype . ' of invoice/bill No ('.$req->updateinvoiceid.') of the title invoice_type_updated by ' . session('user_email')
-                        ]);
-
-            return redirect()->route('customer.billno')->with('updatesuccess', 'Updated Invoice Type Successfully !!');
-        } else {
+    
+        if (!$invoiceExists) {
             return redirect()->route('customer.billno')->with('updateerror', 'No records found for the provided invoiceid');
         }
-    } else {
-        // Redirect with an error message if validation fails
-        return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+    
+        // Retrieve the initial invoice type from customerledgerdetails
+        $initialinvoicetype = DB::table('customerledgerdetails')
+            ->where('invoiceid', $req->updateinvoiceid)
+            ->value('invoicetype');
+    
+        // Update customerledgerdetails table
+        DB::table('customerledgerdetails')
+            ->where('invoiceid', $req->updateinvoiceid)
+            ->update(['invoicetype' => $req->invoicetype]);
+    
+        // Update invoices table
+        DB::table('invoices')
+            ->where('id', $req->updateinvoiceid)
+            ->update(['inv_type' => $req->invoicetype]);
+    
+        // Insert into track table
+        DB::table('trackinvoice')->insert([
+            'bill_no' => $req->updateinvoiceid,
+            'title' => "invoice_type_updated",
+            'updated_by' => $user_email,
+            'notes' => 'Initial invoice type : ' . $initialinvoicetype . ' is updated to invoicetype: ' . $req->invoicetype . ' of invoice/bill No (' . $req->updateinvoiceid . ') of the title invoice_type_updated by ' . $user_email
+        ]);
+    
+        return redirect()->route('customer.billno')->with('updatesuccess', 'Updated Invoice Type Successfully !!');
     }
-}
-
-
+    
 
 
 

@@ -5,14 +5,28 @@
 <div class="main-content">
     @yield('breadcrumb')
 
-    {{-- <div class="container">
-        @if (Session::has('success'))
-            <div class="alert alert-success w-50">
-                {{ Session::get('success') }}
+    @if (Session::has('updateerrorcusname'))
+                <div class="alert bg-danger text-white">
+                    {{ Session::get('updateerrorcusname') }}
+                </div>
+            @endif
+            @if (Session::has('updatesuccesscusname'))
+            <div class="alert bg-success text-white">
+                {{ Session::get('updatesuccesscusname') }}
             </div>
         @endif
 
-</div> --}}
+        @if (Session::has('error'))
+        <div class="alert bg-danger text-white w-100">
+            {{ Session::get('error') }}
+            </div>
+        @endif
+        @if (Session::has('deletesuccess'))
+        <div class="alert bg-success text-white w-100">
+            {{ Session::get('deletesuccess') }}
+        </div>
+    @endif
+
 
 
 <div class="container">
@@ -36,17 +50,7 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Delete Invoice</h5>
-                    @if (Session::has('error'))
-                    <div class="alert bg-danger text-white w-100">
-                        {{ Session::get('error') }}
-                        </div>
-                    @endif
-                    @if (Session::has('deletesuccess'))
-                    <div class="alert bg-success text-white w-100">
-                        {{ Session::get('deletesuccess') }}
-                    </div>
-                @endif
-
+                  
                     <form action="{{ route('creditnotescustomers.deletebillno') }}" method="POST" id="deleteForm">
                         @csrf
                         @method('DELETE')
@@ -70,16 +74,7 @@
     <div class="card mb-3">
         <div class="card-body">
             <h5 class="card-title">Update Customer name </h5>
-            @if (Session::has('updateerrorcusname'))
-                <div class="alert bg-danger text-white">
-                    {{ Session::get('updateerrorcusname') }}
-                </div>
-            @endif
-            @if (Session::has('updatesuccesscusname'))
-            <div class="alert bg-success text-white">
-                {{ Session::get('updatesuccesscusname') }}
-            </div>
-        @endif
+           
 
             <form action="{{ route('updatecustomernameCN') }}" method="POST" id="updateFormsci">
                 @csrf

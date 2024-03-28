@@ -12,6 +12,41 @@
             </div>
         @endif
 
+        @if (Session::has('updateerror'))
+                        <div class="alert bg-danger text-white">
+                            {{ Session::get('updateerror') }}
+                        </div>
+                    @endif
+                    @if (Session::has('updatesuccess'))
+                    <div class="alert bg-success text-white">
+                        {{ Session::get('updatesuccess') }}
+                    </div>
+                @endif
+
+
+
+                @if (Session::has('error'))
+                <div class="alert bg-danger text-white">
+                    {{ Session::get('error') }}
+                </div>
+            @endif
+            @if (Session::has('deletesuccess'))
+            <div class="alert bg-success text-white">
+                {{ Session::get('deletesuccess') }}
+            </div>
+        @endif
+
+        @if (Session::has('updateerrorcusname'))
+            <div class="alert bg-danger text-white">
+                {{ Session::get('updateerrorcusname') }}
+            </div>
+        @endif
+        @if (Session::has('updatesuccesscusname'))
+        <div class="alert bg-success text-white">
+            {{ Session::get('updatesuccesscusname') }}
+        </div>
+    @endif
+
 </div>
 <a href="{{ route('itemsales.create') }}" class="btn btn-primary float-end me-5" style="margin-top: -100px; background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-file-invoice"></i> ADD NEW INVOICE</a>
 
@@ -41,17 +76,7 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Delete Invoice</h5>
-                    @if (Session::has('error'))
-                        <div class="alert bg-danger text-white">
-                            {{ Session::get('error') }}
-                        </div>
-                    @endif
-                    @if (Session::has('deletesuccess'))
-                    <div class="alert bg-success text-white">
-                        {{ Session::get('deletesuccess') }}
-                    </div>
-                @endif
-
+                   
                     <form action="{{ route('customer.deletebillno') }}" method="POST" id="deleteForm">
                         @csrf
                         @method('DELETE')
@@ -72,16 +97,7 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Update Invoice Type</h5>
-                    @if (Session::has('updateerror'))
-                        <div class="alert bg-danger text-white">
-                            {{ Session::get('updateerror') }}
-                        </div>
-                    @endif
-                    @if (Session::has('updatesuccess'))
-                    <div class="alert bg-success text-white">
-                        {{ Session::get('updatesuccess') }}
-                    </div>
-                @endif
+                    
 
                     <form action="{{ route('customer.updatebillinvoicetype') }}" method="POST" id="updateForm">
                         @csrf
@@ -117,17 +133,8 @@
 <div class="col-md-3">
     <div class="card mb-3">
         <div class="card-body">
+          
             <h5 class="card-title">Update Customer name </h5>
-            @if (Session::has('updateerrorcusname'))
-                <div class="alert bg-danger text-white">
-                    {{ Session::get('updateerrorcusname') }}
-                </div>
-            @endif
-            @if (Session::has('updatesuccesscusname'))
-            <div class="alert bg-success text-white">
-                {{ Session::get('updatesuccesscusname') }}
-            </div>
-        @endif
 
             <form action="{{ route('updatecustomername') }}" method="POST" id="updateFormsci">
                 @csrf
