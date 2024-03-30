@@ -82,7 +82,7 @@
 
     <div class="row mt-3">
         <div class="col-md-4 mb-3">
-            <button class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-invoice"></i> Expenses</button>
+            <button class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-invoice"></i> Credit Notes/Sales Return</button>
         </div>
         <div class="col-md-4 mb-3">
             <a href="{{ route('change-password') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-university"></i>CHANGE PASSWORD</a>

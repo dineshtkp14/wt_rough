@@ -45,10 +45,12 @@
                 </div>
             </div>
         </div>
-
-     
-       
-
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+        <a href="{{ route('creditnotescustomer.billno') }}" class="btn btn-lg btn-success">
+            <i class="fas fa-edit me-2"></i> EDIT INVOICE
+        </a>
+        </div>
 
 
 

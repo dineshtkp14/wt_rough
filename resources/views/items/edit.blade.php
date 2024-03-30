@@ -45,7 +45,6 @@
     
 
 
-
 <form class="row gx-5 gy-3" action="{{route('items.update',$item->id)}}" method="post">
     @csrf  
     @method('put')

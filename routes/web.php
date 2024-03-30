@@ -83,6 +83,7 @@ Route::get('/purchaseorderdash',[UserdashboardController::class,'purchaseorderda
 Route::get('/customerdash',[UserdashboardController::class,'customerdash'])->name('customerdash');
 Route::get('/bankdash',[UserdashboardController::class,'bankdash'])->name('bankdash');
 Route::get('/invoicedash',[UserdashboardController::class,'invoicedash'])->name('invoicedash');
+Route::get('/cndash',[UserdashboardController::class,'cndash'])->name('cndash');
 
 Route::get('/userdash',[UserdashboardController::class,'index'])->name('userdash');
 
@@ -95,7 +96,7 @@ Route::put('/itemsales/{itemsales}',[ItemsalesController::class,'update'])->name
 Route::post('/itemsales',[ItemsalesController::class,'store'])->name('itemsales.store');
 
 
-Route::get('/creditnotes/create', [Creditnotes_controller::class, 'showCreditNotesPage'])->name('showCreditNotesPage.check');
+// Route::get('/creditnotes/create', [Creditnotes_controller::class, 'showCreditNotesPage'])->name('showCreditNotesPage.check');
 
 
 Route::get('/creditnotes',[Creditnotes_controller::class,'index'])->name('creditnotes.index');

@@ -9,11 +9,9 @@
 
 
 
-    {{-- <livewire:allsalesdetailslivewire/> --}}
 
-        <livewire:allcustomercreditlistlivewire/>
+        <livewire:allcustomer-creditduelistlivewire/>
 
-    
 
     @livewireScripts
 

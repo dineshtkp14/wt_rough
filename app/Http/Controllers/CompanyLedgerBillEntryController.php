@@ -243,7 +243,10 @@ public function update($id, Request $req)
 
       $from=date($req->date1);
       $to=date($req->date2);
+
+     
   
+      $companyid=$req->companyid;
 
       $cusledgertails=null;
       $debittotalsumwithdate=null;
@@ -277,7 +280,19 @@ public function update($id, Request $req)
      
     
       
-         return view('companyLedgerBillEntry.companyledgersshow',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
+         return view('companyLedgerBillEntry.companyledgersshow',[
+        'all'=>$cusledgertails,
+         'allcus'=>$allcusinfo,
+         'dts'=>$debittotalsumwithdate,
+         'cts'=>$credittotalsumwithdate,
+         'breadcrumb'=>$breadcrumb,
+         'companyid'=>$companyid,
+         'from' => $from,
+         'to' => $to,
+
+
+
+        ]);      
         //  return view('companyLedgerBillentry.payshow', compact('cusledgertails', 'allcusinfo', 'debittotalsumwithdate', 'credittotalsumwithdate', 'breadcrumb'))->withErrors($validator)->withInput();
      
         }
@@ -296,6 +311,8 @@ public function update($id, Request $req)
     if(Auth::check()){
           $from=date($req->date1);
           $to=date($req->date2);
+        
+        
            
        
           $cusledgertails=null;
@@ -346,12 +363,35 @@ public function update($id, Request $req)
              
           }
 
-      
-      $pdfview=FacadePdf::setOptions(['dpi' => 150,'defaultFont' => 'dejavu serif'])->loadView('companyLedgerBillEntry.companylhpdf',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'xx'=>$afn,'fromdate'=>$from,'todate'=>$to]);   
-
     
 
-     return $pdfview->download('invoicet.pdf');
+
+
+
+
+      // Load the Blade view for the PDF
+      $pdfView = view('companyLedgerBillEntry.companylhpdf', [
+        'all'=>$cusledgertails,
+        'allcus'=>$allcusinfo,
+        'dts'=>$debittotalsumwithdate,
+        'cts'=>$credittotalsumwithdate,
+        'xx'=>$afn,
+        'from'=>$from,
+        'to'=>$to
+    ]);
+
+    // Generate PDF using FacadePdf
+    $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfView);
+
+    // Save the PDF to a temporary file
+    $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
+    $pdf->save($pdfFile);
+
+    // Send headers to instruct the browser to open the PDF in a new tab
+    return response()->file($pdfFile, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="invoiceu.pdf"',
+    ]);
 
   }
   return redirect('/login');

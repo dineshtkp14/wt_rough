@@ -6,7 +6,12 @@
    
 @yield('breadcrumb')
 
+
+
 <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
+    
+  
+    
     <div class="card-body">
         <h5 class="card-title">Company Info</h5>
         <p>
@@ -40,13 +45,18 @@
             @endif
 </div>
 
-<div class="container">
 
+<div class="container">
+   
 
 <form class="row gx-5 gy-3" action="{{ route('items.store') }}" method="post" style="margin-top:-150px;">
                 @csrf
 
-                <div class="col-md-6 float-end"></div>
+                <div class="col-md-6 float-end"> <a href="{{ route('companys.create') }}" class="float-end btn btn-primary w-25 border border-dark" target="" rel="noopener noreferrer" style="margin-tp: -100px;">
+                    <i class="fas fa-plus-circle me-2"></i> <!-- Font Awesome icon -->
+                    Add New Company
+                </a></div>
+                
                 <div class="col-md-6 float-end">
                     <label for="inputPassword4" class="form-label">Date</label>
                     <input type="date" class="form-control @error('date') is-invalid @enderror" 

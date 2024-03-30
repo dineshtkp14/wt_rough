@@ -659,7 +659,11 @@ class CustomerLedgerHistroy extends Controller
 
             $customeridfor=$req->customerid;
 
-            
+            $forcashreceiptno = customerledgerdetails::where('invoicetype', 'payment')
+             ->where('customerid', $customeridfor)
+             ->pluck('id')
+             ->first();
+
 
             $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
             $debittotalcrnotes = $creditnoteledger->sum('debit');
@@ -700,16 +704,30 @@ class CustomerLedgerHistroy extends Controller
             }
 
            
-            return view('customerledgerhistory.view_customerallledger_cashandcredit',['cusinfoforpdfok' => $cusinfoforpdf,
-            'debittotalcrnotes'=>$debittotalcrnotes,'creditnoteledger'=>$creditnoteledger,'allnotcash'=>$debitnotcash,'all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb, 'cid' => $customeridfor,'from' => $from,'to' => $to]);      
-        }
+            return view('customerledgerhistory.view_customerallledger_cashandcredit', [
+                'cusinfoforpdfok' => $cusinfoforpdf,
+                'debittotalcrnotes' => $debittotalcrnotes,
+                'creditnoteledger' => $creditnoteledger,
+                'allnotcash' => $debitnotcash,
+                'all' => $cusledgertails,
+                'allcus' => $allcusinfo,
+                'dts' => $debittotalsumwithdate,
+                'cts' => $credittotalsumwithdate,
+                'breadcrumb' => $breadcrumb, 
+                'cid' => $customeridfor,
+                'from' => $from, // Ensure $from is defined and has a value
+                'to' => $to,
+                'forcashreceiptno' => $forcashreceiptno,
+
+            ]);
+            
 
      
 
         }
     
 
-
+    }
 
 
 

@@ -63,4 +63,11 @@ class UserdashboardController extends Controller
 
      return view('userpages.companypages');    
     }
+
+    public function cndash()
+    {
+        
+
+     return view('userpages.creditnotespages');    
+    }
 }

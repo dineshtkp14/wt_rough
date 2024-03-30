@@ -10,6 +10,12 @@
             padding: 15px;
             
         }
+		.printed-info {
+           
+            font-size: 14px;
+            color: #888;
+        }
+
         .floatleft{
             float: right;
         }
@@ -18,14 +24,62 @@
             color: Red;
         }
 
+		body {
+            font-family: Arial, sans-serif;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        * {
+            margin-top: 0 !important; /* Set top margin to 0 for all elements */
+        }
+        .container {
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+        }
+        p{
+            font-size: 16px !important;;
+        }
+        .letterhead {
+            /* background-color: black; */
+            color: black;
+            padding: 20px;
+            text-align: center;
+        }
+        .letterhead h1 {
+            margin: 0;
+            font-size: 30px;
+            text-decoration: underline;
+        }
+        .address-info {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .firstdiv{
+            float: right;
+        }
+        .address-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+       
+
     </style>
 </head>
 <body>
-    <Center><h2 class="text-danger my-5 bold">OM HARI TRADELINKk compamy ledger </h2></Center>
-<Center><h3 class="text-danger my-5 bold"><U>Ledger Details</U></h1></Center>
+    <div class="letterhead">
+        <h1>OM HARI TRADELINK</h1>
+    </div>
+
+    <div class="address-info">
+        <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
+        <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
+    </div>
 
 
-    <Center><h4 class="text-danger my-5 bold">({{$fromdate}}  To  {{$todate}})</h4></Center>
+
+    <Center><h4 class="text-danger my-5 bold">({{$from}}  To  {{$to}})</h4></Center>
 
     <h1></h1>
 
@@ -122,6 +176,9 @@
 <h2 class="floatleft">Total Due Amount : <span class="forunderline">{{$dts -$cts }} /-</span>  </h2>
 </div>
 
+<div class="printed-info">
+	Printed on: {{ now()->format('Y-m-d H:i:s') }}
+</div>
 </body>
 </html>
 

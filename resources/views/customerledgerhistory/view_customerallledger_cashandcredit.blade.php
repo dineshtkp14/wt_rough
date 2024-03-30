@@ -64,10 +64,16 @@
 					</div>
 				</div>	
 			</div>
+			<div class="col-md-3"></div>
+			
+			<div class="col-md-6">
+				<a href="{{ route('cpayments.create') }}" class="float-end btn btn-md btn-primary border border-5 border-warning" target="" rel="noopener noreferrer">
+					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
+					Customer Ledger Payment
+				</a>
+							</div>
 		</div>
-<script>
 
-</script>
 		<div class="row">
 			<div class="col-md-4 mb-3">
 				<label class="visually-hidden" for="specificSizeInputGroupUsername">Username</label>
@@ -163,7 +169,14 @@
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
 						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
-                           <td data-label="Remarks">{{ $i->invoicetype }}</td>
+
+                           <td data-label="Remarks"> {{ $i->invoicetype }}
+							@if($i->invoicetype == 'payment')
+								<b>({{ $i->id }}) </b>
+							
+							@endif
+						</td>
+						
 	                       <td data-label="Remarks">{{ $i->salesreturn }}</td>
                            <td data-label="Remarks">{{ $i->returnidforcreditnotes }}</td>
 						   <td data-label="Amount">{{ $i->debit }}</td>

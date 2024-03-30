@@ -1,5 +1,12 @@
 <div class="container">
+
 	<div class="card">
+		<a href="{{ route('items.create') }}" class="float-end btn btn-primary w-25 mb-3 border border-warning" target="" rel="noopener noreferrer">
+			<i class="fas fa-plus-circle me-2"></i> <!-- Font Awesome icon -->
+			Add New Items
+		</a>
+		
+		
 		<div class="card-header">
             <a href="{{route('companys.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
              Total No Of Customer 

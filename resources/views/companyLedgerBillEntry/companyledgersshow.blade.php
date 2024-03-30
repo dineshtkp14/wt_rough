@@ -39,7 +39,7 @@
 				<div class="search-box">
                     <input id="customerIdInput" name="companyid" hidden>
 
-                    <input type="text" class="search-input @error('companyid') is-invalid @enderror" placeholder="Search company"
+                    <input required type="text" class="search-input @error('companyid') is-invalid @enderror" placeholder="Search company"
                         id="searchCustomerInput"  data-api="company_search" autocomplete="off">
                         @error('companyid')
                             <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
@@ -64,6 +64,15 @@
 					</div>
 				</div>	
 			</div>
+
+			<div class="col-md-3"></div>
+			
+			<div class="col-md-6">
+				<a href="{{ route('companyLedgerspay.create') }}" class="float-end btn btn-md btn-primary border border-5 border-warning" target="" rel="noopener noreferrer">
+					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
+					Company Ledger Payment
+				</a>
+							</div>
 		</div>
 <script>
 
@@ -169,26 +178,32 @@
 	</tbody>
 </table>
 
+
 <div class="col-12 d-flex justify-content-end align-items-center pt-4">
+    <a href="{{ route('companyledgerdetails.convert', ['companyid' => $companyid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
+        <div class="icon-box d-flex justify-content-center align-items-center">
+            <i class="fa-solid fa-print"></i>
+        </div>
+    </a>
+</div>
+
+
+{{-- <div class="col-12 d-flex justify-content-end align-items-center pt-4">
 	<a href="{{route('companyledgerdetails.convert')}}" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : ''  }}" id="pdfLink">convert To PDF
 	<div class="icon-box d-flex justify-content-center align-items-center">
 	<i class="fa-solid fa-download"></i>
 	</div>
 	</a>
-</div>
+</div> --}}
 </div>
 <h2 class="floatleft">Total Due Amount : <span class="forunderline">{{$dts -$cts }} /-</span>  </h2>
 
 <script>
-	document.getElementById('pdfLink').addEventListener('click', function(e) {
-        e.preventDefault(); 
-		var query=window.location.search;
-		var param=new URLSearchParams(query);
-
-        var url = "{{ route('companyledgerdetails.convert') }}?companyid=" + param.get('companyid') + "&date1=" + param.get('date1') + "&date2=" + param.get('date2');
-		window.location.href = url;
-
-    });
+	function openPdfInNewTab(event, url) {
+        event.preventDefault();
+        var newTab = window.open(url, '_blank');
+        newTab.focus();
+    }
 </script>
 
 </div>

@@ -32,6 +32,11 @@
       
         <div class="container-fluid">
            <span class="h5"> CREDIT NOTES INVOICE NO: </span><span class="h1">{{ $nextgenid }} </span>
+
+           <span class="float-end" style="margin-top: -10px; margin-right:300px;">
+            <a href="{{ route('customerinfos.create') }}" class="btn btn-primary m"> <i class="fa-solid fa-plus"></i> Add New Customer</a>
+            <a href="{{ route('creditnotescustomeronlyview.billno') }}" class="btn ms-5" style="background-color: #556B2F; border-color:rgb(29, 3, 3); color: #ffffff;"> <i class="fa-solid fa-eye"></i> Search Invoice</a>
+        </span>
             <form action="{{ route('creditnotes.store') }}" method="post">
                 @csrf
                 <div class="py-4 d-flex justify-content-between align-items-start">

@@ -506,34 +506,59 @@
         @else
 
         <ul class="list-unstyled ps-0">
-           
+            <li class="mb-1 border border-success border-5">
+                <a href="{{ route('userdash') }}" style="text-decoration:none;" class="text-white">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </button>
+                </a>
+            </li>
         
             <li class="mb-1 border border-success border-5">
                 <a href="{{ route('itemsales.create') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-file-invoice"></i> INVOICE
+                        <i class="fas fa-file-invoice"></i> Invoice
+                    </button>
+                </a>
+            </li>
+        
+            <li class="mb-1 border border-success border-5">
+                <a href="{{ route('returnchoosendatehistroycashandcredit') }}" style="text-decoration:none;" class="text-white">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
+                        <i class="fas fa-book"></i> View Customer Ledger
+                    </button>
+                </a>
+            </li>
+        
+            <li class="mb-1 border border-success border-5">
+                <a href="{{ route('stocks.index') }}" style="text-decoration:none;" class="text-white">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
+                        <i class="fas fa-cube"></i> Check Stock
+                    </button>
+                </a>
+            </li>
+        
+            <li class="mb-1 border border-success border-5">
+                <a href="{{ route('companyledgerdetails.returnchoosendatehistroy') }}" style="text-decoration:none;" class="text-white">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
+                        <i class="fas fa-bookmark"></i> View Company Ledger
                     </button>
                 </a>
             </li>
 
             <li class="mb-1 border border-success border-5">
-                <a href="{{ route('userdash') }}" style="text-decoration:none;" class="text-white">
+                <a href="{{ route('showonlysalesperday.pp') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-file-plus"></i> DashBoard
+                        <i class="fas fa-bookmark"></i> Show Per Day
                     </button>
                 </a>
             </li>
-
-
-                                   
-
-                    </ul>
-                </div>
-            </li>
-
-
         </ul>
         
 
