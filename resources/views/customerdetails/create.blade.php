@@ -5,6 +5,13 @@
 <div class="main-content"> 
     @yield('breadcrumb')
 
+    <div class="container">
+        @if (Session::has('error'))
+        <div class="alert bg-danger text-white w-50">
+            {{ Session::get('error') }}
+            </div>
+        @endif
+</div>
     <div class="card customer-card mb-4" id="customerCard" style="display: none;">
         <div class="card-body">
             <h5 class="card-title">Customer Info</h5>
@@ -95,6 +102,12 @@
                 @enderror
             </div>
 
+            <!-- Your existing HTML code -->
+            <div class="col-md-6" id="additionalFieldContainer" style="display: none;">
+                <label for="cninvoiceid" class="form-label">Credit Notes Invoice ID</label>
+                <input type="text" class="form-control" id="cninvoiceid" name="cninvoiceid">
+            </div>
+
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Amount <span style="color: red;">*</span></label>
                 <input type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" >
@@ -119,47 +132,50 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkbox = document.getElementById('disableFields');
-        const particularsInput = document.getElementById('particulars');
-        const hiddenParticularsInput = document.getElementById('hiddenParticulars');
-        const voucherTypeInput = document.getElementById('vt');
-        const hiddenVoucherTypeInput = document.getElementById('hiddenVt');
+   document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('disableFields');
+    const particularsInput = document.getElementById('particulars');
+    const hiddenParticularsInput = document.getElementById('hiddenParticulars');
+    const voucherTypeInput = document.getElementById('vt');
+    const hiddenVoucherTypeInput = document.getElementById('hiddenVt');
+    const additionalFieldContainer = document.getElementById('additionalFieldContainer');
 
-        checkbox.addEventListener('change', function() {
-    if (this.checked) {
-        particularsInput.value = 'salesreturn';
-        voucherTypeInput.value = 'return';
-        hiddenParticularsInput.value = 'salesreturn'; // Set value for hidden input
-        hiddenVoucherTypeInput.value = 'return'; // Set value for hidden input
-        particularsInput.disabled = true;
-        voucherTypeInput.disabled = true;
-    } else {
-        particularsInput.value = '';
-        voucherTypeInput.value = '';
-        hiddenParticularsInput.value = ''; // Clear value for hidden input
-        hiddenVoucherTypeInput.value = ''; // Clear value for hidden input
-        particularsInput.disabled = false;
-        voucherTypeInput.disabled = false;
-    }
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            particularsInput.value = 'salesreturn';
+            voucherTypeInput.value = 'return';
+            hiddenParticularsInput.value = 'salesreturn';
+            hiddenVoucherTypeInput.value = 'return';
+            particularsInput.disabled = true;
+            voucherTypeInput.disabled = true;
+            additionalFieldContainer.style.display = 'block'; // Show the additional field
+        } else {
+            particularsInput.value = '';
+            voucherTypeInput.value = '';
+            hiddenParticularsInput.value = '';
+            hiddenVoucherTypeInput.value = '';
+            particularsInput.disabled = false;
+            voucherTypeInput.disabled = false;
+            additionalFieldContainer.style.display = 'none'; // Hide the additional field
+        }
+    });
+
+    particularsInput.addEventListener('input', function() {
+        if (this.value.trim() !== '') {
+            checkbox.disabled = true;
+        } else {
+            checkbox.disabled = false;
+        }
+    });
+
+    voucherTypeInput.addEventListener('input', function() {
+        if (this.value.trim() !== '') {
+            checkbox.disabled = true;
+        } else {
+            checkbox.disabled = false;
+        }
+    });
 });
 
-
-        particularsInput.addEventListener('input', function() {
-            if (this.value.trim() !== '') {
-                checkbox.disabled = true;
-            } else {
-                checkbox.disabled = false;
-            }
-        });
-
-        voucherTypeInput.addEventListener('input', function() {
-            if (this.value.trim() !== '') {
-                checkbox.disabled = true;
-            } else {
-                checkbox.disabled = false;
-            }
-        });
-    });
 </script>
 @stop

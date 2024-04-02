@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string('returnidforcreditnotes')->nullable();;
             
             $table->text('notes')->nullable();;
+            $table->bigInteger('cninvoiceid')->nullable()->unique();
+
 
 
             $table->string('bank_deposit')->nullable();;;

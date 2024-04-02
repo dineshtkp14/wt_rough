@@ -156,6 +156,8 @@
             <th>CREDIT NOTES INVOICE NO</th>
 			<th>DEBIT</th>  
             <th>CREDIT</th>
+            <th>Cn invoiceid</th>
+
 		</tr>
 	</thead>
 	<tbody>
@@ -181,6 +183,7 @@
                            <td data-label="Remarks">{{ $i->returnidforcreditnotes }}</td>
 						   <td data-label="Amount">{{ $i->debit }}</td>
 						   <td data-label="Remarks">{{ $i->credit }}</td> 
+						   <td data-label="Remarks">{{ $i->cninvoiceid }}</td> 
 					   </tr>
 					   
 					   @endforeach
@@ -197,6 +200,8 @@
 						   <td>-</td>
 						   <td>-</td>
 						   <td>-</td>
+						   <td>-</td>
+manage table tommorw
 
 			   
 						   <td>
