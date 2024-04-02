@@ -1,9 +1,19 @@
 <div class="container" style="">
    
 
-    <button wire:click="generatePDF" class="float-end btn btn-primary">
+    {{-- <button wire:click="generatePDF" class="float-end btn btn-primary">
         <i class="fas fa-file-pdf"></i> DOWNLOAD PDF
-    </button>
+    </button> --}}
+
+    @auth
+    @if(Auth::user()->email === 'dineshtkp14@gmail.com')
+        <button wire:click="generatePDF" class="float-end btn btn-primary">
+            <i class="fas fa-file-pdf"></i> DOWNLOAD PDF
+        </button>
+    @endif
+@endauth
+
+
     
 
     <form wire:submit.prevent="filterByFirm">
@@ -22,8 +32,15 @@
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
+           <div class="col-md-5">
+            <a href="{{ route('items.create') }}" class="btn ms-5 btn-lg btn-primary" target="" rel="noopener noreferrer">
+                <i class="fas fa-plus-circle"></i> Add New Items
+            </a>
+                       </div>
         </div>
     </form>
+
+
     
     <br>
    

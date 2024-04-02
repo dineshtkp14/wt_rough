@@ -57,6 +57,9 @@ class showperday_controller extends Controller
 
                 $payment = customerledgerdetails::select(DB::raw('DATE(date) as date'), DB::raw('SUM(credit) as total'))
                 ->where('invoicetype', 'payment')
+                ->where(function ($query) {
+                    $query->where('particulars', '!=', 'salesreturn'); // Include rows where particulars is not 'salesreturn'
+                })
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
                 ->paginate(100);
@@ -68,7 +71,7 @@ class showperday_controller extends Controller
                         $totalPaymentToday = $payment->where('date', $today)->sum('total');
                         $totalCashAndPaymentToday = $totalCashToday + $totalPaymentToday;
     
-    
+
     
                         //forcashand payemntable
                         $dates = $salesPerDayCash->pluck('date')->merge($payment->pluck('date'))->unique();
@@ -101,6 +104,9 @@ class showperday_controller extends Controller
                 'salesPerDay' => $salesPerDay,
                 'salesPerDaycrnotes' => $salesPerDaycr,
                  'payment' => $payment,
+               
+
+                 
                  'breadcrumb' => $breadcrumb]);
         }
     
@@ -148,9 +154,13 @@ class showperday_controller extends Controller
 
                 $payment = customerledgerdetails::select(DB::raw('DATE(date) as date'), DB::raw('SUM(credit) as total'))
                 ->where('invoicetype', 'payment')
+                ->where(function ($query) {
+                    $query->where('particulars', '!=', 'salesreturn'); // Include rows where particulars is not 'salesreturn'
+                })
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
                 ->paginate(100);
+            
   
                 
 
@@ -161,6 +171,13 @@ class showperday_controller extends Controller
                     $totalCashAndPaymentToday = $totalCashToday + $totalPaymentToday;
 
 
+                         // Calculate the total of CREDITNOTES for today's date
+                         
+                         $today = Carbon::today()->toDateString(); // Get today's date
+                         $totalCashToday = $salesPerDayCash->where('date', $today)->sum('total');
+                         $totalPaymentToday = $payment->where('date', $today)->sum('total');
+                         $totalCreditNotesTodaySUM = $salesPerDaycr->where('date', $today)->sum('total');
+ 
 
                     //forcashand payemntable
                     $dates = $salesPerDayCash->pluck('date')->merge($payment->pluck('date'))->unique();
@@ -197,6 +214,7 @@ class showperday_controller extends Controller
             'salesPerDay' => $salesPerDay,
             'salesPerDaycrnotes' => $salesPerDaycr,
              'payment' => $payment,
+             'totalCreditNotesTodaySUM' => $totalCreditNotesTodaySUM,
              'breadcrumb' => $breadcrumb]);
         }
     

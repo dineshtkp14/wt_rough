@@ -44,8 +44,8 @@ class CompanyLedgerController extends Controller
     if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Payment',
-            'title'=>'Company Ledgers Payment',
-            'link'=>'Company Ledgers Payment'
+            'title'=>'Make  Company  Payment',
+            'link'=>'Make Company  Payment'
         ]; 
      
         return view('companyLedgerPayment.create',['breadcrumb'=>$breadcrumb]);   

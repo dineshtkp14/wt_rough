@@ -7,10 +7,19 @@
 
 
 <div class="container">
-
+    <div class="row">
+        <div class="col-md-6">
+            <a href="{{ route('items.create') }}" target="" rel="noopener noreferrer" class="btn btn-lg btn-primary mb-3">
+                <i class="fas fa-plus"></i> Add New Items
+            </a>
+            <a href="{{ route('items.index') }}" target="" rel="noopener noreferrer" class="btn btn-lg btn-primary mb-3 float-end">
+                <i class="fas fa-plus"></i> View Items
+            </a>
+        </div>
+    </div>
+    
 <form class="row gx-5 gy-3" action="{{ route('companys.store') }}" method="post">
                 @csrf
-     
 
           <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Suppliers / Company Name  <span style="color: red;">*</span></label>

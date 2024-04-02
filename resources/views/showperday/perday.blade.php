@@ -12,12 +12,15 @@
             <div class="card-header">
                 <a href="{{ route('items.create') }}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
                 Total No Of Items 
+                <a href="{{ route('showonlysalesperdayinone_table.pp') }}" class="btn btn-primary border border-5 border-warning float-end me-2">
+                    <i class="fas fa-check"></i> Check Counter
+                </a>
             </div>
             <div class="card-body">
                 <div class="row">
 
                     <div class="col">
-                        <table class="table h5">
+                        <table class="table h5" style="width: 200px">
                             <thead>
 
                                 <center>  <SPAN class="h5 btn btn-warning fw-bold"> CREDIT SALES</SPAN> </center>
@@ -45,7 +48,7 @@
 
 
                     <div class="col">
-                        <table class="table h5">
+                        <table class="table h5" style="width: 200px">
                             <thead>
                                 <center>  <SPAN class="h5 btn btn-warning fw-bold"> CASH SALES</SPAN> </center>
 
@@ -74,7 +77,7 @@
 
 
                     <div class="col">
-                        <table class="table h5">
+                        <table class="table h5" style="width: 200px">
                             <thead>
                                 <center>  <SPAN class="h5 btn btn-warning fw-bold"> TOTAL SALES PER DAY </SPAN> </center>
 
@@ -97,7 +100,7 @@
                     </div>
 
                     <div class="col">
-                        <table class="table h5">
+                        <table class="table h5" style="width: 200px">
                             <thead>
                                 <center>  <SPAN class="h5 btn btn-warning fw-bold">CREDIT NOTES/SALES RETURN
                                 </SPAN> </center>
@@ -125,7 +128,7 @@
                   
                     
                     <div class="col">
-                        <table class="table h5">
+                        <table class="table h5" style="width: 200px">
                             <thead>
                                 <center>  <SPAN class="h5 btn btn-warning fw-bold">  LEDGER PAYMENT</SPAN> </center>
 
@@ -151,8 +154,8 @@
 
 
                         
-                    <div class="col">
-                        <table class="table h5">
+                    {{-- <div class="col">
+                        <table class="table h5 " style="width: 400px">
                             <thead>
                                 <center>  <SPAN class="h5 btn btn-warning fw-bold">Counter Cash</SPAN> </center>
 
@@ -175,17 +178,16 @@
                                 <tr @if(now()->format('Y-m-d') == $data['date']) style="color: white;background:red; font-weight: bold;" @endif>
                                     <td>{{ $data['date'] }}</td>
                                     <td>{{ $data['total'] }}</td>
-                                    {{-- <td>{{ $data['bank_deposit'] }}</td> --}}
 
                                     <td>
                                         <?php if ($data['counter_deposit'] == 'yes'): ?>
-                                            &#10004; <!-- Checkmark HTML entity -->
+                                            &#10004; 
                                         <?php endif; ?>
                                     </td>
 
                                     <td>
                                         <?php if ($data['bank_deposit'] == 'yes'): ?>
-                                            &#10004; <!-- Checkmark HTML entity -->
+                                            &#10004;
                                         <?php endif; ?>
                                     </td>
 
@@ -198,7 +200,7 @@
                         </table>
                         {{ $salesPerDaycrnotes->links() }}
 
-                    </div>
+                    </div> --}}
 
 
                     

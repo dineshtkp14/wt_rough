@@ -97,7 +97,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label"> Particulars <span style="color: red;">*</span></label>
+                    <label for="inputPassword4" class="form-label"> Particulars (items name)<span style="color: red;">*</span></label>
                     <input type="text" class="form-control @error('particulars') is-invalid @enderror" 
                         name="particulars" value="{{ old('particulars') }}">
                     @error('particulars')
@@ -138,7 +138,7 @@
            
 
             <div class="d-grid gap-2 pt-2 pb-4">
-                    <button type="submit" class="btn btn-lg btn-primary">Save</button>
+                    <button id="submitBtn" type="submit" class="btn btn-lg btn-primary">Save</button>
             </div>
 </form>
 </div>
@@ -146,5 +146,16 @@
 
 
 </div>
+
+<script>
+     $(document).ready(function () {
+            $('form').submit(function () {
+                // Disable the submit button
+                $('#submitBtn').prop('disabled', true);
+                
+            });
+        });
+        
+    </script>
 @stop
 

@@ -61,51 +61,49 @@ class CustomerLedgerDetailsController extends Controller
     return redirect('/login');
 }
 
-    public function store(Request $req)
-    {
-        if(Auth::check()){
-     $validator=Validator::make($req->all(),[
-        'customerid'=>'required',
-        'date'=>'required',
-        'particulars'=>'required',
-        'amount'=>'required',
-        'vt'=>'required',
+public function store(Request $req)
+{
+    if (Auth::check()) {
+        $validator = Validator::make($req->all(), [
+            'customerid' => 'required',
+            'date' => 'required',
+            'amount' => 'required',
+            'particulars' => 'required_without:disableFields', // Only required if disableFields is not present
+             'vt' => 'required_without:disableFields', // Only required if disableFields is not present
+        ]);
 
-           
-     ]);
- 
-     if($validator->passes()){
- 
-        $statement  = DB::select("SHOW TABLE STATUS LIKE 'customerledgerdetails'");
-         $nextUserId = $statement[0]->Auto_increment;       
+        if ($validator->passes()) {
+            $statement = DB::select("SHOW TABLE STATUS LIKE 'customerledgerdetails'");
+            $nextUserId = $statement[0]->Auto_increment;
 
-         
-         $cl=new customerledgerdetails();
-         $cl->customerid=$req->customerid;
-         $cl->date=$req->date;
-         $cl->particulars=$req->particulars;
-         $cl->invoicetype="payment";
-         $cl->voucher_type=$req->vt;
-         $cl->credit=$req->amount;
-         $cl->notes=$req->notes;
-         $cl->added_by = session('user_email');
+            $cl = new customerledgerdetails();
+            $cl->customerid = $req->customerid;
+            $cl->date = $req->date;
 
-         $cl->save();
- 
-       
-         
+            // Set values based on checkbox status
+            if ($req->has('disableFields')) {
+                $cl->particulars = "salesreturn";
+                $cl->voucher_type = "return";
+            } else {
+                $cl->particulars = $req->particulars ?? '';
+                $cl->voucher_type = $req->vt ?? '';
+            }
 
-         return redirect()->route('cashreceipt.search', ['receiptno' => $nextUserId])->with('success', 'Invoice Created Successfully !!');
+            $cl->invoicetype = "payment";
+            $cl->credit = $req->amount;
+            $cl->notes = $req->notes;
+            $cl->added_by = session('user_email');
 
-         return redirect()->route('cashreceipt.search')->with('success','payment Sucess !!');  
-     }
-     else{
-         return redirect()->route('cpayments.create')->withErrors($validator)->withInput();
- 
-     }
+            $cl->save();
+
+            return redirect()->route('cashreceipt.search', ['receiptno' => $nextUserId])->with('success', 'Invoice Created Successfully !!');
+        } else {
+            return redirect()->route('cpayments.create')->withErrors($validator)->withInput();
+        }
     }
     return redirect('/login');
 }
+
 
 //foralldetailsdisplay
 public function showdetails()

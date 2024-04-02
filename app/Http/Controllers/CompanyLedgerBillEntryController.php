@@ -44,8 +44,8 @@ class CompanyLedgerBillEntryController extends Controller
         if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Add',
-            'title'=>'Add Bill ENTRY For Company Ledger',
-            'link'=>'Add Bill ENTRY For Company Ledger'
+            'title'=>'Add Company Bill ENTRY',
+            'link'=>'Add Bill ENTRY '
         ]; 
     
         return view('companyLedgerBillEntry.create',['breadcrumb'=>$breadcrumb]);   

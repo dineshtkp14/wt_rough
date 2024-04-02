@@ -11,14 +11,17 @@
             <div class="card">
                 <div class="card-header">
                     <a href="{{ route('items.create') }}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
-                    Total No Of Items  <span class="h3 btn btn-dark btn-lg">In Conunter = {{ $totalCashAndPaymentToday }}</span>
-
+                    Total No Of Items  <span class="h3 btn btn-dark btn-lg">In Conunter : {{ $totalCashAndPaymentToday }}
+                        -{{$totalCreditNotesTodaySUM}}={{$totalCashAndPaymentToday-$totalCreditNotesTodaySUM}}</span>
+                    <a href="{{ route('showonlysalesperday.pp') }}" class="btn btn-primary border border-5 border-warning float-end me-2">
+                        <i class="fas fa-check"></i> Check All Sales Amount
+                    </a>
                     
                 </div>
                 <div class="card-body ">
                     <div class="row">
 
-                        <div class="col">
+                        {{-- <div class="col">
                             <table class="table h5 " >
                                 <thead>
 
@@ -40,13 +43,13 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{-- links --}}
+                          
                             {{ $salesPerDaycrnotes->links() }}
 
-                        </div>
+                        </div> --}}
 
 
-                        <div class="col">
+                        {{-- <div class="col">
                             <table class="table h5">
                                 <thead>
                                     <center>  <SPAN class="h5 btn btn-warning fw-bold"> CASH SALES</SPAN> </center>
@@ -70,13 +73,13 @@
                             </table>
                             {{ $salesPerDaycrnotes->links() }}
 
-                        </div>
+                        </div> --}}
 
 
 
 
 
-                        <div class="col">
+                        {{-- <div class="col">
                             <table class="table h5">
                                 <thead>
                                     <center>  <SPAN class="h5 btn btn-warning fw-bold"> TOTAL SALES PER DAY </SPAN> </center>
@@ -122,12 +125,12 @@
                             </table>
                             {{ $salesPerDaycrnotes->links() }}
 
-                        </div>
+                        </div> --}}
 
 
                     
                         
-                        <div class="col">
+                        {{-- <div class="col">
                             <table class="table h5">
                                 <thead>
                                     <center>  <SPAN class="h5 btn btn-warning fw-bold">  LEDGER PAYMENT</SPAN> </center>
@@ -149,7 +152,7 @@
                             </table>
                             {{ $salesPerDaycrnotes->links() }}
 
-                        </div>
+                        </div> --}}
 
 
                         
@@ -177,7 +180,6 @@
                                     <tr @if(now()->format('Y-m-d') == $data['date']) style="color: white;background:red; font-weight: bold;" @endif>
                                         <td>{{ $data['date'] }}</td>
                                         <td>{{ $data['total'] }}</td>
-                                        {{-- <td>{{ $data['bank_deposit'] }}</td> --}}
 
                                         <td>
                                             <?php if ($data['counter_deposit'] == 'yes'): ?>
