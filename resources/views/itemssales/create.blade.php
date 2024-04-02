@@ -27,9 +27,10 @@
                 </p>
             </div>
 
-            <div class="toogle-box p-3 d-flex justify-content-center align-items-center" id="toggleBox" data-toggle="close">
+            <div class="toggle-box p-3 d-flex justify-content-center align-items-center" id="toggleBox" data-toggle="close">
                 <i class="fas fa-user"></i>
             </div>
+            
         </div>
         @yield('breadcrumb')
         

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 
 
@@ -160,6 +161,20 @@ class showperday_controller extends Controller
                 ->groupBy('date')
                 ->orderBy('date', 'DESC')
                 ->paginate(100);
+
+
+                $forsalesreturn = customerledgerdetails::select(DB::raw('DATE(date) as date'), DB::raw('SUM(credit) as total'))
+                ->where('invoicetype', 'payment')
+                ->where(function ($query) {
+                    $query->where('particulars', 'salesreturn'); // Include rows where particulars is 'salesreturn'
+                })
+                ->groupBy('date')
+                ->orderBy('date', 'DESC')
+                ->paginate(100);
+            
+
+
+
             
   
                 
@@ -182,46 +197,57 @@ class showperday_controller extends Controller
                     //forcashand payemntable
                     $dates = $salesPerDayCash->pluck('date')->merge($payment->pluck('date'))->unique();
 
-                    // Initialize an array to store total sales and payments for each date
-                    $totalSalesAndPayments = [];
-                
-                    // Loop through each date and calculate the sum for each date
-                    foreach ($dates as $date) {
-                        $salesTotal = $salesPerDayCash->where('date', $date)->sum('total');
-                        $paymentTotal = $payment->where('date', $date)->sum('total');
+                    
+            // Initialize an array to store total sales and payments for each date
+            $totalSalesAndPayments = [];
 
-                        $bankDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('bank_deposit');
-                        $CounterDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('counter_deposit');
+            // Loop through each date and calculate the sum for each date
+            foreach ($dates as $date) {
+                $salesTotal = $salesPerDayCash->where('date', $date)->sum('total');
+                $paymentTotal = $payment->where('date', $date)->sum('total');
 
-                        $totalSalesAndPayments[] = [
-                            'date' => $date,
-                            'total' => $salesTotal + $paymentTotal,
-                            'bank_deposit' => $bankDeposit,
-                            'counter_deposit' => $CounterDeposit
-                        ];
-                    }
-                
+                $bankDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('bank_deposit');
+                $CounterDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('counter_deposit');
 
-// dd($totalSalesAndPayments);
+                $totalSalesAndPayments[] = [
+                    'date' => $date,
+                    'total' => $salesTotal + $paymentTotal,
+                    'bank_deposit' => $bankDeposit,
+                    'counter_deposit' => $CounterDeposit
+                ];
+            }
 
-      
+            // Sort the array by date in descending order
+            usort($totalSalesAndPayments, function ($a, $b) {
+                return strtotime($b['date']) - strtotime($a['date']);
+            });
+
+            // Paginate the sorted array
+            $perPage = 10; // Adjust the number as per your requirement
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($totalSalesAndPayments, ($currentPage - 1) * $perPage, $perPage);
+            $totalCount = count($totalSalesAndPayments);
+            $totalSalesAndPaymentsPaginated = new LengthAwarePaginator($currentItems, $totalCount, $perPage, $currentPage);
+
             return view('showperday.showperdayinonetable', [
-               
-            'totalSalesAndPayments' => $totalSalesAndPayments,
-            'totalCashAndPaymentToday' => $totalCashAndPaymentToday
-            ,'salesPerDayCredit' => $salesPerDayCredit,
-            'salesPerDayCash' => $salesPerDayCash,
-            'salesPerDay' => $salesPerDay,
-            'salesPerDaycrnotes' => $salesPerDaycr,
-             'payment' => $payment,
-             'totalCreditNotesTodaySUM' => $totalCreditNotesTodaySUM,
-             'breadcrumb' => $breadcrumb]);
+                'totalSalesAndPayments' => $totalSalesAndPaymentsPaginated,
+                'totalCashAndPaymentToday' => $totalCashAndPaymentToday,
+                'salesPerDayCredit' => $salesPerDayCredit,
+                'salesPerDayCash' => $salesPerDayCash,
+                'salesPerDay' => $salesPerDay,
+                'salesPerDaycrnotes' => $salesPerDaycr,
+                'payment' => $payment,
+                'totalCreditNotesTodaySUM' => $totalCreditNotesTodaySUM,
+                'forsalesreturn' => $forsalesreturn,
+                'breadcrumb' => $breadcrumb
+            ]);
         }
-    
+
         return redirect('/login');
     }
-
-
-
-
 }
+
+
+
+
+
