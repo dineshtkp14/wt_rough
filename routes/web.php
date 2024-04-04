@@ -395,7 +395,7 @@ Route::get('/onetable_showsalesperda', [showperday_controller::class, 'showonlys
 
 
 //  Route::get('/dashboard', [CustomAuthController::class, 'dashboard']); 
- Route::get('login', [CustomAuthController::class, 'index'])->name('login');
+ Route::get('/login', [CustomAuthController::class, 'forlogin'])->name('login');
  Route::post('postlogin', [CustomAuthController::class, 'login'])->name('postlogin'); 
  Route::get('signup', [CustomAuthController::class, 'signup'])->name('register-user');
 

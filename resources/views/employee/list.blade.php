@@ -6,6 +6,9 @@
 
         @yield('breadcrumb')
 
+        @if (auth()->check() && auth()->user()->email !== 'dineshtkp14@gmail.com')
+             <script> window.location.href = "{{ route('login') }}";   </script>
+        @endif
                 @if (Session::has('success'))
                         <div class="alert alert-success w-50">
                         {{ Session::get('success') }}

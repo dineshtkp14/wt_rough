@@ -27,7 +27,11 @@
         </script>
     @endif --}}
 
-
+    @if (Session::has('refresh') && Session::get('refresh'))
+    <script>
+        window.location.reload();
+    </script>
+@endif
     <div class="container-fluid m-0 p-0">
 
 

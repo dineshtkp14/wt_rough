@@ -29,7 +29,7 @@ class CustomAuthcontroller extends Controller
 
         $user = User::findOrFail($id);
         $user->delete();
-
+        
         //$req->session()->flash('success','Deleted Sucessfully');
         return redirect()->route('viewuser')->with('success', 'Deleted sucessfully');
     }
@@ -37,8 +37,14 @@ class CustomAuthcontroller extends Controller
 
 
 
-    public function index()
+    public function forlogin()
     {
+        if (Auth::check()) {
+            Auth::logout(); // Log out the user
+            Session::flush(); // Clear all session data
+            return redirect()->route('login'); // Redirect back to /login
+
+        }
         return view('login');
     }
 

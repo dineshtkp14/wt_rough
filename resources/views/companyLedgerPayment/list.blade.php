@@ -8,7 +8,7 @@
 
 
                 @if (Session::has('success'))
-                        <div class="alert alert-success w-50">
+                <div class=" bg-success text-white alert alert-success w-50">
                         {{ Session::get('success') }}
                         </div>
                 @endif

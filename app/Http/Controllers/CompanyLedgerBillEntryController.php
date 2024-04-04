@@ -112,8 +112,9 @@ class CompanyLedgerBillEntryController extends Controller
     
     
     ]);
+    session()->put('lastInsertedId', $companypanyment->id);
 
-        return redirect()->route('companybillentry.create')->with('success',' Added Sucessfully !!');  
+        return redirect()->route('companybillentry.index')->with('success',' Added Sucessfully !!');  
     }
 
     else{

@@ -25,8 +25,8 @@ class CompanyLedgerController extends Controller
     if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'View',
-            'title'=>'View All Customers',
-            'link'=>'View All Customers'
+            'title'=>'View Company Payment',
+            'link'=>'View Company Payment'
         ];
    
 
@@ -101,7 +101,9 @@ class CompanyLedgerController extends Controller
    'notes' => $additional_info,
 
 ]);
-        return redirect()->route('companyLedgerspay.create')->with('success','Added Sucessfully !!'); 
+session()->put('lastInsertedId', $companypanyment->id);
+
+        return redirect()->route('companyLedgerspay.index')->with('success','Added Sucessfully !!'); 
     }
 
     else{
@@ -228,7 +230,7 @@ class CompanyLedgerController extends Controller
          
       
   
-        return redirect()->route('companyLedgerspay.index')->with('success','Customer Deleted sucessfully'); 
+        return redirect()->route('companyLedgerspay.index')->with('success',' Deleted sucessfully'); 
         
   }
 

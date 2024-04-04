@@ -6,6 +6,9 @@
         @yield('breadcrumb')
 
 
+        @if (auth()->check() && auth()->user()->email !== 'dineshtkp14@gmail.com')
+             <script> window.location.href = "{{ route('login') }}";   </script>
+        @endif
     <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
         <div class="card-body">
             <h5 class="card-title">Company Info</h5>
