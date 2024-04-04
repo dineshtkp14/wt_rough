@@ -11,7 +11,7 @@
               <table class="table text-center">
                    <thead>
                         <tr>
-                            <th >Id </th>
+                            <th >Customer Id </th>
                             <th>Name</th>
                             <th >Address</th>
                             <th >Email</th>

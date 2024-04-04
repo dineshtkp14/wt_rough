@@ -296,6 +296,125 @@ class CustomerLedgerHistroy extends Controller
         }
     }
     
+    public function deletebillfromdatabasefor_user(Request $req)
+    {
+       
+        
+        // Check if the user's email is the admin's email
+        $user_email = $req->session()->get('user_email');
+    
+        if ($user_email === 'dineshtkp14@gmail.com') {
+            // Admin can delete without any date restrictions
+            $validator = Validator::make($req->all(), [
+                'invoiceid' => 'required',
+            ]);
+        } else {
+            // Regular users can delete only if the current date matches the date in the database
+            $validator = Validator::make($req->all(), [
+                'invoiceid' => 'required',
+            ]);
+    
+            // Retrieve the date associated with the invoice from the database
+            $invoiceDate = DB::table('customerledgerdetails')
+                ->where('invoiceid', $req->invoiceid)
+                ->value('date');
+    
+            if (!empty($invoiceDate) && !Carbon::parse($invoiceDate)->isToday()) {
+                // If the date doesn't match today's date, return an error message
+                return redirect()->route('onlyviewbillafterbill')->with('error', 'Regular users can only delete on the current date.');
+            }
+        }
+    
+        // If validation fails, redirect with an error message
+        if ($validator->fails()) {
+            return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+        }
+    
+        // Retrieve the items from the bill before deleting
+        $items = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->get();
+    
+        // Backup data before deleting
+        foreach ($items as $item) {
+            $backupSalesItem = new BackupSalesItem();
+            $backupSalesItem->invoiceid = $item->invoiceid;
+            $backupSalesItem->itemid = $item->itemid;
+            $backupSalesItem->unstockedname = $item->unstockedname;
+            $backupSalesItem->quantity = $item->quantity;
+            $backupSalesItem->price = $item->price;
+            $backupSalesItem->subtotal = $item->subtotal;
+            $backupSalesItem->added_by = $user_email;
+            $backupSalesItem->save();
+        }
+    
+        // Backup invoice data
+        $invoice = DB::table('invoices')->where('id', $req->invoiceid)->first();
+        if ($invoice) {
+            $backupInvoice = new BackupInvoice();
+            $backupInvoice->customerid = $invoice->customerid;
+            $backupInvoice->subtotal = $invoice->subtotal;
+            $backupInvoice->discount = $invoice->discount;
+            $backupInvoice->total = $invoice->total;
+            $backupInvoice->notes = $invoice->notes;
+            $backupInvoice->invoice_id = $req->invoiceid;
+            $backupInvoice->inv_type = $invoice->inv_type;
+            $backupInvoice->inv_date = $invoice->inv_date;
+            $backupInvoice->added_by = $user_email;
+            $backupInvoice->save();
+        } else {
+            // Handle the case when the invoice does not exist
+            return redirect()->route('customer.billno')->with('error', 'Invalid invoiceid provided');
+        }
+    
+        // Backup customer ledger details
+        $ledgerDetails = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->get();
+        foreach ($ledgerDetails as $ledger) {
+            $backupLedger = new BackupCustomerLedgerDetails();
+            $backupLedger->customerid = $ledger->customerid;
+            $backupLedger->invoiceid = $ledger->invoiceid;
+            $backupLedger->particulars = $ledger->particulars;
+            $backupLedger->voucher_type = $ledger->voucher_type;
+            $backupLedger->date = $ledger->date;
+            $backupLedger->debit = $ledger->debit;
+            $backupLedger->credit = $ledger->credit;
+            $backupLedger->invoicetype = $ledger->invoicetype;
+            $backupLedger->notes = $ledger->notes;
+            $backupLedger->added_by = $user_email;
+            $backupLedger->save();
+        }
+    
+        // Adjust stock quantities before deleting
+        foreach ($items as $item) {
+            $product = Item::find($item->itemid);
+            if ($product) {
+                $product->quantity += $item->quantity;
+                $product->save();
+            }
+        }
+    
+        // Delete records from salesitem_tbl
+        $salesItemsDeleted = DB::table('salesitems')->where('invoiceid', $req->invoiceid)->delete();
+    
+        // Delete records from invoices_tbl
+        $invoicesDeleted = DB::table('invoices')->where('id', $req->invoiceid)->delete();
+    
+        // Delete records from customerledgerdetails_tbl
+        $ledgerDetailsDeleted = DB::table('customerledgerdetails')->where('invoiceid', $req->invoiceid)->delete();
+    
+        // Check if any records were deleted
+        if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
+            // Insert into track table
+            DB::table('trackinvoice')->insert([
+                'bill_no' => $req->invoiceid,
+                'title' => "invoice_deleted",
+                'updated_by' => $user_email,
+                'notes' => ' Invoice Id : ' . $req->invoiceid . ' is deleted  by ' . $user_email
+            ]);
+            return redirect()->route('onlyviewbillafterbill')->with('deletesuccess', 'Deleted Successfully !!');
+        } else {
+            return redirect()->route('customer.deletebillnoforuser')->with('error', 'No records found for the provided invoiceid');
+        }
+    }
+    
 
 
 

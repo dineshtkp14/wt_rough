@@ -12,6 +12,12 @@
             </div>
         @endif
 
+        @if (Session::has('deletesuccess'))
+        <div class="alert alert-success bg-success text-white w-50">
+            {{ Session::get('deletesuccess') }}
+        </div>
+    @endif
+
 </div>
 <a href="{{ route('itemsales.create') }}" class="btn btn-primary float-end me-5" style="margin-top: -100px; background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-file-invoice"></i> ADD NEW INVOICE</a>
 
@@ -42,10 +48,23 @@
         <div class="col-md-3"></div>
 <div class="col-md-3">
 
-<a href="{{ route('customer.billno') }}" class="btn btn-lg btn-success">
-    <i class="fas fa-edit me-2"></i> EDIT INVOICE
-</a>
+    {{-- <a href="{{ route('customer.deletebillnoforuser', 13) }}" class="btn btn-lg btn-danger" onclick="return confirm('Are you sure you want to delete this invoice?');">
+        <i class="fas fa-trash-alt me-2"></i> DELETE INVOICE
+    </a> --}}
 
+    @if (Session::has('success'))  
+
+    <form action="{{ route('customer.deletebillnoforuser', ['invoiceid' => $invoiceid]) }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-danger btn-lg" onclick="return confirmDelete();">
+            <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+            Delete Invoice
+        </button>
+    </form>
+           
+    @endif
+    
 </div>
 
 
@@ -349,6 +368,10 @@ function openPdfInNewTab(event, url) {
     }
 
 
+    function confirmDelete() {
+        var confirmation = confirm('Are you sure you want to delete this invoice?');
+        return confirmation; // Return true or false based on user's choice
+    }
     
     </script>
 </div>

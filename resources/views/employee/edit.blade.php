@@ -7,6 +7,9 @@
 @yield('breadcrumb')
 
 
+@if (auth()->check() && auth()->user()->email !== 'dineshtkp14@gmail.com')
+<script> window.location.href = "{{ route('login') }}";   </script>
+@endif
 <div class="container">
 
     <form class="row gx-5 gy-3" action="{{route('employees.update',$emp->id)}}" method="post">
