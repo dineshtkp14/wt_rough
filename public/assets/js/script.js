@@ -181,7 +181,7 @@ function inputHTML(counter) {
 
             <td>
 
-                <input autocomplete="off" type="text" placeholder="pcs" class="form-control sales-input" id="unitInput" value="" data-id="${counter}" data-name="unit" >
+                <input autocomplete="off" type="text" placeholder="pcs/kg" class="form-control sales-input" id="unitInput" value="" data-id="${counter}" data-name="unit" >
 
              </td>
 
@@ -476,7 +476,7 @@ function triggerProductResultClick() {
             if (currentUrl.indexOf("creditnotes/create") === -1) {
                 $(`#inputRow${currentID} #quantityInput`).attr(
                     "placeholder",
-                    `Quantity (Max: ${data.quantity})`
+                    `(Max: ${data.quantity})`
                 );
                 $(`#inputRow${currentID} #quantityInput`).attr(
                     "data-max",

@@ -107,6 +107,7 @@
             <th>PARTICULARS</th>
             <th>VOUCHER TYPE</th>
             <th>INVOICE NO</th>
+            <th>CN INVOICE NO</th>
             <th>INVOICE TYPE</th>
             <th>DEBIT</th>
             <th>CREDIT</th>
@@ -120,12 +121,21 @@
                     <td data-label="Address">{{ $i->particulars}}</td>
                     <td data-label="Contact No.">{{ $i->voucher_type }}</td>
                     <td data-label="Contact No.">{{ $i->invoiceid }}</td>
-                    <td data-label="Remarks">{{ $i->invoicetype }}</td>
+                    <td data-label="Contact No.">{{ $i->cninvoiceid }}</td>
+
+                    <td data-label="Remarks"> {{ $i->invoicetype }}
+                        @if($i->invoicetype == 'payment')
+                            <b>CR-({{ $i->id }}) </b>
+                        
+                        @endif
+                    </td>
+                    
                     <td data-label="Amount">{{ $i->debit }}</td>
                     <td data-label="Remarks">{{ $i->credit }}</td>
                 </tr>
             @endforeach
             <tr>
+                <td>-</td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
@@ -154,8 +164,11 @@
     <div class="total-section">
         <h4>Total Transcation Amount: <span>{{$dts}} /-</span></h4>
         Total Due Amount: 
-        <span class="forunderline ">  {{$allnotcash - $cts}} -/</span>  (
-            
+        <span class="forunderline" style="color: {{ $allnotcash - $cts < 0 ? 'red' : 'green' }}">
+            {{ $allnotcash - $cts }} -/
+        </span>
+        
+                    
                 @php
                 function convertNumberToWords($num) {
                     $ones = array(

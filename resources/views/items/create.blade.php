@@ -52,7 +52,7 @@
 <form class="row gx-5 gy-3" action="{{ route('items.store') }}" method="post" style="margin-top:-150px;">
                 @csrf
 
-                <div class="col-md-6 float-end"> <a href="{{ route('companys.create') }}" class="float-end btn btn-primary w-25 border border-dark" target="" rel="noopener noreferrer" style="margin-tp: -100px;">
+                <div class="col-md-6 float-end"> <a href="{{ route('companys.create') }}"  class=" float-end btn btn-md btn-primary border border-5 border-dark ms-auto" style="background-color: brown; border-color: orange;">
                     <i class="fas fa-plus-circle me-2"></i> <!-- Font Awesome icon -->
                     Add New Company
                 </a></div>

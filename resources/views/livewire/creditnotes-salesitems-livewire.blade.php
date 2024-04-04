@@ -1,7 +1,7 @@
 <div wire:poll.30000ms> {{-- Update every 30 seconds (adjust the duration as needed) --}}
     {{-- The whole world belongs to you. --}}
     <!-- resources/views/livewire/item-sales.blade.php -->
-okkkkkkkkkk
+
     <div class="container">
         <div class="card ">
             <div class="card-header">

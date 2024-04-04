@@ -87,7 +87,7 @@
           
             <div class="input-group mb-1">
                 <span class="input-group-text">Date: <span style="color: red;">*</span></span>
-                <input type="date" class="form-control  @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
+                <input autocomplete="off" type="date" class="form-control  @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
                 @error('date')
             <p class="invalid-feedback">{{ $message }}</p>
         @enderror
@@ -97,17 +97,10 @@
            
            
 
-                <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label"> Particulars <span style="color: red;">*</span></label>
-                    <input type="text" value="{{ old('particulars',$com->particulars) }}" class="form-control @error('particulars') is-invalid @enderror" 
-                        name="particulars" value="{{ old('particulars') }}">
-                    @error('particulars')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
-            </div>
+                
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Bill No <span style="color: red;">*</span></label>
-                    <input type="text" value="{{ old('voucher_no',$com->voucher_no)}}" class="form-control @error('vt') is-invalid @enderror" 
+                    <input  autocomplete="off" type="text" value="{{ old('voucher_no',$com->voucher_no)}}" class="form-control @error('vt') is-invalid @enderror" 
                         name="vt" >
                     @error('vt')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -118,7 +111,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Amount <span style="color: red;">*</span></label>
-                    <input type="number" value="{{ old('debit',$com->credit) }}" class="form-control @error('amount') is-invalid @enderror" 
+                    <input  autocomplete="off" type="number" value="{{ old('debit',$com->credit) }}" class="form-control @error('amount') is-invalid @enderror" 
                         name="amount" >
                     @error('amount')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -127,7 +120,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Notes</label>
-                <textarea  class="form-control @error('notes') is-invalid @enderror" 
+                <textarea   autocomplete="off" class="form-control @error('notes') is-invalid @enderror" 
                     name="notes" value=""> {{ old('notes',$com->notes) }}</textarea>
                 @error('notes')
                     <p class="invalid-feedback">{{ $message }}</p>

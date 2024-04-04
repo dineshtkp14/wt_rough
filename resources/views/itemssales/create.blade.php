@@ -123,14 +123,12 @@
                                 <a class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></a>
                             </th>
                             
-                            <th style="width: 18%;"> Product</th>
-                            <th>Unstocked Name</th>
+                            <th>Product</th>
+                            <th class="unstockedth">Unstocked Name</th>
                             <th>Quantity</th>
-                            <th style="width: 10%; ">Unit (pcs) </th>
-
-                            <th style="width: 18%;">Price</th>
-                            {{-- <th>Discount</th> --}}
-                            <th style="width: 18%;">Subtotal</th>
+                            <th>Unit (pcs/kg) </th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
                         </tr>
                     </tbody>
                 </table>

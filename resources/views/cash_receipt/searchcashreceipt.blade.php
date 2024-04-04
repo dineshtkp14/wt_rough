@@ -16,6 +16,8 @@
             <h4 class="text-center mb-4">OHT</h4>
             <!-- Cash Receipt -->
             <h5 class="text-center mb-4">Cash Receipt</h5>
+           
+            
             <div class="card-body">
                 <!-- Search Receipt Form -->
                 <h5 class="card-title mb-4">Search Receipt No</h5>
@@ -36,6 +38,20 @@
             </div>
             <!-- CASH RECEIPT Heading -->
             <h3 class="text-center"><strong>CASH RECEIPT</strong></h3>
+            @if (Session::has('success'))
+
+            
+            <form action="{{ route('cpayments.destroy', isset($alldetails[0]->id) ? $alldetails[0]->id : '') }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+                    Delete
+                </button>
+            </form>
+            
+
+            @endif
             <!-- Date and Receipt No at Top Right -->
             <div class="d-flex justify-content-end mb-4">
                 <div class="mr-3">
@@ -146,6 +162,10 @@
                             </div>
                             <div class="col-md-6 text-right">
                                 <p><strong>Receiver's Signature:</strong> _______________________</p>
+                                    @if(auth()->check())
+                                        <span class="ms-5" style="margin-top: -10px !important;">{{ auth()->user()->name }}</span>
+                                    @endif
+
                             </div>
                         </div>
                     </div>
@@ -161,5 +181,31 @@
         var newTab = window.open(url, '_blank');
         newTab.focus();
     }
+
+
+     // Attach click event listener to the edit button
+     document.getElementById('editButton').addEventListener('click', function(event) {
+        // Prevent the default behavior of the link
+        event.preventDefault();
+
+        // Make an AJAX request to set the session
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/set_session', true); // Replace '/set_session' with your actual endpoint
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Session set successfully, redirect the user
+                window.location.href = "{{ route('cpayments.index') }}";
+            } else {
+                // Handle errors if needed
+                console.error('Error setting session:', xhr.statusText);
+            }
+        };
+        xhr.onerror = function() {
+            // Handle errors if needed
+            console.error('Network error while setting session');
+        };
+        xhr.send(JSON.stringify({ /* Any data you want to send to the server */ }));
+    });
 </script>
 @stop

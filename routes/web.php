@@ -288,6 +288,9 @@ Route::get('/banks/pdf/convert/',[BankController::class,'show_intopdfbankdetails
 Route::get('/cpayments',[CustomerLedgerDetailsController::class,'index'])->name('cpayments.index');
 Route::get('/cpayments/create',[CustomerLedgerDetailsController::class,'create'])->name('cpayments.create');
 Route::post('/cpayments',[CustomerLedgerDetailsController::class,'store'])->name('cpayments.store');
+Route::get('/cpayments/{cpayments}/edit',[CustomerLedgerDetailsController::class,'edit'])->name('cpayments.edit');
+Route::put('/cpayments/{cpayments}',[CustomerLedgerDetailsController::class,'update'])->name('cpayments.update');
+Route::delete('/cpayments/{cpayments}',[CustomerLedgerDetailsController::class,'destroy'])->name('cpayments.destroy');
 
 //Route::get('/clhs',[CustomerLedgerHistroy::class,'index'])->name('clhs.index');
 Route::get('/clhs',[CustomerLedgerHistroy::class,'returnchoosendatehistroy'])->name('clhs.returnchoosendatehistroy');

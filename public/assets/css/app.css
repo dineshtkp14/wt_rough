@@ -515,6 +515,15 @@ tr:nth-child(even) {
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 999999;
 }
+/* Shorten the width of the quantity column */
+#quantityInput,
+#unitInput {
+    width: 90%; /* Adjust the width as needed */
+}
+
+#priceInput {
+    width: 50%; /* Adjust the width as needed */
+}
 
 /* //dashboard css */
 

@@ -112,7 +112,7 @@
 			<th>Date</th>
 			<th>Particulars</th>
 			<th>Voucher Type</th>
-			<th>Invoice ID</th>
+			<th>Bill No</th>
 			<th>Debit</th>  
             <th>Credit</th>
            
@@ -130,7 +130,7 @@
 						   <td data-label="Name">{{ $i->created_at }}</td>
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
+						   <td data-label="Contact No.">{{ $i->voucher_no }}</td>
 			   
 						   <td data-label="Amount">{{ $i->debit }}</td>
 						   
@@ -173,7 +173,12 @@
     
 	</tbody>
 </table>
-<h2 class="floatleft">Total Due Amount : <span class="forunderline">{{$dts -$cts }} /-</span>  </h2>
+<h2 class="floatleft">
+    Total Due Amount : 
+    <span class="forunderline" style="color: {{  $cts -$dts < 0 ? 'red' : 'green' }}">
+        {{$dts - $cts }} /-
+    </span>
+</h2>
 </div>
 
 <div class="printed-info">

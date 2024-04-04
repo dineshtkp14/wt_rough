@@ -59,7 +59,7 @@
                    
                     <input id="customerIdInput"  name="companyid" hidden required value="{{ old('customerid',$all->companyid) }}" >
 
-                    <input type="text" required class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company"
+                    <input  autocomplete="off" type="text" required class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company"
                         id="searchCustomerInput"  data-api="company_search" autocomplete="off"  value="{{ old('customerid',$all->companyname) }}">
                         @error('customerid')
                             <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>

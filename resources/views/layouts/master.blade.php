@@ -532,7 +532,8 @@
                     </button>
                 </a>
             </li>
-
+        
+            <!-- Add icons to the remaining menu items -->
             <li class="mb-1 border border-success border-5">
                 <a href="{{ route('returnchoosendatehistroycashandcredit') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
@@ -559,21 +560,21 @@
                     </button>
                 </a>
             </li>
-
+        
             <li class="mb-1 border border-success border-5">
                 <a href="{{ route('showonlysalesperday.pp') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-bookmark"></i> Show Per Day
+                        <i class="fas fa-calendar-day"></i> Show Per Day
                     </button>
                 </a>
             </li>
-
+        
             <li class="mb-1 border border-success border-5">
                 <a href="{{ route('banks.create') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-bookmark"></i> Bank Deposit
+                        <i class="fas fa-piggy-bank"></i> Bank Deposit
                     </button>
                 </a>
             </li>

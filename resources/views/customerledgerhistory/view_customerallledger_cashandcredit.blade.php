@@ -156,7 +156,7 @@
             <th>CREDIT NOTES INVOICE NO</th>
 			<th>DEBIT</th>  
             <th>CREDIT</th>
-            <th>Cn invoiceid</th>
+            <th>CN INVOICE NO</th>
 
 		</tr>
 	</thead>
@@ -174,7 +174,7 @@
 
                            <td data-label="Remarks"> {{ $i->invoicetype }}
 							@if($i->invoicetype == 'payment')
-								<b>({{ $i->id }}) </b>
+								<b>CR-({{ $i->id }}) </b>
 							
 							@endif
 						</td>
@@ -200,8 +200,7 @@
 						   <td>-</td>
 						   <td>-</td>
 						   <td>-</td>
-						   <td>-</td>
-manage table tommorw
+
 
 			   
 						   <td>
@@ -215,6 +214,9 @@ manage table tommorw
 								   Total: <h2>{{$cts }}</h2></td>
 							   @endif
 						   </td>
+
+						   <td>-</td>
+
 			   
 					   </tr>
 					   
@@ -233,7 +235,13 @@ manage table tommorw
 
 <h5 class="floatleft">Total Transcation Amount: <span class="forunderline">{{$dts}} /-</span></h5>
 
-<h1 class="floatleft btn btn-success btn-lg">Total Due Amount: <span class="forunderline">{{$allnotcash - $cts}} /-</span></h1>
+<h1 class="floatleft btn btn-lg {{ $allnotcash - $cts < 0 ? 'btn-danger' : 'btn-success' }}">
+    Total Due Amount: 
+    <span class="forunderline">
+        {{ $allnotcash - $cts }} -/
+    </span>
+</h1>
+
 (
 @php
               function convertNumberToWords($num) {
@@ -311,7 +319,7 @@ echo $words;
 			<th>Date</th>
 			<th>Particulars</th>
 			<th>Voucher Type</th>
-			<th>CN Invoice ID</th>
+			<th>CN Invoice NO</th>
 			<th>Credit</th> 
 		</tr>
 	</thead>

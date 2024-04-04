@@ -43,8 +43,18 @@
 </div>
 
 <div class="container">
-
-
+    <div class="row">
+        <div class="col-md-9"></div>
+        <div class="col-md-3">
+            <a href="{{ route('companys.create') }}" class="btn btn-md btn-primary border border-5 border-dark ms-auto" style="background-color: brown; border-color: orange;">
+                <span class="me-1"><i class="fas fa-plus"></i></span> <!-- Icon for adding -->
+                <b >Add New Company </b>
+            </a>
+        </div>
+    </div>
+    
+    
+    
 <form class="row gx-5 gy-3" action="{{route('companybillentry.store')}}" method="post">
                 @csrf
 
@@ -58,7 +68,7 @@
                         <div class="input-group mb-1">
                             <div class="search-box">
                                 <input id="customerIdInput" name="companyid" hidden>
-                            <input type="text"  class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name"
+                            <input  autocomplete="off" type="text"  class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name"
                                 id="searchCustomerInput"  data-api="company_search" autocomplete="off">
                                 @error('companyid')
                                     <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
@@ -88,7 +98,7 @@
                       
                         <div class="input-group mb-1">
                             <span class="input-group-text">Date: <span style="color: red;">*</span></span>
-                            <input type="date" class="form-control  @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
+                            <input  autocomplete="off" type="date" class="form-control  @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
                             @error('date')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
@@ -96,17 +106,10 @@
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label"> Particulars (items name)<span style="color: red;">*</span></label>
-                    <input type="text" class="form-control @error('particulars') is-invalid @enderror" 
-                        name="particulars" value="{{ old('particulars') }}">
-                    @error('particulars')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
-            </div>
+                
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Bill No <span style="color: red;">*</span></label>
-                    <input type="text" class="form-control @error('voucherno') is-invalid @enderror" 
+                    <input   autocomplete="off" type="text" class="form-control @error('voucherno') is-invalid @enderror" 
                         name="voucherno" value="{{ old('voucherno') }}">
                     @error('voucherno')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -117,7 +120,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Amount <span style="color: red;">*</span></label>
-                    <input type="number" class="form-control @error('amount') is-invalid @enderror" 
+                    <input   autocomplete="off" type="number" class="form-control @error('amount') is-invalid @enderror" 
                         name="amount" value="{{ old('amount') }}">
                     @error('amount')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -126,7 +129,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Notes</label>
-                <textarea  class="form-control @error('notes') is-invalid @enderror" 
+                <textarea   autocomplete="off" class="form-control @error('notes') is-invalid @enderror" 
                     name="notes" value="{{ old('notes') }}"> </textarea>
                 @error('notes')
                     <p class="invalid-feedback">{{ $message }}</p>

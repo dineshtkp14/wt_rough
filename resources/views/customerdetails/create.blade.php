@@ -105,7 +105,7 @@
             <!-- Your existing HTML code -->
             <div class="col-md-6" id="additionalFieldContainer" style="display: none;">
                 <label for="cninvoiceid" class="form-label">Credit Notes Invoice ID</label>
-                <input type="text" class="form-control" id="cninvoiceid" name="cninvoiceid">
+                <input type="number" class="form-control" id="cninvoiceid" name="cninvoiceid">
             </div>
 
             <div class="col-md-6">
@@ -177,5 +177,13 @@
     });
 });
 
+
+$(document).ready(function () {
+            $('form').submit(function () {
+                // Disable the submit button
+                $('#submitBtn').prop('disabled', true);
+                
+            });
+        });
 </script>
 @stop

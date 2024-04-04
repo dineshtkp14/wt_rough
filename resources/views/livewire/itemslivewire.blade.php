@@ -1,10 +1,16 @@
 
 
 <div class="container" style=" overflow-x: auto;">
+
+
     <div class="card" style="overflow-x: auto;">
         <div class="card-header">
+
+
             <a href="{{route('items.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
              Total No Of Items {{ $all->total() }}
+             
+             <a href="{{ route('itemsales.create') }}" class="btn btn-primary float-start me-5" style=" background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-file-invoice"></i> ADD NEW INVOICE</a>
 
               <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search Here" style="width: 250px;" wire:model="searchTerm" >
          </div>
