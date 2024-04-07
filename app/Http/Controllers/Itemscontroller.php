@@ -129,7 +129,8 @@ DB::table('trackitemstable')->insert([
    
 
 ]);
-                
+session()->put('lastInsertedId', $itemsdetails->id);
+
  
                  return redirect()->route('items.index')->with('success', 'Items Added Successfully !!');
              } else {
@@ -215,17 +216,16 @@ public function update($id, Request $req)
    ' wholesale_price: <strong>' . $oldItemDetails->wholesale_price . '</strong>, ' .
    'Updated to: ' . 'wholesale_price: ' . $req->wp . ', ||' .
    ' total: <strong>' . $oldItemDetails->total . '</strong>, ' .
-   'Updated to: ' . 'total: ' . $req->quantity * $req->costprice . ', ' .
+   'Updated to: ' . 'total: ' . $req->quantity * $req->costprice .  ', || ' .
    ' opening_stock: <strong>' . $oldItemDetails->opening_stock . '</strong>, ' .
    'Updated to: ' . 'opening_stock: ' . $req->quantity . ', ||' .
    ' added_by: <strong>' . $oldItemDetails->added_by . '</strong>, ' .
-   'Updated to: ' . 'opening_stock: ' . $req->quantity . ', ||' .
-   ' added_by: <strong>' . $oldItemDetails->added_by . '</strong>, ' .
+   'Updated to: ' . 'added_by: ' . session('user_email');
+
    
    'Item Store Area: <strong>' . $oldItemDetails->item_store_area . '</strong>, ' .
    'Updated to: ' . 'Item Store Area: ' . $req->item_store_area . ', ||' .
 
-   'Updated to: ' . 'added_by: ' . session('user_email');
 
   // Update the item details
   $itemsdetails = Item::find($id);

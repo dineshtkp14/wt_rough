@@ -35,6 +35,10 @@
     }
 </style>
 
+@if (!auth()->check())
+    <script>window.location.href = "{{ route('login') }}";</script>
+@endif
+
 <div class="main-content">
 
     <h2 class="text-center mt-3 bg-primary-custom p-3 text-white-custom">USER DASHBOARD</h2>

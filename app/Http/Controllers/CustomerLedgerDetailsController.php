@@ -124,6 +124,20 @@ public function store(Request $req)
     $cl->added_by = session('user_email');
     $cl->save();
 
+
+    $notes = 'Customer ID ' . $req->customerid . ' inserted with particulars: ' . $cl->particulars . ', voucher type: ' . $cl->voucher_type . ', credit: ' . $cl->credit .', date: ' . $cl->date . ', by ' . session('user_email');;
+
+   // Insert into track table
+   DB::table('TrackCustomerLedger')->insert([
+    // 'customerid' => $req->customerid,
+    'title' => "Inserted_Payment",
+    'updated_by' => session('user_email'),
+    'notes' => $notes
+
+]);
+
+
+
     return redirect()->route('cashreceipt.search', ['receiptno' => $nextUserId])->with('success', 'Invoice Created Successfully !!');
 }
 
@@ -210,16 +224,36 @@ public function destroy($id, Request $req)
     // Find the record to be deleted
     $cusiddelete = customerledgerdetails::findOrFail($id);
 
+    // Store values for insertion into TrackCustomerLedger
+    $title = "Deleted_CustomerPayment";
+    $updated_by = session('user_email');
+
+    $notes = 'Record ID: ' . $cusiddelete->id .
+    ', Customer ID: ' . $cusiddelete->customerid .
+    ', Date: ' . $cusiddelete->date .
+    ', Particulars: ' . $cusiddelete->particulars .
+    ', Voucher Type: ' . $cusiddelete->voucher_type .
+    ', Credit: ' . $cusiddelete->credit .
+    ', Deleted by: ' . $updated_by;
     // Check if the invoice type is "payment"
     if ($cusiddelete->invoicetype === 'payment') {
         // Delete the record
         $cusiddelete->delete();
+
+        // Insert into track table
+        DB::table('TrackCustomerLedger')->insert([
+            'title' => $title,
+            'updated_by' => $updated_by,
+            'notes' => $notes
+        ]);
+
         return redirect()->route('cpayments.index')->with('success', 'Customer Payment Receipt Deleted successfully.');
     } else {
         // If invoice type is not "payment", return with an error message
         return redirect()->route('cpayments.index')->with('error', 'Cannot delete this record as invoice type is not "payment".');
     }
 }
+
 
 
 

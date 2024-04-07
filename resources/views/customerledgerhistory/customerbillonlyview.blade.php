@@ -52,18 +52,7 @@
         <i class="fas fa-trash-alt me-2"></i> DELETE INVOICE
     </a> --}}
 
-    @if (Session::has('success'))  
-
-    <form action="{{ route('customer.deletebillnoforuser', ['invoiceid' => $invoiceid]) }}" method="POST">
-        @csrf
-        @method('DELETE')
-        <button type="submit" class="btn btn-danger btn-lg" onclick="return confirmDelete();">
-            <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
-            Delete Invoice
-        </button>
-    </form>
-           
-    @endif
+   
     
 </div>
 
@@ -138,7 +127,36 @@
         @endif
        </div>
 <span class="float-end mb-5">
+
+
+    {{-- @if (Session::has('success'))   --}}
+    {{-- <form action="{{ route('customer.deletebillnoforuser', ['invoiceid' => $invoiceid]) }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-danger btn-lg" onclick="return confirmDelete();">
+            <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+            Delete Invoice
+        </button>
+    </form>      --}}
+    {{-- @endif --}}
+
     <div class="col-12 d-flex justify-content-end align-items-center pt-4 p-4">
+
+     @if (Session::has('success'))  
+
+       <span class="me-5">
+        <form action="{{ route('customer.deletebillnoforuser', ['invoiceid' => $invoiceid]) }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="me-5 btn btn-danger btn-lg" onclick="return confirmDelete();">
+                <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+                Delete Invoice
+            </button>
+        </form>   
+       </span>
+       
+      @endif
+
         <a href="{{ route('invoicebillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
             <div class="icon-box d-flex justify-content-center align-items-center" style="font-size: 34px;">
                 <i class="fa-solid fa-print"></i>

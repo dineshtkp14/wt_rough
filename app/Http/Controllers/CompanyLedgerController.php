@@ -147,71 +147,65 @@ session()->put('lastInsertedId', $companypanyment->id);
     return redirect('/login');
 }
 
-    public function update($id, Request $req)
-    {
-        $validator=Validator::make($req->all(),[
+public function update($id, Request $req)
+{
+    $validator = Validator::make($req->all(), [
+        'companyid' => 'required',
+        'date' => 'required',
+        'particulars' => 'required',
+        'amount' => 'required',
+        'vt' => 'required',
+    ]);
 
-            'companyid'=>'required',
-            'date'=>'required',
-            'particulars'=>'required',
-            'amount'=>'required',
-            'vt'=>'required',
-    
-               
+    if ($validator->passes()) {
+        $companyPayment = CompanyLedger::find($id);
+        $oldData = $companyPayment->toArray(); // Get old data as an array
+
+        $companyPayment->companyid = $req->companyid;
+        $companyPayment->date = $req->date;
+        $companyPayment->particulars = $req->particulars;
+        $companyPayment->voucher_type = $req->vt;
+        $companyPayment->debit = $req->amount;
+        $companyPayment->notes = $req->notes;
+        $companyPayment->added_by = session('user_email');
+        $companyPayment->save();
+
+        // Construct the additional_info string with old and new values
+        $additionalInfo = "Old Data: ";
+        foreach ($oldData as $key => $value) {
+            // Skip voucher_no and debit fields
+            if ($key === 'voucher_no' || $key === 'credit') {
+                continue;
+            }
+            $additionalInfo .= "$key: $value || ";
+        }
+        $additionalInfo .= "<br><br>"; // Add a line break after "Old Data"
+
+        $additionalInfo .= "Updated to: ";
+        foreach ($companyPayment->toArray() as $key => $value) {
+            // Skip voucher_no and debit fields
+            if ($key === 'voucher_no' || $key === 'credit') {
+                continue;
+            }
+            $additionalInfo .= "$key: $value || ";
+        }
+        $additionalInfo .= "<br><br>"; // Add a line break after "Updated to:"
+
+
+        // Insert into track table
+        DB::table('trackcompanybillentry')->insert([
+            'title' => "companyPayment_data_UPDATE",
+            'updated_by' => session('user_email'),
+            'notes' => $additionalInfo,
         ]);
-    
-        if($validator->passes()){
-    
-        $companypanyment= CompanyLedger::find($id);
-        $companypanyment->companyid=$req->companyid;
-        $companypanyment->date=$req->date;
-        $companypanyment->particulars=$req->particulars;
-        $companypanyment->voucher_type=$req->vt;
-        $companypanyment->debit=$req->amount;
-        $companypanyment->notes=$req->notes;
-        $companypanyment->added_by = session('user_email');
-        $companypanyment->save();
 
-           // Construct the additional_info string with old and new values
-
-           $oldItemDetails = CompanyLedger::find($id);
-           $additional_info =
-           'companyid: ' . $oldItemDetails->companyid . ', ' .
-           'date: ' . $oldItemDetails->date . ', ' .
-           'particulars: ' . $oldItemDetails->particulars . ', ' .
-           'voucher_type: ' . $oldItemDetails->voucher_type . ', ' .
-           'debit: ' . $oldItemDetails->debit . ', ' .
-           'notes: ' . $oldItemDetails->notes . ', ' .
-           'added_by: ' . $oldItemDetails->added_by . '' .
-           '<br><br>Updated to: ' .
-           'companyid: ' . $req->companyid . ', ' .
-           'date: ' . $req->date . ', ' .
-           'particulars: ' . $req->particulars . ', ' .
-           'voucher_no: ' . $req->vt . ', ' .
-           'debit: ' . $req->amount . ', ' .
-           'notes: ' . $req->notes . ', ' .
-           'added_by: ' . session('user_email') . '';
-
-       // Insert into track table
-       DB::table('trackcompanybillentry')->insert([
-           'title' => "companyPayment_data_UPDATE",
-           'updated_by' => session('user_email'),
-           'notes' => $additional_info,
-       ]);
-
-    
-            return redirect()->route('companyLedgerspay.index')->with('success','Updated Sucessfully !!');  
-        }
-        else{
-            return redirect()->route('companyLedgerspay.create')->withErrors($validator)->withInput();
-    
-        }
-    
-        
-    
-
-    return redirect('/login');
+        return redirect()->route('companyLedgerspay.index')->with('success', 'Updated Successfully !!');
+    } else {
+        return redirect()->route('companyLedgerspay.create')->withErrors($validator)->withInput();
+    }
 }
+
+
 
     public function destroy($id){
 
@@ -222,7 +216,7 @@ session()->put('lastInsertedId', $companypanyment->id);
         DB::table('trackcompanybillentry')->insert([
             'title' => "companyPayment_DATA_DELETED",
             'updated_by' => session('user_email'),
-            'notes' => 'Deleted companyid: ' . $cusiddelete->companyid . ', date: ' . $cusiddelete->date . ', particulars: ' . $cusiddelete->particulars . ', voucher_no: ' . $cusiddelete->voucher_no . ', credit: ' . $cusiddelete->credit . ', notes: ' . $cusiddelete->notes . ', added_by: ' . $cusiddelete->added_by,
+            'notes' => 'Deleted companyid: ' . $cusiddelete->companyid . ', date: ' . $cusiddelete->date . ', particulars: ' . $cusiddelete->particulars . ', voucher_type: ' . $cusiddelete->voucher_type . ', debit: ' . $cusiddelete->debit . ', notes: ' . $cusiddelete->notes . ', added_by: ' . $cusiddelete->added_by,
         ]);
 
         $cusiddelete->delete();

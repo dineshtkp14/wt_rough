@@ -582,6 +582,119 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
 }
 
 
+public function deletebillfromdatabaseforcreditnotes_foruser(Request $req)
+{
+   
+
+    // if ($validator->fails()) {
+    //     return redirect()->route('creditnotescustomeronlyview.billno')->withErrors($validator)->withInput();
+    // }
+
+    // Check if the user's email is the admin's email
+    $user_email = session('user_email');
+
+    if ($user_email === 'dineshtkp14@gmail.com') {
+        // Admin can delete without any date restrictions
+        $deletePermission = true;
+    } else {
+        // Retrieve the date associated with the invoice from the database
+        $ledgerDetailsDate = DB::table('creditnotes_customerledgerdetails')
+            ->where('invoiceid', $req->invoiceid)
+            ->value('date');
+
+        // Check if the date is today's date
+        $deletePermission = !empty($ledgerDetailsDate) && Carbon::parse($ledgerDetailsDate)->isToday();
+    }
+
+    if (!$deletePermission) {
+        return redirect()->route('creditnotescustomeronlyview.billno')->with('error', 'Regular users can only delete invoices on the current date.');
+    }
+
+    // Proceed with the deletion process
+    // Retrieve the items from the bill before deleting
+    $items = DB::table('creditnotes_salesitems')->where('invoiceid', $req->invoiceid)->get();
+
+    // Backup data before deleting
+    foreach ($items as $item) {
+        $backupSalesItem = new BackupCreditnotesSalesItem();
+        $backupSalesItem->invoiceid = $item->invoiceid;
+        $backupSalesItem->itemid = $item->itemid;
+        $backupSalesItem->unstockedname = $item->unstockedname;
+        $backupSalesItem->quantity = $item->quantity;
+        $backupSalesItem->price = $item->price;
+        $backupSalesItem->unit = $item->unit;
+        $backupSalesItem->subtotal = $item->subtotal;
+        $backupSalesItem->added_by = session('user_email');
+        $backupSalesItem->save();
+    }
+
+    // Backup invoice data
+    $invoice = DB::table('creditnotes_invoices')->where('id', $req->invoiceid)->first();
+
+    if ($invoice) {
+        $backupInvoice = new BackupCreditnotesInvoice();
+        $backupInvoice->customerid = $invoice->customerid;
+        $backupInvoice->invoice_id = $req->invoiceid;
+        $backupInvoice->subtotal = $invoice->subtotal;
+        $backupInvoice->discount = $invoice->discount;
+        $backupInvoice->total = $invoice->total;
+        $backupInvoice->inv_type = $req->invoice_type;
+        $backupInvoice->notes = $invoice->notes;
+        $backupInvoice->added_by = session('user_email');
+        $backupInvoice->save();
+    } else {
+        return redirect()->route('creditnotescustomeronlyview.billno')->with('error', 'Invalid invoiceid provided');
+    }
+
+    // Backup customer ledger details
+    $ledgerDetails = DB::table('creditnotes_customerledgerdetails')->where('invoiceid', $req->invoiceid)->get();
+    foreach ($ledgerDetails as $ledger) {
+        $backupLedger = new BackupCreditnotesCustomerLedgerDetail();
+        $backupLedger->customerid = $ledger->customerid;
+        $backupLedger->invoiceid = $ledger->invoiceid;
+        $backupLedger->particulars = $ledger->particulars;
+        $backupLedger->voucher_type = $ledger->voucher_type;
+        $backupLedger->date = $ledger->date;
+        $backupLedger->debit = $ledger->debit;
+        $backupLedger->credit = $ledger->credit;
+        $backupLedger->notes = $ledger->notes;
+        $backupLedger->added_by = session('user_email');
+        $backupLedger->save();
+    }
+
+    // Adjust stock quantities before deleting
+    foreach ($items as $item) {
+        $product = Item::find($item->itemid);
+        if ($product) {
+            $product->quantity += $item->quantity;
+            $product->save();
+        }
+    }
+
+    // Delete records from salesitem_tbl
+    $salesItemsDeleted = DB::table('creditnotes_salesitems')->where('invoiceid', $req->invoiceid)->delete();
+
+    // Delete records from invoices_tbl
+    $invoicesDeleted = DB::table('creditnotes_invoices')->where('id', $req->invoiceid)->delete();
+
+    // Delete records from customerledgerdetails_tbl
+    $ledgerDetailsDeleted = DB::table('creditnotes_customerledgerdetails')->where('invoiceid', $req->invoiceid)->delete();
+
+    // Check if any records were deleted
+    if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
+        // Insert into track table
+        DB::table('trackcreditnotes')->insert([
+            'Cn_bill_no' => $req->invoiceid,
+            'title' => "CreditNotes_Bill_deleted",
+            'updated_by' => session('user_email'),
+            'notes' => ' Credit Notes Invoice No : ' . $req->invoiceid . ' is deleted  by ' . session('user_email')
+        ]);
+        return redirect()->route('creditnotescustomeronlyview.billno')->with('deletesuccess', 'Deleted Successfully !!');
+    } else {
+        return redirect()->route('creditnotescustomeronlyview.billno')->with('error', 'No records found for the provided invoiceid');
+    }
+}
+
 
 // Make sure to import the Carbon class at the top of your controller file
 

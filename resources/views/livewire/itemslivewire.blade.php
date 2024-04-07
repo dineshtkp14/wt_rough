@@ -65,6 +65,35 @@
                        
             
                         <td data-label="action">
+
+
+                            @if (auth()->user()->email != 'dineshtkp14@gmail.com')
+
+                                        @if (Session::has('success') && $i->id == session('lastInsertedId'))
+                                                <a href="{{Route('items.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
+                                                        
+                                                                
+                                                <a href="#" onclick="delfunctionusers({{$i->id}})" class="btn btn-danger"  rel="noopener noreferrer">Delete</a>
+                                            <form id="eea{{$i->id}}" action="{{ route('items.destroy',$i->id)}}" method="post">
+                                                @csrf
+                                                @method('delete')
+                                                
+                                                </form>
+                                        @endif                                               
+
+                            @else
+                            <a href="{{Route('items.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>                         
+                            <a href="#" onclick="delfunctionusers({{$i->id}})" class="btn btn-danger"  rel="noopener noreferrer">Delete</a>
+                            <form id="eea{{$i->id}}" action="{{ route('items.destroy',$i->id)}}" method="post">
+                                @csrf
+                                @method('delete')
+                                
+                            </form>
+                            @endif
+
+
+
+
                             <a href="{{Route('items.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
                                       
                                                

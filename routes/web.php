@@ -63,6 +63,8 @@ use App\Http\Controllers\openingbalanceController;
 use App\Http\Controllers\PricelistController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\ExpensesController;
+use App\Http\Controllers\TrackCustomerLedgerPayment;
+
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\trackCreditnotesController;
@@ -108,6 +110,8 @@ Route::post('/creditnotes',[Creditnotes_controller::class,'store'])->name('credi
 
 
 Route::get('/creditnotesbillnoonlyview',[Creditnotes_controller::class,'returnBillsDEtailsByInvoiceidforviewingcreditnotebillonlyview'])->name('creditnotescustomeronlyview.billno');
+Route::delete('/creditnotesbillnoonlyview/{invoiceid}', [Creditnotes_controller::class, 'deletebillfromdatabaseforcreditnotes_foruser'])->name('customerCreditnotes.deletebillnoforuser');
+// Route::get('/creditnotesbillnoonlyview',[Creditnotes_controller::class,'returnBillsDEtailsByInvoiceidforviewingcreditnotebill_foruser'])->name('creditnotescustomerforsearchcninvoice.billno');
 
 
 Route::get('/creditnotesbillno',[Creditnotes_controller::class,'returnBillsDEtailsByInvoiceidforviewingcreditnotebill'])->name('creditnotescustomer.billno');
@@ -332,10 +336,13 @@ Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_Invoive
 Route::get('/trackinvoice',[trackinvoiceController::class,'index'])->name('trackinvoice.index');
 Route::get('/trackcreditnotes',[trackCreditnotesController::class,'index'])->name('trackcreditnotes.index');
 
+Route::get('/trackcustomerledger',[TrackCustomerLedgerPayment::class,'index'])->name('trackcustomerledger.index');
+
+
 //trackitemstable
 Route::get('/trackitemstable',[TrackitemstableController::class,'index'])->name('trackitemstable.index');
 
-Route::get('/trackcompanyledger',[TrackcompanyledgerController::class,'index'])->name('TrackcompanyledgerController.index');
+Route::get('/trackcompanyledger',[TrackcompanyledgerController::class,'index'])->name('Trackcompanyledger.index');
 
 
 Route::get('/cbills',[CustomerLedgerHistroy::class,'returncusbills'])->name('cbills.returncusbills');

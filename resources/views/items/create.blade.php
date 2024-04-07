@@ -155,7 +155,7 @@
             </div>
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Unit(PCS/kg/etc)  <span style="color: red;">*</span></label>
-                <input type="unit" placeholder=" Please Enter Unit" class="form-control @error('unit') is-invalid @enderror" 
+                <input type="unit" placeholder="pcs/kg" class="form-control @error('unit') is-invalid @enderror" 
                     name="unit" value="{{ old('unit') }}">
                 @error('unit')
                     <p class="invalid-feedback">{{ $message }}</p>

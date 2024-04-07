@@ -21,6 +21,8 @@ class TrackinvoiceLivewire extends Component
             $trackinvoice->orWhere('id','like',"%".$this->searchTerm."%");
             $trackinvoice->orWhere('bill_no','like',"%".$this->searchTerm."%");
             $trackinvoice->orWhere('notes','like',"%".$this->searchTerm."%");
+            $trackinvoice->orWhere('created_at','like',"%".$this->searchTerm."%");
+
 
             
         }

@@ -5,6 +5,10 @@
 <div class="main-content">
     @yield('breadcrumb')
 
+    @if (auth()->check() && auth()->user()->email !== 'dineshtkp14@gmail.com')
+    <script> window.location.href = "{{ route('login') }}";   </script>
+@endif
+
     @if (Session::has('updateerrorcusname'))
                 <div class="alert bg-danger text-white">
                     {{ Session::get('updateerrorcusname') }}

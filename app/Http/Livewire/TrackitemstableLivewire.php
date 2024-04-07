@@ -22,6 +22,8 @@ class TrackitemstableLivewire extends Component
             $trackitemstable->orWhere('title','like',"%".$this->searchTerm."%");
 
             $trackitemstable->orWhere('notes','like',"%".$this->searchTerm."%");
+            $trackitemstable->orWhere('created_at','like',"%".$this->searchTerm."%");
+
 
             
         }

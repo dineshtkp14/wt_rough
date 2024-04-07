@@ -35,7 +35,7 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Search in ok Invoice</h5>
-                    <form action="{{ route('creditnotescustomer.billno') }}" method="get" id="chosendatepdfform">
+                    <form action="{{ route('creditnotescustomeronlyview.billno') }}" method="get" id="chosendatepdfform">
                         <div class="mb-3">
                             <label for="invoiceid" class="form-label">Enter Bill No</label>
                             <input type="number" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Bill No" required>
@@ -47,9 +47,7 @@
         </div>
         <div class="col-md-4"></div>
         <div class="col-md-4">
-        <a href="{{ route('creditnotescustomer.billno') }}" class="btn btn-lg btn-success">
-            <i class="fas fa-edit me-2"></i> EDIT INVOICE
-        </a>
+       
         </div>
 
 
@@ -111,6 +109,21 @@
 
 <span class="float-end mb-5">
     <div class="col-12 d-flex justify-content-end align-items-center pt-4 p-4">
+
+        @if (Session::has('success'))  
+
+        <span class="me-5">
+         <form action="{{ route('customerCreditnotes.deletebillnoforuser', ['invoiceid' => $invoiceid]) }}" method="POST">
+             @csrf
+             @method('DELETE')
+             <button type="submit" class="me-5 btn btn-danger btn-lg" onclick="return confirmDelete();">
+                 <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+                 Delete Invoice
+             </button>
+         </form>   
+        </span>
+        
+       @endif
         <a href="{{ route('creditnotesbillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
             <div class="icon-box d-flex justify-content-center align-items-center" style="font-size: 34px;">
                 <i class="fa-solid fa-print"></i>

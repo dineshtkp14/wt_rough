@@ -296,6 +296,9 @@ class CustomerLedgerHistroy extends Controller
         }
     }
     
+
+
+
     public function deletebillfromdatabasefor_user(Request $req)
     {
        
@@ -306,12 +309,12 @@ class CustomerLedgerHistroy extends Controller
         if ($user_email === 'dineshtkp14@gmail.com') {
             // Admin can delete without any date restrictions
             $validator = Validator::make($req->all(), [
-                'invoiceid' => 'required',
+                // 'invoiceid' => 'required',
             ]);
         } else {
             // Regular users can delete only if the current date matches the date in the database
             $validator = Validator::make($req->all(), [
-                'invoiceid' => 'required',
+                // 'invoiceid' => 'required',
             ]);
     
             // Retrieve the date associated with the invoice from the database
@@ -327,7 +330,7 @@ class CustomerLedgerHistroy extends Controller
     
         // If validation fails, redirect with an error message
         if ($validator->fails()) {
-            return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+            return redirect()->route('onlyviewbillafterbill')->withErrors($validator)->withInput();
         }
     
         // Retrieve the items from the bill before deleting
@@ -362,7 +365,7 @@ class CustomerLedgerHistroy extends Controller
             $backupInvoice->save();
         } else {
             // Handle the case when the invoice does not exist
-            return redirect()->route('customer.billno')->with('error', 'Invalid invoiceid provided');
+            return redirect()->route('onlyviewbillafterbill')->with('error', 'Invalid invoiceid provided');
         }
     
         // Backup customer ledger details
@@ -436,6 +439,14 @@ class CustomerLedgerHistroy extends Controller
             ]);
     
             if ($validator->passes()) {
+
+
+                 //retrivecustomerid
+                 $initial_customer_id = DB::table('customerledgerdetails')
+                 ->where('invoiceid', $req->Bill_No)
+                 ->value('customerid');
+
+
                 // Update customerledgerdetails table
                 DB::table('customerledgerdetails')
                     ->where('invoiceid', $req->Bill_No)
@@ -451,7 +462,7 @@ class CustomerLedgerHistroy extends Controller
                     'bill_no' => $req->Bill_No,
                     'title' => "customer_name_updated",
                     'updated_by' => $user_email,
-                    'notes' => 'Customer ID updated by admin to ' . $req->customerid . ' for invoice/bill No ('.$req->Bill_No.')'
+                    'notes' => 'Initial Customer ID ' . $initial_customer_id . ' updated to Customer ID ' . $req->customerid . ' for invoice/bill No (' . $req->Bill_No .  ') by ' . $user_email
                 ]);
     
                 return redirect()->route('customer.billno')->with('updatesuccesscusname', 'Updated customer name Successfully !!');
@@ -472,6 +483,14 @@ class CustomerLedgerHistroy extends Controller
                 ]);
     
                 if ($validator->passes()) {
+
+                   
+                    //retrivecustomerid
+                    $initial_customer_id = DB::table('customerledgerdetails')
+                    ->where('invoiceid', $req->Bill_No)
+                    ->value('customerid');
+
+
                     // Update customerledgerdetails table
                     DB::table('customerledgerdetails')
                         ->where('invoiceid', $req->Bill_No)
@@ -487,7 +506,9 @@ class CustomerLedgerHistroy extends Controller
                         'bill_no' => $req->Bill_No,
                         'title' => "customer_name_updated",
                         'updated_by' => $user_email,
-                        'notes' => 'Customer ID updated by user to ' . $req->customerid . ' for invoice/bill No ('.$req->Bill_No.')'
+
+                        'notes' => 'Initial Customer ID ' . $initial_customer_id . ' updated to  Customer ID ' . $req->customerid . ' for invoice/bill No (' . $req->Bill_No .  ') by ' . $user_email
+
                     ]);
     
                     return redirect()->route('customer.billno')->with('updatesuccesscusname', 'Updated customer name Successfully !!');
@@ -573,7 +594,7 @@ class CustomerLedgerHistroy extends Controller
             'bill_no' => $req->updateinvoiceid,
             'title' => "invoice_type_updated",
             'updated_by' => $user_email,
-            'notes' => 'Initial invoice type : ' . $initialinvoicetype . ' is updated to invoicetype: ' . $req->invoicetype . ' of invoice/bill No (' . $req->updateinvoiceid . ') of the title invoice_type_updated by ' . $user_email
+            'notes' => 'Initial invoice type : ' . $initialinvoicetype . ' is updated to invoicetype: ' . $req->invoicetype . ' of invoice/bill No (' . $req->updateinvoiceid . ')  by ' . $user_email
         ]);
     
         return redirect()->route('customer.billno')->with('updatesuccess', 'Updated Invoice Type Successfully !!');

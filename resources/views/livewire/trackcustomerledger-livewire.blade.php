@@ -10,12 +10,11 @@
               <table class="table text-center">
                    <thead>
                         <tr>
-                            <th  style="width:7%;">Id </th>
-                            <th style="width:7%;">Bill No</th>
-                            <th style="width:18%;" >Title</th>
-                            <th style="width:25%;">Created At</th>
-                           
-                            <th >Notes</th>
+                            <th >Id </th>
+                            <th>Title</th>
+                            <th class="">Updated</th>
+                            <th >Created At</th>
+                            <th class="w-50" >Notes</th>
                            
 
                         </tr>
@@ -24,12 +23,11 @@
                     @if ($all->count())
                              @foreach ($all as $i)
                                   <tr>
-                                     <td class="text-center" style="width:7%">{{ $i->id }}</td>
-                                      <td class="text-center" style="width:7%;">{{ $i->bill_no }}</td>
-                                      <td class="text-center" style="width:18%;">{{ $i->title }}</td>
-                                      <td class="text-center" style="width:25%;">{{ $i->created_at }}</td>
-                                    
-                                      <td >{{ $i->notes }}</td>
+                                     <td class="text-center">{{ $i->id }}</td>
+                                      <td class="text-center">{{ $i->title }}</td>
+                                      <td class="text-center">{{ $i->updated_by }}</td>
+                                      <td class="text-center">{{ $i->created_at }}</td>
+                                      <td class="text-center w-50">{{ $i->notes }}</td>
                                   </tr>
                              @endforeach
                         @else

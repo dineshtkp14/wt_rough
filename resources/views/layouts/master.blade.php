@@ -66,8 +66,9 @@
                 style="border-bottom:1px solid #e5e7eb7e;">
                 {{-- <img src="{{ asset('assets/images/logo.png') }}" class="logo-img" alt="logo" style="height: ;"> --}}
             </a>
+            @if(Auth::check() && Auth::user() && Auth::user()->email == 'dineshtkp14@gmail.com')
 
-        @if(Auth::user()->email == 'dineshtkp14@gmail.com')
+        {{-- @if(Auth::user()->email == 'dineshtkp14@gmail.com') --}}
      
             <ul class="list-unstyled ps-0">
 
@@ -186,6 +187,16 @@
                                     class="link-dark d-inline-flex text-decoration-none rounded"><i
                                         class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
                                    Track Items</a></li>
+
+                                   <li><a href="{{ route('trackcustomerledger.index') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
+                                   Track CustomerLedger Payment</a></li>
+
+                                   <li><a href="{{ route('Trackcompanyledger.index') }}"
+                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
+                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
+                                   Track Company Ledger</a></li>
 
                                  
 
