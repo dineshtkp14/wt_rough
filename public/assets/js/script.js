@@ -118,7 +118,17 @@ function triggerCustomerResultClick() {
             $("#customerId").text(data.id);
             $("#customerAddress").text(data.address);
             $("#customerEmail").text(data.email);
-            $("#customerPhone").text(data.phoneno);
+            // $("#customerPhone").text(data.phoneno);
+            var phoneText = data.phoneno;
+
+            if (
+                data.alternate_phoneno !== null &&
+                data.alternate_phoneno !== undefined
+            ) {
+                phoneText += ", " + data.alternate_phoneno;
+            }
+
+            $("#customerPhone").text(phoneText);
             finalData[0]["customer"] = `${data.id}`;
 
             $("#customerCard").show();

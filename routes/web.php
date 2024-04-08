@@ -64,6 +64,8 @@ use App\Http\Controllers\PricelistController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\TrackCustomerLedgerPayment;
+use App\Http\Controllers\TrackcustomerinfoController;
+
 
 
 use App\Http\Controllers\UserController;
@@ -343,6 +345,8 @@ Route::get('/trackcustomerledger',[TrackCustomerLedgerPayment::class,'index'])->
 Route::get('/trackitemstable',[TrackitemstableController::class,'index'])->name('trackitemstable.index');
 
 Route::get('/trackcompanyledger',[TrackcompanyledgerController::class,'index'])->name('Trackcompanyledger.index');
+Route::get('/trackcustomerinfo',[TrackcustomerinfoController::class,'index'])->name('Trackcustomerinfo.index');
+
 
 
 Route::get('/cbills',[CustomerLedgerHistroy::class,'returncusbills'])->name('cbills.returncusbills');

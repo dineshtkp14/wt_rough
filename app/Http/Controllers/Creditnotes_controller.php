@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\BackupCreditnotesInvoice;
+use App\Models\trackcreditnotes;
+
 use App\Models\BackupCreditnotesSalesItem;
 use App\Models\BackupCreditnotesCustomerLedgerDetail;
 
@@ -569,7 +571,8 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
     // Check if any records were deleted
     if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
         // Insert into track table
-        DB::table('trackcreditnotes')->insert([
+        trackcreditnotes::create([
+
             'Cn_bill_no' => $req->invoiceid,
             'title' => "CreditNotes_Bill_deleted",
             'updated_by' => session('user_email'),
@@ -683,7 +686,8 @@ public function deletebillfromdatabaseforcreditnotes_foruser(Request $req)
     // Check if any records were deleted
     if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
         // Insert into track table
-        DB::table('trackcreditnotes')->insert([
+        
+        trackcreditnotes::create([
             'Cn_bill_no' => $req->invoiceid,
             'title' => "CreditNotes_Bill_deleted",
             'updated_by' => session('user_email'),
@@ -749,7 +753,8 @@ public function updatecustomernameCN(Request $req)
         ->update(['customerid' => $req->customerid]);
 
     // Insert into track table
-    DB::table('trackcreditnotes')->insert([
+    trackcreditnotes::create([
+
         'Cn_bill_no' => $req->Bill_No,
         'title' => "CN_customer_name_updated",
         'updated_by' => session('user_email'),

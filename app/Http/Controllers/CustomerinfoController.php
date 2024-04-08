@@ -5,6 +5,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\customerinfo;
+use App\Models\trackcustomerinfos;
+
+use Illuminate\Support\Facades\DB; //
+
 use Illuminate\Support\Facades\Auth;
 
 class CustomerinfoController extends Controller
@@ -62,8 +66,9 @@ return redirect('/login');
 
         'name'=>'required',
         'address'=>'required',
-        'phoneno' => 'required|unique:customerinfos,phoneno',
-       
+        // 'phoneno' => 'required|unique:customerinfos,phoneno',
+        'phoneno' => 'required|size:10|unique:customerinfos,phoneno',
+
            
     ]);
 
@@ -80,6 +85,17 @@ return redirect('/login');
         $cusinfo->added_by = session('user_email');
 
         $cusinfo->save();
+
+        session()->put('lastInsertedId', $cusinfo->id);
+
+        $notes = "Name: " . $cusinfo->name . ", Address: " . $cusinfo->address . ", Email: " . $cusinfo->email . ", Phoneno: " . $cusinfo->phoneno . ", Alternate Phoneno: " . $cusinfo->alternate_phoneno . ", Remarks: " . $cusinfo->remarks . ", Added by: " . session('user_email');
+
+                    // Insert into track table
+                    trackcustomerinfos::create([
+                        'title' => 'Insert',
+                        'updated_by' => session('user_email'),
+                        'notes' => $notes
+                    ]);
 
         return redirect()->route('customerinfos.index')->with('success','Customer Added Sucessfully !!');  
     }
@@ -123,6 +139,9 @@ return redirect('/login');
         ]);
     
         if($validator->passes()){
+
+            $oldCusinfo = customerinfo::find($id);
+
     
             $cusinfo= customerinfo::find($id);
             $cusinfo->name=$req->name;
@@ -133,6 +152,24 @@ return redirect('/login');
             $cusinfo->added_by = session('user_email');
 
             $cusinfo->save();
+
+                        
+            // Construct a message with old and new values
+            $notes = "Customer ID: " . $cusinfo->id . " updated by " . session('user_email') . ". Old values: ";
+            $notes .= "Name: " . $oldCusinfo->name . ", Address: " . $oldCusinfo->address . ", Email: " . $oldCusinfo->email;
+            $notes .= ", Phoneno: " . $oldCusinfo->phoneno . ", Remarks: " . $oldCusinfo->remarks;
+            $notes .= ". New values: ";
+            $notes .= "Name: " . $cusinfo->name . ", Address: " . $cusinfo->address . ", Email: " . $cusinfo->email;
+            $notes .= ", Phoneno: " . $cusinfo->phoneno . ", Remarks: " . $cusinfo->remarks;
+
+            // Insert into track table
+         
+                    // Insert into track table
+                    trackcustomerinfos::create([
+                'title' => "Update",
+                'updated_by' => session('user_email'),
+                'notes' => $notes
+            ]);
     
             return redirect()->route('customerinfos.index')->with('success','Customer updated Sucessfully !!');  
         }
@@ -147,9 +184,27 @@ return redirect('/login');
  }
     public function destroy($id,Request $req){
 
+                // Retrieve the customer information before deleting
+                $cusinfo = customerinfo::findOrFail($id);
+                // Delete the customer
+                $cusinfo->delete();
 
-        $cusiddelete=customerinfo::findOrFail($id);
-        $cusiddelete->delete();
+
+                // Construct a message with the old values
+                $notes = "Customer ID: " . $cusinfo->id . " deleted by " . session('user_email') . ". Values: ";
+                $notes .= "Name: " . $cusinfo->name . ", Address: " . $cusinfo->address . ", Email: " . $cusinfo->email;
+                $notes .= ", Phoneno: " . $cusinfo->phoneno . ", Remarks: " . $cusinfo->remarks;
+
+                // Insert into track table
+              
+                    // Insert into track table
+                    trackcustomerinfos::create([
+                    'title' => "Delete",
+                    'updated_by' => session('user_email'),
+                    'notes' => $notes
+                ]);
+
+
   
         return redirect()->route('customerinfos.index')->with('success','Customer Deleted sucessfully'); 
         

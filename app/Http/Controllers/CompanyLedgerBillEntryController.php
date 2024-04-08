@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\company;
 use App\Models\CompanyLedger;
+use App\Models\trackcompanybillentry;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Livewire\WithPagination;
@@ -105,11 +107,12 @@ class CompanyLedgerBillEntryController extends Controller
 
 
         // Insert into track table
-    DB::table('trackcompanybillentry')->insert([
-    'title' => "BILLENTRY_data_Inserted",
-    'updated_by' => session('user_email'),
-    'notes' => $additional_info,
-    
+        trackcompanybillentry::create([
+
+            'title' => "BILLENTRY_data_Inserted",
+            'updated_by' => session('user_email'),
+            'notes' => $additional_info,
+            
     
     ]);
     session()->put('lastInsertedId', $companypanyment->id);
@@ -197,7 +200,7 @@ public function update($id, Request $req)
                     'added_by: ' . session('user_email') . '';
 
                 // Insert into track table
-                DB::table('trackcompanybillentry')->insert([
+                trackcompanybillentry::create([
                     'title' => "BILLENTRY_data_UPDATE",
                     'updated_by' => session('user_email'),
                     'notes' => $additional_info,
@@ -223,7 +226,7 @@ public function update($id, Request $req)
 
 
          // Log the operation before deleting
-         DB::table('trackcompanybillentry')->insert([
+         trackcompanybillentry::create([
             'title' => "data deleted",
             'updated_by' => session('user_email'),
             'notes' => 'Deleted companyid: ' . $cusiddelete->companyid . ', date: ' . $cusiddelete->date . ', particulars: ' . $cusiddelete->particulars . ', voucher_no: ' . $cusiddelete->voucher_no . ', credit: ' . $cusiddelete->credit . ', notes: ' . $cusiddelete->notes . ', added_by: ' . $cusiddelete->added_by,

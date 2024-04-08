@@ -9,4 +9,7 @@ class Trackitemstable extends Model
 {
     use HasFactory;
     protected $table = 'trackitemstable';
+    public $timestamps = true; // Ensure this property is set to true
+    protected $fillable = ['title', 'updated_by', 'notes']; // Add 'title' to the $fillable array
+
 }

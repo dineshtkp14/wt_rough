@@ -121,7 +121,8 @@ $additional_info = 'billno: ' . $itemsdetails->billno . ', ' .
 
 
                 // Insert into track table
-DB::table('trackitemstable')->insert([
+                   trackitemstable::create([
+
 
     'title' => "data inserted",
     'updated_by' => session('user_email'),
@@ -251,8 +252,8 @@ public function update($id, Request $req)
   // Save the updated item details
   $itemsdetails->save();
 
-  // Insert into track table
-  DB::table('trackitemstable')->insert([
+    // Insert into track table
+    trackitemstable::create([
       'title' => "data updated",
       'updated_by' => session('user_email'),
       'notes' => $additional_info,
@@ -301,8 +302,8 @@ $additional_info = 'billno: ' . $itemsdetails->billno . ', ' .
 'added_by: ' . $itemsdetails->added_by;
 
 
-// Insert into track table
-DB::table('trackitemstable')->insert([
+  // Insert into track table
+  trackitemstable::create([
 
 'title' => "data Deleted",
 'updated_by' => session('user_email'),

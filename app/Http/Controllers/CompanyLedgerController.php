@@ -95,8 +95,8 @@ class CompanyLedgerController extends Controller
 
 
        // Insert into track table
-   DB::table('trackcompanybillentry')->insert([
-   'title' => "companyPayment_data_Inserted",
+       trackcompanybillentry::create([
+        'title' => "companyPayment_data_Inserted",
    'updated_by' => session('user_email'),
    'notes' => $additional_info,
 
@@ -193,7 +193,8 @@ public function update($id, Request $req)
 
 
         // Insert into track table
-        DB::table('trackcompanybillentry')->insert([
+        trackcompanybillentry::create([
+
             'title' => "companyPayment_data_UPDATE",
             'updated_by' => session('user_email'),
             'notes' => $additionalInfo,
@@ -213,7 +214,8 @@ public function update($id, Request $req)
         $cusiddelete=CompanyLedger::findOrFail($id);
 
         // Log the operation before deleting
-        DB::table('trackcompanybillentry')->insert([
+        trackcompanybillentry::create([
+
             'title' => "companyPayment_DATA_DELETED",
             'updated_by' => session('user_email'),
             'notes' => 'Deleted companyid: ' . $cusiddelete->companyid . ', date: ' . $cusiddelete->date . ', particulars: ' . $cusiddelete->particulars . ', voucher_type: ' . $cusiddelete->voucher_type . ', debit: ' . $cusiddelete->debit . ', notes: ' . $cusiddelete->notes . ', added_by: ' . $cusiddelete->added_by,

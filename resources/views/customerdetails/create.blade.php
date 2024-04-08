@@ -12,7 +12,18 @@
             </div>
         @endif
 </div>
-    <div class="card customer-card mb-4" id="customerCard" style="display: none;">
+
+<div class="d-flex justify-content-end me-5">
+    <a href="{{ route('customerinfos.create') }}" class="btn btn-success">
+        <!-- Icon -->
+        <i class="fas fa-user-plus"></i> <!-- Different icon here -->
+        Add New Customer
+    </a>
+</div>
+
+
+  
+  <div class="card customer-card mb-4" id="customerCard" style="display: none;">
         <div class="card-body">
             <h5 class="card-title">Customer Info</h5>
             <p><span>ID: </span><span id="customerId">...</span></p>

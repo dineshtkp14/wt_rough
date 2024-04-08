@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\company;
+use App\Models\TrackCustomerLedger;
+
 use App\Models\customerledgerdetails;
 
 use Illuminate\Support\Facades\DB; //
@@ -128,7 +130,8 @@ public function store(Request $req)
     $notes = 'Customer ID ' . $req->customerid . ' inserted with particulars: ' . $cl->particulars . ', voucher type: ' . $cl->voucher_type . ', credit: ' . $cl->credit .', date: ' . $cl->date . ', by ' . session('user_email');;
 
    // Insert into track table
-   DB::table('TrackCustomerLedger')->insert([
+     // Insert into track table
+     TrackCustomerLedger::create([
     // 'customerid' => $req->customerid,
     'title' => "Inserted_Payment",
     'updated_by' => session('user_email'),
@@ -241,7 +244,7 @@ public function destroy($id, Request $req)
         $cusiddelete->delete();
 
         // Insert into track table
-        DB::table('TrackCustomerLedger')->insert([
+        TrackCustomerLedger::create([
             'title' => $title,
             'updated_by' => $updated_by,
             'notes' => $notes
