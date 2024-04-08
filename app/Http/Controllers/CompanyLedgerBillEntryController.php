@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\company;
 use App\Models\CompanyLedger;
-use App\Models\trackcompanybillentry;
+use App\Models\Trackcompanybillentry;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -107,7 +107,7 @@ class CompanyLedgerBillEntryController extends Controller
 
 
         // Insert into track table
-        trackcompanybillentry::create([
+        Trackcompanybillentry::create([
 
             'title' => "BILLENTRY_data_Inserted",
             'updated_by' => session('user_email'),
@@ -200,7 +200,7 @@ public function update($id, Request $req)
                     'added_by: ' . session('user_email') . '';
 
                 // Insert into track table
-                trackcompanybillentry::create([
+                Trackcompanybillentry::create([
                     'title' => "BILLENTRY_data_UPDATE",
                     'updated_by' => session('user_email'),
                     'notes' => $additional_info,
@@ -226,7 +226,7 @@ public function update($id, Request $req)
 
 
          // Log the operation before deleting
-         trackcompanybillentry::create([
+         Trackcompanybillentry::create([
             'title' => "data deleted",
             'updated_by' => session('user_email'),
             'notes' => 'Deleted companyid: ' . $cusiddelete->companyid . ', date: ' . $cusiddelete->date . ', particulars: ' . $cusiddelete->particulars . ', voucher_no: ' . $cusiddelete->voucher_no . ', credit: ' . $cusiddelete->credit . ', notes: ' . $cusiddelete->notes . ', added_by: ' . $cusiddelete->added_by,

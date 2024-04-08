@@ -95,7 +95,7 @@ class CompanyLedgerController extends Controller
 
 
        // Insert into track table
-       trackcompanybillentry::create([
+       Trackcompanybillentry::create([
         'title' => "companyPayment_data_Inserted",
    'updated_by' => session('user_email'),
    'notes' => $additional_info,
@@ -193,7 +193,7 @@ public function update($id, Request $req)
 
 
         // Insert into track table
-        trackcompanybillentry::create([
+        Trackcompanybillentry::create([
 
             'title' => "companyPayment_data_UPDATE",
             'updated_by' => session('user_email'),
@@ -214,7 +214,7 @@ public function update($id, Request $req)
         $cusiddelete=CompanyLedger::findOrFail($id);
 
         // Log the operation before deleting
-        trackcompanybillentry::create([
+        Trackcompanybillentry::create([
 
             'title' => "companyPayment_DATA_DELETED",
             'updated_by' => session('user_email'),

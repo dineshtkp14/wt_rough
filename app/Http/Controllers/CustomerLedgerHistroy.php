@@ -284,7 +284,7 @@ class CustomerLedgerHistroy extends Controller
         // Check if any records were deleted
         if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
             // Insert into track table
-            trackinvoice::create([
+            Trackinvoice::create([
                 'bill_no' => $req->invoiceid,
                 'title' => "invoice_deleted",
                 'updated_by' => $user_email,
@@ -406,7 +406,7 @@ class CustomerLedgerHistroy extends Controller
         // Check if any records were deleted
         if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
             // Insert into track table
-            trackinvoice::create([
+            Trackinvoice::create([
                 'bill_no' => $req->invoiceid,
                 'title' => "invoice_deleted",
                 'updated_by' => $user_email,
@@ -458,7 +458,7 @@ class CustomerLedgerHistroy extends Controller
                     ->update(['customerid' => $req->customerid]);
     
                 // Insert into track table
-                trackinvoice::create([
+                Trackinvoice::create([
                     'bill_no' => $req->Bill_No,
                     'title' => "customer_name_updated",
                     'updated_by' => $user_email,
@@ -502,9 +502,9 @@ class CustomerLedgerHistroy extends Controller
                         ->update(['customerid' => $req->customerid]);
     
                     // Insert into track table
-                    trackinvoice::create([
+                    Trackinvoice::create([
 
-                    // DB::table('trackinvoice')->insert([thistablemakechange
+                    // DB::table('Trackinvoice')->insert([thistablemakechange
                         'bill_no' => $req->Bill_No,
                         'title' => "customer_name_updated",
                         'updated_by' => $user_email,
@@ -592,7 +592,7 @@ class CustomerLedgerHistroy extends Controller
             ->update(['inv_type' => $req->invoicetype]);
     
         // Insert into track table
-        trackinvoice::create([
+        Trackinvoice::create([
             'bill_no' => $req->updateinvoiceid,
             'title' => "invoice_type_updated",
             'updated_by' => $user_email,
