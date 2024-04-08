@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\customerinfo;
-use App\Models\trackcustomerinfos;
+use App\Models\Trackcustomerinfos;
 
 use Illuminate\Support\Facades\DB; //
 
@@ -91,7 +91,7 @@ return redirect('/login');
         $notes = "Name: " . $cusinfo->name . ", Address: " . $cusinfo->address . ", Email: " . $cusinfo->email . ", Phoneno: " . $cusinfo->phoneno . ", Alternate Phoneno: " . $cusinfo->alternate_phoneno . ", Remarks: " . $cusinfo->remarks . ", Added by: " . session('user_email');
 
                     // Insert into track table
-                    trackcustomerinfos::create([
+                    Trackcustomerinfos::create([
                         'title' => 'Insert',
                         'updated_by' => session('user_email'),
                         'notes' => $notes
