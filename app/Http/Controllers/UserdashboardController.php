@@ -13,7 +13,7 @@ class UserdashboardController extends Controller
 
      return view('dashboard.userdashboard');    
     }
-    public function invoice()
+    public function invoicedash()
     {
         
 

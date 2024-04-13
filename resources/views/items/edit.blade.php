@@ -63,7 +63,7 @@
               
                 
                  <div class="search-box">
-                    <input id="customerIdInput" name="companyid"  hidden>
+                    <input id="customerIdInput" name="companyid"   hidden>
                     <input type="text" value= "{{ old('distributorname',$item->distributorname) }}"  class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name"
                                 id="searchCustomerInput"  data-api="company_search" autocomplete="off">
                                 @error('companyid')

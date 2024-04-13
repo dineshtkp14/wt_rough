@@ -16,8 +16,8 @@ class Purchse_controller extends Controller
         if (Auth::check()) {
             $breadcrumb = [
                 'subtitle' => 'View',
-                'title' => 'View Purchase Orders',
-                'link' => 'View Purchase Orders'
+                'title' => 'View Make Orders',
+                'link' => 'View Make Orders'
             ];
 
             $purchaseOrders = PurchaseOrder::all();
@@ -34,8 +34,8 @@ class Purchse_controller extends Controller
         if (Auth::check()) {
             $breadcrumb = [
                 'subtitle' => 'Add',
-                'title' => 'Add New Purchase Order',
-                'link' => 'Add New Purchase Order'
+                'title' => 'Add New make Order',
+                'link' => 'Add New make Order'
             ];
 
             return view('purchase_order.create', ['breadcrumb' => $breadcrumb]);
@@ -82,8 +82,8 @@ class Purchse_controller extends Controller
         if (Auth::check()) {
             $breadcrumb = [
                 'subtitle' => 'Edit',
-                'title' => 'Edit Purchase Order',
-                'link' => 'Edit Purchase Order'
+                'title' => 'Edit make Order',
+                'link' => 'Edit make Order'
             ];
 
             $purchaseOrder = PurchaseOrder::findOrFail($id);

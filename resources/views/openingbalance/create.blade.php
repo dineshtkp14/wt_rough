@@ -79,13 +79,13 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Particulars</label>
                 <input type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars') }}">
                 @error('particulars')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
-            </div>
+            </div> --}}
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Amount</label>

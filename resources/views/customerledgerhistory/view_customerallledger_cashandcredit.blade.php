@@ -71,11 +71,16 @@
 					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
 					Customer Ledger Payment
 				</a>
-							</div>
+
+				<a href="{{ route('chequedeposit.create') }}" class=" me-5 float-end btn btn-md btn-dark border border-5 border-warning" target="" rel="noopener noreferrer">
+					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
+					Cheque Deposit
+				</a>
+			</div>
 		</div>
 
 		<div class="row">
-			<div class="col-md-4 mb-3">
+			<div class="col-md-3 mb-3">
 				<label class="visually-hidden" for="specificSizeInputGroupUsername">Username</label>
 				<div class="input-group">
 				  <div class="input-group-text">Choose Start Date</div>
@@ -83,7 +88,7 @@
 				</div>
 			</div>
 
-			<div class="col-md-4 mb-3">
+			<div class="col-md-3 mb-3">
 				<label class="visually-hidden" for="specificSizeInputGroupUsername">Username</label>
 				<div class="input-group">
 			  		<div class="input-group-text">Choose End Date</div>

@@ -208,10 +208,10 @@ public function update($id, Request $req)
 
                 return redirect()->route('companybillentry.index')->with('success', ' Updated Sucessfully !!');
             } else {
-                return redirect()->route('companyLedgerspay.create')->with('error', 'Company not found.');
+                return redirect()->route('companybillentry.create')->with('error', 'Company not found.');
             }
         } else {
-            return redirect()->route('companyLedgerspay.create')->withErrors($validator)->withInput();
+            return redirect()->route('companybillentry.create')->withErrors($validator)->withInput();
         }
     }
 

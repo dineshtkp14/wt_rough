@@ -13,20 +13,23 @@
 </div>
 
 <div class="container">
+    <a href="{{ route('chequedeposit.index') }}" class="float-end me-5 btn btn-primary btn-block btn-super-duper-bigger" style="margin-top: -40px;"><i class="fa fa-money-check-alt"></i> View Bank Deposit</a>
 
 
 <form class="row gx-5 gy-3" action="{{ route('banks.store') }}" method="post">
                 @csrf
 
-                <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Date</label>
-                    <input type="date" class="form-control @error('date') is-invalid @enderror" 
-                        name="date" value="{{now()->format('Y-m-d')}}" id="">
-                    @error('date')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
-            </div>
+                
             <div class="col-md-6"></div>
+
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Date</label>
+                <input type="date" class="form-control @error('date') is-invalid @enderror" 
+                    name="date" value="{{now()->format('Y-m-d')}}" id="">
+                @error('date')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+             </div>
            
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Amount</label>

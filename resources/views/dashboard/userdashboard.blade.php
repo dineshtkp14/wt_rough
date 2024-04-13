@@ -44,63 +44,55 @@
     <h2 class="text-center mt-3 bg-primary-custom p-3 text-white-custom">USER DASHBOARD</h2>
 
     <div class="row mt-4">
+       
         <div class="col-md-4 mb-3">
-            <a href="{{ route('itemdash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-cube"></i> ITEM</a>
-        </div>
-        <div class="col-md-4 mb-3">
-            <a href="{{ route('daybookdash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-calendar"></i> DAYBOOK</a>
+            <a href="{{ route('chequedeposit.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-calendar"></i> Cheque Deposit</a>
         </div>
         <div class="col-md-4 mb-3">
             <a href="{{ route('companydash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-building"></i> COMPANY</a>
         </div>
-    </div>
-
-    <div class="row mt-3">
-        <div class="col-md-4 mb-3">
-            <a href="{{ route('purchaseorderdash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-shopping-cart"></i> MAKE ORDER</a>
-        </div>
+       
         <div class="col-md-4 mb-3">
             <a href="{{ route('customerdash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-users"></i> CUSTOMER</a>
         </div>
+       
+    </div>
+
+
+    <div class="row mt-3">
         <div class="col-md-4 mb-3">
             <a href="{{ route('bankdash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-university"></i> BANK</a>
         </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('invoicedash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-invoice"></i> INVOICE</a>
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('change-password') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-key"></i> CHANGE PASSWORD</a>
+        </div>
+       
     </div>
 
     <div class="row mt-3">
-        <div class="col-md-4 mb-3">
-            <button class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-invoice"></i> INVOICE</button>
-        </div>
-        <div class="col-md-4 mb-3">
-            <a href="{{ route('change-password') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-university"></i>CHANGE PASSWORD</a>
-        </div>
-        <div class="col-md-4 mb-3">
-            <a href="{{ route('stocks.index') }}">
-                <button class="btn btn-primary btn-block btn-super-duper-bigger">
-                    <i class="fas fa-chart-line me-3"></i> <!-- Icon -->
-                    STOCKS
-                </button>
-            </a>
-        </div>
-    </div>
 
-    <div class="row mt-3">
         <div class="col-md-4 mb-3">
-            <button class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-invoice"></i> Credit Notes/Sales Return</button>
+            <a href="{{ route('daybookdash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-book"></i> DAYBOOK</a>
         </div>
+
         <div class="col-md-4 mb-3">
-            <a href="{{ route('change-password') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-university"></i>CHANGE PASSWORD</a>
+            <a href="{{ route('itemdash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-cube"></i> ITEM</a>
         </div>
+
         <div class="col-md-4 mb-3">
-            <a href="{{ route('stocks.index') }}">
-                <button class="btn btn-primary btn-block btn-super-duper-bigger">
-                    <i class="fas fa-chart-line me-3"></i> <!-- Icon -->
-                    STOCKS
-                </button>
-            </a>
+            <a href="{{ route('cndash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-alt"></i> CREDIT NOTES</a>
         </div>
+       
+       
     </div>
 
 </div>
+
 
 @stop

@@ -40,6 +40,9 @@
         .firstdiv{
             float: right;
         }
+        .seconddiv{
+            margin-top: -30px !important;
+        }
         .address-info p {
             margin: 5px 0;
             font-size: 14px;
@@ -73,6 +76,9 @@
             overflow: hidden;
             font-size: 14px;
         }
+        .forbillandpan{
+            margin-top: -70px !important;
+        }
     </style>
 </head>
 <body>
@@ -97,8 +103,13 @@
                         @endif
             </div>
        
-       
+       <div class="forbillandpan">
+            Invoice No: {{$invoiceid}} <br>
+            PAN No. 601064191
+       </div>
+          
             <div class="seconddiv"> 
+              
                         @if ($cinfodetails !=null)
                             @foreach($cinfodetails as $i)
                                 <p>Name: {{$i->name}}</p>
@@ -110,7 +121,7 @@
                           
                         @endif
 
-                        <p>Invoice Id: {{$invoiceid}}</p>
+                      
 
                         @if ($allinvoices !=null)
                             @foreach($allinvoices as $i)

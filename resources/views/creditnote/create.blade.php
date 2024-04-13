@@ -70,8 +70,8 @@
                                 class="form-control " value="{{ $nextgenid }}" name="creditnoteinvoiceid">
                     
                     
-                    <div style="width: 400px">
-                        <div class="input-group mb-1">
+                    <div style="width: 400px" hidden>
+                        <div class="input-group mb-1" hidden>
                             <span class="input-group-text">Invoice No for Reference:</span>
                             <input   autocomplete="off" type="text" class="form-control" placeholder="type  invoice No here" id=""
                                 class="form-control " value="" name="bilinvoiceid">

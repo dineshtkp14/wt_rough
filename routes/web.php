@@ -27,6 +27,8 @@ use App\Http\Controllers\TransferGoodsController;
 use App\Http\Controllers\TrackcompanyledgerController;
 use App\Http\Controllers\CashReceiptController;
 use App\Http\Controllers\ChequeDepositController;
+use App\Http\Controllers\DateConversionController;
+
 
 
 
@@ -92,6 +94,7 @@ Route::get('/cndash',[UserdashboardController::class,'cndash'])->name('cndash');
 Route::get('/userdash',[UserdashboardController::class,'index'])->name('userdash');
 
 
+Route::get('/convertdate',[DateConversionController::class,'convertdate'])->name('convertdate');
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');

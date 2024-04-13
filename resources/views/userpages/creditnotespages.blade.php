@@ -76,7 +76,19 @@
         </div>
         <div class="col-md-4 mb-3">
             <a href="{{ route('creditnotes.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
-                <i class="fa fa-list"></i> Search Credit Notes Invoice
+                <i class="fa fa-list"></i> VIEW SALES DETAIL TABLES
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('creditnotes.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
+                <i class="fa fa-list"></i> SEARCH DELETED INVOICE
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('creditnotes.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
+                <i class="fa fa-list"></i> VIEW SALES DETAIL TABLES
             </a>
         </div>
        

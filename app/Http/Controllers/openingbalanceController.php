@@ -12,10 +12,19 @@ class openingbalanceController extends Controller
 {
     public function index()
     {
-        // Add your logic for displaying the opening balances index page
+        if(Auth::check()){
+            $breadcrumb= [
+                'subtitle'=>'View',
+                'title'=>'View All opeingbalance',
+                'link'=>'View All opeingbalance'
+            ];
+       
+    
+         return view('openingbalance.list',['breadcrumb'=>$breadcrumb]);   
     }
 
-    public function create()
+ }
+  public function create()
     {
         if(Auth::check()){
         $breadcrumb = [
@@ -34,7 +43,7 @@ class openingbalanceController extends Controller
         $validator = Validator::make($req->all(), [
             'date' => 'required',
             'customerid' => 'required',
-            'particulars' => 'required',
+           
            
             'amount' => 'required',
            
@@ -45,7 +54,7 @@ class openingbalanceController extends Controller
             $openingBalance = new customerledgerdetails();
             $openingBalance->date = $req->date;
             $openingBalance->customerid = $req->customerid;
-            $openingBalance->particulars = $req->particulars;
+            $openingBalance->particulars = "opening_balance";
             $openingBalance->invoicetype = "credit";
             $openingBalance->voucher_type = "old amount";
             $openingBalance->debit = $req->amount;
@@ -53,23 +62,68 @@ class openingbalanceController extends Controller
             $openingBalance->added_by = session('user_email');
 
             $openingBalance->save();
+            session()->put('lastInsertedId', $openingBalance->id);
 
-            return redirect()->route('openingbalances.create')->with('success', ' Added Successfully!');
+
+            return redirect()->route('openingbalances.index')->with('success', ' Added Successfully!');
         } else {
             return redirect()->route('openingbalances.create')->withErrors($validator)->withInput();
         }
     }
     return redirect('/login');
 }
+public function edit($id)
+{
+    if(Auth::check()){
 
-    public function edit()
-    {
-        // Add your logic for editing an opening balance
+        $breadcrumb = [
+            'subtitle' => 'Edit',
+            'title' => 'Edit Opening Balance',
+            'link' => 'Edit Opening Balance'
+        ];
+
+        $openingBalance = customerledgerdetails::findOrFail($id);
+        // You may add additional logic here if needed
+        return view('openingbalance.edit', compact('openingBalance', 'breadcrumb'));
     }
+    return redirect('/login');
+}
 
-    public function destroy()
-    {
-        // Add your logic for deleting an opening balance
+
+public function update(Request $req, $id)
+{
+    if(Auth::check()){
+        $validator = Validator::make($req->all(), [
+            'date' => 'required',
+            'customerid' => 'required',
+            'amount' => 'required',
+        ]);
+
+        if ($validator->passes()) {
+            $openingBalance = customerledgerdetails::findOrFail($id);
+            $openingBalance->date = $req->date;
+            $openingBalance->customerid = $req->customerid;
+            $openingBalance->debit = $req->amount;
+            $openingBalance->notes = $req->notes;
+            $openingBalance->added_by = session('user_email');
+
+            $openingBalance->save();
+
+            return redirect()->route('openingbalances.index')->with('success', 'Opening balance updated successfully!');
+        } else {
+            return redirect()->route('openingbalances.edit', $id)->withErrors($validator)->withInput();
+        }
     }
+    return redirect('/login');
+}
 
+public function destroy($id)
+{
+    if(Auth::check()){
+        $openingBalance = customerledgerdetails::findOrFail($id);
+        $openingBalance->delete();
+        return redirect()->route('openingbalances.index')->with('success', 'Opening balance deleted successfully!');
+    }
+    return redirect('/login');
+}
 }

@@ -20,7 +20,7 @@
             <div class="col-md-3">
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">Search ok Invoice</h5>
+                        <h5 class="card-title">Search  Invoice</h5>
                         <form action="{{ route('ViewWholeitemsBill.index') }}" method="get" id="chosendatepdfform">
                             <div class="mb-3">
                                 <label for="invoiceid" class="form-label">Enter Bill No</label>

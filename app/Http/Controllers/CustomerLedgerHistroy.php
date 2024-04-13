@@ -6,6 +6,8 @@ use App\Models\customerinfo;
 use App\Models\customerledgerdetails;
 use App\Models\invoice;
 use App\Models\item;
+use App\Models\Trackinvoice;
+
 
 use App\Models\salesitem;
 
@@ -284,11 +286,13 @@ class CustomerLedgerHistroy extends Controller
         // Check if any records were deleted
         if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
             // Insert into track table
+
+            $billno=$req->invoiceid;
             Trackinvoice::create([
-                'bill_no' => $req->invoiceid,
+                'bill_no' => $billno, // Assuming $billno contains the invoice ID
                 'title' => "invoice_deleted",
                 'updated_by' => $user_email,
-                'notes' => ' Invoice Id : ' . $req->invoiceid . ' is deleted  by ' . $user_email
+                'notes' => 'Invoice Id: ' . $billno . ' is deleted by ' . $user_email
             ]);
             return redirect()->route('customer.billno')->with('deletesuccess', 'Deleted Successfully !!');
         } else {
@@ -406,12 +410,13 @@ class CustomerLedgerHistroy extends Controller
         // Check if any records were deleted
         if ($salesItemsDeleted || $invoicesDeleted || $ledgerDetailsDeleted) {
             // Insert into track table
-            Trackinvoice::create([
-                'bill_no' => $req->invoiceid,
+            $query = Trackinvoice::create([
                 'title' => "invoice_deleted",
                 'updated_by' => $user_email,
-                'notes' => ' Invoice Id : ' . $req->invoiceid . ' is deleted  by ' . $user_email
+                'notes' => 'Invoice Id: ' . $req->invoiceid . ' is deleted by ' . $user_email
             ]);
+            
+
             return redirect()->route('onlyviewbillafterbill')->with('deletesuccess', 'Deleted Successfully !!');
         } else {
             return redirect()->route('customer.deletebillnoforuser')->with('error', 'No records found for the provided invoiceid');

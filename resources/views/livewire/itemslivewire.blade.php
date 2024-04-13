@@ -11,6 +11,7 @@
              Total No Of Items {{ $all->total() }}
              
              <a href="{{ route('itemsales.create') }}" class="btn btn-primary float-start me-5" style=" background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-file-invoice"></i> ADD NEW INVOICE</a>
+             <a href="{{ route('ViewWholeitemsBill.index') }}" class="btn btn-primary float-start me-5" style=" background-color: #113004; border-color: #042005; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-file-invoice me-3 "></i>Check Whole Bill</a>
 
               <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search Here" style="width: 250px;" wire:model="searchTerm" >
          </div>
@@ -46,63 +47,41 @@
                         <td data-label="Id">{{ $i->id }}</td>
                         <td data-label="Name">{{ $i->billno }}</td>
                         <td data-label="Company Name">{{ $i->companyname }}</td>
-
                         <td data-label="Contact No.">{{ $i->date }}</td>
                         <td data-label="Amount">{{ $i->itemsname }}</td>
-                        <td data-label="Paisa">{{ $i->quantity}}</td>
-                       
+                        <td data-label="Paisa">{{ $i->quantity}}</td>     
                         <td data-label="Remarks">{{ $i->costprice }}</td>
                         <td data-label="Remarks">{{ $i->mrp }}</td>
                         <td data-label="Remarks">{{ $i->total }}</td>
                         <td data-label="Remarks">{{ $i->notes }}</td>
                         <td data-label="Remarks">{{ $i->firm_name }}</td>
-
                         <td data-label="Remarks">{{ $i->wholesale_price }}</td>
                         <td data-label="Remarks">{{ $i->com_Retail_price }}</td>
                         <td data-label="Remarks">{{ $i->com_wholesale_price }}</td>
 
-                        
-                       
             
                         <td data-label="action">
 
-
                             @if (auth()->user()->email != 'dineshtkp14@gmail.com')
-
-                                        @if (Session::has('success') && $i->id == session('lastInsertedId'))
-                                                <a href="{{Route('items.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
-                                                        
-                                                                
-                                                <a href="#" onclick="delfunctionusers({{$i->id}})" class="btn btn-danger"  rel="noopener noreferrer">Delete</a>
-                                            <form id="eea{{$i->id}}" action="{{ route('items.destroy',$i->id)}}" method="post">
-                                                @csrf
-                                                @method('delete')
-                                                
-                                                </form>
-                                        @endif                                               
-
-                            @else
-                            <a href="{{Route('items.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>                         
-                            <a href="#" onclick="delfunctionusers({{$i->id}})" class="btn btn-danger"  rel="noopener noreferrer">Delete</a>
-                            <form id="eea{{$i->id}}" action="{{ route('items.destroy',$i->id)}}" method="post">
+                            @if (Session::has('success') && $i->id == session('lastInsertedId'))
+                                {{-- <a href="{{ Route('items.edit', $i->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a> --}}
+                                <a href="#" onclick="delfunctionusers({{ $i->id }})" class="btn btn-danger">Delete</a>
+                                <form id="eea{{ $i->id }}" action="{{ route('items.destroy', $i->id) }}" method="post">
+                                    @csrf
+                                    @method('delete')
+                                </form>
+                            @endif
+                        @else
+                            <a href="{{ Route('items.edit', $i->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a>
+                            <a href="#" onclick="delfunctionusers({{ $i->id }})" class="btn btn-danger">Delete</a>
+                            <form id="eea{{ $i->id }}" action="{{ route('items.destroy', $i->id) }}" method="post">
                                 @csrf
                                 @method('delete')
-                                
                             </form>
-                            @endif
-
-
-
-
-                            <a href="{{Route('items.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
-                                      
-                                               
-                                      <a href="#" onclick="delfunctionusers({{$i->id}})" class="btn btn-danger"  rel="noopener noreferrer">Delete</a>
-                                    <form id="eea{{$i->id}}" action="{{ route('items.destroy',$i->id)}}" method="post">
-                                      @csrf
-                                      @method('delete')
-                                      
-                                      </form>
+                        @endif
+                        
+                        
+                          
                         </td>
                         
                     </tr>

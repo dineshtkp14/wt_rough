@@ -13,7 +13,7 @@
                         </div>
                 @endif
 
-				<livewire:chequedeposit-livewire/>
+				<livewire:chequedepositlivewire/>
 
 				@livewireScripts
 				

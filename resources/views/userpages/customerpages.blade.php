@@ -77,8 +77,8 @@
             </a>
         </div>
         <div class="col-md-4 mb-3">
-            <a href="{{ route('customerinfos.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
-                <i class="fa fa-book"></i> VIEW CUSTOMER LEDGER
+            <a href="{{ route('clhs.returnchoosendatehistroy') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
+                <i class="fa fa-book"></i> VIEW CUSTOMER LEDGER (ONLY CREDIT)
             </a>
         </div>
     </div>

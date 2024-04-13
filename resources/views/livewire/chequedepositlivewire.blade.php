@@ -4,14 +4,14 @@
             <a href="{{ route('chequedeposit.create') }}">
                 <img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/>
             </a>
-            Total No Of Customer {{ $all->total() }}
+            Total {{ $all->total() }}
             <a href="{{ route('itemsales.create') }}" class="btn btn-primary ms-5" style="background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;">
                 <i class="fas fa-file-invoice"></i> ADD NEW INVOICE
             </a>
-            <input type="text" class="form-control float-end border-warning border border-5" placeholder="Search Name, phoneno, email" style="width: 250px;" wire:model="searchTerm">
+            <input type="text" class="form-control float-end border-warning border border-5" placeholder="Search Here" style="width: 250px;" wire:model="searchTerm">
             
             <!-- Select Date Filter -->
-            <select wire:model="selectedDateFilter" class="form-select float-end border-warning border border-5" style="width: 150px;">
+            <select wire:model="selectedDateFilter" class="me-4 form-select float-end border-warning border border-5" style="width: 200px;">
                 <option value="">Select Date Filter</option>
                 <option value="today">Today</option>
             </select>

@@ -98,9 +98,7 @@
             </a>
         </div>
         
-        
-        
-        
+    
         <div class="col-md-4 mb-3">
             <a href="{{ route('companybillentry.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
                 <i class="fa fa-table"></i> VIEW BILL ENTRY TABLE
@@ -109,7 +107,7 @@
 
         <div class="col-md-4 mb-3">
             <a href="{{ route('ViewWholeitemsBill.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
-                <i class="fa fa-eye"></i> SEARCH BILL
+                <i class="fa fa-eye"></i> SEARCH WHOLE BILL
             </a>
         </div>
     </div>

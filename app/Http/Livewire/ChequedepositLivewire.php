@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Livewire;
 
 use Livewire\Component;
@@ -7,7 +6,7 @@ use App\Models\ChequeDeposit;
 use Livewire\WithPagination;
 use Carbon\Carbon;
 
-class ChequeDepositLivewire extends Component
+class Chequedepositlivewire extends Component
 {
     use WithPagination;
 
@@ -40,6 +39,6 @@ class ChequeDepositLivewire extends Component
 
         $chequeDeposits = $query->paginate(50);
 
-        return view('livewire.chequedeposit-livewire', [ 'all' =>$chequeDeposits ]);
+        return view('livewire.chequedepositlivewire', [ 'all' =>$chequeDeposits ]);
     }
 }

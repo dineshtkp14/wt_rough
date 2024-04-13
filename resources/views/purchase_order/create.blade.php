@@ -8,6 +8,15 @@
     <div class="container">
         <form class="row gx-5 gy-3" action="{{ route('purorder.store') }}" method="post">
             @csrf
+            <div class="col-md-9"> </div>
+
+            <div class="col-md-3 text-right">
+                <a href="{{ route('purorder.index') }}" class="btn btn-success" target="" rel="noopener noreferrer">
+                    <i class="fas fa-list"></i> View Make Orders <!-- Icon added before text -->
+                </a>
+            </div>
+            
+            
             <div class="col-md-8">
                 <label for="orderlist" class="form-label">Order List  <span style="color: red;">*</span></label>
                 <textarea placeholder="Enter order list" class="form-control @error('orderlist') is-invalid @enderror" name="orderlist" rows="10" style="font-size: 20px;">{{ old('orderlist') }}</textarea>
@@ -17,6 +26,7 @@
             </div>
 
 
+            
             <!-- Adjusted the column layout for the "Date" input field -->
             <div class="col-md-4 ">
                 <label for="date" class="form-label text-end">Date</label>

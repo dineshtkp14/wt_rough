@@ -16,6 +16,8 @@
         <form class="row gx-5 gy-3" action="{{ route('chequedeposit.store') }}" method="post">
             @csrf
 
+           
+            
             <!-- Move Date input to the top right -->
             <div class="col-md-3">
                 <div>
@@ -27,7 +29,13 @@
                     @enderror
                 </div>
             </div>
-            <div class="col-md-9"></div>
+            <div class="col-md-6"></div>
+            <div class="col-md-3">
+                    <a href="{{ route('chequedeposit.index') }}" class="btn btn-success" target="" rel="noopener noreferrer">
+                        <i class="fas fa-list"></i> View Cheque Deposit <!-- Icon added before text -->
+                    </a>
+            
+            </div>
 
             <!-- Search Customer input -->
             <div class="col-md-6">

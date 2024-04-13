@@ -32,11 +32,19 @@
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
-           <div class="col-md-5">
-            <a href="{{ route('items.create') }}" class="btn ms-5 btn-lg btn-primary" target="" rel="noopener noreferrer">
-                <i class="fas fa-plus-circle"></i> Add New Items
-            </a>
-                       </div>
+           <div class="col-md-3">
+                <a href="{{ route('items.create') }}" class="btn ms-5 btn-lg btn-primary" target="" rel="noopener noreferrer">
+                    <i class="fas fa-plus-circle"></i> Add New Items
+                </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{{ route('purorder.create') }}" class="btn  ms-5 btn-lg btn-primary" target="" rel="noopener noreferrer">
+                    <i class="fas fa-plus-circle"></i> Make Order
+                </a>
+            </div>
+
+
         </div>
     </form>
 

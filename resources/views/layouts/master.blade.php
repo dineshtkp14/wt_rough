@@ -56,7 +56,7 @@
             <h6 class="text-white">Hello!!  {{ session('user_email'); }}</h6>
             @auth
     <!-- User is authenticated, show content here -->
-    <div class="text-white">Welcome, {{ Auth::user()->name }}</div>
+        {{-- <div class="text-white">Welcome, {{ Auth::user()->name }}</div> --}}
 @else
     <!-- User is not authenticated, redirect to login page -->
     <script>window.location = "{{ route('login') }}";</script>
