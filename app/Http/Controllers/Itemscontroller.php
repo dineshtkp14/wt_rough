@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\item;
 use App\Models\Myfirm;
-use App\Models\trackitemstable;
+use App\Models\Trackitemstable;
 use Illuminate\Support\Facades\DB; //
 
 
@@ -121,7 +121,7 @@ $additional_info = 'billno: ' . $itemsdetails->billno . ', ' .
 
 
                 // Insert into track table
-                   trackitemstable::create([
+                   Trackitemstable::create([
 
 
     'title' => "data inserted",
@@ -253,7 +253,7 @@ public function update($id, Request $req)
   $itemsdetails->save();
 
     // Insert into track table
-    trackitemstable::create([
+    Trackitemstable::create([
       'title' => "data updated",
       'updated_by' => session('user_email'),
       'notes' => $additional_info,
@@ -303,7 +303,7 @@ $additional_info = 'billno: ' . $itemsdetails->billno . ', ' .
 
 
   // Insert into track table
-  trackitemstable::create([
+  Trackitemstable::create([
 
 'title' => "data Deleted",
 'updated_by' => session('user_email'),

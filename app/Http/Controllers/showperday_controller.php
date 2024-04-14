@@ -223,7 +223,7 @@ class showperday_controller extends Controller
             });
 
             // Paginate the sorted array
-            $perPage = 10; // Adjust the number as per your requirement
+            $perPage = 1; // Adjust the number as per your requirement
             $currentPage = LengthAwarePaginator::resolveCurrentPage();
             $currentItems = array_slice($totalSalesAndPayments, ($currentPage - 1) * $perPage, $perPage);
             $totalCount = count($totalSalesAndPayments);
