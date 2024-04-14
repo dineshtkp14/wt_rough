@@ -55,7 +55,7 @@ class BankDeposit_CounterCheckController extends Controller
     ->update(['bank_deposit' => 'yes']);
 
     // Redirect back with success message
-    return redirect()->back()->with('success', 'Bank deposit updated successfully.');
+    return redirect()->back()->with('bank_success', 'Bank deposit updated successfully.');
 }
 
 
@@ -103,7 +103,7 @@ public function showCounterDeposit_UpdateForm()
         
         
         // Redirect back with success message
-        return redirect()->back()->with('success', 'Counter Checked successfully.');
+        return redirect()->back()->with('counter_success', 'Counter Checked successfully.');
     }
     
 }    

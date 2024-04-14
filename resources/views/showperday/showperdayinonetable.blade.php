@@ -16,11 +16,19 @@
                 </a>
             </div>
             <div class="card-body ">
+
+                {{-- @foreach($totalSalesAndPayments as $data)
+                <span class="h3 btn btn-dark btn-lg">
+                    In Counter ({{ $data['date'] }}): {{ $data['total'] }} - {{ $data['credit_notes_total'] }} = {{ $data['total'] - $data['credit_notes_total'] }}
+                </span>
+               @endforeach --}}
+
+
                 <div class="row">
                     <div class="col-md-4">
                         <table class="table h5" style="width: 200px">
                             <thead>
-                                <center>  <SPAN class="h5 btn btn-warning fw-bold">CREDIT NOTES/SALES RETURN
+                                <center>  <SPAN class="h5 btn btn-warning fw-bold">CREDIT NOTES-LEDGER
                                 </SPAN> </center>
 
 
@@ -47,21 +55,31 @@
                     <div class="col-md-8">
                         <table class="table h5">
                             <thead>
-                                <center>  <SPAN class="h5 btn btn-warning fw-bold">Total Cash
+                                <center>  <SPAN class="h5 btn btn-warning fw-bold">Total Cash in Counter
                                 </SPAN> </center>
 
                                 <tr>
                                     <th>Date</th>
+                                    <th>Calculation</th>
                                     <th>Total</th>
+
                                     <th>Counter Check</th>
                                     <th>Bank Deposit Check</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                
+                               
                                 @foreach($totalSalesAndPayments as $data)
                                 <tr @if(now()->format('Y-m-d') == $data['date']) style="color: white;background:red; font-weight: bold;" @endif>
                                     <td>{{ $data['date'] }}</td>
-                                    <td>{{ $data['total'] }}</td>
+                                    <td>{{ $data['total']}} -{{$data['credit_notes_total']  }}</td>
+                                    <td>{{$data['total'] -$data['credit_notes_total']}}</td>
+
+                                    
+                                   
+                                  
+                                  </td>
                                     <td>
                                         @if ($data['counter_deposit'] == 'yes')
                                             &#10004; <!-- Checkmark HTML entity -->

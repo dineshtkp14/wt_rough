@@ -1,142 +1,59 @@
 @extends('layouts.master')
 @section('content')
+
+
+<style>
+    .btn-super-duper-bigger {
+        width: 380px; /* Increased width for bigger buttons */
+        padding: 30px; /* Adjusted padding for desired button height */
+        font-size: 30px; /* Increased font size for bigger text */
+        border-radius: 10px; /* Rounded corners for buttons */
+        transition: all 0.3s ease; /* Smooth transition for hover effect */
+        display: flex; /* Use flexbox for alignment */
+        justify-content: center; /* Center content horizontally */
+        align-items: center; /* Center content vertically */
+    }
+
+    .btn-super-duper-bigger .fa {
+        margin-right: 10px; /* Add margin between icon and text */
+        font-size: 60px; /* Increased font size for bigger icon */
+    }
+
+    .btn-super-duper-bigger:hover {
+        transform: scale(1.1); /* Scale button slightly on hover */
+    }
+
+    .btn-super-duper-bigger:focus {
+        outline: none; /* Remove outline on focus for better visual */
+    }
+
+    .bg-primary-custom {
+        background-color: #064b19; /* Custom primary background color */
+    }
+
+    .text-white-custom {
+        color: #ffffff; /* Custom text color */
+    }
+</style>
 <div class="main-content"> 
 
+    <div class="row mt-3">
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('CheckBankDeposit.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-university"></i> BANK Check</a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('CheckCounterDeposit.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-invoice"></i> Counter Check</a>
+        </div>
 
 {{-- 
-    <div class="container">
-        <div class="row row-cols-2 row-cols-lg-4 g-2 g-lg-3">
-            <div class="col custom-column">
-                <a href="page1.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-file-invoice"></i> Invoice</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page2.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-file-alt"></i> Credit Notes</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page2.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-file-alt"></i> Track Invoice</h5>
-                    </div>
-                </a>
-                <div class="col custom-column">
-                    <a href="page2.html" class="text-decoration-none">
-                        <div class="p-5 border bg-primary text-white">
-                            <h5><i class="fas fa-file-alt"></i> Whole Bill List</h5>
-                        </div>
-                    </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page2.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-lock"></i> Change Password</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page3.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-university"></i> Banks</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-box"></i> Item</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-calendar-day"></i> Daybook</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-building"></i> Supplier/Company</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-shopping-cart"></i> Purchase Order</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-book"></i> Company Ledger</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-users"></i> Customer</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-list-alt"></i> Price List</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-cubes"></i> Stock</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-chart-line"></i> Calculate Profit</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-chart-bar"></i> Calculate Total Sales</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-money-bill-wave"></i> Show Total Sales</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col custom-column">
-                <a href="page4.html" class="text-decoration-none">
-                    <div class="p-5 border bg-primary text-white">
-                        <h5><i class="fas fa-calendar"></i> Show Per Day</h5>
-                    </div>
-                </a>
-            </div>
-            
-        </div>
-    </div> --}}
-
-
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('change-password') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-key"></i> CHANGE PASSWORD</a>
+        </div> --}}
+       
+    </div>
 
 
 </div>
-@stop
+
+    @stop
