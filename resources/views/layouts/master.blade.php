@@ -573,7 +573,7 @@
             </li>
         
             <li class="mb-1 border border-success border-5">
-                <a href="{{ route('showonlysalesperday.pp') }}" style="text-decoration:none;" class="text-white">
+                <a href="{{ route('showonlysalesperdayinone_table.pp') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
                         <i class="fas fa-calendar-day"></i> Show Per Day

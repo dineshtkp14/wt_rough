@@ -55,8 +55,8 @@
 
                                 <tr>
                                     <th>Date</th>
-                                    <th>Calculation(C-N)</th>
-                                    <th>Total</th>
+                                    <th>(C-N)</th>
+                                    <th class="bg-dark">Total</th>
 
                                     <th>Counter Check</th>
                                     <th>Bank Deposit Check</th>
@@ -68,21 +68,23 @@
                                 @foreach($totalSalesAndPayments as $data)
                                 <tr @if(now()->format('Y-m-d') == $data['date']) style="color: white;background:red; font-weight: bold;" @endif>
                                     <td>{{ $data['date'] }}</td>
-                                    <td>{{ $data['total']}} -{{$data['credit_notes_total']  }}</td>
-                                    <td>{{$data['total'] -$data['credit_notes_total']}}</td>
+                                    <td> {{ $data['total']}} -{{$data['credit_notes_total']  }}</td>
+                                    <td class="bg-dark text-white h3"><span style="text-decoration: underline;">{{$data['total'] - $data['credit_notes_total']}}</span></td>
 
                                     
                                    
                                   
                                   </td>
-                                    <td>
+                                    <td class="text-center">
                                         @if ($data['counter_deposit'] == 'yes')
-                                        <span class="bg-danger" style="color: white;">&#10004;</span>
+                                        
+                                        <i class="fas fa-check-circle fa-2x"></i> <!-- Larger size -->
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="text-center">
+
                                         @if ($data['bank_deposit'] == 'yes')
-                                            &#10004; <!-- Checkmark HTML entity -->
+                                        <i class="fas fa-check-circle fa-2x"></i> <!-- Larger size -->
                                         @endif
                                     </td>
                                 </tr>
@@ -91,7 +93,6 @@
                         </table>
                         {{ $totalSalesAndPayments->appends(['page' => $totalSalesAndPayments->currentPage()])->withPath(route('showonlysalesperdayinone_table.pp'))->links() }}
 
-                        {{-- {{ $totalSalesAndPayments->appends(request()->input())->links() }} --}}
                     </div>
                 </div>
             </div>

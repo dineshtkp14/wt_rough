@@ -354,6 +354,9 @@ body {
 td {
     border: 1px solid #b7b7b7 !important;
 }
+th {
+    text-transform: uppercase;
+}
 
 .foritemsaledatecss {
     width: 300px;
