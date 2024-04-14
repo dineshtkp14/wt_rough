@@ -115,42 +115,31 @@ class showperday_controller extends Controller
     }
 
 
+    //onetable
 
         public function showonlysalesperdayinone_table()
         {
+            
 
-            if (Auth::check()) {
                 $breadcrumb = [
                     'subtitle' => 'Per Day one table',
                     'title' => 'Sales Per Day one table',
                     'link' => 'Sales Per day one table'
                 ];
         
-                $salesPerDay = invoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
-                    ->groupBy('date')
-                    ->orderBy('date', 'DESC')
-                    ->paginate(100); 
 
-                
                     
                     $salesPerDaycr = CreditnotesInvoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
                     ->groupBy('date')
                     ->orderBy('date', 'DESC')
-                    ->paginate(100); 
+                    ->get();
 
 
                     $salesPerDayCash = invoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
                     ->where('inv_type', 'cash')
                     ->groupBy('date')
                     ->orderBy('date', 'DESC')
-                    ->paginate(100);
-
-
-                    $salesPerDayCredit = invoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
-                    ->where('inv_type', 'credit')
-                    ->groupBy('date')
-                    ->orderBy('date', 'DESC')
-                    ->paginate(100);
+                    ->get();
 
 
                     $payment = customerledgerdetails::select(DB::raw('DATE(date) as date'), DB::raw('SUM(credit) as total'))
@@ -160,9 +149,10 @@ class showperday_controller extends Controller
                     })
                     ->groupBy('date')
                     ->orderBy('date', 'DESC')
-                    ->paginate(100);
+                    ->get();
 
 
+                    //thisisneeded
                     $forsalesreturn = customerledgerdetails::select(DB::raw('DATE(date) as date'), DB::raw('SUM(credit) as total'))
                     ->where('invoicetype', 'payment')
                     ->where(function ($query) {
@@ -171,28 +161,17 @@ class showperday_controller extends Controller
                     ->groupBy('date')
                     ->orderBy('date', 'DESC')
                     ->paginate(100);
-                     
 
-                            // Calculate the total of cash and payment for today's date
-                        $today = Carbon::today()->toDateString(); // Get today's date
-                        $totalCashToday = $salesPerDayCash->where('date', $today)->sum('total');
-                        $totalPaymentToday = $payment->where('date', $today)->sum('total');
-                        $totalCashAndPaymentToday = $totalCashToday + $totalPaymentToday;
+                    // Calculate the total of cash and payment for today's date
+                    $today = Carbon::today()->toDateString(); // Get today's date
+                    $totalCashToday = $salesPerDayCash->where('date', $today)->sum('total');
+                    $totalPaymentToday = $payment->where('date', $today)->sum('total');
+                    $totalCashAndPaymentToday = $totalCashToday + $totalPaymentToday;
 
-
-                            // Calculate the total of CREDITNOTES for today's date
-                            
-                            $today = Carbon::today()->toDateString(); // Get today's date
-                            $totalCashToday = $salesPerDayCash->where('date', $today)->sum('total');
-                            $totalPaymentToday = $payment->where('date', $today)->sum('total');
-
-                            $totalCreditNotesTodaySUM = $salesPerDaycr->where('date', $today)->sum('total');
-
-                            $totalCreditNotesTodaySUMxx = $salesPerDaycr->where('date', $today)->sum('total');
-    
-
+                    $totalCreditNotesTodaySUM = $salesPerDaycr->where('date', $today)->sum('total');
+                                            
                         //forcashand payemntable
-                        $dates = $salesPerDayCash->pluck('date')->merge($payment->pluck('date'))->unique();
+                    $dates = $salesPerDayCash->pluck('date')->merge($payment->pluck('date'))->unique();
 
                         
                 // Initialize an array to store total sales and payments for each date
@@ -200,13 +179,10 @@ class showperday_controller extends Controller
 
                 // Loop through each date and calculate the sum for each date
                 foreach ($dates as $date) {
+
                     $salesTotal = $salesPerDayCash->where('date', $date)->sum('total');
                     $paymentTotal = $payment->where('date', $date)->sum('total');
-
                     $creditNotesTotal = $salesPerDaycr->where('date', $date)->sum('total'); // Calculate total credit notes for the date
-
-                    // $totalCreditNotesTodaySUMxx = $salesPerDaycr->where('date', $date)->sum('total');
-
                     $bankDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('bank_deposit');
                     $CounterDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('counter_deposit');
 
@@ -226,8 +202,9 @@ class showperday_controller extends Controller
                 });
 
                 // Paginate the sorted array
-                $perPage = 10; // Adjust the number as per your requirement
+                $perPage = 100; // Adjust the number as per your requirement
                 $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
                 $currentItems = array_slice($totalSalesAndPayments, ($currentPage - 1) * $perPage, $perPage);
                 $totalCount = count($totalSalesAndPayments);
                 $totalSalesAndPaymentsPaginated = new LengthAwarePaginator($currentItems, $totalCount, $perPage, $currentPage);
@@ -235,20 +212,15 @@ class showperday_controller extends Controller
                 return view('showperday.showperdayinonetable', [
                     'totalSalesAndPayments' => $totalSalesAndPaymentsPaginated,
                     'totalCashAndPaymentToday' => $totalCashAndPaymentToday,
-                    'salesPerDayCredit' => $salesPerDayCredit,
                     'salesPerDayCash' => $salesPerDayCash,
-                    'salesPerDay' => $salesPerDay,
-                    'salesPerDaycrnotes' => $salesPerDaycr,
                     'payment' => $payment,
                     'totalCreditNotesTodaySUM' => $totalCreditNotesTodaySUM,
                     'forsalesreturn' => $forsalesreturn,
-                    
                     'breadcrumb' => $breadcrumb
                 ]);
             }
 
-        return redirect('/login');
-    }
+    
 }
 
 

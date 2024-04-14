@@ -17,16 +17,11 @@
             </div>
             <div class="card-body ">
 
-                {{-- @foreach($totalSalesAndPayments as $data)
-                <span class="h3 btn btn-dark btn-lg">
-                    In Counter ({{ $data['date'] }}): {{ $data['total'] }} - {{ $data['credit_notes_total'] }} = {{ $data['total'] - $data['credit_notes_total'] }}
-                </span>
-               @endforeach --}}
-
+            
 
                 <div class="row">
-                    <div class="col-md-4">
-                        <table class="table h5" style="width: 200px">
+                    <div class="col-md-3 m-0 p-0">
+                        <table class="table h5 border border-5 border-dark" style="" >
                             <thead>
                                 <center>  <SPAN class="h5 btn btn-warning fw-bold">CREDIT NOTES-LEDGER
                                 </SPAN> </center>
@@ -52,15 +47,15 @@
 
 
                     
-                    <div class="col-md-8">
-                        <table class="table h5">
+                    <div class="col-md-9">
+                        <table class="table h5 border border-1 border-warning">
                             <thead>
                                 <center>  <SPAN class="h5 btn btn-warning fw-bold">Total Cash in Counter
                                 </SPAN> </center>
 
                                 <tr>
                                     <th>Date</th>
-                                    <th>Calculation</th>
+                                    <th>Calculation(C-N)</th>
                                     <th>Total</th>
 
                                     <th>Counter Check</th>
@@ -82,7 +77,7 @@
                                   </td>
                                     <td>
                                         @if ($data['counter_deposit'] == 'yes')
-                                            &#10004; <!-- Checkmark HTML entity -->
+                                        <span class="bg-danger" style="color: white;">&#10004;</span>
                                         @endif
                                     </td>
                                     <td>
@@ -94,7 +89,9 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $totalSalesAndPayments->appends(request()->input())->links() }}
+                        {{ $totalSalesAndPayments->appends(['page' => $totalSalesAndPayments->currentPage()])->withPath(route('showonlysalesperdayinone_table.pp'))->links() }}
+
+                        {{-- {{ $totalSalesAndPayments->appends(request()->input())->links() }} --}}
                     </div>
                 </div>
             </div>
