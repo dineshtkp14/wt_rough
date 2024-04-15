@@ -23,7 +23,7 @@
 
         @page {
             size: A5 portrait;
-            margin: 20px; /* Set margin to 0 for the page */
+            margin: 30px; /* Set margin to 0 for the page */
             padding: 10px !important;
         }
 
@@ -98,10 +98,9 @@
             font-size: 14px;
         }
 
-        /* Set minimum height for table container */
-        /* .table-container {
-            min-height: 500px; /* Adjust this value as needed */
-        } */
+       .forfontsizebll p{
+        font-size: 18px !important;
+       }
 
         .forbillandpan {
             margin-top: -70px !important;
@@ -147,7 +146,7 @@
         </div>
         <BR>-
           
-            <div class="seconddiv"> 
+            <div class="seconddiv forfontsizebll"> 
               
                         @if ($cinfodetails !=null)
                             @foreach($cinfodetails as $i)
@@ -216,8 +215,8 @@
                                         <p style=" font-size: 14px; text-align: left;">#  Goods once sold won't be returned</p>
 
                                     </td>
-                                    <td class="text-right"><b>Extra Discount:</b></td>
-                                    <td><b>{{$i->discount}}</b></td>
+                                    <td class="text-right">E-Discount:</td>
+                                    <td>{{$i->discount}}</td>
                                 </tr>
                                 <tr>
                                     
