@@ -127,13 +127,13 @@ public function update($id, Request $req)
             $daybook->remarks = $req->remarks;
             $daybook->date = $req->date;
             $daybook->modeofpay = $req->modeofpay;
-            $itemsdetails->added_by = session('user_email');
 
             $daybook->save();
 
             return redirect()->route('daybooks.index')->with('success','Daybook Details Updated Successfully !!');
         } else {
-            return redirect()->route('daybooks.create')->withErrors($validator)->withInput();
+            return redirect()->route('daybooks.edit', ['daybooks' => $id])->withErrors($validator)->withInput();
+
     }
 
     return redirect('/login');

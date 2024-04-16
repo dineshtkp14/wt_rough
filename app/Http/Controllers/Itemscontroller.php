@@ -157,9 +157,17 @@ public function edit($id)
     ];
 
     $items=item::findOrfail($id);
+
+     // Fetch the company name if company id exists
+     $companyName = null;
+     if ($items->companyid) {
+         $companyName = Company::where('id', $items->id)->value('name');
+     }
+    
+
     $all=Myfirm::orderBy('id','DESC')->get();
 
-    return view('items.edit',['item'=>$items,'breadcrumb'=>$breadcrumb,'all'=>$all]);   
+    return view('items.edit',['item'=>$items,'breadcrumb'=>$breadcrumb,'all'=>$all,'companyName'=>$companyName]);   
     
     return redirect('/login');
 }

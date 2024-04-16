@@ -174,7 +174,9 @@ return redirect('/login');
             return redirect()->route('customerinfos.index')->with('success','Customer updated Sucessfully !!');  
         }
         else{
-            return redirect()->route('customerinfos.create')->withErrors($validator)->withInput();
+            // return redirect()->route('customerinfos.edit')->withErrors($validator)->withInput();
+            return redirect()->route('customerinfos.edit', ['customerinfo' => $id])->withErrors($validator)->withInput();
+
     
         }
     

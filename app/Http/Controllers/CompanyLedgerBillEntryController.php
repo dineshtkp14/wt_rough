@@ -144,7 +144,14 @@ class CompanyLedgerBillEntryController extends Controller
    
         $company=CompanyLedger::findOrfail($id);
 
-        return view('companyLedgerBillEntry.edit',['com'=>$company,'breadcrumb'=>$breadcrumb]);   
+         // Fetch the company name if company id exists
+     $companyName = null;
+     if ($company->companyid) {
+         $companyName = Company::where('id', $company->id)->value('name');
+     }
+
+
+        return view('companyLedgerBillEntry.edit',['com'=>$company,'breadcrumb'=>$breadcrumb,'companyName'=>$companyName]);   
         
     }
     return redirect('/login');
@@ -211,7 +218,8 @@ public function update($id, Request $req)
                 return redirect()->route('companybillentry.create')->with('error', 'Company not found.');
             }
         } else {
-            return redirect()->route('companybillentry.create')->withErrors($validator)->withInput();
+            return redirect()->route('companybillentry.edit', ['companybillentry' => $id])->withErrors($validator)->withInput();
+
         }
     }
 

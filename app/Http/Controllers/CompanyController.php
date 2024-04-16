@@ -125,7 +125,8 @@ public function update($id, Request $req)
         return redirect()->route('companys.index')->with('success','Company Details Updated Sucessfully !!');  
     }
     else{
-        return redirect()->route('companys.create')->withErrors($validator)->withInput();
+        return redirect()->route('companys.edit', ['companys' => $id])->withErrors($validator)->withInput();
+
 
     }
 

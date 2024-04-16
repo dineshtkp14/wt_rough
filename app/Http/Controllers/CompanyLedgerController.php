@@ -129,21 +129,16 @@ session()->put('lastInsertedId', $companypanyment->id);
         ];
    
         $all=CompanyLedger::findOrfail($id);
-       
-        
- // Retrieve the company associated with the companyid
- $company = Company::find($all->companyid);
+      
 
- // If company with given companyid exists
- if ($company) {
-     // Assign the company name to $lastman
-     $lastman = $company->name;
- } else {
-     // Handle case where company with given companyid doesn't exist
-     $lastman = null; // Or set it to a default value
- }    
 
-        return view('companyLedgerPayment.edit',['all'=>$all,'breadcrumb'=>$breadcrumb,'companyname' => $lastman]);   
+  // Fetch the company name if company id exists
+  $companyName = null;
+  if ($all->companyid) {
+      $companyName = Company::where('id', $all->id)->value('name');
+  } 
+
+        return view('companyLedgerPayment.edit',['all'=>$all,'breadcrumb'=>$breadcrumb,'companyName' => $companyName]);   
         
     }
     return redirect('/login');
@@ -204,7 +199,8 @@ public function update($id, Request $req)
 
         return redirect()->route('companyLedgerspay.index')->with('success', 'Updated Successfully !!');
     } else {
-        return redirect()->route('companyLedgerspay.create')->withErrors($validator)->withInput();
+        return redirect()->route('companyLedgerspay.edit', ['companyLedgerspay' => $id])->withErrors($validator)->withInput();
+
     }
 }
 
