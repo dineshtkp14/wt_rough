@@ -3,7 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\CompanyLedger;
-use App\Models\Company;
+use App\Models\company;
 
 use Livewire\Component;
 use Livewire\WithPagination;
