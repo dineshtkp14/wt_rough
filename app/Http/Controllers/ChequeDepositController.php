@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\chequedeposit;
+use App\Models\Chequedeposit;
 use App\Models\customerinfo;
 
 use Illuminate\Support\Facades\Auth;
@@ -59,7 +59,7 @@ public function store(Request $req)
     ]);
 
     if ($validator) {
-        $chequeinfo = new chequedeposit();
+        $chequeinfo = new Chequedeposit();
         $chequeinfo->bank_name = $req->bank_name;
         $chequeinfo->amount = $req->amount;
 
@@ -129,7 +129,7 @@ public function update($id, Request $req)
 
 public function destroy($id,Request $req){
 
-    $chqkdepo=chequedeposit::findOrFail($id);
+    $chqkdepo=Chequedeposit::findOrFail($id);
     $chqkdepo->delete();
 
     return redirect()->route('chequedeposit.index')->with('success','Company Deleted sucessfully'); 
@@ -152,7 +152,7 @@ public function returnReceiptDeyailsbyReceiptNo(Request $req)
     $cusledgerdetails_id = $req->receiptno;
     $customerinfodetails = null;
 
-    $alldetails = chequedeposit::where('id', $req->receiptno)
+    $alldetails = Chequedeposit::where('id', $req->receiptno)
    
     ->get();
 
@@ -195,7 +195,7 @@ $breadcrumb = [
 $cusledgerdetails_id = $req->receiptno;
 $customerinfodetails = null;
 
-$alldetails = chequedeposit::where('id', $req->receiptno)->get();
+$alldetails = Chequedeposit::where('id', $req->receiptno)->get();
 
 
 
