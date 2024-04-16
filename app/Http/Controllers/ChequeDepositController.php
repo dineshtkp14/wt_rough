@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\Chequedeposit;
+use App\Models\ChequeDeposit;
 use App\Models\customerinfo;
 
 use Illuminate\Support\Facades\Auth;
@@ -59,7 +59,7 @@ public function store(Request $req)
     ]);
 
     if ($validator) {
-        $chequeinfo = new Chequedeposit();
+        $chequeinfo = new ChequeDeposit();
         $chequeinfo->bank_name = $req->bank_name;
         $chequeinfo->amount = $req->amount;
 
@@ -87,7 +87,7 @@ public function edit($id)
             'link' => 'Edit Cheque Deposit Details'
         ];
 
-        $chequedepoedit = Chequedeposit::findOrFail($id);
+        $chequedepoedit = ChequeDeposit::findOrFail($id);
 
         return view('cheque_deposit.edit', ['chequedepoedit' => $chequedepoedit, 'breadcrumb' => $breadcrumb]);
     }
@@ -107,7 +107,7 @@ public function update($id, Request $req)
         ]);
 
         if ($validator->passes()) {
-            $chequeinfo = Chequedeposit::find($id);
+            $chequeinfo = ChequeDeposit::find($id);
             $chequeinfo->bank_name = $req->bank_name;
             $chequeinfo->amount = $req->amount;
             $chequeinfo->customerid = $req->customerid;
@@ -129,7 +129,7 @@ public function update($id, Request $req)
 
 public function destroy($id,Request $req){
 
-    $chqkdepo=Chequedeposit::findOrFail($id);
+    $chqkdepo=ChequeDeposit::findOrFail($id);
     $chqkdepo->delete();
 
     return redirect()->route('chequedeposit.index')->with('success','Company Deleted sucessfully'); 
@@ -152,7 +152,7 @@ public function returnReceiptDeyailsbyReceiptNo(Request $req)
     $cusledgerdetails_id = $req->receiptno;
     $customerinfodetails = null;
 
-    $alldetails = Chequedeposit::where('id', $req->receiptno)
+    $alldetails = ChequeDeposit::where('id', $req->receiptno)
    
     ->get();
 
@@ -195,7 +195,7 @@ $breadcrumb = [
 $cusledgerdetails_id = $req->receiptno;
 $customerinfodetails = null;
 
-$alldetails = Chequedeposit::where('id', $req->receiptno)->get();
+$alldetails = ChequeDeposit::where('id', $req->receiptno)->get();
 
 
 
