@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Livewire;
-use App\Models\trackitemstable;
+use App\Models\Trackitemstable;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -15,7 +15,7 @@ class TrackitemstableLivewire extends Component
     {
        
    
-       $trackitemstable = trackitemstable::orderby('id','DESC')->select('*');
+       $trackitemstable = Trackitemstable::orderby('id','DESC')->select('*');
         if(!empty($this->searchTerm)){
 
             $trackitemstable->orWhere('id','like',"%".$this->searchTerm."%");

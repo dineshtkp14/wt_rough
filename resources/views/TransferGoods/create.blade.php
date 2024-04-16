@@ -43,7 +43,12 @@
 <div class="container" style="margin-top: -80px;">
     <form class="row gx-5 gy-3 " action="{{ route('transfergoods.store') }}" method="post">
         @csrf
-        <div class="col-md-6 "></div>
+        <div class="col-md-6 ">
+            <a href="{{ route('transfergoods.index') }}" class="btn btn-primary">
+                <i class="fas fa-list"></i> View List
+            </a>
+            
+                    </div>
 
         <div class="col-md-6 float-end">
             <label for="date" class="form-label">Date</label>

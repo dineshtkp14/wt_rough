@@ -88,6 +88,9 @@
         <div class="col-md-4 mb-3">
             <a href="{{ route('cndash') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-alt"></i> CREDIT NOTES</a>
         </div>
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('transfergoods.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-alt"></i>Transfer Goods</a>
+        </div>
        
        
     </div>
