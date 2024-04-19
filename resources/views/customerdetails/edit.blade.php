@@ -31,7 +31,7 @@
                     <div class="input-group mb-1">
                         <!-- Adjust fields with pre-filled data if editing -->
                         <span class="input-group-text">Date: <span style="color: red;">*</span></span>
-                        <input type="date" class="form-control @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{ $payment ? $payment->date : now()->format('Y-m-d') }}" name="date">
+                        <input  type="date" class="form-control @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{ $payment ? $payment->date : now()->format('Y-m-d') }}" name="date">
                         @error('date')
                         <p class="invalid-feedback">{{ $message }}</p>
                         @enderror
@@ -42,7 +42,7 @@
             <!-- Checkbox -->
             <div class="col-md-12">
                 <div class="form-check d-flex align-items-center">
-                    <input class="form-check-input me-2" type="checkbox" id="disableFields" name="disableFields" style="width: 30px; height: 30px;">
+                    <input  class="form-check-input me-2" type="checkbox" id="disableFields" name="disableFields" style="width: 30px; height: 30px;">
                     <label class="form-check-label" for="disableFields">If Sales Return</label>
                 </div>
             </div>
@@ -50,7 +50,7 @@
             <!-- Other Form Fields -->
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label"> Particulars (Bank Name/Fone Pay/Payment) <span style="color: red;">*</span></label>
-                <input id="particulars" type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars', $payment ? $payment->particulars : '') }}" >
+                <input  autocomplete="off" id="particulars" type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars', $payment ? $payment->particulars : '') }}" >
                 <input id="hiddenParticulars" type="hidden" name="hiddenParticulars" value="{{ old('hiddenParticulars', $payment ? $payment->hiddenParticulars : '') }}">
                 @error('particulars')
                 <p class="invalid-feedback">{{ $message }}</p>
@@ -59,7 +59,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Voucher Type (Receipt/Cash) <span style="color: red;">*</span></label>
-                <input id="vt" type="text" class="form-control @error('vt') is-invalid @enderror" name="vt" value="{{ old('vt', $payment ? $payment->vt : '') }}" >
+                <input autocomplete="off" id="vt" type="text" class="form-control @error('vt') is-invalid @enderror" name="vt" value="{{ old('vt', $payment ? $payment->vt : '') }}" >
                 <input id="hiddenVt" type="hidden" name="hiddenVt" value="{{ old('hiddenVt', $payment ? $payment->hiddenVt : '') }}">
                 @error('vt')
                 <p class="invalid-feedback">{{ $message }}</p>
@@ -69,12 +69,12 @@
             <!-- Additional Field Container -->
             <div class="col-md-6" id="additionalFieldContainer" style="display: none;">
                 <label for="cninvoiceid" class="form-label">Credit Notes Invoice ID</label>
-                <input type="number" class="form-control" id="cninvoiceid" name="cninvoiceid" value="{{ old('cninvoiceid', $payment ? $payment->cninvoiceid : '') }}">
+                <input autocomplete="off" type="number" class="form-control" id="cninvoiceid" name="cninvoiceid" value="{{ old('cninvoiceid', $payment ? $payment->cninvoiceid : '') }}">
             </div>
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Amount <span style="color: red;">*</span></label>
-                <input type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount', $payment ? $payment->amount : '') }}" >
+                <input  autocomplete="off" type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount', $payment ? $payment->amount : '') }}" >
                 @error('amount')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
@@ -82,7 +82,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Notes</label>
-                <textarea class="form-control @error('notes') is-invalid @enderror" name="notes">{{ old('notes', $payment ? $payment->notes : '') }}</textarea>
+                <textarea autocomplete="off" class="form-control @error('notes') is-invalid @enderror" name="notes">{{ old('notes', $payment ? $payment->notes : '') }}</textarea>
                 @error('notes')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror

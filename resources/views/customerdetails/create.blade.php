@@ -97,8 +97,8 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label"> Particulars (Bank Name/Fone Pay/Payment) <span style="color: red;">*</span></label>
-                <input id="particulars" type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars') }}" >
-                <input id="hiddenParticulars" type="hidden" name="hiddenParticulars" value="{{ old('hiddenParticulars') }}">
+                <input autocomplete="off" id="particulars" type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars') }}" >
+                <input  id="hiddenParticulars" type="hidden" name="hiddenParticulars" value="{{ old('hiddenParticulars') }}">
                 @error('particulars')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
@@ -106,8 +106,8 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Voucher Type (Receipt/Cash) <span style="color: red;">*</span></label>
-                <input id="vt" type="text" class="form-control @error('vt') is-invalid @enderror" name="vt" value="{{ old('vt') }}" >
-                <input id="hiddenVt" type="hidden" name="hiddenVt" value="{{ old('hiddenVt') }}">
+                <input autocomplete="off" id="vt" type="text" class="form-control @error('vt') is-invalid @enderror" name="vt" value="{{ old('vt') }}" >
+                <input  id="hiddenVt" type="hidden" name="hiddenVt" value="{{ old('hiddenVt') }}">
                 @error('vt')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
@@ -116,12 +116,12 @@
             <!-- Your existing HTML code -->
             <div class="col-md-6" id="additionalFieldContainer" style="display: none;">
                 <label for="cninvoiceid" class="form-label">Credit Notes Invoice ID</label>
-                <input type="number" class="form-control" id="cninvoiceid" name="cninvoiceid">
+                <input autocomplete="off" type="number" class="form-control" id="cninvoiceid" name="cninvoiceid">
             </div>
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Amount <span style="color: red;">*</span></label>
-                <input type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" >
+                <input autocomplete="off" type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" >
                 @error('amount')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
@@ -129,7 +129,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Notes</label>
-                <textarea class="form-control @error('notes') is-invalid @enderror" name="notes">{{ old('notes') }}</textarea>
+                <textarea autocomplete="off" class="form-control @error('notes') is-invalid @enderror" name="notes">{{ old('notes') }}</textarea>
                 @error('notes')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
