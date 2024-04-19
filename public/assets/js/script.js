@@ -191,11 +191,12 @@ function inputHTML(counter) {
 
             <td>
 
-                    <select class="form-select sales-input" id="unitInput" data-id="${counter}" data-name="unit">
-                                        <option value="kgs">kgs</option>
-                                        <option value="pcs">pcs</option>
-                                        <option value="feet">feet</option>
-                    </select>
+                
+                <select class="form-select sales-input" id="unitSelect" data-id="${counter}" data-name="unit">
+                <option value="kgs">kgs</option>
+                <option value="pcs">pcs</option>
+                <option value="feet">feet</option>
+            </select>
              </td>
 
 
@@ -306,6 +307,25 @@ function getFinalCalculations() {
 
 function addInputValue(index, inputId, dataId, dataName, value) {
     salesData[index][dataName] = value;
+
+    const unitInput = $(`#inputRow${dataId} #unitInput`);
+
+    // validation
+    if (dataName === "unstocked") {
+        if (value.trim() !== "") {
+            $(`#inputRow${dataId} #selectProductLink`).css({
+                "pointer-events": "none",
+                color: "#afafaf",
+            });
+            unitInput.prop("disabled", false); // Enable unit input
+        } else {
+            unitInput.prop("disabled", true); // Enable unit input
+            $(`#inputRow${dataId} #selectProductLink`).css({
+                "pointer-events": "all",
+                color: "#0d6efd",
+            });
+        }
+    }
 
     if (
         dataName === "quantity" ||
