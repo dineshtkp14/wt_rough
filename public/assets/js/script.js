@@ -354,15 +354,15 @@ function addInputValue(index, inputId, dataId, dataName, value) {
             }
         }
 
-        // // Add validation for the "unit" field
-        // if (dataName === "unit") {
-        //     if (value.trim() === "") {
-        //         $("#errorText").attr("class", "text-danger fw-bold");
-        //         $("#errorText").text("Please enter unit !");
-        //         // You can add additional logic here if needed, such as disabling the submit button.
-        //         return; // Exit the function to prevent further execution.
-        //     }
-        // }
+        // Add validation for the "unit" field
+        if (dataName === "unit") {
+            if (value.trim() === "") {
+                $("#errorText").attr("class", "text-danger fw-bold");
+                $("#errorText").text("Please enter unit !");
+                // You can add additional logic here if needed, such as disabling the submit button.
+                return; // Exit the function to prevent further execution.
+            }
+        }
 
         if (dataName === "quantity") {
             const dataMax = $(`#inputRow${dataId} #${inputId}`).attr(
