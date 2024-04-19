@@ -19,15 +19,15 @@
             
             <div class="col-md-6">
                 <label for="particulars" class="form-label">Particulars  <span style="color: red;">*</span></label>
-                <textarea class="form-control @error('particulars') is-invalid @enderror" 
-                          name="particulars" rows="4">{{ old('particulars') }}</textarea>
+                <textarea  autocomplete="off" class="form-control @error('particulars') is-invalid @enderror" 
+                           name="particulars" rows="4">{{ old('particulars') }}</textarea>
                 @error('particulars')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
             <div class="col-md-6 float-end">
                 <label for="date" class="form-label">Date  <span style="color: red;">*</span></label>
-                <input type="date" class="form-control @error('date') is-invalid @enderror" 
+                <input autocomplete="off" type="date" class="form-control @error('date') is-invalid @enderror" 
                        name="date" value="{{ old('date') ?: date('Y-m-d') }}">
                 @error('date')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -35,7 +35,7 @@
             </div>
             <div class="col-md-6">
                 <label for="billno" class="form-label">Bill Number  <span style="color: red;">*</span></label>
-                <input type="text" class="form-control @error('billno') is-invalid @enderror" 
+                <input autocomplete="off" type="text" class="form-control @error('billno') is-invalid @enderror" 
                     name="billno" value="{{ old('billno') }}">
                 @error('billno')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -44,7 +44,7 @@
     
             <div class="col-md-6">
                 <label for="amount" class="form-label">Amount  <span style="color: red;">*</span></label>
-                <input type="number" step="0.01" class="form-control @error('amount') is-invalid @enderror" 
+                <input autocomplete="off" type="number" step="0.01" class="form-control @error('amount') is-invalid @enderror" 
                     name="amount" value="{{ old('amount') }}">
                 @error('amount')
                     <p class="invalid-feedback">{{ $message }}</p>

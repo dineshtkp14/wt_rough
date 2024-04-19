@@ -59,7 +59,7 @@
                         <div class="mb-4 col-md-6">
                             <div class="form-group">
                                 <label for="amount">Amount:</label>
-                                <input type="number" name="amount" id="amount" class="form-control form-control-lg" value="{{ old('amount', $openingBalance->debit) }}" required>
+                                <input autocomplete="off" type="number" name="amount" id="amount" class="form-control form-control-lg" value="{{ old('amount', $openingBalance->debit) }}" required>
                             </div>
                         </div>
 

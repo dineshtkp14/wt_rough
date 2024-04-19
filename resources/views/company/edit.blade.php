@@ -11,7 +11,7 @@
                     @method('put')
               <div class="col-md-6">
                         <label for="inputPassword4" class="form-label">Suppliers / Company Name  <span style="color: red;">*</span></label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                        <input autocomplete="off" type="text" class="form-control @error('name') is-invalid @enderror" 
                             name="name" value="{{ old('name',$company->name) }}">
                         @error('name')
                             <p class="invalid-feedback">{{ $message }}</p>
@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-md-6">
                         <label for="inputPassword4" class="form-label">Address  <span style="color: red;">*</span></label>
-                        <input type="text" class="form-control @error('address') is-invalid @enderror" 
+                        <input autocomplete="off" type="text" class="form-control @error('address') is-invalid @enderror" 
                             name="address" value="{{ old('address',$company->address) }}">
                         @error('address')
                             <p class="invalid-feedback">{{ $message }}</p>
@@ -28,7 +28,7 @@
     
                 <div class="col-md-6">
                         <label for="inputPassword4" class="form-label">Email</label>
-                        <input type="text" class="form-control @error('email') is-invalid @enderror" 
+                        <input autocomplete="off" type="text" class="form-control @error('email') is-invalid @enderror" 
                             name="email" value="{{ old('email',$company->email) }}">
                         @error('email')
                             <p class="invalid-feedback">{{ $message }}</p>
@@ -37,7 +37,7 @@
     
                 <div class="col-md-6">
                         <label for="inputPassword4" class="form-label">PhoneNo  <span style="color: red;">*</span></label>
-                        <input type="number" class="form-control @error('phoneno') is-invalid @enderror" 
+                        <input autocomplete="off" type="number" class="form-control @error('phoneno') is-invalid @enderror" 
                             name="phoneno" value="{{ old('phoneno',$company->phoneno) }}">
                         @error('phoneno')
                             <p class="invalid-feedback">{{ $message }}</p>

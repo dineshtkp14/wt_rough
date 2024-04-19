@@ -24,7 +24,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Date</label>
-                <input type="date" class="form-control @error('date') is-invalid @enderror" 
+                <input autocomplete="off" type="date" class="form-control @error('date') is-invalid @enderror" 
                     name="date" value="{{now()->format('Y-m-d')}}" id="">
                 @error('date')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -33,7 +33,7 @@
            
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Amount</label>
-                    <input type="number" class="form-control @error('amount') is-invalid @enderror" 
+                    <input autocomplete="off" type="number" class="form-control @error('amount') is-invalid @enderror" 
                         name="amount" value="{{ old('amount') }}">
                     @error('amount')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -44,7 +44,7 @@
 
           <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Deposited By</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                    <input autocomplete="off" type="text" class="form-control @error('name') is-invalid @enderror" 
                         name="name" value="{{ old('name') }}">
                     @error('name')
                         <p class="invalid-feedback">{{ $message }}</p>

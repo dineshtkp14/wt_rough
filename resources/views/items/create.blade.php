@@ -59,7 +59,7 @@
                 
                 <div class="col-md-6 float-end">
                     <label for="inputPassword4" class="form-label">Date</label>
-                    <input type="date" class="form-control @error('date') is-invalid @enderror" 
+                    <input  type="date" class="form-control @error('date') is-invalid @enderror" 
                         name="date" value="{{now()->format('Y-m-d')}}" id="">
                     @error('date')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -123,7 +123,7 @@
 
                 <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Bill No </label>
-                    <input type="text" placeholder=" Please Enter Bill No" class="form-control @error('billno') is-invalid @enderror" 
+                    <input autocomplete="off" type="text" placeholder=" Please Enter Bill No" class="form-control @error('billno') is-invalid @enderror" 
                         name="billno" value="{{ old('billno') }}">
                     @error('billno')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -138,7 +138,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">ITEMS Name  <span style="color: red;">*</span></label>
-                    <input placeholder=" Please Enter Items Name" type="text" class="form-control @error('itemsname') is-invalid @enderror" 
+                    <input autocomplete="off" placeholder=" Please Enter Items Name" type="text" class="form-control @error('itemsname') is-invalid @enderror" 
                         name="itemsname" value="{{ old('itemsname') }}">
                     @error('itemsname')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -147,7 +147,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Quantity  <span style="color: red;">*</span></label>
-                    <input placeholder=" Please Enter Quantity" type="quantity" class="form-control @error('quantity') is-invalid @enderror" 
+                    <input  autocomplete="off" placeholder=" Please Enter Quantity" type="quantity" class="form-control @error('quantity') is-invalid @enderror" 
                         name="quantity" value="{{ old('quantity') }}">
                     @error('quantity')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -155,7 +155,7 @@
             </div>
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Unit(PCS/kg/etc)  <span style="color: red;">*</span></label>
-                <input type="unit" placeholder="pcs/kg" class="form-control @error('unit') is-invalid @enderror" 
+                <input autocomplete="off" type="unit" placeholder="pcs/kg" class="form-control @error('unit') is-invalid @enderror" 
                     name="unit" value="{{ old('unit') }}">
                 @error('unit')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -164,7 +164,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Show Stock Warning  <span style="color: red;">*</span></label>
-                <input placeholder=" Please Enter Show Stock Warning" type="showwarning" class="form-control @error('showwarning') is-invalid @enderror" 
+                <input autocomplete="off" placeholder=" Please Enter Show Stock Warning" type="showwarning" class="form-control @error('showwarning') is-invalid @enderror" 
                     name="showwarning" value="{{ old('showwarning') }}">
                 @error('showwarning')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -173,7 +173,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">$Cost Rate Per (PCS/kg)  <span style="color: red;">*</span></label>
-                    <input placeholder=" Please Enter Cost Rate" type="text" class="form-control @error('costprice') is-invalid @enderror" 
+                    <input autocomplete="off" placeholder=" Please Enter Cost Rate" type="text" class="form-control @error('costprice') is-invalid @enderror" 
                         name="costprice" value="{{ old('costprice') }}">
                     @error('costprice')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -182,7 +182,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">$Sale Price Per (PCS/kg)  <span style="color: red;">*</span></label>
-                <input placeholder=" Please Enter Sale Price" type="text" class="form-control @error('mrp') is-invalid @enderror" 
+                <input autocomplete="off" placeholder=" Please Enter Sale Price" type="text" class="form-control @error('mrp') is-invalid @enderror" 
                     name="mrp" value="{{ old('mrp') }}">
                 @error('mrp')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -192,7 +192,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Iteam Store Area  <span style="color: red;">*</span></label>
-                <input  placeholder=" Please Enter Iteam Store Area" type="text" class="form-control @error('itemstorearea') is-invalid @enderror" 
+                <input autocomplete="off"  placeholder=" Please Enter Iteam Store Area" type="text" class="form-control @error('itemstorearea') is-invalid @enderror" 
                     name="itemstorearea" value="{{ old('itemstorearea') }}">
                 @error('itemstorearea')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -210,7 +210,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">$Wholesale Price Per (PCS/kg)</label>
-                <input placeholder=" Please Enter Wholesale Price"  type="text" class="form-control @error('wp') is-invalid @enderror" 
+                <input autocomplete="off" placeholder=" Please Enter Wholesale Price"  type="text" class="form-control @error('wp') is-invalid @enderror" 
                     name="wp" value="{{ old('wp') }}">
                 @error('wp')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -219,7 +219,7 @@
 
         <div class="col-md-6">
             <label for="inputPassword4" class="form-label">$Competitive Retail Sale Price Per (PCS/kg)</label>
-            <input type="text" placeholder=" Please Enter Competitive Retail Sale Price" class="form-control @error('competetiveretail') is-invalid @enderror" 
+            <input autocomplete="off" type="text" placeholder=" Please Enter Competitive Retail Sale Price" class="form-control @error('competetiveretail') is-invalid @enderror" 
                 name="competetiveretail" value="{{ old('competetiveretail') }}">
             @error('competetiveretail')
                 <p class="invalid-feedback">{{ $message }}</p>
@@ -228,7 +228,7 @@
 
     <div class="col-md-6">
         <label for="inputPassword4" class="form-label">$Competitive Wholesale Sale Price Per (PCS/kg)</label>
-        <input placeholder=" Please Enter Competitive Wholesale Sale Price"  type="text" class="form-control @error('competetivewholesale') is-invalid @enderror" 
+        <input  autocomplete="off" placeholder=" Please Enter Competitive Wholesale Sale Price"  type="text" class="form-control @error('competetivewholesale') is-invalid @enderror" 
             name="competetivewholesale" value="{{ old('competetivewholesale') }}">
         @error('competetivewholesale')
             <p class="invalid-feedback">{{ $message }}</p>

@@ -70,7 +70,7 @@
             <!-- Bank Name input -->
             <div class="col-md-6">
                 <label for="bankName" class="form-label">Bank Name *</label>
-                <input type="text" class="form-control @error('bank_name') is-invalid @enderror" 
+                <input autocomplete="off" type="text" class="form-control @error('bank_name') is-invalid @enderror" 
                     name="bank_name" value="{{ old('bank_name', $chequedepoedit->bank_name) }}" id="bankName" placeholder="Bank Name *">
                 @error('bank_name')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -80,7 +80,7 @@
             <!-- Cheque Date input -->
             <div class="col-md-6">
                 <label for="chequeDate" class="form-label">Cheque Date *</label>
-                <input type="date" class="form-control @error('cheque_date') is-invalid @enderror" 
+                <input autocomplete="off" type="date" class="form-control @error('cheque_date') is-invalid @enderror" 
                     name="cheque_date" value="{{ old('cheque_date', $chequedepoedit->cheque_date) }}" id="chequeDate" placeholder="YYYY-MM-DD">
                 @error('cheque_date')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -90,7 +90,7 @@
              <!-- Amount input -->
              <div class="col-md-6">
                 <label for="amount" class="form-label">Amount *</label>
-                <input type="text" class="form-control @error('amount') is-invalid @enderror" 
+                <input autocomplete="off" type="text" class="form-control @error('amount') is-invalid @enderror" 
                     name="amount" value="{{ old('amount', $chequedepoedit->amount) }}" id="amount" placeholder="Amount *">
                 @error('amount')
                     <p class="invalid-feedback">{{ $message }}</p>

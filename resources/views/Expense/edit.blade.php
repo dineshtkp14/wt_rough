@@ -22,7 +22,7 @@
             
             <div class="col-md-6">
                 <label for="particulars" class="form-label">Particulars</label>
-                <input type="text" class="form-control @error('particulars') is-invalid @enderror" 
+                <input autocomplete="off" type="text" class="form-control @error('particulars') is-invalid @enderror" 
                     name="particulars" value="{{ old('particulars', $expense->particulars) }}">
                 @error('particulars')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -31,7 +31,7 @@
 
             <div class="col-md-6">
                 <label for="billno" class="form-label">Bill Number</label>
-                <input type="text" class="form-control @error('billno') is-invalid @enderror" 
+                <input autocomplete="off" type="text" class="form-control @error('billno') is-invalid @enderror" 
                     name="billno" value="{{ old('billno', $expense->billno) }}">
                 @error('billno')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -40,7 +40,7 @@
 
             <div class="col-md-6">
                 <label for="amount" class="form-label">Amount</label>
-                <input type="number" step="0.01" class="form-control @error('amount') is-invalid @enderror" 
+                <input autocomplete="off" type="number" step="0.01" class="form-control @error('amount') is-invalid @enderror" 
                     name="amount" value="{{ old('amount', $expense->amount) }}">
                 @error('amount')
                     <p class="invalid-feedback">{{ $message }}</p>

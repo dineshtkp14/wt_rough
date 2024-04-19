@@ -70,7 +70,7 @@
                 <div style="width: 300px">
                     <div class="input-group mb-1">
                         <span class="input-group-text">Date:</span>
-                        <input type="date" class="form-control @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss"
+                        <input  type="date" class="form-control @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss"
                             value="{{ now()->format('Y-m-d') }}" name="date">
                         @error('date')
                             <p class="invalid-feedback">{{ $message }}</p>
@@ -89,7 +89,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Amount</label>
-                <input type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}">
+                <input autocomplete="off" type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}">
                 @error('amount')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
