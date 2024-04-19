@@ -191,8 +191,11 @@ function inputHTML(counter) {
 
             <td>
 
-                <input autocomplete="off" type="text" placeholder="pcs/kg" class="form-control sales-input" id="unitInput" value="" data-id="${counter}" data-name="unit" >
-
+                    <select class="form-select sales-input" id="unitInput" data-id="${counter}" data-name="unit">
+                                        <option value="kgs">kgs</option>
+                                        <option value="pcs">pcs</option>
+                                        <option value="feet">feet</option>
+                    </select>
              </td>
 
 
