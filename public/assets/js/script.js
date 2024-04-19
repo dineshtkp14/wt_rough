@@ -307,25 +307,6 @@ function getFinalCalculations() {
 function addInputValue(index, inputId, dataId, dataName, value) {
     salesData[index][dataName] = value;
 
-    const unitInput = $(`#inputRow${dataId} #unitInput`);
-
-    // validation
-    if (dataName === "unstocked") {
-        if (value.trim() !== "") {
-            $(`#inputRow${dataId} #selectProductLink`).css({
-                "pointer-events": "none",
-                color: "#afafaf",
-            });
-            unitInput.prop("disabled", false); // Enable unit input
-        } else {
-            unitInput.prop("disabled", true); // Enable unit input
-            $(`#inputRow${dataId} #selectProductLink`).css({
-                "pointer-events": "all",
-                color: "#0d6efd",
-            });
-        }
-    }
-
     if (
         dataName === "quantity" ||
         dataName === "price" ||
