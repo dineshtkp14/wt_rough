@@ -319,7 +319,7 @@ function addInputValue(index, inputId, dataId, dataName, value) {
             });
             unitInput.prop("disabled", false); // Enable unit input
         } else {
-            unitInput.prop("disabled", true); // Enable unit input
+            // unitInput.prop("disabled", true); // Enable unit input
             $(`#inputRow${dataId} #selectProductLink`).css({
                 "pointer-events": "all",
                 color: "#0d6efd",
@@ -592,12 +592,14 @@ $(window).on("load", function () {
                     $("#errorText").attr("class", "text-danger fw-bold");
                     $("#errorText").text("Please enter valid price !");
                     hasError = true;
-                    return false; // Exit the loop early since there's an error
-                } else if (value.unit.trim() === "") {
-                    $("#errorText").attr("class", "text-danger fw-bold");
-                    $("#errorText").text("Please enter unit !");
-                    hasError = true;
-                    return false; // Exit the loop early since there's an error
+                    return false;
+
+                    // Exit the loop early since there's an error
+                    // } else if (value.unit.trim() === "") {
+                    //     $("#errorText").attr("class", "text-danger fw-bold");
+                    //     $("#errorText").text("Please enter unit !");
+                    //     hasError = true;
+                    //     return false; // Exit the loop early since there's an error
                 }
             });
 
