@@ -161,7 +161,9 @@ public function edit($id)
      // Fetch the company name if company id exists
      $companyName = null;
      if ($items->companyid) {
-         $companyName = Company::where('id', $items->id)->value('name');
+        //  $companyName = Company::where('id', $items->id)->value('name');
+         $companyName = Company::where('id', $items->companyid)->value('name');
+
      }
     
 

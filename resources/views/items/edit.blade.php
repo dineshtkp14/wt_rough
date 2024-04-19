@@ -111,7 +111,7 @@
            
                 <div class="col-md-6">
                     <label for="inputPassword4" class="form-label"> Bill No</label>
-                    <input type="text" class="form-control @error('billno') is-invalid @enderror" 
+                    <input autocomplete="off" type="text" class="form-control @error('billno') is-invalid @enderror" 
                         name="billno" value= "{{ old('billno',$item->billno) }}"> 
                     @error('billno')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -126,7 +126,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">ITEMS Name</label>
-                    <input type="text" class="form-control @error('itemsname') is-invalid @enderror" 
+                    <input autocomplete="off" type="text" class="form-control @error('itemsname') is-invalid @enderror" 
                         name="itemsname" value="{{ old('itemsname',$item->itemsname) }}">
                     @error('itemsname')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -135,7 +135,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Quantity</label>
-                    <input type="quantity" class="form-control @error('quantity') is-invalid @enderror" 
+                    <input autocomplete="off" type="quantity" class="form-control @error('quantity') is-invalid @enderror" 
                         name="quantity" value="{{ old('quantity',$item->quantity) }}">
                     @error('quantity')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -144,7 +144,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Unit(PCS/kg/etc)</label>
-                <input type="unit" class="form-control @error('unit') is-invalid @enderror" 
+                <input autocomplete="off" type="unit" class="form-control @error('unit') is-invalid @enderror" 
                     name="unit" value="{{ old('unit',$item->unit) }}">
                 @error('unit')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -153,7 +153,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Show Stock Warning</label>
-                <input type="showwarning" class="form-control @error('showwarning') is-invalid @enderror" 
+                <input autocomplete="off" type="showwarning" class="form-control @error('showwarning') is-invalid @enderror" 
                     name="showwarning" value="{{ old('showwarning',$item->showwarning) }}">
                 @error('showwarning')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -162,7 +162,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">$Cost Rate Per Piece</label>
-                    <input type="text" class="form-control @error('costprice') is-invalid @enderror" 
+                    <input autocomplete="off" type="text" class="form-control @error('costprice') is-invalid @enderror" 
                         name="costprice" value="{{ old('costprice',$item->costprice) }}">
                     @error('costprice')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -171,7 +171,7 @@
 
             <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">$Sale Price Per Piece</label>
-                    <input type="text" class="form-control @error('mrp') is-invalid @enderror" 
+                    <input autocomplete="off" type="text" class="form-control @error('mrp') is-invalid @enderror" 
                         name="mrp" value="{{ old('mrp',$item->mrp) }}">
                     @error('mrp')
                         <p class="invalid-feedback">{{ $message }}</p>
@@ -180,7 +180,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Iteam Store Area</label>
-                <input type="text" class="form-control @error('itemstorearea') is-invalid @enderror" 
+                <input autocomplete="off" type="text" class="form-control @error('itemstorearea') is-invalid @enderror" 
                     name="itemstorearea" value="{{ old('itemstorearea',$item->item_store_area) }}">
                 @error('itemstorearea')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -189,7 +189,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Notes</label>
-                <textarea type="text" class="form-control @error('notes') is-invalid @enderror" 
+                <textarea autocomplete="off" type="text" class="form-control @error('notes') is-invalid @enderror" 
                     name="notes"> {{ old('notes',$item->notes) }}</textarea>
                 @error('notes')
                     <p class="invalid-feedback">{{ $message }}</p>
@@ -198,7 +198,7 @@
            
         <div class="col-md-6">
             <label for="inputPassword4" class="form-label">$Wholesale Price Per (PCS/kg)</label>
-            <input type="text" class="form-control @error('wp') is-invalid @enderror" 
+            <input autocomplete="off" type="text" class="form-control @error('wp') is-invalid @enderror" 
                 name="wp" value="{{ old('wp',$item->wholesale_price) }}">
             @error('wp')
                 <p class="invalid-feedback">{{ $message }}</p>
@@ -207,7 +207,7 @@
 
     <div class="col-md-6">
         <label for="inputPassword4" class="form-label">$Competitive Retail Sale Price Per (PCS/kg)</label>
-        <input type="text" class="form-control @error('competetiveretail') is-invalid @enderror" 
+        <input autocomplete="off" type="text" class="form-control @error('competetiveretail') is-invalid @enderror" 
             name="competetiveretail" value="{{ old('competetiveretail',$item->com_Retail_price) }}">
         @error('competetiveretail')
             <p class="invalid-feedback">{{ $message }}</p>
@@ -216,7 +216,7 @@
 
 <div class="col-md-6">
     <label for="inputPassword4" class="form-label">$Competitive Wholesale Sale Price Per (PCS/kg)</label>
-    <input type="text" class="form-control @error('competetivewholesale') is-invalid @enderror" 
+    <input autocomplete="off" type="text" class="form-control @error('competetivewholesale') is-invalid @enderror" 
         name="competetivewholesale" value="{{ old('competetivewholesale',$item->com_wholesale_price	) }}">
     @error('competetivewholesale')
         <p class="invalid-feedback">{{ $message }}</p>

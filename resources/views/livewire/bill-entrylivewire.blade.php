@@ -27,7 +27,7 @@
                             <th>Particulars</th>
                             <th>Voucher No</th>
                             <th>Date</th>
-                            <th>Credit</th>
+                            <th>Amount</th>
                             <th>Notes</th>
                             <th>Action</th>
                         </tr>

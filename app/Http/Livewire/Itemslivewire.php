@@ -28,8 +28,6 @@ class Itemslivewire extends Component
             ->orWhere('mrp', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('notes', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('billno', 'like', "%" . $this->searchTerm . "%");
-
-
     }
 
     $all = $all->paginate(50);

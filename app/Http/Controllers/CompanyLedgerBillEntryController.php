@@ -147,7 +147,7 @@ class CompanyLedgerBillEntryController extends Controller
          // Fetch the company name if company id exists
      $companyName = null;
      if ($company->companyid) {
-         $companyName = Company::where('id', $company->id)->value('name');
+         $companyName = Company::where('id', $company->companyid)->value('name');
      }
 
 

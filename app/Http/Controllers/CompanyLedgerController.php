@@ -135,7 +135,7 @@ session()->put('lastInsertedId', $companypanyment->id);
   // Fetch the company name if company id exists
   $companyName = null;
   if ($all->companyid) {
-      $companyName = Company::where('id', $all->id)->value('name');
+      $companyName = Company::where('id', $all->companyid)->value('name');
   } 
 
         return view('companyLedgerPayment.edit',['all'=>$all,'breadcrumb'=>$breadcrumb,'companyName' => $companyName]);   
