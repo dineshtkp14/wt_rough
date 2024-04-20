@@ -45,7 +45,7 @@
             box-sizing: border-box;
             padding: 0 10px;
         }
-
+/* //comment */
         .info-section h5,
         .receipt-details h5 {
             color: #007bff;

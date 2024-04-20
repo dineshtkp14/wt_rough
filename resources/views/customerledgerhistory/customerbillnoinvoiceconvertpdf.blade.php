@@ -301,6 +301,8 @@
     @foreach($allinvoices as $i)
       
       <p>Bill Created_by: {{$i->added_by}} </p>
+      <p style="font-size: 14px !important;">Printed Time and Date: <span style="color: #4b4b4b; font-size: 14px;"><?php echo date("Y-m-d H:i:s"); ?></span></p>
+    
     @endforeach
 @endif
 </div>
