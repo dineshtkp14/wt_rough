@@ -154,7 +154,9 @@
             <p><strong>Voucher Type:</strong> {{$data->voucher_type}}</p>
             <p><strong>Amount:</strong> {{$data->credit}}/-</p>
             <p><strong>Amount In Words:</strong>
-                $ones = array(
+                @php
+                                        function convertNumberToWords($num) {
+                                            $ones = array(
                                                 "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
                                                 "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
                                             );
