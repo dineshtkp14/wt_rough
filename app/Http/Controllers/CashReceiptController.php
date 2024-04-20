@@ -82,7 +82,7 @@ class CashReceiptController extends Controller
 
    
       // Load the Blade view for the PDF
-      $pdfView = view('cash_receipt.searchcashreceiptpdf', [
+      $pdfView = view('cash_receipt.searchcashreceiptPdf', [
         'alldetails' => $alldetails,
         'receiptno' => $cusledgerdetails_id,
         'breadcrumb' => $breadcrumb,
