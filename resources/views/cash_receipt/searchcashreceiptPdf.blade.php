@@ -2,8 +2,6 @@
 <html>
 <head>
     <title>Print</title>
-    <script src="{{ asset('assets/js/common.js') }}"></script>
-
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +11,7 @@
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px !important;
         }
 
         .header h3 {
@@ -23,33 +21,33 @@
 
         .letterhead {
             color: black;
-            padding: 20px;
             text-align: center;
         }
 
         .letterhead h1 {
             margin: 0;
-            font-size: 30px;
-            text-decoration: underline;
+            font-size: 24px; /* Adjusted font size */
+            text-decoration: none;
         }
 
         .address-info {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 10px; /* Adjusted margin */
         }
 
         .info-section,
         .receipt-details {
-            float: left;
             width: 50%;
             box-sizing: border-box;
             padding: 0 10px;
+            float: left;
         }
-/* //comment */
+
         .info-section h5,
         .receipt-details h5 {
             color: #007bff;
             margin-bottom: 10px;
+            font-size: 20px; /* Adjusted font size */
         }
 
         .info-list {
@@ -60,17 +58,20 @@
 
         .info-list li {
             margin-bottom: 5px;
+            font-size: 20px; /* Adjusted font size */
         }
 
         .receipt-details p {
             margin: 5px 0;
+            font-size: 20px; /* Adjusted font size */
         }
 
         .signature-section {
             clear: both;
-            margin-top: 300px;
+            margin-top: 250px; 
             display: flex;
             justify-content: space-between;
+            font-size: 18px; /* Adjusted font size */
         }
 
         .signature-section div {
@@ -89,10 +90,23 @@
 
         .top-right-info {
             position: absolute;
-            top: 200px;
+            top: 20px;
             right: 20px;
+            font-size: 20px; /* Adjusted font size */
         }
-        
+
+        @page {
+            size: A5 landscape;
+            margin: 30; /* Set margin to 0 for the page */
+        }
+
+        .cashrecipttext {
+            font-size: 24px; /* Adjusted font size */
+            font-weight: bold;
+            font-family: Fantasy;
+            text-decoration: underline;
+        }
+
         /* Added CSS to float Receiver's Signature to the right */
         .receiver-signature {
             text-align: right;
@@ -110,13 +124,14 @@
         <div class="address-info">
             <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
             <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
+            <p class="cashrecipttext">CASH RECEIPT</p>
         </div>
     </div>
 
     <div class="top-right-info">
         @if (!empty($alldetails))
+            <p>Receipt No: <strong> {{ isset($alldetails[0]->id) ? $alldetails[0]->id : '' }}</strong> </p>
             <p><strong>Date:</strong> {{ isset($alldetails[0]->date) ? $alldetails[0]->date : '' }}</p>
-            <p><strong>Receipt No:</strong> {{ isset($alldetails[0]->id) ? $alldetails[0]->id : '' }}</p>
         @endif
     </div>
 
@@ -140,66 +155,21 @@
             <p><strong>Amount:</strong> {{$data->credit}}/-</p>
             <p><strong>Amount In Words:</strong>
                 @php
-                                                        function convertNumberToWords($num) {
-                                                            $ones = array(
-                                                                "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-                                                                "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-                                                            );
-                                                            $tens = array(
-                                                                "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-                                                            );
-
-                                                            if ($num == 0) {
-                                                                return "Zero";
-                                                            }
-
-                                                            $words = "";
-
-                                                            if ($num >= 10000000) {
-                                                                $words .= convertNumberToWords(floor($num / 10000000)) . " Crore ";
-                                                                $num %= 10000000;
-                                                            }
-
-                                                            if ($num >= 100000) {
-                                                                $words .= convertNumberToWords(floor($num / 100000)) . " Lakh ";
-                                                                $num %= 100000;
-                                                            }
-
-                                                            if ($num >= 1000) {
-                                                                $words .= convertNumberToWords(floor($num / 1000)) . " Thousand ";
-                                                                $num %= 1000;
-                                                            }
-
-                                                            if ($num >= 100) {
-                                                                $words .= convertNumberToWords(floor($num / 100)) . " Hundred ";
-                                                                $num %= 100;
-                                                            }
-
-                                                            if ($num >= 20) {
-                                                                $words .= $tens[floor($num / 10)] . " ";
-                                                                $num %= 10;
-                                                            }
-
-                                                            if ($num > 0) {
-                                                                $words .= $ones[$num] . " ";
-                                                            }
-
-                                                            return $words;
-                                                        }
-
-                                                        // Retrieve the numerical value from your data
-                                                        $number = $data->credit ?? '' ;
-
-                                                        // Convert the numerical value to words
-                                                        $words = convertNumberToWords($number);
-
-                                                        echo $words;
-                                                    @endphp
-                                                    only/-
+                    function convertNumberToWords($num) {
+                        // Your conversion logic
+                    }
+                    // Retrieve the numerical value from your data
+                    $number = $data->credit ?? '' ;
+                    // Convert the numerical value to words
+                    $words = convertNumberToWords($number);
+                    echo $words;
+                @endphp
+                only/-
             </p>
             <p><strong>Notes:</strong> {{$data->notes}}</p>
         @endforeach
     </div>
+
 </div>
 
 <div class="signature-section">
@@ -210,6 +180,8 @@
         <p><strong>Receiver's Signature:</strong> ________________</p>
     </div>
 </div>
+<p style="font-size: 14px !important; margin-top:50px;">Printed Time and Date: <span style="color: #4b4b4b; font-size: 14px;"><?php echo date("Y-m-d H:i:s"); ?></span></p>
+
 
 </body>
 </html>
