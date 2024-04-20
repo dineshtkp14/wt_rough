@@ -191,12 +191,14 @@ function inputHTML(counter) {
 
             <td>
 
-                
-                <select class="form-select sales-input" id="unitSelect" data-id="${counter}" data-name="unit">
-                <option value="kgs">kgs</option>
-                <option value="pcs">pcs</option>
-                <option value="feet">feet</option>
+            <select class="form-select sales-input" id="unitInput" data-id="${counter}" data-name="unit">
+                        <option value="pcs">pcs</option>
+                        <option value="kgs" >kgs</option>
+                        <option value="feet">feet</option>
+                        <option value="choose" selected>select</option>
+
             </select>
+
              </td>
 
 
@@ -319,7 +321,7 @@ function addInputValue(index, inputId, dataId, dataName, value) {
             });
             unitInput.prop("disabled", false); // Enable unit input
         } else {
-            // unitInput.prop("disabled", true); // Enable unit input
+            unitInput.prop("disabled", true); // Enable unit input
             $(`#inputRow${dataId} #selectProductLink`).css({
                 "pointer-events": "all",
                 color: "#0d6efd",
@@ -355,6 +357,16 @@ function addInputValue(index, inputId, dataId, dataName, value) {
             }
         }
 
+        // // Add validation for the "unit" field
+        // if (dataName === "unit") {
+        //     if (value.trim() === "") {
+        //         $("#errorText").attr("class", "text-danger fw-bold");
+        //         $("#errorText").text("Please enter unit !");
+        //         // You can add additional logic here if needed, such as disabling the submit button.
+        //         return; // Exit the function to prevent further execution.
+        //     }
+        // }
+
         if (dataName === "quantity") {
             const dataMax = $(`#inputRow${dataId} #${inputId}`).attr(
                 "data-max"
@@ -382,14 +394,36 @@ function addInputValue(index, inputId, dataId, dataName, value) {
 }
 
 function handleInputChange() {
-    $(".sales-input").on("input", function (e) {
+    $(".sales-input").on("change", function (e) {
+        // Change event instead of input event for select dropdowns
         const target = e.target;
         const inputId = $(target).attr("id");
         const dataId = $(target).data("id");
         const dataName = $(target).data("name");
+        const value = target.value.trim(); // Trim the selected value
 
         const index = salesData.findIndex((obj) => obj.id === dataId);
-        addInputValue(index, inputId, dataId, dataName, target.value.trim());
+
+        if (inputId === "unitInput") {
+            // Check if a unit is selected
+            if (value === "select") {
+                // If no unit is selected, show the validation error
+                $("#errorText").attr("class", "text-danger fw-bold");
+                $("#errorText").text("Please select a unit!");
+                $("#submitBtn").attr("disabled", "disabled");
+            } else {
+                // If a unit is selected, clear the validation error and update the salesData
+                $("#errorText").text(""); // Clear the error message
+                salesData[index][dataName] = value; // Update the salesData
+                if ($(`#${inputId}`).val() !== "select") {
+                    // Check if the previous value was "select"
+                    $("#submitBtn").removeAttr("disabled"); // Enable the submit button
+                }
+            }
+        } else {
+            // For other input types, handle the input value as before
+            addInputValue(index, inputId, dataId, dataName, value);
+        }
     });
 }
 
@@ -592,14 +626,12 @@ $(window).on("load", function () {
                     $("#errorText").attr("class", "text-danger fw-bold");
                     $("#errorText").text("Please enter valid price !");
                     hasError = true;
-                    return false;
-
-                    // Exit the loop early since there's an error
-                    // } else if (value.unit.trim() === "") {
-                    //     $("#errorText").attr("class", "text-danger fw-bold");
-                    //     $("#errorText").text("Please enter unit !");
-                    //     hasError = true;
-                    //     return false; // Exit the loop early since there's an error
+                    return false; // Exit the loop early since there's an error
+                } else if (value.unit.trim() === "") {
+                    $("#errorText").attr("class", "text-danger fw-bold");
+                    $("#errorText").text("Please enter unit !");
+                    hasError = true;
+                    return false; // Exit the loop early since there's an error
                 }
             });
 
