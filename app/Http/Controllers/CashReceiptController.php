@@ -59,7 +59,7 @@ class CashReceiptController extends Controller
 
     $breadcrumb = [
         'subtitle' => '',
-        'title' => 'Search Receipt  No PDF',
+        'title' => 'Search Receipt  No PDF test',
         'link' => 'Search Receipt No PDF'
     ];
 
