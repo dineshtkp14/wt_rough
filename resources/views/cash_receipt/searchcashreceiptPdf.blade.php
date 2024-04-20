@@ -154,6 +154,7 @@
             <p><strong>Voucher Type:</strong> {{$data->voucher_type}}</p>
             <p><strong>Amount:</strong> {{$data->credit}}/-</p>
             <p><strong>Amount In Words:</strong>
+
                 @php
                                         function convertNumberToWords($num) {
                                             $ones = array(
@@ -203,15 +204,14 @@
                                         }
 
                                         // Retrieve the numerical value from your data
-                                        $number = $i->total;
+                                        $number = $data->credit;
 
                                         // Convert the numerical value to words
                                         $words = convertNumberToWords($number);
 
                                         echo $words;
                                     @endphp
-                                  
-                only/-
+              only/-
             </p>
             <p><strong>Notes:</strong> {{$data->notes}}</p>
         @endforeach
