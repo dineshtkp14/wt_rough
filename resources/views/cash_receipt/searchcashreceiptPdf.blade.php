@@ -26,13 +26,14 @@
 
         .letterhead h1 {
             margin: 0;
-            font-size: 24px; /* Adjusted font size */
+            font-size: 34px; /* Adjusted font size */
             text-decoration: none;
         }
 
         .address-info {
             text-align: center;
             margin-top: 10px; /* Adjusted margin */
+            font-size: 20px;
         }
 
         .info-section,

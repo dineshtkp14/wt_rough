@@ -35,7 +35,6 @@
                                       <td class="text-center">{{ $i->remarks}}</td>
                                       <td>{{ $i->added_by}}</td>
 
-                                      <td style="width: 160px;" class="text-center">
                                         
                                         <td style="width: 160px;" class="text-center">
 

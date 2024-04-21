@@ -13,9 +13,8 @@
         @endif
         <div class="card shadow p-4">
             <!-- Shop Name -->
-            <h4 class="text-center mb-4">OHT</h4>
+          
             <!-- Cash Receipt -->
-            <h5 class="text-center mb-4">Cash Receipt</h5>
            
             
             <div class="card-body">
@@ -158,7 +157,7 @@
                         <!-- Signatures -->
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Payer's Signature:</strong> _______________________</p>
+                                {{-- <p><strong>Payer's Signature:</strong> _______________________</p> --}}
                             </div>
                             <div class="col-md-6 text-right">
                                 <p><strong>Receiver's Signature:</strong> _______________________</p>

@@ -14,6 +14,12 @@
 </div>
 
 <div class="d-flex justify-content-end me-5">
+    <a href="{{ route('cashreceipt.search') }}" class="btn btn-primary me-5">
+        <!-- Icon -->
+        <i class="fas fa-search"></i>
+        Search Cash Receipt
+    </a>
+    
     <a href="{{ route('customerinfos.create') }}" class="btn btn-success">
         <!-- Icon -->
         <i class="fas fa-user-plus"></i> <!-- Different icon here -->
