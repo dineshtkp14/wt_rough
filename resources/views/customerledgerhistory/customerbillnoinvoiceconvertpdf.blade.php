@@ -123,10 +123,15 @@
 
         <div class="row">
             <div class="firstdiv"> 
-                        @if(isset($forinvoicetype) && !empty($forinvoicetype))
+                @if(isset($forinvoicetype) && !empty($forinvoicetype))
+                    @if($forinvoicetype->invoicetype == 'credit')
+                        <p style="background-color: black; color: white; padding:10px;font-size:18px !important;">Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+                    @else
                         <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
-                        <p>Date: {{ $forinvoicetype->date }}</p>
-                        @endif
+                    @endif
+                    <p>Date: {{ $forinvoicetype->date }}</p>
+                @endif
+            
             </div>
        
        <div class="forbillandpan">
@@ -166,6 +171,8 @@
                                 <p>Customer Id: {{$i->customerid}}</p>
                             @endforeach
                         @endif
+
+                        
             </div>
         </div>
     </div>
