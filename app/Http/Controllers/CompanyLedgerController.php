@@ -211,8 +211,8 @@ public function update($id, Request $req)
 
         $cusiddelete=CompanyLedger::findOrFail($id);
 
-        // Log the operation before deleting
-        Trackcompanybillentry::create([
+        // Log the operation before deleting ok
+        TrackCompanyBillEntry::create([
 
             'title' => "companyPayment_DATA_DELETED",
             'updated_by' => session('user_email'),
