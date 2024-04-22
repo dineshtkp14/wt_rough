@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\CompanyLedger;
-use App\Models\Trackcompanybillentry;
+use App\Models\TrackCompanyBillEntry;
 
 use App\Models\company;
 
@@ -14,7 +14,7 @@ use Livewire\WithPagination;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB; //
 
-
+//class
 class CompanyLedgerController extends Controller
 {
    
