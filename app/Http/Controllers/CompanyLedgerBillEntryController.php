@@ -67,6 +67,8 @@ class CompanyLedgerBillEntryController extends Controller
     $validator=Validator::make($req->all(),[
       'companyid'=>'required',
         'date'=>'required',
+        'particulars'=>'required',
+
        
         'voucherno'=>'required',
         'amount'=>'required'
@@ -81,8 +83,8 @@ class CompanyLedgerBillEntryController extends Controller
         $companypanyment=new CompanyLedger();
         $companypanyment->companyid=$req->companyid;
         $companypanyment->date=$req->date;
-        // $companypanyment->particulars=$req->particulars;
-        $companypanyment->particulars="purchase_goods";
+        $companypanyment->particulars=$req->particulars;
+        // $companypanyment->particulars="purchase_goods";
         $companypanyment->voucher_type="goods";
 
 
@@ -99,7 +101,7 @@ class CompanyLedgerBillEntryController extends Controller
           $additional_info = 
           'companyid: ' . $req->companyid . ', ' .
           'date: ' . $req->date . ', ' .
-          'particulars: ' ."purchase_goods" . ', ' .
+          'particulars: ' .$req->particulars . ', ' .
           'voucher_no: ' . $req->voucherno . ', ' .
           'credit: ' . $req->amount . ', ' .
           'notes: ' . $req->notes . ', ' .
@@ -166,6 +168,8 @@ public function update($id, Request $req)
             'vt' => 'required',
             'amount' => 'required',
             'companyid' => 'required',
+            'particulars'=>'required',
+
         ]);
 
         if ($validator->passes()) {
@@ -181,7 +185,7 @@ public function update($id, Request $req)
                 $company = CompanyLedger::find($id);
                 $company->companyid = $req->companyid;
                 $company->date = $req->date;
-                $company->particulars ="purchase_goods";
+                $company->particulars =$req->particulars;
                 $company->voucher_no = $req->vt;
                 $company->credit = $req->amount;
                 $company->notes = $req->notes;
@@ -200,7 +204,7 @@ public function update($id, Request $req)
                     '<br><br>Updated to: ' .
                     'companyid: ' . $req->companyid . ', ' .
                     'date: ' . $req->date . ', ' .
-                    'particulars: ' ."purchase_goods" . ', ' .
+                    'particulars: ' .$req->particulars . ', ' .
                     'voucher_no: ' . $req->vt . ', ' .
                     'credit: ' . $req->amount . ', ' .
                     'notes: ' . $req->notes . ', ' .

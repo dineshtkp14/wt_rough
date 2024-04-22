@@ -108,13 +108,22 @@
 
                 
             <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Bill No <span style="color: red;">*</span></label>
-                    <input   autocomplete="off" type="text" class="form-control @error('voucherno') is-invalid @enderror" 
-                        name="voucherno" value="{{ old('voucherno') }}">
-                    @error('voucherno')
+                    <label for="inputPassword4" class="form-label">Particulars (purchase goods/ opening balance) <span style="color: red;">*</span></label>
+                    <input   autocomplete="off" type="text" class="form-control @error('particulars') is-invalid @enderror" 
+                        name="particulars" value="{{ old('particulars') }}">
+                    @error('particulars')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
+
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Bill No <span style="color: red;">*</span></label>
+                <input   autocomplete="off" type="text" class="form-control @error('voucherno') is-invalid @enderror" 
+                    name="voucherno" value="{{ old('voucherno') }}">
+                @error('voucherno')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+        </div>
 
             
 
