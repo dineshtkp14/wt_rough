@@ -3,7 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\CompanyLedger;
-use App\Models\Company;
+use App\Models\company;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -41,7 +41,7 @@ class CompanyLedgerpaymentlivewire extends Component
         // Convert companyid to company name
         foreach ($records as $data) {
             if ($data->companyid) {
-                $company = Company::find($data->companyid);
+                $company = company::find($data->companyid);
                 $data->companyname = $company ? $company->name : 'Unknown';
             } else {
                 $data->companyname = 'Unknown';
