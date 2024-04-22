@@ -105,12 +105,27 @@
         .forbillandpan {
             margin-top: -70px !important;
         }
-       
+         /* Watermark style */
+         .watermark {
+            position: absolute;
+            opacity: 0.1; /* Adjust opacity as needed */
+            z-index: -1; /* Ensure the watermark stays behind other content */
+            top: 40%; /* Adjust top position */
+            left: 40%; /* Adjust left position */
+            font-family: Arial, sans-serif; /* Use a suitable font */
+            font-size: 100px; /* Adjust font size as needed */
+            color: rgba(0, 0, 0, 0.1); /* Adjust color and opacity as needed */
+            transform: rotate(-45deg); /* Rotate the watermark if needed */
+        }
+     
     </style>
 </head>
 <body>
 
 <div class="container">
+
+    <div class="watermark">OHT</div>
+
     <div class="letterhead">
         <h1>OM HARI TRADELINK</h1>
     </div>
@@ -119,6 +134,9 @@
         <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
         <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
     </div>
+
+    <center><div class="watermark">OHT</div> </center>
+
 
     <div class="invoice-info">
 
@@ -142,7 +160,7 @@
         @if ($allinvoices != null)
                 @foreach($allinvoices as $i)
                     @if ($i->total < 19900)
-                        <span style="font-size: 18px;">PAN N0. 601064191</span>
+                        <span style="font-size: 18px;">PAN N0. 608641838</span>
                     @endif
                 @endforeach
         @endif
