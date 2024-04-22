@@ -97,7 +97,7 @@ class CompanyLedgerController extends Controller
 
 
        // Insert into track table
-       Trackcompanybillentry::create([
+       TrackCompanyBillEntry::create([
         'title' => "companyPayment_data_Inserted",
    'updated_by' => session('user_email'),
    'notes' => $additional_info,
@@ -190,7 +190,7 @@ public function update($id, Request $req)
 
 
         // Insert into track table
-        Trackcompanybillentry::create([
+        TrackCompanyBillEntry::create([
 
             'title' => "companyPayment_data_UPDATE",
             'updated_by' => session('user_email'),
