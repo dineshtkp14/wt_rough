@@ -14,11 +14,11 @@
                 Total No Of Items 
 
                 <a href="{{ route('invoice.index') }}" class="btn btn-dark border border-4 border-danger ms-5">
-                    <i class="fas fa-file-invoice"></i> ALL INVOICES
+                    <i class="fas fa-file-invoice"></i> VIEW ALL INVOICES
                 </a>
                 
                 <a href="{{ route('allsalesdetails.showdetails') }}" class="btn btn-dark border border-4 border-danger ms-3">
-                    <i class="fas fa-list-alt"></i> ALL SALES DETAILS
+                    <i class="fas fa-list-alt"></i>VIEW ALL SALES DETAILS
                 </a>
                 
                 
