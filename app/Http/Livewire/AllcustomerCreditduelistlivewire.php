@@ -4,7 +4,7 @@
 namespace App\Http\Livewire;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\DB;
-use App\Models\CustomerLedgerDetails;
+use App\Models\customerledgerdetails;
 use App\Models\CustomerInfo;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -20,7 +20,7 @@ class AllcustomerCreditduelistlivewire extends Component
     public function render()
     {
         // Main query to get individual customer data
-        $query = CustomerLedgerDetails::select(
+        $query = customerledgerdetails::select(
             'customerid',
             // 'date', // Assuming 'date' is the field containing the date
             \DB::raw('MAX(date) as latest_date'),
@@ -132,7 +132,7 @@ return $item->debit_credit_difference >= 0; // Only consider positive or zero va
 
 
 // Main query to get individual customer data
-$query = CustomerLedgerDetails::select(
+$query = customerledgerdetails::select(
     'customerid',
     \DB::raw('MAX(date) as latest_date'),
     \DB::raw('SUM(debit) AS total_debit'),
