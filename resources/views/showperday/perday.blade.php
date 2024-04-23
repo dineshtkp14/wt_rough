@@ -13,9 +13,14 @@
                 <a href="{{ route('items.create') }}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
                 Total No Of Items 
 
-                <a href="{{ route('invoice.index') }}" class="btn btn-success border border-1 border-warning float-end me-2">
-                    <i class="fas fa-check"></i> Invoices
+                <a href="{{ route('invoice.index') }}" class="btn btn-dark border border-4 border-danger ms-5">
+                    <i class="fas fa-file-invoice"></i> ALL INVOICES
                 </a>
+                
+                <a href="{{ route('allsalesdetails.showdetails') }}" class="btn btn-dark border border-4 border-danger ms-3">
+                    <i class="fas fa-list-alt"></i> ALL SALES DETAILS
+                </a>
+                
                 
                 <a href="{{ route('showonlysalesperdayinone_table.pp') }}" class="btn btn-primary border border-5 border-warning float-end me-2">
                     <i class="fas fa-check"></i> Check Counter
