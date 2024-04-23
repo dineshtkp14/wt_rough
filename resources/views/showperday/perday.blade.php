@@ -18,7 +18,7 @@
                 </a>
                 
                 <a href="{{ route('allsalesdetails.showdetails') }}" class="btn btn-dark border border-4 border-danger ms-3">
-                    <i class="fas fa-list-alt"></i>VIEW ALL SALES DETAILS
+                    <i class="fas fa-list-alt mx-2"></i>VIEW ALL SALES DETAILS
                 </a>
                 
                 
