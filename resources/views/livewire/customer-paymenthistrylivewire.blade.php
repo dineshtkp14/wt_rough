@@ -31,8 +31,7 @@
         
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            
+                            <th>Cash Receipt No</th> 
                             <th>Date</th>
                             <th>Customer Id</th>
 
