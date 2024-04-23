@@ -13,7 +13,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Invoice No</th>
                             <th>Date</th>
                             <th>Customer Id</th>
                             <th>Customer Name</th>
