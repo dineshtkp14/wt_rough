@@ -13,7 +13,7 @@
                 <a href="{{ route('items.create') }}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
                 Total No Of Items 
 
-                <a href="{{ route('invoices.index') }}" class="btn btn-success border border-1 border-warning float-end me-2">
+                <a href="{{ route('invoice.index') }}" class="btn btn-success border border-1 border-warning float-end me-2">
                     <i class="fas fa-check"></i> Invoices
                 </a>
                 
