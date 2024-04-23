@@ -22,7 +22,7 @@ class Invoicelivewire extends Component
             ->orWhere('invoices.subtotal', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('invoices.discount', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('invoices.total', 'like', "%" . $this->searchTerm . "%")
-            ->orWhere('invoices.date', 'like', "%" . $this->searchTerm . "%")
+            ->orWhere('invoices.inv_date', 'like', "%" . $this->searchTerm . "%")
             ->orWhere('invoices.inv_type', 'like', "%" . $this->searchTerm . "%")
 
 
