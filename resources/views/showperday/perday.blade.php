@@ -12,6 +12,11 @@
             <div class="card-header">
                 <a href="{{ route('items.create') }}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
                 Total No Of Items 
+
+                <a href="{{ route('invoices.index') }}" class="btn btn-success border border-1 border-warning float-end me-2">
+                    <i class="fas fa-check"></i> Invoices
+                </a>
+                
                 <a href="{{ route('showonlysalesperdayinone_table.pp') }}" class="btn btn-primary border border-5 border-warning float-end me-2">
                     <i class="fas fa-check"></i> Check Counter
                 </a>
