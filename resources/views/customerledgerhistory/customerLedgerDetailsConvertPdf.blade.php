@@ -5,7 +5,7 @@
 	<title></title>
     <style>
         table, th, td {
-            border: 1px solid green;
+            border: 1px solid rgb(1, 15, 1);
             border-collapse: collapse;
             padding: 15px;
             
@@ -121,7 +121,8 @@
 </table>
 <h2 class="floatleft">Total Due Amount : <span class="forunderline">{{$dts -$cts }} /-</span>  </h2>
 </div>
-<h1>thsis iss sisisisisssssssssssssssss</h1>
+
+sssssss
 </body>
 </html>
 

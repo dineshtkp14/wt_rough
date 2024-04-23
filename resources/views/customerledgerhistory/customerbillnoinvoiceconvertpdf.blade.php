@@ -105,26 +105,25 @@
         .forbillandpan {
             margin-top: -70px !important;
         }
-         /* Watermark style */
-         .watermark {
-            position: absolute;
-            opacity: 0.1; /* Adjust opacity as needed */
-            z-index: -1; /* Ensure the watermark stays behind other content */
-            top: 40%; /* Adjust top position */
-            left: 40%; /* Adjust left position */
-            font-family: Arial, sans-serif; /* Use a suitable font */
-            font-size: 100px; /* Adjust font size as needed */
-            color: rgba(0, 0, 0, 0.1); /* Adjust color and opacity as needed */
-            transform: rotate(-45deg); /* Rotate the watermark if needed */
+        
+        .watermark {
+            position: fixed;
+            top: 45%; /* Adjust the vertical position */
+            left: 35%; /* Adjust the horizontal position */
+            transform: rotate(-45deg); /* Rotate the text */
+            font-size: 148px;
+            opacity: 0.1; /* Adjust the opacity */
+            color: gray; /* Adjust the color */
         }
-     
+      
+      
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="watermark">OHT</div> <!-- Watermark text -->
 
-    <div class="watermark">OHT</div>
 
     <div class="letterhead">
         <h1>OM HARI TRADELINK</h1>
@@ -135,7 +134,7 @@
         <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
     </div>
 
-    <center><div class="watermark">OHT</div> </center>
+  
 
 
     <div class="invoice-info">

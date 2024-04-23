@@ -17,6 +17,8 @@
                             <th>Date</th>
                             <th>Customer Id</th>
                             <th>Customer Name</th>
+                            <th>Invoice Type</th>
+
                             <th>Subtotal</th>
                             <th>Discount</th>
                             <th>Total</th>
@@ -34,6 +36,8 @@
                                     <td>{{ $sale->inv_date }}</td>
                                     <td>{{ $sale->customerid }}</td>
                                     <td>{{ $sale->name }}</td>
+                                    <td>{{ $sale->inv_type }}</td>
+
                                     <td>{{ $sale->subtotal }}</td>
                                     <td>{{ $sale->discount }}</td>
                                     <td>{{ $sale->total }}</td>

@@ -137,9 +137,13 @@ class CustomerLedgerHistroy extends Controller
                
                 if($from == "" || $to==""){
     
-                    $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)
-                ->where('invoicetype', 'credit')
-                ->get();
+                    // $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)
+                    $cusledgertails = Customerledgerdetails::where('customerid', $req->customerid)
+                    ->where(function($query) {
+                        $query->where('invoicetype', 'credit')
+                              ->orWhere('invoicetype', 'payment');
+                    })
+                    ->get();
                 $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
 
                 $debittotalsumwithdate = $betweendate->sum('debit');
