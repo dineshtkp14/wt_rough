@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\trackcustomerledger;
+use App\Models\TrackCustomerLedger;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,7 +15,7 @@ class TrackcustomerledgerLivewire extends Component
 
     public function render()
     {
-        $all = trackcustomerledger::orderBy('id', 'DESC');
+        $all = TrackCustomerLedger::orderBy('id', 'DESC');
     
         if (!empty($this->searchTerm)) {
             $all->where('id', 'like', "%" . $this->searchTerm . "%")

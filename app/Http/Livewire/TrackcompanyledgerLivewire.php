@@ -2,7 +2,7 @@
 
 
 namespace App\Http\Livewire;
-use App\Models\trackcompanybillentry;
+use App\Models\TrackCompanyBillEntry;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -16,7 +16,7 @@ class TrackcompanyledgerLivewire extends Component
  
    public function render(){ 
 
-       $trackcompanyledger = trackcompanybillentry::orderby('id','DESC')->select('*');
+       $trackcompanyledger = TrackCompanyBillEntry::orderby('id','DESC')->select('*');
         if(!empty($this->searchTerm)){
 
             $trackcompanyledger->orWhere('id','like',"%".$this->searchTerm."%");

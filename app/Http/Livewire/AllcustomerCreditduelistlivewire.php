@@ -5,7 +5,7 @@ namespace App\Http\Livewire;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\DB;
 use App\Models\customerledgerdetails;
-use App\Models\CustomerInfo;
+use App\Models\customerinfo;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -90,7 +90,7 @@ return $item->debit_credit_difference < 0;
         // Fetch additional data
         foreach ($allResults as $data) {
             if ($data->customerid) {
-                $item = CustomerInfo::where('id', $data->customerid)->select('name', 'phoneno')->first();
+                $item = customerinfo::where('id', $data->customerid)->select('name', 'phoneno')->first();
                 if ($item) {
                     $data->cname = $item->name;
                     $data->cphoneno = $item->phoneno;
