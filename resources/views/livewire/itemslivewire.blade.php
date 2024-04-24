@@ -25,6 +25,8 @@
                         <th>Date</th>
                         <th>Items Name</th>
                         <th>Quantity</th>
+                        <th>Unit</th>
+
                         
                         <th>Cost Rate</th>
                         <th>MRP</th>
