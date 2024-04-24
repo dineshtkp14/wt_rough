@@ -28,7 +28,9 @@
         <tbody>
             @if (!$all->isEmpty())
                 @foreach ($all as $i)
-                    <tr>
+
+                <tr @if (date('Y-m-d', strtotime($i->date)) === date('Y-m-d')) style="font-weight:bold;" @endif>
+
                         <td data-label="Id">{{ $i->id }}</td>
                         <td data-label="Customer Id">{{ $i->customerid }}</td>
                         <td data-label="Customer Id">{{ $i->cname }}</td>
