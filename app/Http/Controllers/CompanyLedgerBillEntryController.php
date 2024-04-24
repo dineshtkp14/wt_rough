@@ -239,7 +239,7 @@ public function update($id, Request $req)
 
          // Log the operation before deleting
          TrackCompanyBillEntry::create([
-            'title' => "data deleted",
+            'title' => "Company_BillEntry_data_Deleted",
             'updated_by' => session('user_email'),
             'notes' => 'Deleted companyid: ' . $cusiddelete->companyid . ', date: ' . $cusiddelete->date . ', particulars: ' . $cusiddelete->particulars . ', voucher_no: ' . $cusiddelete->voucher_no . ', credit: ' . $cusiddelete->credit . ', notes: ' . $cusiddelete->notes . ', added_by: ' . $cusiddelete->added_by,
         ]);
