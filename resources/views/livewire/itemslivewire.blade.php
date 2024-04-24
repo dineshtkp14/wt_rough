@@ -49,7 +49,9 @@
                         <td data-label="Company Name">{{ $i->companyname }}</td>
                         <td data-label="Contact No.">{{ $i->date }}</td>
                         <td data-label="Amount">{{ $i->itemsname }}</td>
-                        <td data-label="Paisa">{{ $i->quantity}}</td>     
+                        <td data-label="Paisa">{{ $i->quantity}}</td> 
+                        <td data-label="Paisa">{{ $i->unit}}</td>     
+
                         <td data-label="Remarks">{{ $i->costprice }}</td>
                         <td data-label="Remarks">{{ $i->mrp }}</td>
                         <td data-label="Remarks">{{ $i->total }}</td>
