@@ -219,7 +219,9 @@ public function update($id, Request $req)
 
                 return redirect()->route('companybillentry.index')->with('success', ' Updated Sucessfully !!');
             } else {
-                return redirect()->route('companybillentry.edit')->with('error', 'Company not found.');
+                return redirect()->route('companybillentry.edit', ['companybillentry' =>$id])->with('error', 'Company not found.');
+
+                // return redirect()->route('companybillentry.edit')->with('error', 'Company not found.');
             }
         } else {
             return redirect()->route('companybillentry.edit', ['companybillentry' => $id])->withErrors($validator)->withInput();
