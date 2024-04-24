@@ -19,6 +19,7 @@ class BillEntrylivewire extends Component
     {
         $query = CompanyLedger::select('company_ledgers.*')
             ->leftJoin('companies', 'company_ledgers.companyid', '=', 'companies.id')
+            ->where('company_ledgers.voucher_type', '=', 'goods')
             ->orderBy('company_ledgers.id', 'DESC');
 
         if (!empty($this->searchTerm)) {

@@ -17,9 +17,10 @@ class CompanyLedgerpaymentlivewire extends Component
 
     public function render()
     {
-        // Start with the base query
+        // Start with the base query comapnyledgerpayment
         $query = CompanyLedger::select('company_ledgers.*')
             ->leftJoin('companies', 'company_ledgers.companyid', '=', 'companies.id')
+              ->where('company_ledgers.voucher_type', '!=', 'goods')
             ->orderBy('company_ledgers.id', 'DESC');
 
         // Apply search filter if search term is provided
