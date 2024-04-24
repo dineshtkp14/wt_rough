@@ -193,9 +193,9 @@ function inputHTML(counter) {
 
             <select class="form-select sales-input" id="unitInput" data-id="${counter}" data-name="unit">
                         <option value="pcs">pcs</option>
-                        <option value="kgs" >kgs</option>
+                        <option value="kg" >kg</option>
                         <option value="feet">feet</option>
-                        <option value="choose" selected>select</option>
+                        <option value="choose" selected disabled>select</option>
 
             </select>
 

@@ -250,6 +250,8 @@ public function update($id, Request $req)
   $itemsdetails->showwarning = $req->showwarning;
   $itemsdetails->notes = $req->notes;
   $itemsdetails->firm_name = $req->firm_name;
+  $itemsdetails->unit = $req->unit;
+
   $itemsdetails->com_Retail_price = $req->competetiveretail;
   $itemsdetails->com_wholesale_price = $req->competetivewholesale;
   $itemsdetails->wholesale_price = $req->wp;

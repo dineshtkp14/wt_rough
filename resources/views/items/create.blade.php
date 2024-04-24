@@ -153,14 +153,20 @@
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
             </div>
-            <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Unit(PCS/kg/etc)  <span style="color: red;">*</span></label>
-                <input autocomplete="off" type="unit" placeholder="pcs/kg" class="form-control @error('unit') is-invalid @enderror" 
-                    name="unit" value="{{ old('unit') }}">
+
+                    <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Unit(PCS/kg/etc) <span style="color: red;">*</span></label>
+                <select class="form-select @error('unit') is-invalid @enderror" name="unit">
+                    <option value="" selected disabled>Select Unit</option>
+                    <option value="pcs" {{ old('unit') == 'pcs' ? 'selected' : '' }}>pcs</option>
+                    <option value="kg" {{ old('unit') == 'kg' ? 'selected' : '' }}>kg</option>
+                    <option value="feet" {{ old('unit') == 'feet' ? 'selected' : '' }}>feet</option>
+                </select>
                 @error('unit')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
-        </div>
+            </div>
+
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Show Stock Warning  <span style="color: red;">*</span></label>

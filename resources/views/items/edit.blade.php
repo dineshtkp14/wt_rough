@@ -144,12 +144,18 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Unit(PCS/kg/etc)</label>
-                <input autocomplete="off" type="unit" class="form-control @error('unit') is-invalid @enderror" 
-                    name="unit" value="{{ old('unit',$item->unit) }}">
+                <select class="form-select @error('unit') is-invalid @enderror" name="unit">
+                    <option value="" selected disabled>Select Unit</option>
+                    <option value="pcs" {{ old('unit', $item->unit) == 'pcs' ? 'selected' : '' }}>pcs</option>
+                    <option value="kg" {{ old('unit', $item->unit) == 'kg' ? 'selected' : '' }}>kg</option>
+                    <option value="feet" {{ old('unit', $item->unit) == 'feet' ? 'selected' : '' }}>feet</option>
+                    <!-- Add more options as needed -->
+                </select>
                 @error('unit')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
-        </div>
+            </div>
+            
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Show Stock Warning</label>
