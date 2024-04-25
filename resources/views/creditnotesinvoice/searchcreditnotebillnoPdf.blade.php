@@ -74,11 +74,23 @@
             overflow: hidden;
             font-size: 14px;
         }
+        
+        .watermark {
+            position: fixed;
+            top: 45%; /* Adjust the vertical position */
+            left: 35%; /* Adjust the horizontal position */
+            transform: rotate(-45deg); /* Rotate the text */
+            font-size: 148px;
+            opacity: 0.1; /* Adjust the opacity */
+            color: gray; /* Adjust the color */
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="watermark">OHT</div> <!-- Watermark text -->
+
     <div class="letterhead">
         <h1>OM HARI TRADELINK</h1> (sales Return/credit note)
     </div>

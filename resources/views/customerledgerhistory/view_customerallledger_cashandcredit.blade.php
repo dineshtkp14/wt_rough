@@ -111,7 +111,7 @@
 	</div>
 
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-5">
 	@foreach ($cusinfoforpdfok as $i)
 		<div>
 			<h5>Customer Id: {{$i->id}}</h5> 
@@ -124,7 +124,23 @@
 	@endforeach
   </div>
 
+
+  <div class="col-md-3 mt-5">
+	<br> <br> <br> 
+	<h1 class="floatleft btn {{ $allnotcash - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
+		Total Due Amount: 
+		<span class="forunderline fw-bold ps-2">
+			{{ $allnotcash - $cts }} -/
+		</span>
+	</h1>
+	
+	
+  </div>
+
+
+
   <div class="col-md-3">
+	
 	<span> 
 		
 
@@ -138,6 +154,7 @@
 		
 		
 	</span>
+	
   </div>
 
 </div>
@@ -312,6 +329,8 @@ echo $words;
 			only -/ 
 			
 			)
+
+			{{$all->links()}}
 
 
 <h2> --------------------------------Credit Notes Details---------------------------------------- </h2>

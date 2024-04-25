@@ -795,91 +795,75 @@ class CustomerLedgerHistroy extends Controller
 
 
 
-
-
     public function returnchoosendatehistroycashandcredit(Request $req)
     {
-
-        if(Auth::check()){
-
-            $breadcrumb= [
-                'subtitle'=>'View  (CASH / CREDIT)',
-                'title'=>' Customers Ledger Details ALL (CASH / CREDIT)',
-                'link'=>' Customers Ledger Details (CASH / CREDIT)'
+        if (Auth::check()) {
+            $breadcrumb = [
+                'subtitle' => 'View  (CASH / CREDIT)',
+                'title' => ' Customers Ledger Details ALL (CASH / CREDIT)',
+                'link' => ' Customers Ledger Details (CASH / CREDIT)'
             ];
-
-            $customeridfor=$req->customerid;
-
+    
+            $customeridfor = $req->customerid;
+    
             $forcashreceiptno = customerledgerdetails::where('invoicetype', 'payment')
-             ->where('customerid', $customeridfor)
-             ->pluck('id')
-             ->first();
-
-
+                ->where('customerid', $customeridfor)
+                ->pluck('id')
+                ->first();
+    
             $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
             $debittotalcrnotes = $creditnoteledger->sum('debit');
-
-            $from=date($req->date1);
-            $to=date($req->date2);
-        
-            $cusinfoforpdf= customerinfo::where('id',$req->customerid)->get();
-
-            $cusledgertails=null;
-            $debittotalsumwithdate=null;
-            $credittotalsumwithdate=null;
-            $debitnotcash=null;   
-
-            $allcusinfo=customerinfo::orderBy('id','DESC')->get();  
-
-           
-            if($from == "" || $to==""){
-
-                $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)->get();
-                $querycheck=customerledgerdetails::where('customerid',$req->customerid)->get();
-                $debittotalsumwithdate = $querycheck->sum('debit');
-                $credittotalsumwithdate = $querycheck->sum('credit');
-                $debitnotcash = $querycheck->where('invoicetype', '!=', 'cash')->sum('debit');
-
-               
-            }else{
-
-                $betweendate=customerledgerdetails::where('customerid',$req->customerid)->get();
-                $debittotalsumwithdate = $betweendate->sum('debit');
-                $credittotalsumwithdate = $betweendate->sum('credit');
-
-                $debitnotcash = $betweendate->where('invoicetype', '!=', 'cash')->sum('debit');
-
-                
-                $cusledgertails=customerledgerdetails::whereBetween('date',  [$from,$to])->where('customerid', $req->customerid)->get();         
-               
+    
+            $from = $req->date1;
+            $to = $req->date2;
+    
+            $cusinfoforpdf = customerinfo::where('id', $req->customerid)->get();
+    
+            $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();
+    
+            $querycheck = customerledgerdetails::where('customerid', $req->customerid);
+            if ($from && $to) {
+                $querycheck->whereBetween('date', [$from, $to]);
             }
-
-           
+    
+            // Pagination settings
+            $perPage = 200; // Adjust according to your needs
+            $cusledgertails = $querycheck->paginate($perPage)->appends($req->all());
+    
+            // Calculate sum values for debit, credit, and debit not cash
+            $debittotalsumwithdate = $querycheck->sum('debit');
+            $credittotalsumwithdate = $querycheck->sum('credit');
+            $debitnotcash = $querycheck->where('invoicetype', '!=', 'cash')->sum('debit');
+    
+            // Calculate allnotcash and cts before storing them in the session
+            $allnotcash = $debitnotcash;
+            $cts = $credittotalsumwithdate;
+    
+          
+    
             return view('customerledgerhistory.view_customerallledger_cashandcredit', [
                 'cusinfoforpdfok' => $cusinfoforpdf,
                 'debittotalcrnotes' => $debittotalcrnotes,
                 'creditnoteledger' => $creditnoteledger,
-                'allnotcash' => $debitnotcash,
+                'allnotcash' => $allnotcash,
                 'all' => $cusledgertails,
                 'allcus' => $allcusinfo,
                 'dts' => $debittotalsumwithdate,
-                'cts' => $credittotalsumwithdate,
-                'breadcrumb' => $breadcrumb, 
+                'cts' => $cts,
+                'breadcrumb' => $breadcrumb,
                 'cid' => $customeridfor,
-                'from' => $from, // Ensure $from is defined and has a value
+                'from' => $from,
                 'to' => $to,
                 'forcashreceiptno' => $forcashreceiptno,
-
             ]);
-            
-
-     
-
         }
+    }
+    
     
 
-    }
 
+   
+    
 
 
 
