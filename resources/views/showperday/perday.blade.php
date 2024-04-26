@@ -20,6 +20,10 @@
                 <a href="{{ route('allsalesdetails.showdetails') }}" class="btn btn-dark border border-4 border-danger ms-3">
                     <i class="fas fa-list-alt mx-2"></i>VIEW ALL SALES DETAILS
                 </a>
+
+                <a href="{{ route('allsalesdetails.showdetails') }}" class="btn btn-dark border border-4 border-danger ms-3">
+                    <i class="fas fa-list-alt mx-2"></i>VIEW ALL SALES ITEMS
+                </a>
                 
                 
                 <a href="{{ route('showonlysalesperdayinone_table.pp') }}" class="btn btn-primary border border-5 border-warning float-end me-2">

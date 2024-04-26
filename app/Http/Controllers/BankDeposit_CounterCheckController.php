@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 
 
-use App\Models\CustomerLedgerDetails;
+use App\Models\customerledgerdetails;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -31,7 +31,7 @@ class BankDeposit_CounterCheckController extends Controller
     ]);
 
     // Check if records exist for the provided date
-    $count = CustomerLedgerDetails::where(function ($query) {
+    $count = customerledgerdetails::where(function ($query) {
         $query->where('invoicetype', 'cash')
               ->orWhere('invoicetype', 'payment');
     })
@@ -47,7 +47,7 @@ class BankDeposit_CounterCheckController extends Controller
     
 
     // Update records
-    CustomerLedgerDetails::where(function ($query) {
+    customerledgerdetails::where(function ($query) {
         $query->where('invoicetype', 'cash')
               ->orWhere('invoicetype', 'payment');
     })
@@ -80,7 +80,7 @@ public function showCounterDeposit_UpdateForm()
     ]);
 
     // Check if records exist for the provided date
-    $count = CustomerLedgerDetails::where(function ($query) {
+    $count = customerledgerdetails::where(function ($query) {
         $query->where('invoicetype', 'cash')
               ->orWhere('invoicetype', 'payment');
     })
@@ -94,7 +94,7 @@ public function showCounterDeposit_UpdateForm()
     
 
     // Update records
-    CustomerLedgerDetails::where(function ($query) {
+    customerledgerdetails::where(function ($query) {
         $query->where('invoicetype', 'cash')
               ->orWhere('invoicetype', 'payment');
     })
