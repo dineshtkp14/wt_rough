@@ -119,7 +119,7 @@
                         <td>{{ $i->firm_name }}</td>
                       
 
-                        <td>{{ $i->mrp }} &nbsp; &nbsp; <!-- Button trigger modal --></td>
+                        <td> <b>{{ $i->mrp }}</b> &nbsp; &nbsp; <!-- Button trigger modal --></td>
                         <td style="width: 200px;"><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $i->id }}">Extra</button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal{{ $i->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
