@@ -21,6 +21,20 @@
         </div>
         
         <div class="row">
+
+            @foreach ($allcus as $i)
+		<div>
+			<h5>Company Id: {{$i->id}}</h5> 
+			<h5>Name: {{$i->name}}</h5> 
+			<h5>Address: {{$i->address}}</h5>
+			<h5>Phone No: {{$i->phoneno}}</h5>
+			<h5>Email: {{$i->email}}</h5>
+
+		</div>
+	@endforeach
+
+
+
             <form action="{{ route('companyledgerdetails.returnchoosendatehistroy') }}" method="get" id="chosendatepdfform">
                 <div class="row">
                     <div class="mb-4 col-md-4">
@@ -76,6 +90,14 @@
             </div>
             <div class="col-md-2 mt-3 mt-md-0">
                 <input autocomplete="off" class="form-control border-2 border-warning" id="filterInput" type="text" placeholder="Search Here">
+            </div>
+            <div class="col-md-2">
+                        <a href="{{ route('companyledgerdetails.convert', ['companyid' => $companyid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink">
+                        Print
+                        <div class="icon-box d-flex justify-content-center align-items-center">
+                            <i class="fa-solid fa-print"></i>
+                        </div>
+                        </a>
             </div>
         </div>
 

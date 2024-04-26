@@ -274,7 +274,11 @@ public function update($id, Request $req)
       $debittotalsumwithdate=null;
       $credittotalsumwithdate=null;
       
-      $allcusinfo=company::orderBy('id','DESC')->get();  
+    //   $allcusinfo=company::orderBy('id','DESC')->get();  
+
+      $allcusinfo = company::where('id', $companyid)
+                     ->orderBy('id', 'DESC')
+                     ->get();
      
       if($from == "" || $to==""){
        
