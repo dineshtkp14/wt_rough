@@ -228,7 +228,7 @@ function inputHTML(counter) {
 }
 
 function appendInputRow() {
-    if (salesData.length >= 10) {
+    if (salesData.length >= 11) {
         return false;
     }
 

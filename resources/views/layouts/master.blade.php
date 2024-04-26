@@ -581,14 +581,14 @@
                 </a>
             </li>
         
-            <li class="mb-1 border border-success border-5">
+            {{-- <li class="mb-1 border border-success border-5">
                 <a href="{{ route('banks.create') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
                         <i class="fas fa-piggy-bank"></i> Bank Deposit
                     </button>
                 </a>
-            </li>
+            </li> --}}
 
             
         </ul>
