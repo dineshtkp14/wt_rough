@@ -267,7 +267,6 @@ public function update($id, Request $req)
       $to=date($req->date2);
 
      
-  
       $companyid=$req->companyid;
 
       $cusledgertails=null;

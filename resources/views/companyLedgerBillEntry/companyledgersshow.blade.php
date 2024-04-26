@@ -46,11 +46,24 @@
                 @endif
                 </h2>
             </div>
+
+           
+                <div class="col-md-2 mb-4 " style="margin-top: -50px;">
+                    <a href="{{ route('companyLedgerspay.create') }}" class="float-end btn btn-md btn-primary border border-5 border-warning" target="" rel="noopener noreferrer">
+                        <i class="fas fa-money-bill-wave"></i> Company Ledger Payment
+                    </a>  
+                </div>
+                <div class="col-md-2 mb-4 " style="margin-top: -50px;">
+                    <a href="{{ route('companybillentry.create') }}" class="float-end btn btn-md btn-primary border border-5 border-danger me-3" target="" rel="noopener noreferrer">
+                        <i class="fas fa-money-bill-wave"></i> Company Bill Entry
+                    </a> 
+                </div>
+            
         
 
 
             <form action="{{ route('companyledgerdetails.returnchoosendatehistroy') }}" method="get" id="chosendatepdfform">
-                <div class="row">
+                <div class="row mb-3">
                     <div class="mb-4 col-md-4">
                         <div class="search-box">
                             <input id="customerIdInput" name="companyid" hidden>
@@ -72,48 +85,42 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4 mb-3">
+                        <label class="visually-hidden" for="startDateInput">Choose Start Date</label>
+                        <div class="input-group">
+                            <div class="input-group-text">Start Date</div>
+                            <input type="date" name="date1" class="form-control" id="startDateInput">
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="visually-hidden" for="endDateInput">Choose End Date</label>
+                        <div class="input-group">
+                            <div class="input-group-text">End Date</div>
+                            <input type="date" name="date2" class="form-control" id="endDateInput">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
                         <button type="submit" class="btn btn-success w-100"><i class="fas fa-search"></i> Search</button>
                     </div>
-                    <div class="col-md-6">
-                        <a href="{{ route('companyLedgerspay.create') }}" class="float-end btn btn-md btn-primary border border-5 border-warning" target="" rel="noopener noreferrer">
-                            <i class="fas fa-money-bill-wave"></i> Company Ledger Payment
-                        </a>
-                        <a href="{{ route('companybillentry.create') }}" class="float-end btn btn-md btn-primary border border-5 border-danger me-3" target="" rel="noopener noreferrer">
-                            <i class="fas fa-money-bill-wave"></i> Company Bill Entry
-                        </a>
+                    
+                    <div class="col-md-2"> 
+                        <a href="{{ route('companyledgerdetails.convert', ['companyid' => $companyid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink">
+                            Print
+                            <div class="icon-box d-flex justify-content-center align-items-center">
+                                <i class="fa-solid fa-print"></i>
+                            </div>
+                            </a>
                     </div>
+                    <div class="col-md-2 ">
+                        <input autocomplete="off" class="form-control border-2 border-warning" id="filterInput" type="text" placeholder="Search Here">
+                    </div>
+
+
                 </div>
             </form>
         </div>
 
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label class="visually-hidden" for="startDateInput">Choose Start Date</label>
-                <div class="input-group">
-                    <div class="input-group-text">Start Date</div>
-                    <input type="date" name="date1" class="form-control" id="startDateInput">
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <label class="visually-hidden" for="endDateInput">Choose End Date</label>
-                <div class="input-group">
-                    <div class="input-group-text">End Date</div>
-                    <input type="date" name="date2" class="form-control" id="endDateInput">
-                </div>
-            </div>
-            <div class="col-md-2 mt-3 mt-md-0">
-                <input autocomplete="off" class="form-control border-2 border-warning" id="filterInput" type="text" placeholder="Search Here">
-            </div>
-            <div class="col-md-2">
-                        <a href="{{ route('companyledgerdetails.convert', ['companyid' => $companyid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink">
-                        Print
-                        <div class="icon-box d-flex justify-content-center align-items-center">
-                            <i class="fa-solid fa-print"></i>
-                        </div>
-                        </a>
-            </div>
-        </div>
+        
 
     </div>
 

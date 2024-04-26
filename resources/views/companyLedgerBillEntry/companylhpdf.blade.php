@@ -5,7 +5,7 @@
 	<title></title>
     <style>
         table, th, td {
-            border: 1px solid green;
+            border: 1px solid rgb(1, 9, 1);
             border-collapse: collapse;
             padding: 15px;
             
@@ -86,11 +86,15 @@
 
 
     @foreach ($xx as $i)
+<span>
+    Company Id: {{$i->id}}<br> 
+    Name: {{$i->name}}<br> 
+     Address: {{$i->address}}<br>
+    Phone No: {{$i->phoneno}}<br>
+    Email: {{$i->email}}<br>
+  
+</span>
 
-
-    <h3>Name: {{$i->name}}</h3> 
-    <h3> Address: {{$i->address}}</h3>
-    <h3>Phone No: {{$i->phoneno}}</h3>
 
 
     @endforeach
