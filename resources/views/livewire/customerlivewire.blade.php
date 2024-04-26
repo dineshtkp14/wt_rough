@@ -18,6 +18,9 @@
                             <th >Phoneno</th>
                             <th>Remarks</th>
                             <th>Added By</th>
+                            <th>Created_at</th>
+                            <th>Updated_at</th>
+
                             <th style="width: 160px;" >Action</th>
 
 
@@ -34,6 +37,10 @@
                                       <td class="text-center">{!! $i->phoneno . ' <b>,</b> ' . $i->alternate_phoneno !!}</td>
                                       <td class="text-center">{{ $i->remarks}}</td>
                                       <td>{{ $i->added_by}}</td>
+                                      <td>{{ $i->created_at}}</td>
+                                      <td>{{ $i->updated_at}}</td>
+
+
 
                                         
                                         <td style="width: 160px;" class="text-center">
