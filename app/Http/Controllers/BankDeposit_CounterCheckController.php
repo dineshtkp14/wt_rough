@@ -42,7 +42,7 @@ class BankDeposit_CounterCheckController extends Controller
 
     if ($count === 0 || $count === null) {
         // No records found for the provided date and invoicetype conditions
-        return redirect()->back()->with('error', 'No records found for the provided date and invoice type.');
+        return redirect()->back()->with('bank_error', 'No records found for the provided date and invoice type.');
     }
     
 
@@ -89,7 +89,7 @@ public function showCounterDeposit_UpdateForm()
 
     if ($count === 0 || $count === null) {
         // No records found for the provided date and invoicetype conditions
-        return redirect()->back()->with('error', 'No records found for the provided date and invoice type.');
+        return redirect()->back()->with('counter_error', 'No records found for the provided date and invoice type.');
     }
     
 
