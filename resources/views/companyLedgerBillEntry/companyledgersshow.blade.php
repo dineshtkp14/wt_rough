@@ -21,18 +21,32 @@
         </div>
         
         <div class="row">
-
+            <div class="col-md-4">
             @foreach ($allcus as $i)
-		<div>
-			<h5>Company Id: {{$i->id}}</h5> 
-			<h5>Name: {{$i->name}}</h5> 
-			<h5>Address: {{$i->address}}</h5>
-			<h5>Phone No: {{$i->phoneno}}</h5>
-			<h5>Email: {{$i->email}}</h5>
+                <div>
+                    <h5>Company Id: {{$i->id}}</h5> 
+                    <h5>Name: {{$i->name}}</h5> 
+                    <h5>Address: {{$i->address}}</h5>
+                    <h5>Phone No: {{$i->phoneno}}</h5>
+                    <h5>Email: {{$i->email}}</h5>
 
-		</div>
-	@endforeach
-
+                </div>
+	        @endforeach
+            </div>
+            <div class="col-md-4">
+                <h2 class="floatlft">
+                    @php
+                    $totaldue = $dts - $cts;
+                @endphp
+                
+                @if($totaldue !== null && !empty($totaldue))
+                    <button class="btn btn-lg {{ $totaldue < 0 ? 'btn-danger' : 'btn-success' }}">
+                        <span class="forunderline">Total Due Amount: <strong>{{ $totaldue }}</strong>/-</span>
+                    </button>
+                @endif
+                </h2>
+            </div>
+        
 
 
             <form action="{{ route('companyledgerdetails.returnchoosendatehistroy') }}" method="get" id="chosendatepdfform">
@@ -154,7 +168,75 @@
 
     <h2 class="floatleft">
         <button class="btn btn-lg {{ $cts - $dts < 0 ? 'btn-danger' : 'btn-success' }}">
-            <span class="forunderline">Total Due Amount: <strong>{{ $dts - $cts }}</strong>/-</span>
+            <span class="forunderline">Total Due Amount: <strong>{{ $dts - $cts }} /-</strong>
+             <span style="font-size: 14px;">
+                ( 
+               @php
+              function convertNumberToWords($num) {
+    $ones = array(
+        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+    );
+    $tens = array(
+        "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
+    );
+
+    // Handle negative numbers
+    if ($num < 0) {
+        return "Minus " . convertNumberToWords(abs($num));
+    }
+
+    if ($num == 0) {
+        return "Zero";
+    }
+
+    $words = "";
+
+    if ($num >= 10000000) {
+        $words .= convertNumberToWords(floor($num / 10000000)) . " Crore ";
+        $num %= 10000000;
+    }
+
+    if ($num >= 100000) {
+        $words .= convertNumberToWords(floor($num / 100000)) . " Lakh ";
+        $num %= 100000;
+    }
+
+    if ($num >= 1000) {
+        $words .= convertNumberToWords(floor($num / 1000)) . " Thousand ";
+        $num %= 1000;
+    }
+
+    if ($num >= 100) {
+        $words .= convertNumberToWords(floor($num / 100)) . " Hundred ";
+        $num %= 100;
+    }
+
+    if ($num >= 20) {
+        $words .= $tens[floor($num / 10)] . " ";
+        $num %= 10;
+    }
+
+    if ($num > 0) {
+        $words .= $ones[$num] . " ";
+    }
+
+    return $words;
+}
+
+// Retrieve the numerical value from your data
+$number = $dts - $cts;
+// Convert the numerical value to words
+$words = convertNumberToWords($number);
+
+echo $words;
+
+            @endphp
+			only -/ )
+			
+        </span>
+                
+                </span>
         </button>
     </h2>
 
