@@ -8,7 +8,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\salesitem;
 use App\Models\company;
-use App\Models\myfirm;
+use App\Models\Myfirm;
 
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
