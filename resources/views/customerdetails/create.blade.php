@@ -127,7 +127,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Amount <span style="color: red;">*</span></label>
-                <input autocomplete="off" type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" >
+                <input autocomplete="off" id="amount" type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" >
                 @error('amount')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
@@ -139,6 +139,11 @@
                 @error('notes')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
+            </div>
+
+            <div class="col-md-12">
+                <label for="inputPassword4" class="form-label">Amount in Words: </label>
+               <b> <span id="amountInWords"></span></b>
             </div>
 
             <div class="d-grid gap-2 pt-2 pb-4">
@@ -202,5 +207,69 @@ $(document).ready(function () {
                 
             });
         });
+</script>
+
+
+
+
+<script>
+    function convertNumberToWords(num) {
+    var ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+    var tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+    var decimals = ["", "Tenth", "Hundredth"];
+
+    // Split the number into integer and fractional parts
+    var parts = String(num).split('.');
+    var integerPart = parseInt(parts[0], 10);
+    var fractionalPart = parts[1] ? parseInt(parts[1], 10) : 0; // Convert fractional part to an integer
+
+    var words = "";
+
+    // Convert the integer part to words
+    if (integerPart === 0) {
+        words = "Zero";
+    } else {
+        // Convert each part of the number separately
+        if (integerPart >= 10000000) {
+            words += convertNumberToWords(Math.floor(integerPart / 10000000)) + " Crore ";
+            integerPart %= 10000000;
+        }
+        if (integerPart >= 100000) {
+            words += convertNumberToWords(Math.floor(integerPart / 100000)) + " Lakh ";
+            integerPart %= 100000;
+        }
+        if (integerPart >= 1000) {
+            words += convertNumberToWords(Math.floor(integerPart / 1000)) + " Thousand ";
+            integerPart %= 1000;
+        }
+        if (integerPart >= 100) {
+            words += convertNumberToWords(Math.floor(integerPart / 100)) + " Hundred ";
+            integerPart %= 100;
+        }
+        if (integerPart >= 20) {
+            words += tens[Math.floor(integerPart / 10)] + " ";
+            integerPart %= 10;
+        }
+        if (integerPart > 0) {
+            words += ones[integerPart] + " ";
+        }
+    }
+
+    // Convert the fractional part to words
+    if (fractionalPart > 0) {
+        words += " and " + ones[fractionalPart] + " " + decimals[parts[1].length] + " "; // Append the fractional part
+    }
+
+    return words.trim();
+}
+
+        function updateAmountInWords() {
+            var amount = parseInt(document.getElementById('amount').value, 10); // Parse the input as an integer
+            var amountInWords = convertNumberToWords(amount);
+            document.getElementById('amountInWords').innerText = amountInWords + '  Only/-';
+        }
+
+
+        document.getElementById('amount').addEventListener('input', updateAmountInWords);
 </script>
 @stop
