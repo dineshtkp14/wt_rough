@@ -6,7 +6,7 @@
         @yield('breadcrumb')
 
 
-    <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
+    <div class="card customer-card mb-4" id="customerCard" style="display: none;">
         <div class="card-body">
             <h5 class="card-title">Company Info</h5>
             <p>
@@ -16,13 +16,13 @@
                 <span>Name: </span><span id="customerName">...</span>
             </p>
             <p>
-                <span>Addres: </span><span id="customerAddress">...</span>
+                <span>Address: </span><span id="customerAddress">...</span>
             </p>
             <p>
                 <span>E-mail: </span><span id="customerEmail">...</span>
             </p>
             <p>
-                <span>PhoneNo: </span><span id="customerPhone">...</span>
+                <span>Phone No: </span><span id="customerPhone">...</span>
             </p>
         </div>
 
@@ -31,15 +31,12 @@
         </div>
     </div>
 
- 
-
-
 <div class="container">
-            @if (Session::has('success'))
-            <div class="alert bg-success text-white w-50">
-                {{ Session::get('success') }}
-                </div>
-            @endif
+    @if (Session::has('success'))
+    <div class="alert bg-success text-white w-50">
+        {{ Session::get('success') }}
+    </div>
+    @endif
 </div>
 
 <div class="container">
@@ -47,127 +44,162 @@
         <div class="col-md-9"></div>
         <div class="col-md-3">
             <a href="{{ route('companys.create') }}" class="btn btn-md btn-primary border border-5 border-dark ms-auto" style="background-color: brown; border-color: orange;">
-                <span class="me-1"><i class="fas fa-plus"></i></span> <!-- Icon for adding -->
-                <b >Add New Company </b>
+                <span class="me-1"><i class="fas fa-plus"></i></span>
+                <b>Add New Company</b>
             </a>
         </div>
     </div>
-    
-    
-    
-<form class="row gx-5 gy-3" action="{{route('companybillentry.store')}}" method="post">
-                @csrf
 
-               
-           
-           
-                  <div class="py-4 d-flex justify-content-between align-items-center">
-                    <div style="width: 300px">
-                        
-                      
-                        <div class="input-group mb-1">
-                            <div class="search-box">
-                                <input id="customerIdInput" name="companyid" hidden>
-                            <input  autocomplete="off" type="text"  class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name"
-                                id="searchCustomerInput"  data-api="company_search" autocomplete="off">
-                                @error('companyid')
-                                    <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
-                                @enderror  
-                                  
-                                <i class="fas fa-search search-icon"> </i>
-                                <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
-                                    <div class="result-box d-flex justify-content-start align-items-center"
-                                        id="customerLoadingResultBox">
-                                        <i class="fas fa-spinner" id="spinnerIcon"> </i>
-                                        <h1 class="m-0 px-2"> Loading</h1>
-                                    </div>
-    
-                                    <div class="result-box d-flex justify-content-start align-items-center d-none"
-                                        id="customerNotFoundResultBox">
-                                        <i class="fas fa-triangle-exclamation"> </i>
-                                        <h1 class="m-0 px-2"> Record Not Found</h1>
-                                    </div>
-    
-                                    <div id="customerResultList">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="width: 300px">
-                      
-                        <div class="input-group mb-1">
-                            <span class="input-group-text">Date: <span style="color: red;">*</span></span>
-                            <input  autocomplete="off" type="date" class="form-control  @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date" >
-                            @error('date')
-                        <p class="invalid-feedback">{{ $message }}</p>
+<form class="row gx-5 gy-3" action="{{ route('companybillentry.store') }}" method="post">
+    @csrf
+
+    <div class="py-4 d-flex justify-content-between align-items-center">
+        <div style="width: 300px">
+            <div class="input-group mb-1">
+                <div class="search-box">
+                    <input id="customerIdInput" name="companyid" hidden>
+                    <input autocomplete="off" type="text" class="search-input @error('companyid') is-invalid @enderror" placeholder="Search Company Name" id="searchCustomerInput" data-api="company_search" autocomplete="off">
+                    @error('companyid')
+                        <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
                     @enderror
+                    <i class="fas fa-search search-icon"></i>
+                    <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
+                        <div class="result-box d-flex justify-content-start align-items-center" id="customerLoadingResultBox">
+                            <i class="fas fa-spinner" id="spinnerIcon"></i>
+                            <h1 class="m-0 px-2">Loading</h1>
                         </div>
+                        <div class="result-box d-flex justify-content-start align-items-center d-none" id="customerNotFoundResultBox">
+                            <i class="fas fa-triangle-exclamation"></i>
+                            <h1 class="m-0 px-2">Record Not Found</h1>
+                        </div>
+                        <div id="customerResultList"></div>
                     </div>
                 </div>
-
-                
-            <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Particulars (purchase goods/ opening balance) <span style="color: red;">*</span></label>
-                    <input   autocomplete="off" type="text" class="form-control @error('particulars') is-invalid @enderror" 
-                        name="particulars" value="{{ old('particulars') }}">
-                    @error('particulars')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
             </div>
-
-            <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Bill No <span style="color: red;">*</span></label>
-                <input   autocomplete="off" type="text" class="form-control @error('voucherno') is-invalid @enderror" 
-                    name="voucherno" value="{{ old('voucherno') }}">
-                @error('voucherno')
+        </div>
+        <div style="width: 300px">
+            <div class="input-group mb-1">
+                <span class="input-group-text">Date: <span style="color: red;">*</span></span>
+                <input autocomplete="off" type="date" class="form-control @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{ now()->format('Y-m-d') }}" name="date">
+                @error('date')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
-        </div>
-
-            
-
-            <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Amount <span style="color: red;">*</span></label>
-                    <input   autocomplete="off" type="number" class="form-control @error('amount') is-invalid @enderror" 
-                        name="amount" value="{{ old('amount') }}">
-                    @error('amount')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                    @enderror
             </div>
-
-            <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Notes</label>
-                <textarea   autocomplete="off" class="form-control @error('notes') is-invalid @enderror" 
-                    name="notes" value="{{ old('notes') }}"> </textarea>
-                @error('notes')
-                    <p class="invalid-feedback">{{ $message }}</p>
-                @enderror
         </div>
+    </div>
 
-           
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Particulars (purchase goods/ opening balance) <span style="color: red;">*</span></label>
+        <input autocomplete="off" type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars') }}">
+        @error('particulars')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
+    </div>
 
-           
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Bill No <span style="color: red;">*</span></label>
+        <input autocomplete="off" type="text" class="form-control @error('voucherno') is-invalid @enderror" name="voucherno" value="{{ old('voucherno') }}">
+        @error('voucherno')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
+    </div>
 
-            <div class="d-grid gap-2 pt-2 pb-4">
-                    <button id="submitBtn" type="submit" class="btn btn-lg btn-primary">Save</button>
-            </div>
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Amount <span style="color: red;">*</span></label>
+        <input autocomplete="off" type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount') }}">
+        @error('amount')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
+    </div>
+
+ 
+
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Notes</label>
+        <textarea autocomplete="off" class="form-control @error('notes') is-invalid @enderror" name="notes" value="{{ old('notes') }}"></textarea>
+        @error('notes')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
+    </div>
+    <div class="col-md-12">
+        <label for="inputPassword4" class="form-label">Amount in Words: </label>
+       <b> <span id="amountInWords"></span></b>
+    </div>
+
+
+    <div class="d-grid gap-2 pt-2 pb-4">
+        <button id="submitBtn" type="submit" class="btn btn-lg btn-primary">Save</button>
+    </div>
 </form>
 </div>
-
-
-
 </div>
 
 <script>
-     $(document).ready(function () {
-            $('form').submit(function () {
-                // Disable the submit button
-                $('#submitBtn').prop('disabled', true);
-                
-            });
-        });
-        
-    </script>
-@stop
+    function convertNumberToWords(num) {
+    var ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+    var tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+    var decimals = ["", "Tenth", "Hundredth"];
 
+    // Split the number into integer and fractional parts
+    var parts = String(num).split('.');
+    var integerPart = parseInt(parts[0], 10);
+    var fractionalPart = parts[1] ? parseInt(parts[1], 10) : 0; // Convert fractional part to an integer
+
+    var words = "";
+
+    // Convert the integer part to words
+    if (integerPart === 0) {
+        words = "Zero";
+    } else {
+        // Convert each part of the number separately
+        if (integerPart >= 10000000) {
+            words += convertNumberToWords(Math.floor(integerPart / 10000000)) + " Crore ";
+            integerPart %= 10000000;
+        }
+        if (integerPart >= 100000) {
+            words += convertNumberToWords(Math.floor(integerPart / 100000)) + " Lakh ";
+            integerPart %= 100000;
+        }
+        if (integerPart >= 1000) {
+            words += convertNumberToWords(Math.floor(integerPart / 1000)) + " Thousand ";
+            integerPart %= 1000;
+        }
+        if (integerPart >= 100) {
+            words += convertNumberToWords(Math.floor(integerPart / 100)) + " Hundred ";
+            integerPart %= 100;
+        }
+        if (integerPart >= 20) {
+            words += tens[Math.floor(integerPart / 10)] + " ";
+            integerPart %= 10;
+        }
+        if (integerPart > 0) {
+            words += ones[integerPart] + " ";
+        }
+    }
+
+    // Convert the fractional part to words
+    if (fractionalPart > 0) {
+        words += " and " + ones[fractionalPart] + " " + decimals[parts[1].length] + " "; // Append the fractional part
+    }
+
+    return words.trim();
+}
+
+        function updateAmountInWords() {
+            var amount = parseInt(document.getElementById('amount').value, 10); // Parse the input as an integer
+            var amountInWords = convertNumberToWords(amount);
+            document.getElementById('amountInWords').innerText = amountInWords + '  Only/-';
+        }
+
+
+        document.getElementById('amount').addEventListener('input', updateAmountInWords);
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('form').submit(function () {
+            $('#submitBtn').prop('disabled', true);
+        });
+    });
+</script>
+@stop
