@@ -40,8 +40,8 @@
                 @endphp
                 
                 @if($totaldue !== null && !empty($totaldue))
-                    <button class="btn btn-lg {{ $totaldue < 0 ? 'btn-danger' : 'btn-success' }}">
-                        <span class="forunderline">Total Due Amount: <strong>{{ $totaldue }}</strong>/-</span>
+                <button class="btn btn-lg {{ $cts - $dts < 0 ? 'btn-danger' : 'btn-success' }}">
+                    <span class="forunderline">Total Due Amount: <strong>{{ $totaldue }}</strong>/-</span>
                     </button>
                 @endif
                 </h2>
