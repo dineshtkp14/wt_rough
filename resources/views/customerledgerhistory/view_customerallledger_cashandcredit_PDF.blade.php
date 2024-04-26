@@ -91,13 +91,28 @@
 </div>
 
 @foreach ($cusinfoforpdfok as $i)
-    <div class="info">
+    <div class="info" style="float: left; width: 50%;">
         <p>Name: {{$i->name}}</p>
         <p>Address: {{$i->address}}</p>
         <p>Phone No: {{$i->phoneno}}</p>
         <p>Phone No: {{$i->email}}</p>
     </div>
 @endforeach
+
+<div class="floatxxright" style="float: right; width: 50%;">
+   <!-- Total Transaction and Due Amount Section -->
+   <div class="total-sectin">
+    <br> <br>
+    Total Due Amount: 
+    <span class="forunderline" style="color: {{ $allnotcash - $cts < 0 ? 'red' : 'green' }}">
+        {{ $allnotcash - $cts }} -/
+    </span>
+    
+          
+      
+</div>
+</div>
+<div style="clear: both;"></div> <!-- Clear the float -->
 
 <div class="container toptbl">
     <table class="table1">
@@ -165,67 +180,78 @@
         <h4>Total Transcation Amount: <span>{{$dts}} /-</span></h4>
         Total Due Amount: 
         <span class="forunderline" style="color: {{ $allnotcash - $cts < 0 ? 'red' : 'green' }}">
-            {{ $allnotcash - $cts }} -/
+            {{ $allnotcash - $cts }} 
+<span style="font-size: 16px;text-decoration:none;">
+            (
+@php
+              function convertNumberToWords($num) {
+    $ones = array(
+        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+    );
+    $tens = array(
+        "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
+    );
+
+    // Handle negative numbers
+    if ($num < 0) {
+        return "Minus " . convertNumberToWords(abs($num));
+    }
+
+    if ($num == 0) {
+        return "Zero";
+    }
+
+    $words = "";
+
+    if ($num >= 10000000) {
+        $words .= convertNumberToWords(floor($num / 10000000)) . " Crore ";
+        $num %= 10000000;
+    }
+
+    if ($num >= 100000) {
+        $words .= convertNumberToWords(floor($num / 100000)) . " Lakh ";
+        $num %= 100000;
+    }
+
+    if ($num >= 1000) {
+        $words .= convertNumberToWords(floor($num / 1000)) . " Thousand ";
+        $num %= 1000;
+    }
+
+    if ($num >= 100) {
+        $words .= convertNumberToWords(floor($num / 100)) . " Hundred ";
+        $num %= 100;
+    }
+
+    if ($num >= 20) {
+        $words .= $tens[floor($num / 10)] . " ";
+        $num %= 10;
+    }
+
+    if ($num > 0) {
+        $words .= $ones[$num] . " ";
+    }
+
+    return $words;
+}
+
+// Retrieve the numerical value from your data
+$number = $allnotcash - $cts;
+// Convert the numerical value to words
+$words = convertNumberToWords($number);
+
+echo $words;
+
+            @endphp
+			only -/ 
+			
+			)
+        </span>
         </span>
         
                     
-                @php
-                function convertNumberToWords($num) {
-                    $ones = array(
-                        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-                        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-                    );
-                    $tens = array(
-                        "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-                    );
-
-                    if ($num == 0) {
-                        return "Zero";
-                    }
-
-                    $words = "";
-
-                    if ($num >= 10000000) {
-                        $words .= convertNumberToWords(floor($num / 10000000)) . " Crore ";
-                        $num %= 10000000;
-                    }
-
-                    if ($num >= 100000) {
-                        $words .= convertNumberToWords(floor($num / 100000)) . " Lakh ";
-                        $num %= 100000;
-                    }
-
-                    if ($num >= 1000) {
-                        $words .= convertNumberToWords(floor($num / 1000)) . " Thousand ";
-                        $num %= 1000;
-                    }
-
-                    if ($num >= 100) {
-                        $words .= convertNumberToWords(floor($num / 100)) . " Hundred ";
-                        $num %= 100;
-                    }
-
-                    if ($num >= 20) {
-                        $words .= $tens[floor($num / 10)] . " ";
-                        $num %= 10;
-                    }
-
-                    if ($num > 0) {
-                        $words .= $ones[$num] . " ";
-                    }
-
-                    return $words;
-                }
-
-                // Retrieve the numerical value from your data
-                $number = $allnotcash - $cts;
-
-                // Convert the numerical value to words
-                $words = convertNumberToWords($number);
-
-                echo $words;
-            @endphp
-            only/- )
+            
           
     </div>
 </div>
