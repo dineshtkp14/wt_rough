@@ -24,7 +24,8 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/number-to-words"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-   
+    <link href="http://nepalidatepicker.sajanmaharjan.com.np/nepali.datepicker/css/nepali.datepicker.v4.0.1.min.css"
+        rel="stylesheet" type="text/css" />
 
     {{-- //forhtmltabletoexport --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
@@ -32,11 +33,11 @@
 
 
     {{-- forselectsearch --}}
-    {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" /> --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <!-- jQuery -->
 
     <!-- Select2 JS -->
-    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sidebars/">
 
@@ -640,8 +641,8 @@
             }
         }
 
-        // select input ok
-        // $('#selectCustomerInput').select2();
+        // select input 
+        $('#selectCustomerInput').select2();
 
 
         //
