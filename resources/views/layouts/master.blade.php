@@ -640,7 +640,7 @@
             }
         }
 
-        // select input 
+        // select input ok
         // $('#selectCustomerInput').select2();
 
 
