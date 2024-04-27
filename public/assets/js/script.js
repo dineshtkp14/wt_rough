@@ -159,7 +159,7 @@ $("#toggleBox")
             $(this).data("toggle", "open");
         } else {
             $("#customerCard").animate({
-                right: "-300px",
+                right: "-350px",
             });
             $(this).addClass("animate");
             $(this).data("toggle", "close");

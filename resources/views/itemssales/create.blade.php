@@ -10,7 +10,7 @@
         <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
             <div class="card-body">
 
-                <h5 class="card-title text-warning" style="text-decoration: underline; color:aqua !important;">Customer Information</h5>
+                <h5 class="card-title">Customer Information</h5>
                 <p>
                     <span>ID: </span><span id="customerId"  class="custoinfo-bold-text">...</span>
                 </p>

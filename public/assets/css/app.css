@@ -56,13 +56,17 @@ body {
 }
 .custoinfo-bold-text {
     /* background-color: red !important; */
-    font-size: 20px !important;
-    font-weight: bold !important;
+    /* font-size: 20px !important;
+    font-weight: bold !important; */
+}
+.customer-card .card-title {
+    color: rgb(242, 242, 17) !important;
 }
 #customerCard {
     background-color: black !important;
     color: yellow !important;
     border: 4px solid yellow !important;
+    font-weight: bold !important;
 }
 
 .search-input {
@@ -250,7 +254,8 @@ body {
     z-index: 999999;
 }
 #customerCard h5 {
-    color: #6363f1 !important;
+    color: white !important;
+    text-decoration: underline !important;
 }
 
 #customerCard #toggleBox {
