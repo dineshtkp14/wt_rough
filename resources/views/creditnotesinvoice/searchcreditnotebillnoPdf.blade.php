@@ -220,8 +220,8 @@
                                 }
 
                                 if ($num > 0) {
-                                    $words .= $ones[$num] . " ";
-                                }
+                                            $words .= $ones[(int)$num] . " ";
+                                        }
 
                                 return $words;
                             }
