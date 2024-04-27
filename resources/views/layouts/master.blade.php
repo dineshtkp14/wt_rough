@@ -641,7 +641,7 @@
         }
 
         // select input 
-        $('#selectCustomerInput').select2();
+        // $('#selectCustomerInput').select2();
 
 
         //
