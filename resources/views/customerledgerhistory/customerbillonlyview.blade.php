@@ -236,7 +236,7 @@
                         <td colspan="6">
 
 
-                            @php
+                            {{-- @php
                             function convertNumberToWords($num) {
                                 $ones = array(
                                     "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
@@ -291,7 +291,7 @@
                             $words = convertNumberToWords($number);
 
                             echo $words;
-                        @endphp
+                        @endphp --}}
                         only/-
 
                         </td>
