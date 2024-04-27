@@ -54,6 +54,16 @@ body {
     position: relative;
     z-index: 99;
 }
+.custoinfo-bold-text {
+    /* background-color: red !important; */
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+#customerCard {
+    background-color: black !important;
+    color: yellow !important;
+    border: 4px solid yellow !important;
+}
 
 .search-input {
     outline: none;
@@ -229,12 +239,12 @@ body {
 }
 
 #customerCard {
-    max-width: 300px;
-    min-width: 300px;
-    width: 300px;
+    max-width: 350px;
+    min-width: 350px;
+    width: 350px;
     position: fixed;
     top: 30px;
-    right: -300px;
+    right: -350px;
     border-radius: 0 !important;
     border-radius: 0 4px 4px 4px !important;
     z-index: 999999;
@@ -257,7 +267,7 @@ body {
     border-radius: 4px 0 0 4px;
     cursor: pointer;
     box-shadow: 0 0 10px #e7e7e7 !important;
-    border: 1px solid #c1c1ee;
+    border: 2px solid #01010e;
 }
 #customerCard #toggleBox i {
     color: #4040c8;
@@ -415,7 +425,7 @@ tr:nth-child(even) {
     padding: 6px !important;
     border: none !important;
     width: max-content;
-    min-width: 200px !important;
+    min-width: 300px !important;
     box-shadow: 0 0 10px #e7e7e7 !important;
 }
 

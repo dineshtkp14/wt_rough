@@ -9,21 +9,22 @@
 
         <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
             <div class="card-body">
-                <h5 class="card-title">Customer Info</h5>
+
+                <h5 class="card-title text-warning" style="text-decoration: underline; color:aqua !important;">Customer Information</h5>
                 <p>
-                    <span>ID: </span><span id="customerId">...</span>
+                    <span>ID: </span><span id="customerId"  class="custoinfo-bold-text">...</span>
                 </p>
                 <p class="card-text">
-                    <span>Name: </span><span id="customerName">...</span>
+                    <span>Name: </span><span id="customerName" class="custoinfo-bold-text">...</span>
                 </p>
                 <p>
-                    <span>Addres: </span><span id="customerAddress">...</span>
+                    <span>Addres: </span><span id="customerAddress" class="custoinfo-bold-text">...</span>
                 </p>
                 <p>
-                    <span>E-mail: </span><span id="customerEmail">...</span>
+                    <span>E-mail: </span><span id="customerEmail" class="custoinfo-bold-text">...</span>
                 </p>
                 <p>
-                    <span>PhoneNo: </span><span id="customerPhone">...</span>
+                    <span>PhoneNo: </span><span id="customerPhone" class="custoinfo-bold-text">...</span>
                 </p>
             </div>
 
@@ -232,6 +233,9 @@ $(document).ready(function () {
         changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
 
 
+
+        //forboldtext
+        $("#customerId").css("font-weight", "bold");
 
 
     </script>

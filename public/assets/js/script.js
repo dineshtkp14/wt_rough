@@ -116,6 +116,7 @@ function triggerCustomerResultClick() {
 
             $("#customerName").text(data.name);
             $("#customerId").text(data.id);
+
             $("#customerAddress").text(data.address);
             $("#customerEmail").text(data.email);
             // $("#customerPhone").text(data.phoneno);
