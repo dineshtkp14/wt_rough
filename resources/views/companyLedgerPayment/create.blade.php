@@ -8,7 +8,7 @@
 
     <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
         <div class="card-body">
-            <h5 class="card-title">Company Info</h5>
+            <h5 class="card-title">Company Information</h5>
             <p>
                 <span>ID: </span><span id="customerId">...</span>
             </p>

@@ -31,7 +31,7 @@
   
   <div class="card customer-card mb-4" id="customerCard" style="display: none;">
         <div class="card-body">
-            <h5 class="card-title">Customer Info</h5>
+            <h5 class="card-title">Customer Information</h5>
             <p><span>ID: </span><span id="customerId">...</span></p>
             <p class="card-text"><span>Name: </span><span id="customerName">...</span></p>
             <p><span>Addres: </span><span id="customerAddress">...</span></p>
