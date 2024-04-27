@@ -9,7 +9,7 @@
         <div class="card-body">
             <h5 class="card-title">Company Information</h5>
             <p>
-                <span>ID: </span><span id="companyid">...</span>
+                <span>ID: </span><span id="customerId">...</span>
             </p>
             <p class="card-text">
                 <span>Name: </span><span id="customerName">...</span>
