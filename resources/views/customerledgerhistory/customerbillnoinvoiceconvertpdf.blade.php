@@ -246,7 +246,8 @@
                                 <tr>
                                     
                                     <td colspan="5" class="" style="font-size: 14px; text-align: left; margin-left: 2px;"><b>Amount in Words: </b>
-                                        @php
+                                        <?php
+
                                             function convertNumberToWords($num) {
                                                 $ones = array(
                                                     "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
@@ -301,7 +302,7 @@
                                             $words = convertNumberToWords($number);
 
                                             echo $words;
-                                        @endphp
+                                        ?>
                                     only/-
                                     </td>
                                     <td class="text-right"><b>Total Amount:</b></td>
