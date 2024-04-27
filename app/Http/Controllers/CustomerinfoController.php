@@ -75,8 +75,8 @@ return redirect('/login');
     if($validator->passes()){
 
         $cusinfo=new customerinfo();
-        $cusinfo->name=$req->name;
-        $cusinfo->address=$req->address;
+        $cusinfo->name=strtoupper($req->name);
+        $cusinfo->address=strtoupper($req->address);
         $cusinfo->email=$req->email;
         $cusinfo->phoneno=$req->phoneno;
         $cusinfo->alternate_phoneno=$req->alternate_phoneno;
@@ -144,8 +144,8 @@ return redirect('/login');
 
     
             $cusinfo= customerinfo::find($id);
-            $cusinfo->name=$req->name;
-            $cusinfo->address=$req->address;
+            $cusinfo->name=strtoupper($req->name);
+             $cusinfo->address=strtoupper($req->address);
             $cusinfo->email=$req->email;
             $cusinfo->phoneno=$req->phoneno;
             $cusinfo->remarks=$req->remarks;

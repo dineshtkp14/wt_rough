@@ -90,7 +90,7 @@
 
 
 
-                    <div style="width: 300px"   >
+                    <div style="width: 350px"   >
                         <select id="invoice_type" name="invoice_type" class="d-inline form-select select-background"  onchange="changeBackgroundColor(this)">
                             <option value="">--Choose Invoice Type--</option>
                             <option value="cash">CASH </option>
@@ -101,7 +101,7 @@
                     </div>
 
                     
-                    <div style="width: 300px; " class="">
+                    <div style="width: 250px; " class="">
                         <div class="input-group mb-1">
                             <span class="input-group-text">Date:</span>
                             <input type="date" class="form-control" placeholder="" id="salesDate"
