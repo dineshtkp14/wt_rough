@@ -95,9 +95,11 @@
 						<input type="date" name="date2" value=""class="form-control">
 				</div>
 			</div>
-			<div class="col-md-1">
-				<input type="submit" class="btn btn-success mx-2" name="" value="Search">
-				 </form>
+			<div class="col-md-2">
+				<button type="submit" class="btn btn-dark mx-2 w-100" name="">
+					<i class="fas fa-search"></i> Search 
+				</button>
+								 </form>
 			</div>
 			<div class="col-md-3 mt-3 mt-md-0">
 				<div class="float-lg-end">
