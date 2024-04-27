@@ -100,7 +100,9 @@
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <button type="submit" class="btn btn-dark w-100 p-3"><i class="fas fa-search"></i> <b>Search</b></button>
+                        <button type="submit" class="btn btn-dark w-100 p-3" style="font-size: 19px;">
+                            <i class="fas fa-search"></i> <b>Search</b>
+                        </button>
                     </div>
                     
                     <div class="col-md-2"> 
