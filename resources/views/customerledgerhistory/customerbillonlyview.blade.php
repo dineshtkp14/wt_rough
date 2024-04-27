@@ -254,7 +254,6 @@
     $words = "";
 
     if ($num < 20) {
-        // Handle numbers less than 20 separately
         $words .= $ones[$num];
     } else {
         if ($num >= 10000000) {
@@ -299,7 +298,7 @@ $words = convertNumberToWords($number);
 echo $words;
 
 
-
+                        
                         @endphp
                         only/-
 
