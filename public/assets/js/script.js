@@ -186,7 +186,7 @@ function inputHTML(counter) {
                 </td>
                 <td>
 
-                    <input  autocomplete="off" type="number" placeholder="Quantity  " class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
+                    <input  autocomplete="off" type="text" placeholder="Quantity  " class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
                 </td>
 
             <td>
@@ -207,7 +207,7 @@ function inputHTML(counter) {
                 <td>
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">Rs.</span>
-                        <input autocomplete="off" type="number"  placeholder="Price" class="form-control sales-input" id="priceInput" value="" data-id="${counter}" data-name="price" >
+                        <input autocomplete="off" type="text"  placeholder="Price" class="form-control sales-input" id="priceInput" value="" data-id="${counter}" data-name="price" >
                     </div>
                 </td>
                 
