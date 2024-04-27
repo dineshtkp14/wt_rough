@@ -254,7 +254,7 @@
     $words = "";
 
     if ($num < 20) {
-        $words .= $ones[$num];
+        $words .= $ones[(int)$num];
     } else {
         if ($num >= 10000000) {
             $words .= convertNumberToWords(floor($num / 10000000)) . " Crore ";
@@ -282,7 +282,7 @@
         }
 
         if ($num > 0) {
-            $words .= $ones[$num] . " ";
+            $words .= $ones[(int)$num] . " ";
         }
     }
 
