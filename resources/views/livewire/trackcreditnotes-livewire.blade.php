@@ -22,7 +22,8 @@
                    <tbody class="text-center">
                     @if ($all->count())
                              @foreach ($all as $i)
-                                  <tr>
+                             <tr @if (date('Y-m-d', strtotime($i->created_at)) === date('Y-m-d')) style="font-weight:bold;" @endif>
+
                                      <td class="text-center">{{ $i->id }}</td>
                                       <td class="text-center">{{ $i->Cn_bill_no }}</td>
                                       <td class="text-center">{{ $i->title }}</td>

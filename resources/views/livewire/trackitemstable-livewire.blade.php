@@ -23,11 +23,11 @@
                     @if ($all->count())
                              @foreach ($all as $i)
                                   <tr>
-                                     <td class="text-center">{{ $i->id }}</td>
-                                      <td class="text-center">{{ $i->title }}</td>
-                                      <td class="text-center">{{ $i->updated_by }}</td>
-                                      <td class="text-center" style="width: 400px;">{!! $i->notes !!}</td>
-                                      <td class="text-center">{{ $i->created_at }}</td>
+                                   <td class="text-center" @if (date('Y-m-d', strtotime($i->created_at)) === date('Y-m-d')) style="font-weight:bold;" @endif>{{ $i->id }}</td>
+                                   <td class="text-center" @if (date('Y-m-d', strtotime($i->created_at)) === date('Y-m-d')) style="font-weight:bold;" @endif>{{ $i->title }}</td>
+                                   <td class="text-center" @if (date('Y-m-d', strtotime($i->created_at)) === date('Y-m-d')) style="font-weight:bold;" @endif>{{ $i->updated_by }}</td>
+                                   <td class="text-center" style="width: 400px;">{!! $i->notes !!}</td>
+                                   <td class="text-center">{{ $i->created_at }}</td>
 
                                   </tr>
                              @endforeach
