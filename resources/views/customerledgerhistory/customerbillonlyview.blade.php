@@ -90,9 +90,10 @@
             </div>
         </div>
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
+        <b style="float: right; margin-right: 100px;" class="makered">Created_at: {{ $forinvoicetype->created_at }}</b>
+
         <b style="float: right; margin-right: 100px; " class="makered">Invoice Type: {{ $forinvoicetype->invoicetype }}</b>
         <b style="float: right; margin-right: 100px;" class="makered">Date: {{ $forinvoicetype->date }}</b>
-        <b style="float: right; margin-right: 100px;" class="makered">CUSTOMER ID: {{ $forinvoicetype->customerid }}</b>
 
 
 
