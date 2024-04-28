@@ -83,6 +83,9 @@ class CustomerLedgerHistroy extends Controller
  
              $debittotalsumwithdate = $querycheck->sum('debit');
              $credittotalsumwithdate = $querycheck->sum('credit');
+
+             $xd = customerinfo::where('id', $req->customerid)->get();
+             $afn = $xd;
          } 
          
          else {
@@ -105,6 +108,8 @@ class CustomerLedgerHistroy extends Controller
             ->orWhere('invoicetype', 'payment');
     })
     ->get();
+    $xd = customerinfo::where('id', $req->customerid)->get();
+    $afn = $xd;
         
          }
  
@@ -117,6 +122,7 @@ class CustomerLedgerHistroy extends Controller
              'fromdate' => $from,
              'todate' => $to,
              'customeridonly' => $customeridonly,
+             'cusinfobyid' => $afn,
 
          ]);      
      }
