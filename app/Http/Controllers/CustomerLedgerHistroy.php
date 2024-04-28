@@ -64,7 +64,8 @@ class CustomerLedgerHistroy extends Controller
          $credittotalsumwithdate = null;
  
          $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();  
- 
+        $customeridonly=$req->customerid;
+
          if($from == "" || $to == "") {
              $cusledgertails = Customerledgerdetails::where('customerid', $req->customerid)
                  ->where(function($query) {
@@ -114,7 +115,9 @@ class CustomerLedgerHistroy extends Controller
              'cts' => $credittotalsumwithdate,
              'breadcrumb' => $breadcrumb,
              'fromdate' => $from,
-             'todate' => $to
+             'todate' => $to,
+             'customeridonly' => $customeridonly,
+
          ]);      
      }
  
@@ -131,6 +134,9 @@ class CustomerLedgerHistroy extends Controller
         $cusledgertails = null;
         $debittotalsumwithdate = null;
         $credittotalsumwithdate = null;
+
+        $customeridonly=$req->customerid;
+
 
         $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();  
 
@@ -189,7 +195,8 @@ class CustomerLedgerHistroy extends Controller
              'cts' => $credittotalsumwithdate,
              'cusinfobyid' => $afn,
              'fromdate' => $from,
-             'todate' => $to
+             'todate' => $to,
+             'customeridonly' => $customeridonly,
          ]);
  
          // Generate PDF using FacadePdf

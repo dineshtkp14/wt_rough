@@ -199,7 +199,7 @@
 
 {{-- //print --}}
 <div class="col-12 d-flex justify-content-end align-items-center pt-4">
-	<a href="{{ route('clhspdf.convert', ['customerid' => 1, 'date1' => $fromdate, 'date2' => $todate]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
+	<a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
 		<div class="icon-box d-flex justify-content-center align-items-center">
 			<i class="fa-solid fa-print"></i>
 		</div>
