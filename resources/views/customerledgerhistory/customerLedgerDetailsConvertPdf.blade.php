@@ -150,8 +150,13 @@
 						   <td data-label="Name">{{ $i->created_at }}</td>
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-						   <td data-label="Contact No.">{{ $i->invoicetype }} <b>CR-({{ $i->id}})</b></td>
-
+                           <td data-label="Remarks"> {{ $i->invoicetype }}
+                            @if($i->invoicetype == 'payment')
+                                <b>CR-({{ $i->id }}) </b>
+                            
+                            @endif
+                        </td>
+                        
 						   <td data-label="Contact No."><b>{{ $i->invoiceid }}</b></td>
 			   
 						   <td data-label="Amount">{{ $i->debit }}</td>
