@@ -1,51 +1,117 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+    <title>Invoice</title>
     <style>
-        table, th, td {
-            border: 1px solid rgb(1, 15, 1);
-            border-collapse: collapse;
-            padding: 15px;
-            
+        /* Add your CSS styles here */
+        /* Example: */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
         }
-        .floatleft{
-            float: right;
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .forunderline{
+        .letterhead {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .letterhead h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
             text-decoration: underline;
-            color: Red;
         }
-
+        .address-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .address-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black; /* Update border to black */
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total-due {
+            font-size: 20px;
+            color: #ff5733; /* Adjust color as needed */
+            margin-top: 20px;
+        }
+        .printed-info {
+            font-size: 12px;
+            color: #888;
+            text-align: right;
+        }
+        @page{
+            margin:40px;
+        }
+        .left-side {
+            float: left;
+            width: 50%;
+        }
+        .right-side {
+            float: right;
+            width: 50%;
+            text-align: right;
+        }
+        .makedown{
+            margin-top: 12%;
+        }
     </style>
 </head>
 <body>
-    <Center><h2 class="text-danger my-5 bold">OM HARI TRADELINK</h2></Center>
-<Center><h3 class="text-danger my-5 bold"><U>Ledger Details</U></h1></Center>
+    <div class="container">
+       
+        <div class="letterhead">
+            <h1>OM HARI TRADELINK</h1>
+            <CENTER>CUSTOMER LEDGER </CENTER>
+        </div>
+        <div class="address-info">
+            <p style="font-size: 16px;">Address: Tikapur, Kailali (in front of Tikapur Police Station)</p> <!-- Decrease font size -->
+            <p style="font-size: 16px;">Mobile No: 9860378262, 9848448624, 9812656284</p> <!-- Decrease font size -->
+        </div>
 
-
-    <Center><h4 class="text-danger my-5 bold">({{$fromdate}}  To  {{$todate}})</h4></Center>
+	
+      
+    <Center><h4 class="text-danger my-5 bold">DATE:  ({{$fromdate}}  To  {{$todate}})</h4></Center>
 
     <h1></h1>
 
-
-
-    @foreach ($xx as $i)
-
-
-    <h3>Name: {{$i->name}}</h3> 
-    <h3> Address: {{$i->address}}</h3>
-    <h3>Phone No: {{$i->phoneno}}</h3>
-
-
+<div class="left-side">
+    @foreach ($cusinfobyid as $i)
+    Name: {{$i->name}}<br> 
+     Address: {{$i->address}}<br>
+    Phone No: {{$i->phoneno}}<br>
+    Alternate Phoneno: {{$i->phoneno}}<br>
+    Email: {{$i->email}}<br>
     @endforeach
+</div>
+
+
+<div class="right-side">
+    <h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2>
+</div>
 
 <div class="container">
 	
-	
 
-   
+   <div class="makedown">
 
 
 
@@ -53,12 +119,15 @@
 <table>
 	<thead>
 		<tr>
-			<th>Id</th>
+            <th>#</th>
 			
 			<th>Date</th>
+			<th>Created_at</th>
 			<th>Particulars</th>
 			<th>Voucher Type</th>
-			<th>Invoice ID</th>
+			<th>Invoice Type</th>
+
+			<th>Invoice No</th>
 			<th>Debit</th>  
             <th>Credit</th>
            
@@ -67,16 +136,23 @@
 		</tr>
 	</thead>
 	<tbody>
-        
-   
-                       @if($all!=null)
-					   @foreach ($all as $i)
-					   <tr>
-						   <td data-label="Id">{{ $i->id }}</td>
+        @php $serial = 1 @endphp <!-- Initialize serial number variable -->
+
+  
+        @if($all!=null)
+        @foreach ($all as $i)
+        <tr>
+         <td>{{ $serial++ }}</td> <!-- Increment and display serial number -->
+
+					 
+						 
+                           <td data-label="Name">{{ $i->date }}</td>
 						   <td data-label="Name">{{ $i->created_at }}</td>
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
+						   <td data-label="Contact No.">{{ $i->invoicetype }} <b>CR-({{ $i->id}})</b></td>
+
+						   <td data-label="Contact No."><b>{{ $i->invoiceid }}</b></td>
 			   
 						   <td data-label="Amount">{{ $i->debit }}</td>
 						   
@@ -94,6 +170,8 @@
 						   <td></td>
 			   
 						   <td></td>
+						   <td></td>
+                           <td></td>
 						   <td></td>
 			   
 						   <td>
@@ -119,10 +197,12 @@
     
 	</tbody>
 </table>
-<h2 class="floatleft">Total Due Amount : <span class="forunderline">{{$dts -$cts }} /-</span>  </h2>
+</div>
+<h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2>
+
 </div>
 
-sssssss
+
 </body>
 </html>
 

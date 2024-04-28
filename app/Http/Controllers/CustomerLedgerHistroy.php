@@ -47,139 +47,168 @@ class CustomerLedgerHistroy extends Controller
  }
 
   
+ public function returnchoosendatehistroy(Request $req)
+ {
+     if(Auth::check()) {
+         $breadcrumb = [
+             'subtitle' => 'View',
+             'title' => 'Customers Ledger Details (ONLY CREDIT)',
+             'link' => 'Customers Ledger Details (ONLY CREDIT)'
+         ];
+ 
+         $from = date($req->date1);
+         $to = date($req->date2);
+ 
+         $cusledgertails = null;
+         $debittotalsumwithdate = null;
+         $credittotalsumwithdate = null;
+ 
+         $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();  
+ 
+         if($from == "" || $to == "") {
+             $cusledgertails = Customerledgerdetails::where('customerid', $req->customerid)
+                 ->where(function($query) {
+                     $query->where('invoicetype', 'credit')
+                           ->orWhere('invoicetype', 'payment');
+                 })
+                 ->get();
+ 
+             $querycheck = customerledgerdetails::where('customerid', $req->customerid)
+                 ->where(function($query) {
+                     $query->where('invoicetype', 'credit')
+                           ->orWhere('invoicetype', 'payment');
+                 })
+                 ->get();
+ 
+             $debittotalsumwithdate = $querycheck->sum('debit');
+             $credittotalsumwithdate = $querycheck->sum('credit');
+         } 
+         
+         else {
+            $betweendate = customerledgerdetails::where('customerid', $req->customerid)
+            ->where(function ($query) use ($from, $to) {
+                $query->where('invoicetype', 'credit')
+                      ->orWhere('invoicetype', 'payment');
+            })
+            ->whereBetween('date', [$from, $to])
+            ->get();
+        
+             
+             $debittotalsumwithdate = $betweendate->sum('debit');
+             $credittotalsumwithdate = $betweendate->sum('credit');
+ 
+             $cusledgertails = customerledgerdetails::whereBetween('date',  [$from,$to])
+    ->where('customerid', $req->customerid)
+    ->where(function ($query) {
+        $query->where('invoicetype', 'credit')
+            ->orWhere('invoicetype', 'payment');
+    })
+    ->get();
+        
+         }
+ 
+         return view('customerledgerhistory.list', [
+             'all' => $cusledgertails,
+             'allcus' => $allcusinfo,
+             'dts' => $debittotalsumwithdate,
+             'cts' => $credittotalsumwithdate,
+             'breadcrumb' => $breadcrumb,
+             'fromdate' => $from,
+             'todate' => $to
+         ]);      
+     }
+ 
+     return redirect('/login');
+ }
+ 
 
-        public function returnchoosendatehistroy(Request $req)
-        {
-                    if(Auth::check()){
+ public function PdfGenerateCustomerDetails(Request $req)
+ {
+     if (Auth::check()) {
+        $from = date($req->date1);
+        $to = date($req->date2);
 
-                    $breadcrumb= [
-                        'subtitle'=>'View',
-                        'title'=>' Customers Ledger Details (ONLY CREDIT) ',
-                        'link'=>' Customers Ledger Details (ONLY CREDIT)'
-                    ];
+        $cusledgertails = null;
+        $debittotalsumwithdate = null;
+        $credittotalsumwithdate = null;
 
-                    $from=date($req->date1);
-                    $to=date($req->date2);
-                
+        $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();  
 
-                    $cusledgertails=null;
-                    $debittotalsumwithdate=null;
-                    $credittotalsumwithdate=null;
-                    
-                    $allcusinfo=customerinfo::orderBy('id','DESC')->get();  
-                
-                    if($from == "" || $to==""){
+        if($from == "" || $to == "") {
+            $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)
+                ->where(function($query) {
+                    $query->where('invoicetype', 'credit')
+                          ->orWhere('invoicetype', 'payment');
+                })
+                ->get();
 
-                        $cusledgertails = Customerledgerdetails::where('customerid', $req->customerid)
-                        ->where(function($query) {
-                            $query->where('invoicetype', 'credit')
-                                  ->orWhere('invoicetype', 'payment');
-                        })
-                        ->get();
-
-
-                
-
-                        $querycheck = customerledgerdetails::where('customerid', $req->customerid)
-                        ->where(function($query) {
-                            $query->where('invoicetype', 'credit')
-                                  ->orWhere('invoicetype', 'payment');
-                        })
-                        ->get();
+            $querycheck = customerledgerdetails::where('customerid', $req->customerid)
+                ->where(function($query) {
+                    $query->where('invoicetype', 'credit')
+                          ->orWhere('invoicetype', 'payment');
+                })
+                ->get();
 
             $debittotalsumwithdate = $querycheck->sum('debit');
-                        $credittotalsumwithdate = $querycheck->sum('credit');
+            $credittotalsumwithdate = $querycheck->sum('credit');
 
-
-                    
-                    }else{
-
-                        $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
-                        $debittotalsumwithdate = $betweendate->sum('debit');
-                        $credittotalsumwithdate = $betweendate->sum('credit');
-
-                        
-                        $cusledgertails=customerledgerdetails::whereBetween('date',  [$from,$to])->where('customerid', $req->customerid)->where('invoicetype', 'credit')->get();         
-                    
-                    }
-
-                
-                    return view('customerledgerhistory.list',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'breadcrumb'=>$breadcrumb]);      
-                }
-
-    
-            return redirect('/login');
-        }
-
-
-
-            public function PdfGenerateCustomerDetails(Request $req)
-            {
-                if(Auth::check()){
-
-    
-                $from=date($req->date1);
-                $to=date($req->date2);
-                 
-             
-                $cusledgertails=null;
-                
-                $debittotalsumwithdate=null;
-                $credittotalsumwithdate=null;
-
-                
-                
-                $allcusinfo=customerinfo::orderBy('id','DESC')->get();
-              
-                $afn=null;
-                
-               
-               
-                if($from == "" || $to==""){
-    
-                    // $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)
-                    $cusledgertails = Customerledgerdetails::where('customerid', $req->customerid)
-                    ->where(function($query) {
-                        $query->where('invoicetype', 'credit')
-                              ->orWhere('invoicetype', 'payment');
-                    })
-                    ->get();
-                $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
-
-                $debittotalsumwithdate = $betweendate->sum('debit');
-                $credittotalsumwithdate = $betweendate->sum('credit');
-                    $xd= customerinfo::where('id',$req->customerid)->get();
-                    $afn=$xd;
-
-
-
-                   
-                }else{
-                    
-                    $betweendate=customerledgerdetails::where('customerid',$req->customerid)->where('invoicetype', 'credit')->get();
-                $debittotalsumwithdate = $betweendate->sum('debit');
-                $credittotalsumwithdate = $betweendate->sum('credit');
-
-                
-                $cusledgertails=customerledgerdetails::whereBetween('date',  [$from,$to])->where('customerid', $req->customerid)->where('invoicetype', 'credit')->get();         
-                    $xd= customerinfo::where('id',$req->customerid)->get();
-                    $afn=$xd;
-
-                    $from=date($req->date1);
-                    $to=date($req->date2);
-    
-                   
-                }
-    
+            $xd = customerinfo::where('id', $req->customerid)->get();
+            $afn = $xd;
+        } 
+        
+        else {
+           $betweendate = customerledgerdetails::where('customerid', $req->customerid)
+           ->where(function ($query) use ($from, $to) {
+               $query->where('invoicetype', 'credit')
+                     ->orWhere('invoicetype', 'payment');
+           })
+           ->whereBetween('date', [$from, $to])
+           ->get();
+       
             
-            $pdfview=FacadePdf::setOptions(['dpi' => 150,'defaultFont' => 'dejavu serif'])->loadView('customerledgerhistory.customerLedgerDetailsConvertPdf',['all'=>$cusledgertails,'allcus'=>$allcusinfo,'dts'=>$debittotalsumwithdate,'cts'=>$credittotalsumwithdate,'xx'=>$afn,'fromdate'=>$from,'todate'=>$to]);   
-           return $pdfview->download('invoice.pdf');
-    
+            $debittotalsumwithdate = $betweendate->sum('debit');
+            $credittotalsumwithdate = $betweendate->sum('credit');
+
+            $cusledgertails = customerledgerdetails::whereBetween('date',  [$from,$to])
+   ->where('customerid', $req->customerid)
+   ->where(function ($query) {
+       $query->where('invoicetype', 'credit')
+           ->orWhere('invoicetype', 'payment');
+   })
+   ->get();
+
+   $xd = customerinfo::where('id', $req->customerid)->get();
+   $afn = $xd;
+       
         }
-        return redirect('/login');
-    }
-
-
+ 
+         $pdfview = view('customerledgerhistory.customerLedgerDetailsConvertPdf', [
+             'all' => $cusledgertails,
+             'allcus' => $allcusinfo,
+             'dts' => $debittotalsumwithdate,
+             'cts' => $credittotalsumwithdate,
+             'cusinfobyid' => $afn,
+             'fromdate' => $from,
+             'todate' => $to
+         ]);
+ 
+         // Generate PDF using FacadePdf
+         $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfview);
+ 
+         // Save the PDF to a temporary file
+         $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
+         $pdf->save($pdfFile);
+ 
+         // Send headers to instruct the browser to open the PDF in a new tab
+         return response()->file($pdfFile, [
+             'Content-Type' => 'application/pdf',
+             'Content-Disposition' => 'inline; filename="onlycreditinvoice.pdf"',
+         ]);
+     }
+ 
+     return redirect('/login');
+ }
+ 
 
 
     

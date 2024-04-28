@@ -72,7 +72,7 @@
 					Customer Ledger Payment
 				</a>
 
-				<a href="{{ route('chequedeposit.create') }}" class=" me-5 float-end btn btn-md btn-dark border border-5 border-warning" target="" rel="noopener noreferrer">
+				<a href="{{ route('chequedeposit.create') }}" class=" me-5 float-end btn btn-md btn-primary border border-5 border-danger" target="" rel="noopener noreferrer">
 					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
 					Cheque Deposit
 				</a>

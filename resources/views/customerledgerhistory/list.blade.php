@@ -103,12 +103,17 @@
 <table>
 	<thead>
 		<tr>
+			<th>#</th>
+
 			<th>Id</th>
 			
 			<th>Date</th>
+			<th>Created_at</th>
 			<th>Particulars</th>
 			<th>Voucher Type</th>
-			<th>Invoice ID</th>
+			<th>Invoice Type</th>
+
+			<th>Invoice No</th>
 			<th>Debit</th>  
             <th>Credit</th>
            
@@ -117,15 +122,22 @@
 		</tr>
 	</thead>
 	<tbody>
-        
+		@php $serial = 1 @endphp <!-- Initialize serial number variable -->
+
   
                        @if($all!=null)
 					   @foreach ($all as $i)
 					   <tr>
+						<td>{{ $serial++ }}</td> <!-- Increment and display serial number -->
+
 						   <td data-label="Id">{{ $i->id }}</td>
+						   <td data-label="Id">{{ $i->date }}</td>
+
 						   <td data-label="Name">{{ $i->created_at }}</td>
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
+						   <td data-label="Contact No.">{{ $i->invoicetype }}</td>
+
 						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
 			   
 						   <td data-label="Amount">{{ $i->debit }}</td>
@@ -145,6 +157,11 @@
 			   
 						   <td>-</td>
 						   <td>-</td>
+						   <td>-</td>
+						   <td>-</td>
+						   <td>-</td>
+
+
 			   
 						   <td>
 							   @if($dts!=null)
@@ -169,19 +186,27 @@
 	</tbody>
 </table>
 
-<div class="col-12 d-flex justify-content-end align-items-center pt-4">
+{{-- <div class="col-12 d-flex justify-content-end align-items-center pt-4">
 	<a href="{{route('clhspdf.convert')}}" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : ''  }}" id="pdfLink">convert To PDF
 	<div class="icon-box d-flex justify-content-center align-items-center">
 	<i class="fa-solid fa-download"></i>
 	</div>
 	</a>
-</div>
+</div> --}}
 </div>
 
 <h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2>
 
+{{-- //print --}}
+<div class="col-12 d-flex justify-content-end align-items-center pt-4">
+	<a href="{{ route('clhspdf.convert', ['customerid' => 1, 'date1' => $fromdate, 'date2' => $todate]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
+		<div class="icon-box d-flex justify-content-center align-items-center">
+			<i class="fa-solid fa-print"></i>
+		</div>
+	</a>
+</div>
 
-<script>
+{{-- <script>
 	document.getElementById('pdfLink').addEventListener('click', function(e) {
         e.preventDefault(); 
 		var query=window.location.search;
@@ -191,12 +216,18 @@
 		window.location.href = url;
 
     });
-</script>
+</script> --}}
 
 </div>
 <script>
-    console.log(convertNumberToWords({{ $dts - $cts }}));
-    console.log("dinesh");
+   
+
+	function openPdfInNewTab(event, url) {
+        event.preventDefault();
+        var newTab = window.open(url, '_blank');
+        newTab.focus();
+    }
+
 </script>
 
 
