@@ -203,13 +203,13 @@
                         <td>
                             @if ($i->quantity <= $i->showwarning  and $i->quantity  > 0)
                             <div class="span-box">
-                                <span class="btn btn-warning">warning</span>
+                                <span class="btn btn-warning btn-sm">warning</span>
                             </div>
                             @elseif($i->quantity <= 0)
                             <div class="span-box">
-                                <span class="btn btn-danger">outofstock</span>
+                                <span class="btn btn-danger btn-sm">outofstock</span>
                                 @if($i->quantity < 0)
-                                <span class="btn btn-primary">Data in Minus</span>
+                                <span class="btn btn-primary btn-sm">Data in Minus</span>
                                 @endif
                                 <form id="removeForm{{ $i->id }}" action="{{ route('stocks.updateofs') }}" method="POST">
                                     @csrf
@@ -219,7 +219,7 @@
                             </div>
                             @elseif($i->quantity < 0)
                             <div class="span-box">
-                                <span class="btn btn-primary">Data in Minus</span>
+                                <span class=" btn-sm btn btn-primary">Data in Minus</span>
                             </div>
                             <form id="removeForm{{ $i->id }}" action="{{ route('stocks.updateofs') }}" method="POST">
                                 @csrf
@@ -228,7 +228,7 @@
                             </form>
                             @else
                             <div class="span-bo">
-                                <span class="btn btn-success">Available</span>
+                                <span class="btn-sm btn btn-success">Available</span>
                             </div>
                             @endif
                         </td>
