@@ -37,7 +37,7 @@
     
                 <div class="col-md-6">
                         <label for="inputPassword4" class="form-label">PhoneNo  <span style="color: red;">*</span></label>
-                        <input autocomplete="off" type="number" class="form-control @error('phoneno') is-invalid @enderror" 
+                        <input autocomplete="off" type="text" class="form-control @error('phoneno') is-invalid @enderror" 
                             name="phoneno" value="{{ old('phoneno',$company->phoneno) }}">
                         @error('phoneno')
                             <p class="invalid-feedback">{{ $message }}</p>
