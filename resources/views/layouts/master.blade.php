@@ -577,7 +577,7 @@
                 <a href="{{ route('creditnotes.create') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-file-invoice"></i> Sales Return/Credit Notes
+                        <i class="fas fa-file-invoice"></i> Sales Return / Credit Notes
                     </button>
                 </a>
             </li>

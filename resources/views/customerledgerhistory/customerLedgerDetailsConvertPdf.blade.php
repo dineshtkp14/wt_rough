@@ -217,7 +217,7 @@
 Total Due Amount: 
 <span class="forunderline" style="color: {{ $dts - $cts < 0 ? 'red' : 'green' }}">
     {{-- {{ $dts - $cts }} -/ --}}
-    -		{{ number_format($dts - $cts, 2) }} -/
+    	{{ number_format($dts - $cts, 2) }} -/
 
 </span>
 (
