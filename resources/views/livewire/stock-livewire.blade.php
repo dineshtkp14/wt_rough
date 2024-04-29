@@ -85,7 +85,7 @@
                         <th>S.N</th> <!-- Updated this line -->
 
                         <th>Item Id</th>
-                        <th>Items Name</th>
+                        <th style="width: 200px;">Items Name</th>
                         <th class=" bg-dark">Quantity</th>
                        
                         <th>Unit</th>
@@ -108,7 +108,7 @@
                     <tr>
                         <td>{{ $sn++ }}</td>
                         <td>{{ $i->id }}</td>
-                        <td>{{ $i->itemsname }}</td>
+                        <td style="width: 200px;">{{ $i->itemsname }}</td>
                        
                        
                         <td><button class="btn btn-dark text-white">{{ $i->quantity }} </button></td>
