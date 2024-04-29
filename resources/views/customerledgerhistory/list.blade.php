@@ -243,6 +243,71 @@
         {{ $dts - $cts }} -/
     </span>
 </h1>
+(
+@php
+              function convertNumberToWords($num) {
+    $ones = array(
+        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+    );
+    $tens = array(
+        "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
+    );
+
+    // Handle negative numbers
+    if ($num < 0) {
+        return "Minus " . convertNumberToWords(abs($num));
+    }
+
+    if ($num == 0) {
+        return "Zero";
+    }
+
+    $words = "";
+
+    if ($num >= 10000000) {
+        $words .= convertNumberToWords(floor($num / 10000000)) . " Crore ";
+        $num %= 10000000;
+    }
+
+    if ($num >= 100000) {
+        $words .= convertNumberToWords(floor($num / 100000)) . " Lakh ";
+        $num %= 100000;
+    }
+
+    if ($num >= 1000) {
+        $words .= convertNumberToWords(floor($num / 1000)) . " Thousand ";
+        $num %= 1000;
+    }
+
+    if ($num >= 100) {
+        $words .= convertNumberToWords(floor($num / 100)) . " Hundred ";
+        $num %= 100;
+    }
+
+    if ($num >= 20) {
+        $words .= $tens[floor($num / 10)] . " ";
+        $num %= 10;
+    }
+
+    if ($num > 0) {
+        $words .= $ones[$num] . " ";
+    }
+
+    return $words;
+}
+
+// Retrieve the numerical value from your data
+$number = $dts - $cts;
+// Convert the numerical value to words
+$words = convertNumberToWords($number);
+
+echo $words;
+
+            @endphp
+			only -/ 
+			
+			)
 {{-- //print --}}
 <div class="col-12 d-flex justify-content-end align-items-center pt-4">
 	<a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
