@@ -181,7 +181,7 @@ $query->orderBy('latest_date', 'desc');
 
 
 // Paginate the results
-$allResults = $query->paginate(100);
+$allResults = $query->paginate(500);
 
 // Fetch additional data
 foreach ($allResults as $data) {
