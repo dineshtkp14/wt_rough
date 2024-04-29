@@ -85,7 +85,7 @@ return $item->debit_credit_difference < 0;
 
 
         // Paginate the results
-        $allResults = $query->paginate(500);
+        $allResults = $query->paginate(100);
 
         // Fetch additional data
         foreach ($allResults as $data) {
@@ -181,7 +181,7 @@ $query->orderBy('latest_date', 'desc');
 
 
 // Paginate the results
-$allResults = $query->paginate(500);
+$allResults = $query->paginate(100);
 
 // Fetch additional data
 foreach ($allResults as $data) {
