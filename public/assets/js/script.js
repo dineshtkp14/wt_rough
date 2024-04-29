@@ -178,7 +178,7 @@ function inputHTML(counter) {
                 <a href="#" class="select-product-link" id="selectProductLink" style="text-decoration: none;" data-id="${counter}" data-query="">
                         <h6 class="m-0" style="font-size: 14px; color: #000000;"></h6>
                         <p class="m-0" style="font-size: 14px; font-weight: 500;">
-                            or select Product
+                            or select Items
                         </p>
                     </a>
                 </td>
@@ -612,7 +612,7 @@ $(window).on("load", function () {
                     value.unstocked.trim() === ""
                 ) {
                     $("#errorText").attr("class", "text-danger fw-bold");
-                    $("#errorText").text("Please enter or select product !");
+                    $("#errorText").text("Please enter or select Item !");
                     hasError = true;
                     return false; // Exit the loop early since there's an error
                 } else if (

@@ -525,30 +525,23 @@
                 </a>
             </li>
         
-            <li class="mb-1 border border-success border-5">
-                <a href="{{ route('itemsales.create') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+            <li class="mb-1 border border-warning border-5 bg-dark ">
+                <a href="{{ route('itemsales.create') }}" style="text-decoration:none;" class="text-warning">
+                    <button class="text-warning btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-file-invoice"></i> Invoice
+                        <i class="fas fa-file-invoice"></i><b> Invoice</b>
                     </button>
                 </a>
             </li>
         
-            <li class="mb-1 border border-success border-5">
-                <a href="{{ route('creditnotes.create') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-file-invoice"></i> Sales Return/Credit Notes
-                    </button>
-                </a>
-            </li>
+           
         
             <!-- Add icons to the remaining menu items -->
             <li class="mb-1 border border-success border-5">
                 <a href="{{ route('returnchoosendatehistroycashandcredit') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-book"></i> View Customer Ledger
+                        <i class="fas fa-book"></i>  Customer Ledger
                     </button>
                 </a>
             </li>
@@ -566,7 +559,7 @@
                 <a href="{{ route('companyledgerdetails.returnchoosendatehistroy') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-bookmark"></i> View Company Ledger
+                        <i class="fas fa-bookmark"></i>  Company Ledger
                     </button>
                 </a>
             </li>
@@ -576,6 +569,15 @@
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
                         <i class="fas fa-calendar-day"></i> Show Per Day
+                    </button>
+                </a>
+            </li>
+
+            <li class="mb-1 border border-success border-5">
+                <a href="{{ route('creditnotes.create') }}" style="text-decoration:none;" class="text-white">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
+                        <i class="fas fa-file-invoice"></i> Sales Return/Credit Notes
                     </button>
                 </a>
             </li>
