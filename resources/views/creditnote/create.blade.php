@@ -104,7 +104,7 @@
                             <th>
                                 <a class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></a>
                             </th>
-                            <th>Product</th>
+                            <th>Items</th>
                             <th>Unstocked Name</th>
                             <th>Quantity</th>
                             <th>Unit (pcs/kg)</th>
@@ -155,10 +155,10 @@
             <div class="modal-container flex-css" id="modalContainer" data-close="true">
                 <div class="modal-box">
                     <div class="title flex-css mb-4">
-                        <h1>Select Product</h1>
+                        <h1>Select Item</h1>
                     </div>
                     <div class="search-box">
-                        <input type="text" class="search-input" placeholder="Search Product" id="searchProductInput">
+                        <input type="text" class="search-input" placeholder="Search Item" id="searchProductInput">
                         <i class="fas fa-search search-icon modal-search-icon"> </i>
                         <div class="result-wrapper modal-result-wrapper" id="productResultWrapper"
                             style="display: none;">

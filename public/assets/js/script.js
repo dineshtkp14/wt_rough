@@ -612,7 +612,9 @@ $(window).on("load", function () {
                     value.unstocked.trim() === ""
                 ) {
                     $("#errorText").attr("class", "text-danger fw-bold");
-                    $("#errorText").text("Please enter or select Item !");
+                    $("#errorText").text(
+                        "Please enter Unstocked  or select Item !"
+                    );
                     hasError = true;
                     return false; // Exit the loop early since there's an error
                 } else if (
@@ -630,7 +632,7 @@ $(window).on("load", function () {
                     return false; // Exit the loop early since there's an error
                 } else if (value.unit.trim() === "") {
                     $("#errorText").attr("class", "text-danger fw-bold");
-                    $("#errorText").text("Please enter unit !");
+                    $("#errorText").text("Please Select unit !");
                     hasError = true;
                     return false; // Exit the loop early since there's an error
                 }
