@@ -85,7 +85,7 @@ return $item->debit_credit_difference < 0;
 
 
         // Paginate the results
-        $allResults = $query->paginate(50);
+        $allResults = $query->paginate(100);
 
         // Fetch additional data
         foreach ($allResults as $data) {
@@ -181,7 +181,7 @@ $query->orderBy('latest_date', 'desc');
 
 
 // Paginate the results
-$allResults = $query->paginate(50);
+$allResults = $query->paginate(100);
 
 // Fetch additional data
 foreach ($allResults as $data) {
@@ -232,6 +232,6 @@ return $item->debit_credit_difference >= 0; // Only consider positive or zero va
             'Content-Disposition' => 'inline; filename="credit_Due_List_report.pdf"',
         ]);
     }
-        // Your existing code to fetch data and prepare it for PDFOK
+        // Your existing code to fetch data and prepare it for PDF
 
 }
