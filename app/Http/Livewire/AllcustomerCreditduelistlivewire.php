@@ -232,6 +232,6 @@ return $item->debit_credit_difference >= 0; // Only consider positive or zero va
             'Content-Disposition' => 'inline; filename="credit_Due_List_report.pdf"',
         ]);
     }
-        // Your existing code to fetch data and prepare it for PDF
+        // Your existing code to fetch data and prepare it for PDFOK
 
 }
