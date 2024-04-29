@@ -108,7 +108,7 @@
                     <tr>
                         <td>{{ $sn++ }}</td>
                         <td>{{ $i->id }}</td>
-                        <td style="width: 200px;font-weight:bold">{{ $i->itemsname }}</td>
+                        <td style="width: 200px;font-weight:bold;background:rgb(10, 59, 10);color:white;text-transform:uppercase;">{{ $i->itemsname }}</td>
                        
                        
                         <td><button class="btn btn-dark text-white">{{ $i->quantity }} </button></td>
