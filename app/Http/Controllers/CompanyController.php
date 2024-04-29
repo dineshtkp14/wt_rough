@@ -83,8 +83,8 @@ public function edit($id)
     if(Auth::check()){
     $breadcrumb= [
         'subtitle'=>'Edit',
-        'title'=>'Edit Customers Details',
-        'link'=>'Edit Customers Details'
+        'title'=>'Edit Company / Suppliers Details',
+        'link'=>'Edit Company Suppliers Details'
     ];
 
     $distrinutors=company::findOrfail($id);
