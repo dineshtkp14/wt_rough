@@ -108,6 +108,13 @@
 									Email: {{$i->email}}<br>
 								</div>
 						@endforeach
+
+						<h1 class="mt-2 floatleft btn {{ $dts - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
+							Total Due Amount: 
+							<span class="forunderline fw-bold ps-2">
+								{{ $dts - $cts }} -/
+							</span>
+						</h1>
 				</div>
 				<div class="col-md-4">
 					<a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
