@@ -228,8 +228,14 @@
 </div> --}}
 </div>
 
-<h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2>
+{{-- <h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2> --}}
 
+<h1 class="floatleft btn {{ $dts - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
+    Total Due Amount: 
+    <span class="forunderline fw-bold ps-2">
+        {{ $dts - $cts }} -/
+    </span>
+</h1>
 {{-- //print --}}
 <div class="col-12 d-flex justify-content-end align-items-center pt-4">
 	<a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print

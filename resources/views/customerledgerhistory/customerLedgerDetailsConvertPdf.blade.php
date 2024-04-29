@@ -105,7 +105,14 @@
 
 
 <div class="right-side">
-    <h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2>
+    
+    <h1 class="floatleft btn {{ $dts - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
+        Total Due Amount: 
+        <span class="forunderline fw-bold ps-2">
+            {{ $dts - $cts }} -/
+        </span>
+    </h1>
+    {{-- <h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2> --}}
 </div>
 
 <div class="container">
@@ -203,7 +210,15 @@
 	</tbody>
 </table>
 </div>
-<h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2>
+{{-- <h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2> --}}
+
+
+<h1 class="floatleft btn {{ $dts - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
+    Total Due Amount: 
+    <span class="forunderline fw-bold ps-2">
+        {{ $dts - $cts }} -/
+    </span>
+</h1>
 
 </div>
 
