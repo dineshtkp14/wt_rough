@@ -108,7 +108,7 @@
                     <tr>
                         <td>{{ $sn++ }}</td>
                         <td>{{ $i->id }}</td>
-                        <td style="width: 200px;font-weight:bold;background:rgb(10, 59, 10);color:white;text-transform:uppercase;">{{ $i->itemsname }}</td>
+                        <td style="width: 240px;font-weight:bold;background:rgb(10, 59, 10);color:white;text-transform:uppercase;">{{ $i->itemsname }}</td>
                        
                        
                         <td><button class="btn btn-dark text-white">{{ $i->quantity }} </button></td>
@@ -120,7 +120,7 @@
                       
 
                         <td> <b>{{ $i->mrp }}</b> &nbsp; &nbsp; <!-- Button trigger modal --></td>
-                        <td style="width: 200px;"><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $i->id }}">Extra</button>
+                        <td style="width: 240px;"><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $i->id }}">Extra</button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal{{ $i->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
