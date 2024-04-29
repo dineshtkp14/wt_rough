@@ -108,7 +108,9 @@
 
     Total Due Amount: 
     <span class="forunderline" style="color: {{ $dts - $cts < 0 ? 'red' : 'green' }}">
-        {{ $dts - $cts }} -/
+        {{-- {{ $dts - $cts }} -/ --}}
+        {{ number_format($dts - $cts, 2) }} -/
+
     </span>
     {{-- <h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2> --}}
 </div>
@@ -214,7 +216,9 @@
 
 Total Due Amount: 
 <span class="forunderline" style="color: {{ $dts - $cts < 0 ? 'red' : 'green' }}">
-    {{ $dts - $cts }} -/
+    {{-- {{ $dts - $cts }} -/ --}}
+    -		{{ number_format($dts - $cts, 2) }} -/
+
 </span>
 (
 @php

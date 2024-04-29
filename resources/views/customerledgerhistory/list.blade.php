@@ -112,7 +112,9 @@
 						<h1 class="mt-2 floatleft btn {{ $dts - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
 							Total Due Amount: 
 							<span class="forunderline fw-bold ps-2">
-								{{ $dts - $cts }} -/
+								{{-- {{ $dts - $cts }} -/ --}}
+								{{ number_format($dts - $cts, 2) }} -/
+
 							</span>
 						</h1>
 				</div>
@@ -240,7 +242,9 @@
 <h1 class="floatleft btn {{ $dts - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
     Total Due Amount: 
     <span class="forunderline fw-bold ps-2">
-        {{ $dts - $cts }} -/
+        {{-- {{ $dts - $cts }} -/ --}}
+		{{ number_format($dts - $cts, 2) }} -/
+
     </span>
 </h1>
 (

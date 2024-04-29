@@ -105,7 +105,9 @@
     <br> <br>
     Total Due Amount: 
     <span class="forunderline" style="color: {{ $allnotcash - $cts < 0 ? 'red' : 'green' }}">
-        {{ $allnotcash - $cts }} -/
+        {{-- {{ $allnotcash - $cts }} -/ --}}
+        {{ number_format($allnotcash - $cts, 2) }}
+
     </span>
     
           
@@ -180,7 +182,9 @@
         <h4>Total Transcation Amount: <span>{{$dts}} /-</span></h4>
         Total Due Amount: 
         <span class="forunderline" style="color: {{ $allnotcash - $cts < 0 ? 'red' : 'green' }}">
-            {{ $allnotcash - $cts }} 
+            {{-- {{ $allnotcash - $cts }}  --}}
+            {{ number_format($allnotcash - $cts, 2) }}
+
 <span style="font-size: 16px;text-decoration:none;">
             (
 @php
