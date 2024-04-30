@@ -262,7 +262,7 @@
 <BR>
 
 @if(auth()->check() && auth()->user()->email == 'dineshtkp14@gmail.com')
-    <h5 class="floatleft">Total Transaction Amount: <span class="forunderline">{{ $dts }} /-</span></h5>
+    <h6 class="floatleft">Total Transaction Amount: <span class="forunderline">{{ $dts }} /-</span></h6>
 @endif
 
 <h1 class="floatleft btn btn-lg {{ $allnotcash - $cts < 0 ? 'btn-danger' : 'btn-success' }}">
