@@ -133,6 +133,8 @@
 		Total Due Amount: 
 		<span class="forunderline fw-bold ps-2">
 			{{-- {{ $allnotcash - $cts }} -/ --}}
+
+
 			{{ number_format($allnotcash - $cts, 2) }} -/
 
 		</span>
@@ -259,7 +261,9 @@
 
 <BR>
 
-<h5 class="floatleft">Total Transcation Amount: <span class="forunderline">{{$dts}} /-</span></h5>
+@if(auth()->check() && auth()->user()->email == 'dineshtkp14@gmail.com')
+    <h5 class="floatleft">Total Transaction Amount: <span class="forunderline">{{ $dts }} /-</span></h5>
+@endif
 
 <h1 class="floatleft btn btn-lg {{ $allnotcash - $cts < 0 ? 'btn-danger' : 'btn-success' }}">
     Total Due Amounttt: 
