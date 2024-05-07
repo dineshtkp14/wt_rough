@@ -102,7 +102,7 @@
             </div>
 
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label"> Particulars (Bank Name/Fone Pay/Payment) <span style="color: red;">*</span></label>
+                <label for="inputPassword4" class="form-label"> Particulars <span class="text-success fw-bold"> (Bank Name / Fone Pay / Payment) </span> <span style="color: red;">*</span></label>
                 <input autocomplete="off" id="particulars" type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars') }}" >
                 <input  id="hiddenParticulars" type="hidden" name="hiddenParticulars" value="{{ old('hiddenParticulars') }}">
                 @error('particulars')
@@ -111,7 +111,7 @@
             </div>
 
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Voucher Type (Receipt/Cash) <span style="color: red;">*</span></label>
+                <label for="inputPassword4" class="form-label">Voucher Type <span class="text-success fw-bold">(Receipt / Cash)</span> <span style="color: red;">*</span></label>
                 <input autocomplete="off" id="vt" type="text" class="form-control @error('vt') is-invalid @enderror" name="vt" value="{{ old('vt') }}" >
                 <input  id="hiddenVt" type="hidden" name="hiddenVt" value="{{ old('hiddenVt') }}">
                 @error('vt')

@@ -196,6 +196,8 @@ function inputHTML(counter) {
                         <option value="pcs">pcs</option>
                         <option value="kg" >kg</option>
                         <option value="feet">feet</option>
+                        <option value="mtr">mtr</option>
+
                         <option value="choose" selected disabled>select</option>
 
             </select>

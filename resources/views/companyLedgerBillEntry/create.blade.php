@@ -89,7 +89,7 @@
     </div>
 
     <div class="col-md-6">
-        <label for="inputPassword4" class="form-label">Particulars (purchase goods/ opening balance) <span style="color: red;">*</span></label>
+        <label for="inputPassword4" class="form-label">Particulars <span class="text-success fw-bold">(purchase goods/ opening balance)</span> <span style="color: red;">*</span></label>
         <input autocomplete="off" type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars') }}">
         @error('particulars')
             <p class="invalid-feedback">{{ $message }}</p>
