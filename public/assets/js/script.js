@@ -193,12 +193,13 @@ function inputHTML(counter) {
             <td>
 
             <select class="form-select sales-input" id="unitInput" data-id="${counter}" data-name="unit">
+                        <option value="choose" selected disabled>select</option>         
                         <option value="pcs">pcs</option>
                         <option value="kg" >kg</option>
                         <option value="feet">feet</option>
                         <option value="mtr">mtr</option>
 
-                        <option value="choose" selected disabled>select</option>
+                       
 
             </select>
 
