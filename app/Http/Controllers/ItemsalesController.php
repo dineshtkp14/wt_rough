@@ -73,7 +73,11 @@ class ItemsalesController extends Controller
         $invoice_data->inv_date = $req->date;
 
 
-        $invoice_data->added_by = session('user_email');
+        // $invoice_data->added_by = session('user_email');
+        $invoice_data->added_by =   Auth::user()->name ;
+     
+
+
 
         //dd( $invoice_data->notes);
         $invoice_data->save();
