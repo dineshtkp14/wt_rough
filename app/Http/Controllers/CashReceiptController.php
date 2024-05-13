@@ -65,13 +65,11 @@ class CashReceiptController extends Controller
 
     $cusledgerdetails_id = $req->receiptno;
     $customerinfodetails = null;
+    $alldetails = customerledgerdetails::where('id', $req->receiptno)
+    ->where('invoicetype', 'payment')
+    ->get();
 
-    $alldetails = customerledgerdetails::where('id', $req->receiptno)->get();
     
-
-
-
-
    
 
     foreach ($alldetails as $data) {
@@ -80,6 +78,31 @@ class CashReceiptController extends Controller
         }
     }
 
+
+
+
+// stratfortotaldueamount
+$cusledgertails = Customerledgerdetails::where('customerid', $data->customerid)
+->where(function($query) {
+    $query->where('invoicetype', 'credit')
+          ->orWhere('invoicetype', 'payment');
+})
+->get();
+$querycheck = customerledgerdetails::where('customerid', $data->customerid)
+->where(function($query) {
+    $query->where('invoicetype', 'credit')
+          ->orWhere('invoicetype', 'payment');
+})
+->get();
+$debittotalsumwithdate = $querycheck->sum('debit');
+$credittotalsumwithdate = $querycheck->sum('credit');
+
+// $xd = customerinfo::where('id', $data->customerid)->get();
+// $afn = $xd;
+
+//end for totaldueamount
+    
+
    
       // Load the Blade view for the PDF
       $pdfView = view('cash_receipt.searchcashreceiptPdf', [
@@ -87,6 +110,8 @@ class CashReceiptController extends Controller
         'receiptno' => $cusledgerdetails_id,
         'breadcrumb' => $breadcrumb,
         'customerinfodetails' => $customerinfodetails,
+        'dts' => $debittotalsumwithdate,
+        'cts' => $credittotalsumwithdate,
     ]);
 
     // Generate PDF using FacadePdf
