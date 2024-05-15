@@ -22,6 +22,8 @@
                     <tr>
                         <th>ID</th>
                         <th>Date</th>
+                        <th>Customer Id</th>
+
                         <th>Cheque Date</th>
                         <th>Amount</th>
                         <th>Notes</th>
@@ -36,6 +38,8 @@
                             <tr>
                                 <td>{{ $i->id }}</td>
                                 <td>{{ $i->date }}</td>
+                                <td>{{ $i->customerid }}</td>
+
                                 <td>{{ $i->cheque_date }}</td>
                                 <td>{{ $i->amount }}</td>
                                 <td>{{ $i->notes }}</td>
