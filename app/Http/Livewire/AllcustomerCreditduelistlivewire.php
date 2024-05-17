@@ -223,13 +223,21 @@ return $item->debit_credit_difference >= 0; // Only consider positive or zero va
         $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfView);
 
         // Save the PDF to a temporary file
-        $pdfFile = tempnam(sys_get_temp_dir(), 'credit_Due_List');
+        $pdfFile = tempnam(sys_get_temp_dir(),'credit_Due_List');
         $pdf->save($pdfFile);
+
+                // Get today's date in the format YYYY-MM-DD
+            $todayDate = date('Y-m-d');
+
+            // Create a filename with today's date
+            $filename = "credit_Due_List_report_{$todayDate}.pdf";
 
         // Send headers to instruct the browser to open the PDF in a new tab
         return response()->file($pdfFile, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="credit_Due_List_report.pdf"',
+            'Content-Disposition' => "inline; filename=\"{$filename}\"",
+
+            // 'Content-Disposition' => 'inline; filename="rxxxcredit_Due_List_report.pdf"',
         ]);
     }
         // Your existing code to fetch data and prepare it for PDF
