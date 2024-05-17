@@ -106,6 +106,7 @@
 
             <th>Customer Id</th>
             <th>Customer Name</th>
+            <th>Address</th>
             <th>Total Due Amount</th>
             <th>Date</th>
         </tr>
@@ -123,6 +124,8 @@
 
                             <td data-label="Customer Id"><b>{{ $i->customerid }}</b></td>
                             <td data-label="Customer Id"><b>{{ $i->cname }}</b>  &nbsp; ({{ $i->cphoneno }})</td>
+                            <td data-label="Customer Id"><b>{{ $i->address }}</b></td>
+
                             <td data-label="Invoice Id"><b>{{ $i->debit_credit_difference }}</b></td>
                             <td data-label="Total Due Amount"><b>{{ $i->latest_date  }}</b></td>
 

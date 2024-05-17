@@ -186,10 +186,12 @@ $allResults = $query->paginate(500);
 // Fetch additional data
 foreach ($allResults as $data) {
     if ($data->customerid) {
-        $item = CustomerInfo::where('id', $data->customerid)->select('name', 'phoneno')->first();
+        $item = CustomerInfo::where('id', $data->customerid)->select('name', 'phoneno','address')->first();
         if ($item) {
             $data->cname = $item->name;
             $data->cphoneno = $item->phoneno;
+            $data->address = $item->address;
+
         }
     }
 }
