@@ -229,10 +229,12 @@ return $item->debit_credit_difference >= 0; // Only consider positive or zero va
         $pdf->save($pdfFile);
 
                 // Get today's date in the format YYYY-MM-DD
-            $todayDate = date('Y-m-d');
+            // $todayDate = date('Y-m-d');
+            $todayDate =  date('Y-m-d_H.i.s');
+
 
             // Create a filename with today's date
-            $filename = "credit_Due_List_report_{$todayDate}.pdf";
+            $filename = "credit_report_{$todayDate}.pdf";
 
         // Send headers to instruct the browser to open the PDF in a new tab
         return response()->file($pdfFile, [

@@ -121,11 +121,9 @@
                     @if ($i->debit_credit_difference != 0)
                         <tr> 
                             <td>{{ $sn++ }}</td>
-
                             <td data-label="Customer Id"><b>{{ $i->customerid }}</b></td>
                             <td data-label="Customer Id"><b>{{ $i->cname }}</b>  &nbsp; ({{ $i->cphoneno }})</td>
                             <td data-label="Customer Id"><b>{{ $i->address }}</b></td>
-
                             <td data-label="Invoice Id"><b>{{ $i->debit_credit_difference }}</b></td>
                             <td data-label="Total Due Amount"><b>{{ $i->latest_date  }}</b></td>
 
