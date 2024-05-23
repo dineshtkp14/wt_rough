@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-header">
             <a href="{{ route('chequedeposit.create') }}">
-                <img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/>
+               Add New <img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/>
             </a>
             Total {{ $all->total() }}
             <a href="{{ route('itemsales.create') }}" class="btn btn-primary ms-5" style="background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;">

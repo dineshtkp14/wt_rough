@@ -198,7 +198,7 @@
 						   <td data-label="Name">{{ $i->date }}</td>
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
+						   <td data-label="Contact No."><b>{{ $i->invoiceid }}</b></td>
 
                            <td data-label="Remarks"> {{ $i->invoicetype }}
 							@if($i->invoicetype == 'payment')
