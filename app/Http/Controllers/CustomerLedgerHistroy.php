@@ -863,7 +863,7 @@ class CustomerLedgerHistroy extends Controller
     
             $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();
     
-            $querycheck = customerledgerdetails::where('customerid', $req->customerid);
+            $querycheck = customerledgerdetails::where('customerid', $req->customerid)->orderBy('date', 'DESC');;
             if ($from && $to) {
                 $querycheck->whereBetween('date', [$from, $to]);
             }

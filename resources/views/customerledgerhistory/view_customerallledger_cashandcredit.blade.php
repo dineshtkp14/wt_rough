@@ -64,7 +64,9 @@
 					</div>
 				</div>	
 			</div>
-			<div class="col-md-3"></div>
+			<div class="col-md-3">
+				
+			</div>
 			
 			<div class="col-md-6">
 				<a href="{{ route('cpayments.create') }}" class="float-end btn btn-md btn-danger border border-5 border-warning" target="" rel="noopener noreferrer">
