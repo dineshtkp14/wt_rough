@@ -132,7 +132,7 @@
                 @endforeach
             @else
                 <tr>
-                    <td colspan="3"><h3>No Record Found !!!!</h3></td>
+                    <td colspan="3"><h3>No Record Found #!!!!</h3></td>
                 </tr>
             @endif
         </tbody>
@@ -140,7 +140,7 @@
     </tbody>
 </table>
 </div>
-<div class="card-footer text-muted">
+<div class="card-footer text-muted" >
 
 </div>
 </div>
