@@ -212,7 +212,13 @@
                            <td data-label="Remarks"> {{ $i->invoicetype }}
 							@if($i->invoicetype == 'payment')
 								<b>CR-({{ $i->id }}) </b>
-							
+
+								@if(!empty($i->invoicetype == 'payment'))
+								<a href="{{ url('cashreceipt?receiptno=' . $i->id) }}" class="btn btn-sm bg-info text-white">View</a>
+	
+								@endif
+
+
 							@endif
 						</td>
 						
