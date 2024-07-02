@@ -200,7 +200,14 @@
 						   <td data-label="Name">{{ $i->date }}</td>
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-						   <td data-label="Contact No."><b>{{ $i->invoiceid }}</b></td>
+						   <td data-label="Contact No."><b>{{ $i->invoiceid }}
+
+							@if(!empty($i->invoiceid))
+							<a href="{{ url('onlyviewbill?invoiceid=' . $i->invoiceid) }}" class="btn btn-sm bg-info text-white">View</a>
+
+							   {{-- <a class="btn btn-sm bg-info text-white"> view </a></b> --}}
+							@endif
+							</td>
 
                            <td data-label="Remarks"> {{ $i->invoicetype }}
 							@if($i->invoicetype == 'payment')
