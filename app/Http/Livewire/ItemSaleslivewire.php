@@ -46,10 +46,14 @@ class ItemSaleslivewire extends Component
 
                 //this line is new start
                 if ($data->invoiceid) {
-                    $forcidfrominv = invoice::where('id', $data->invoiceid)->select('customerid')->first();
+                    $forcidfrominv = invoice::where('id', $data->invoiceid)->select('customerid','inv_type')->first();
                    
                     if ($forcidfrominv) {
                         $customerid = $forcidfrominv->customerid;
+                        $data->inv_type = $forcidfrominv->inv_type;
+
+                       
+
                 
                         // Fetch customer details from customerinfo
                         $customerInfo = customerinfo::where('id', $customerid)->select('name')->first();
