@@ -26,6 +26,8 @@
 
                             <th>Created at </th>
                             <th>Bill No</th>
+                            <th>Name</th>
+
                             <th>Items Name</th>
                             <th>Unstocked Name</th>
                             <th>Quantity</th>
@@ -49,6 +51,8 @@
                                     <td data-label="Bill No">{{ $item->created_at }}</td>
 
                                     <td data-label="Bill No">{{ $item->invoiceid }}</td>
+                                    <td data-label="Bill No">{{ $item->customername }}</td>
+
                                     <td data-label="Items Name">{{ $item->itemname ? $item->itemname : '-' }}</td>
                                     <td data-label="Unstocked Name">{{ $item->unstockedname ? $item->unstockedname : '-' }}</td>
                                     <td data-label="Quantity">{{ $item->quantity }}</td>

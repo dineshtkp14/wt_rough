@@ -7,6 +7,10 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use App\Models\salesitem;
+use App\Models\invoice;
+use App\Models\customerinfo;
+
+
 
 class ItemSaleslivewire extends Component
 {
@@ -39,6 +43,26 @@ class ItemSaleslivewire extends Component
             ->paginate(50);
 
             foreach ($cus as $data) {
+
+                //this line is new start
+                if ($data->invoiceid) {
+                    $forcidfrominv = invoice::where('id', $data->invoiceid)->select('customerid')->first();
+                   
+                    if ($forcidfrominv) {
+                        $customerid = $forcidfrominv->customerid;
+                
+                        // Fetch customer details from customerinfo
+                        $customerInfo = customerinfo::where('id', $customerid)->select('name')->first();
+                
+                        if ($customerInfo) {
+                            $data->customeridx = $customerid;
+                            $data->customername = $customerInfo->name; // Assuming you want to add the customer name
+                        }
+                        }
+                }
+                //endofnewline
+
+
                 if ($data->itemid) {
                     $item = item::where('id', $data->itemid)->select('itemsname', 'mrp', 'costprice')->first();
 
