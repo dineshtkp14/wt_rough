@@ -94,10 +94,11 @@
                     <th>Customer Name</th>
                     <th>Invoice Id</th>
                     <th>Particulars</th>
+                    <th>Invoice Type</th>
                     <th>Voucher Type</th>
                     <th>Debit</th>
                     <th>Credit</th>
-                    <th>Invoice Type</th>
+                  
                     <th>Notes</th>
                     <th>Created At</th>
                     <th>Updated At</th>
@@ -116,10 +117,11 @@
     
                             <td data-label="Invoice Id">{{ $i->invoiceid }}</td>
                             <td data-label="Particulars">{{ $i->particulars }}</td>
+                            <td data-label="Invoice Type">{{ $i->invoicetype }}</td>
+
                             <td data-label="Voucher Type">{{ $i->voucher_type }}</td>
                             <td data-label="Debit">{{ $i->debit }}</td>
                             <td data-label="Credit">{{ $i->credit }}</td>
-                            <td data-label="Invoice Type">{{ $i->invoicetype }}</td>
                             <td data-label="Notes">{{ $i->notes }}</td>
                             <td data-label="Created At">{{ $i->created_at }}</td>
                             <td data-label="Created At">{{ $i->updated_at }}</td>
