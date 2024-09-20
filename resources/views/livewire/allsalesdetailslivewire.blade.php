@@ -34,7 +34,7 @@
         <tbody>
             @if (!$all->isEmpty())
                 @foreach ($all as $i)
-
+{{-- forcolor --}}
                 <tr @if (date('Y-m-d', strtotime($i->date)) === date('Y-m-d')) style="font-weight:bold;color:white;background:red;" @endif>
 
                         <td data-label="Id">{{ $i->id }}</td>
