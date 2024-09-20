@@ -1,4 +1,8 @@
 <div class="container">
+
+    <button class="button mb-2 btn btn-primary" wire:click="generateTodaysalesdetailsPDF">
+        <i class="fas fa-file-pdf icon"></i> DOWNLOAD PDF
+    </button>
 	<div class="card">
 		<div class="card-header">
             <a href="{{route('companys.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
@@ -29,7 +33,7 @@
             @if (!$all->isEmpty())
                 @foreach ($all as $i)
 
-                <tr @if (date('Y-m-d', strtotime($i->date)) === date('Y-m-d')) style="font-weight:bold;" @endif>
+                <tr @if (date('Y-m-d', strtotime($i->date)) === date('Y-m-d')) style="font-weight:bold;color:green;background:red;" @endif>
 
                         <td data-label="Id">{{ $i->id }}</td>
                         <td data-label="Customer Id">{{ $i->customerid }}</td>

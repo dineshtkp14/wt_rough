@@ -52,8 +52,6 @@ class ItemSaleslivewire extends Component
                         $customerid = $forcidfrominv->customerid;
                         $data->inv_type = $forcidfrominv->inv_type;
 
-                       
-
                 
                         // Fetch customer details from customerinfo
                         $customerInfo = customerinfo::where('id', $customerid)->select('name')->first();

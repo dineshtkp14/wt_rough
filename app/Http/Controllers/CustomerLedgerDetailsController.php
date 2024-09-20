@@ -277,6 +277,24 @@ public function showdetails()
          
          return view('allsalesdetails.index',['all'=>$cus,'breadcrumb'=>$breadcrumb]);
 }
+}
+
+
+public function showtodaysalesdetailsforpdf()
+{
+    if(Auth::check()){
+        $breadcrumb= [
+            'subtitle'=>'View ',
+            'title'=>'All Details',
+            'link'=>'View All Details'
+        ];
+
+      
+         $cus=customerledgerdetails::orderBy('id','DESC')->get();
+
+         
+         return view('allsalesdetails.index',['all'=>$cus,'breadcrumb'=>$breadcrumb]);
+}
 
 }
 //foralldetailsdisplay

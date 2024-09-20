@@ -391,6 +391,8 @@ Route::get('/totalsales', [TotalSalesController::class, 'index'])->name('totalsa
 Route::get('/allsalesdetails', [CustomerLedgerDetailsController::class, 'showdetails'])->name('allsalesdetails.showdetails');
 Route::get('/accl', [CustomerLedgerDetailsController::class, 'showallcuscreditdetails'])->name('allsalesdetails.showallcuscreditdetails');
 Route::get('/accl/pdf/convert', [CustomerLedgerDetailsController::class, 'showallcuscreditdetails'])->name('accl.convert');
+Route::get('/allsalesdetails/pdf/convert', [CustomerLedgerDetailsController::class, 'showdetails'])->name('allsalesdetails.convert');
+
 
 
 //counterandbankcheckcash

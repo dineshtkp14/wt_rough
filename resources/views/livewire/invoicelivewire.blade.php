@@ -31,7 +31,7 @@
                     <tbody>
                         @if ($all->count())
                             @foreach ($all as $sale)
-                            <tr @if (date('Y-m-d', strtotime($sale->inv_date)) === date('Y-m-d')) style="font-weight:bold;" @endif>
+                            <tr @if (date('Y-m-d', strtotime($sale->inv_date)) === date('Y-m-d')) style="font-weight:bold;background:red;color:white;" @endif>
 
                                     <td>{{ $sale->id }}</td>
                                     <td>{{ $sale->inv_date }}</td>

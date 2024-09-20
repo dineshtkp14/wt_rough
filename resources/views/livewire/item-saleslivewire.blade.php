@@ -46,7 +46,7 @@
                         @if ($cus->isNotEmpty())
                             @foreach ($cus as $item)
 
-                            <tr @if (date('Y-m-d', strtotime($item->date)) === date('Y-m-d')) style="font-weight:bold;" @endif>
+                            <tr @if (date('Y-m-d', strtotime($item->date)) === date('Y-m-d')) style="font-weight:bold;color:white;background:red;" @endif>
 
                                     <td data-label="Bill No">{{ $item->date }}</td>
 
