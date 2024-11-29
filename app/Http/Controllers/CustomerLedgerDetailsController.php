@@ -267,7 +267,7 @@ public function showdetails()
     if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'View ',
-            'title'=>'All Details',
+            'title'=>'Today sales',
             'link'=>'View All Details'
         ];
 

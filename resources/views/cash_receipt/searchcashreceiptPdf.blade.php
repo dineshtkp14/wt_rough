@@ -153,7 +153,7 @@
                 <li><strong>Name:</strong> {{$info->name}}</li>
                 <li><strong>Address:</strong> {{$info->address}}</li>
                 <li><strong>Email:</strong> {{$info->email}}</li>
-                <li><strong>Contact No:</strong> {{$info->phoneno}}</li>
+                <li><strong>Contact No:</strong> {{$info->phoneno}} , {{$info->alternate_phoneno}}</li>
             @endforeach
         </ul>
     </div>

@@ -75,7 +75,7 @@
                                             <p class="mb-1"><span>Name:</span> <span class="font-weight-bold">{{$info->name}}</span></p>
                                             <p class="mb-1"><span>Address:</span> <span class="font-weight-bold">{{$info->address}}</span></p>
                                             <p class="mb-1"><span>Email:</span> <span class="font-weight-bold">{{$info->email}}</span></p>
-                                            <p class="mb-1"><span>Contact No:</span> <span class="font-weight-bold">{{$info->phoneno}}</span></p>
+                                            <p class="mb-1"><span>Contact No:</span> <span class="font-weight-bold">{{$info->phoneno}}, {{$info->alternate_phoneno}}</span></p>
                                         @endforeach
                                     @endif
                                 </div>

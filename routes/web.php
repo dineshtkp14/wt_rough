@@ -102,6 +102,10 @@ Route::get('/itemsales/{itemsales}/edit',[ItemsalesController::class,'edit'])->n
 Route::put('/itemsales/{itemsales}',[ItemsalesController::class,'update'])->name('itemsales.update');
 Route::post('/itemsales',[ItemsalesController::class,'store'])->name('itemsales.store');
 
+Route::post('/itemsales/pdf/convert',[ItemsalesController::class,'index'])->name('itemsales.downloadpdf');
+
+
+
 
 // Route::get('/creditnotes/create', [Creditnotes_controller::class, 'showCreditNotesPage'])->name('showCreditNotesPage.check');
 

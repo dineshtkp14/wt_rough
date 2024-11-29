@@ -123,7 +123,9 @@
                 Name:  {{$i->name}}<br>
                 Address:  {{$i->address}}<br>
                 Email:  {{$i->email}}<br>
-                ContactNo:  {{$i->phoneno}}<br>
+                ContactNo:  {{$i->phoneno}} , {{$i->alternate_phoneno}}<br>
+             
+
             @endforeach
         @endif
        </div>

@@ -94,7 +94,7 @@
     <div class="info" style="float: left; width: 50%;">
         <p>Name: {{$i->name}}</p>
         <p>Address: {{$i->address}}</p>
-        <p>Phone No: {{$i->phoneno}}</p>
+        <p>Phone No: {{$i->phoneno}}, {{$i->alternate_phoneno}}</p>
         <p>Phone No: {{$i->email}}</p>
     </div>
 @endforeach

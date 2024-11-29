@@ -121,7 +121,7 @@
 			<h5>Customer Id: {{$i->id}}</h5> 
 			<h5>Name: {{$i->name}}</h5> 
 			<h5>Address: {{$i->address}}</h5>
-			<h5>Phone No: {{$i->phoneno}}</h5>
+			<h5>Phone No: {{$i->phoneno}} , {{$i->alternate_phoneno}}</h5>
 			<h5>Email: {{$i->email}}</h5>
 
 		</div>

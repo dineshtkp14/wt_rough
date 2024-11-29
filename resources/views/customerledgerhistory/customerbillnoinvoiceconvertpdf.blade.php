@@ -176,7 +176,7 @@
                                 <p>Name: {{$i->name}}</p>
                                 <p>Address: {{$i->address}}</p>
                                 <p>Email: {{$i->email}}</p>
-                                <p>Contact No: {{$i->phoneno}}</p>
+                                <p>Contact No: {{$i->phoneno}}, {{$i->alternate_phoneno}}</p>
                             @endforeach
 
                           
