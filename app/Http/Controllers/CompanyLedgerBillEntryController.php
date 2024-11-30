@@ -276,14 +276,22 @@ public function update($id, Request $req)
     //   $allcusinfo=company::orderBy('id','DESC')->get();  
 
       $allcusinfo = company::where('id', $companyid)
-                     ->orderBy('id', 'DESC')
+                     ->orderBy('id', 'ASC')
                      ->get();
      
       if($from == "" || $to==""){
        
 
-          $cusledgertails=CompanyLedger::where('companyid', $req->companyid)->get();
-          $betweendate=CompanyLedger::where('companyid',$req->companyid)->get();
+        //   $cusledgertails=CompanyLedger::where('companyid', $req->companyid)->get();
+        //   $betweendate=CompanyLedger::where('companyid',$req->companyid)->get();
+
+        $cusledgertails = CompanyLedger::where('companyid', $req->companyid)
+                        ->orderBy('date', 'DESC')
+                        ->get();
+
+    $betweendate = CompanyLedger::where('companyid', $req->companyid)
+                        ->orderBy('date', 'DESC')
+                        ->get();
 
           $debittotalsumwithdate = $betweendate->sum('debit');
           $credittotalsumwithdate = $betweendate->sum('credit');
@@ -292,14 +300,18 @@ public function update($id, Request $req)
       }else{
         
       
+        $betweendate = CompanyLedger::whereBetween('date', [$from, $to])
+        ->where('companyid', $req->companyid)
+        ->orderBy('date', 'DESC')
+        ->get();
 
-          $betweendate=CompanyLedger::whereBetween('date',[$from,$to])->where('companyid',$req->companyid)->get();
-          $debittotalsumwithdate = $betweendate->sum('debit');
-          $credittotalsumwithdate = $betweendate->sum('credit');
+$debittotalsumwithdate = $betweendate->sum('debit');
+$credittotalsumwithdate = $betweendate->sum('credit');
 
-          
-          $cusledgertails=CompanyLedger::whereBetween('date',  [$from,$to])->where('companyid', $req->companyid)->get();         
-         
+$cusledgertails = CompanyLedger::whereBetween('date', [$from, $to])
+        ->where('companyid', $req->companyid)
+        ->orderBy('date', 'DESC')
+        ->get();
       }
 
      
