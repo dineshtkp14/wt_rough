@@ -29,6 +29,8 @@
                     <h5>Address: {{$i->address}}</h5>
                     <h5>Phone No: {{$i->phoneno}}</h5>
                     <h5>Email: {{$i->email}}</h5>
+                    <h5>Email: {{$i->notes}}</h5>
+
 
                 </div>
 	        @endforeach
