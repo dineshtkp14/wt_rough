@@ -124,7 +124,7 @@
 			<h5>Phone No: {{$i->phoneno}} , {{$i->alternate_phoneno}}</h5>
 			<h5>Email: {{$i->email}}</h5>
 			<h5>Notes: {{$i->Remarks}}</h5>
-
+			Remarks
 		</div>
 	@endforeach
   </div>
