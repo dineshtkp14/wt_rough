@@ -48,6 +48,15 @@
                     @enderror
             </div>
 
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Alternate PhoneNo</label>
+                <input type="text" class="form-control @error('alternate_phoneno') is-invalid @enderror" 
+                    name="alternate_phoneno" value="{{ old('alternate_phoneno',$cus->alternate_phoneno) }}">
+                @error('alternate_phoneno')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+        </div>
+
            
 
             <div class="col-md-6">

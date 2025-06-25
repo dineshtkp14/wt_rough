@@ -118,7 +118,7 @@
   <div class="col-md-5">
 	@foreach ($cusinfoforpdfok as $i)
 		<div>
-			CUSTOMER ID <span style="font-size: 1.25rem; font-weight: 500;">{{$i->id}}</span><br>
+			CUSTOMER ID: <span style="font-size: 1.25rem; font-weight: 500;">{{$i->id}}</span><br>
 			NAME: <span style="font-size: 1.25rem; font-weight: 500;">{{$i->name}}</span><br>
 			ADDRESS: <span style="font-size: 1.25rem; font-weight: 500;">{{$i->address}}</span><br>
 			PHONE NO: <span style="font-size: 1.25rem; font-weight: 500;">{{$i->phoneno}}, {{$i->alternate_phoneno}}</span><br>
