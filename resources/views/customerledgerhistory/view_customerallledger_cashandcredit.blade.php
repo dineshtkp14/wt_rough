@@ -118,13 +118,14 @@
   <div class="col-md-5">
 	@foreach ($cusinfoforpdfok as $i)
 		<div>
-			<h5>Customer Id: {{$i->id}}</h5> 
-			<h5>Name: {{$i->name}}</h5> 
-			<h5>Address: {{$i->address}}</h5>
-			<h5>Phone No: {{$i->phoneno}} , {{$i->alternate_phoneno}}</h5>
-			<p>Email:<h5> {{$i->email}}</h5></p>
-			<h5>Notes: {{$i->remarks}}</h5>
-			okokokok
+			Customer Id: <h5>{{$i->id}}</h5>
+Name: <h5>{{$i->name}}</h5>
+Address: <h5>{{$i->address}}</h5>
+Phone No: <h5>{{$i->phoneno}}, {{$i->alternate_phoneno}}</h5>
+Email: <h5>{{$i->email}}</h5>
+Notes: <h5>{{$i->remarks}}</h5>
+
+			
 		</div>
 	@endforeach
   </div>
