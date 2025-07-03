@@ -253,6 +253,7 @@
             border-radius: 10px;
             padding: 10px 20px;
             border: 2px solid #333;
+            margin-top: 50px;
         ">
             {{ number_format($dts - $cts, 2) }}
         </span>
