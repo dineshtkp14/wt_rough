@@ -113,8 +113,8 @@
     right: 25px;
     font-size: 24px;
     text-align: right;
-    line-height: 1.5;
-    background-color: #f0f8ff;
+    line-hight: 1.5;
+   
     padding: 10px 15px;
    
 }
