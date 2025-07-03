@@ -42,9 +42,15 @@
 
         .address-info {
     font-size: 16px;
-    line-height: 1.4;
+    line-height: 1; /* This sets minimal spacing between lines */
     margin-top: 5px;
+    margin-bottom: 0;
+    padding: 0;
     color: #333;
+}
+.address-info p {
+    margin: 0; /* Removes space between lines */
+    padding: 0;
 }
 
         .info-section,
