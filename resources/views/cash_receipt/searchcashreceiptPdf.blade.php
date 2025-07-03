@@ -15,14 +15,15 @@
     padding-bottom: 0;
     border-bottom: 2px solid #007bff;
 }
-
 .letterhead h1 {
-    margin: -10px;
+    margin-top: -18px;  /* Moves title slightly up */
+    margin-bottom: 5px;
     font-size: 32px;
     color: #000;
     letter-spacing: 1px;
     font-weight: bold;
 }
+
 
         .header h3 {
             margin: 0;
