@@ -17,7 +17,7 @@
 }
 
 .letterhead h1 {
-    margin: 0;
+    margin: -10px;
     font-size: 32px;
     color: #000;
     letter-spacing: 1px;
