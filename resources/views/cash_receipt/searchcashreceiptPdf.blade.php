@@ -109,14 +109,14 @@
 
         .top-right-info {
     position: absolute;
-    top: 1px;
+    top: 10px;
     right: 25px;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: normal;
     text-align: right;
     line-height: 1.5;
     background-color: #f0f8ff;
-    padding: 10px 15px;
+    padding: 8px 12px;
     border-radius: 6px;
     border: 1px solid #007bff;
 }
