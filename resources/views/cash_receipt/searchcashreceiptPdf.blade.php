@@ -52,6 +52,7 @@
 .address-info p {
     margin: 2px 0; /* Balanced vertical spacing */
     padding: 0;
+    font-size: 14px;
 }
 
         .info-section,
