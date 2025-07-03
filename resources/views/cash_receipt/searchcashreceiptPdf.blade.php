@@ -245,8 +245,8 @@
         <span>Total Due Amount:</span>
 
 
-<span style="font-size: 40px; font-weight: bold;">
-    
+<span style="font-size: 42px; font-weight: bold;">
+
        {{ number_format($dts - $cts, 2) }}
 </span>
 
