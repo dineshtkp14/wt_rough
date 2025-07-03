@@ -244,9 +244,16 @@
             Total Due Amount: 
             <span class="forunderline fw-bold ps-2">
                 {{-- {{ $dts - $cts }} -/ --}}
-                <span style="font-size: 40px; font-weight: bold;">
-                    {{ number_format($dts - $cts, 2) }}
-                </span> -/
+                <span style="
+                font-size: 40px;
+                font-weight: bold;
+                border: 2px solid #000;
+                padding: 5px 15px;
+                display: inline-block;
+            ">
+                {{ number_format($dts - $cts, 2) }}
+            </span> -/
+            
                             </span>
             <span style="font-size: 16px;"> ( as of the date and time: <?php echo date("Y-m-d H:i:s"); ?>) </span>
         </div>
