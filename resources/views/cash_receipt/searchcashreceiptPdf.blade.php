@@ -243,7 +243,7 @@
         <div style="margin-top: 70px; background-color: black;color:white; border: 1px solid black; padding: 10px;">
             Total Due Amount:
             <span class="forunderline fw-bold ps-2">
-               
+               {{-- my money is very good --}}
                {{-- <b> {{ number_format($dts - $cts, 2) }} </b>  -/ --}}
                {{-- <span style="font-size: 48px;"><b>{{ number_format($dts - $cts, 2) }}</b></span> -/ --}}
 
