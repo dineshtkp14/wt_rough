@@ -244,19 +244,12 @@
     <div style="font-size: 20px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;">
         <span>Total Due Amount:</span>
 
-        <span style="
-            display: inline-block;
-            font-size: 28px;
-            font-weight: bold;
-            color: black;
-            background-color: #c8e6c9;
-            border-radius: 10px;
-            padding: 10px 20px;
-            border: 2px solid #333;
-            margin-top: 50px;
-        ">
-            {{ number_format($dts - $cts, 2) }}
-        </span>
+
+<span style="font-size: 40px; font-weight: bold;">
+    
+       {{ number_format($dts - $cts, 2) }}
+</span>
+
 
         <span>-/</span>
 
