@@ -38,11 +38,7 @@
             text-align: center;
         }
 
-        .letterhead h1 {
-            margin: 0;
-            font-size: 34px; /* Adjusted font size */
-            text-decoration: none;
-        }
+    
 
         .address-info {
     font-size: 16px;
