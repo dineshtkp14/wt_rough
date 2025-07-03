@@ -245,7 +245,7 @@
             <span class="forunderline fw-bold ps-2">
                 {{-- {{ $dts - $cts }} -/ --}}
                 <span style="
-                font-size: 40px;
+                font-size: 41px;
                 
             ">
                 {{ number_format($dts - $cts, 2) }}
