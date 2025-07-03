@@ -112,7 +112,6 @@
     top: 1px;
     right: 25px;
     font-size: 24px;
-    font-weight: bold;
     text-align: right;
     line-height: 1.5;
     background-color: #f0f8ff;
