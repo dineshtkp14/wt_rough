@@ -116,8 +116,7 @@
     line-height: 1.5;
     background-color: #f0f8ff;
     padding: 10px 15px;
-    border-radius: 6px;
-    border: 1px solid #007bff;
+   
 }
 
         @page {
