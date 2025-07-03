@@ -245,7 +245,23 @@
             <span class="forunderline fw-bold ps-2">
                
                {{-- <b> {{ number_format($dts - $cts, 2) }} </b>  -/ --}}
-               <span style="font-size: 48px;"><b>{{ number_format($dts - $cts, 2) }}</b></span> -/
+               {{-- <span style="font-size: 48px;"><b>{{ number_format($dts - $cts, 2) }}</b></span> -/ --}}
+
+               <span style="
+               display: inline-block;
+               font-size: 28px;
+               font-weight: bold;
+               color: black;
+               background-color: #fdd835;
+               border-radius: 50%;
+               padding: 20px 30px;
+               text-align: center;
+               border: 2px solid #333;
+           ">
+               {{ number_format($dts - $cts, 2) }}
+           </span> -/
+
+
 
             </span>
             <span style="font-size: 16px;"> ( as of the date and time: <?php echo date("Y-m-d H:i:s"); ?>) </span>
