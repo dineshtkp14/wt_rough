@@ -253,7 +253,7 @@
 
         <span>-/</span>
 
-        <span style="font-size: 16px;">
+        <span style="font-size: px;">
             (as of the date and time: <?php echo date("Y-m-d H:i:s"); ?>)
         </span>
     </div>
