@@ -163,8 +163,9 @@
             <div class="address-info">
                 <p>Address: Tikapur, Kailali (In front of Tikapur Police Station)</p>
                 <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
-                <p class="cashrecipttext">Cash Receipt</p>
+                
             </div>
+            <p class="cashrecipttext">Cash Receipt</p>
         </div>
     
         <div class="top-right-info">
