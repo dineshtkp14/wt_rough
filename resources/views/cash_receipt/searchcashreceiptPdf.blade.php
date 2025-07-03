@@ -269,7 +269,7 @@
 </div>
 <p style="font-size: 14px !important; margin-top:50px;">Printed Time and Date: <span style="color: #4b4b4b; font-size: 14px;"><?php echo date("Y-m-d H:i:s"); ?></span></p>
 
-        <div style="margin-top: 70px; background-color: black;color:white; border: 1px solid black; padding: 10px;">
+        <div style="margin-top: 120px; background-color: black;color:white; border: 1px solid black; padding: 10px;">
             Total Due Amount: 
             <span class="forunderline fw-bold ps-2">
                 {{-- {{ $dts - $cts }} -/ --}}
