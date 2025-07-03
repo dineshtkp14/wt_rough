@@ -147,6 +147,23 @@
             opacity: 0.1; /* Adjust the opacity */
             color: gray; /* Adjust the color */
         }
+        .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 30px 0 30px; /* Top, Right, Bottom, Left */
+    font-size: 15px;
+}
+
+.top-bar p {
+    margin: 0;
+    padding: 4px 8px;
+    background-color: #f0f8ff;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    font-weight: normal;
+}
+
     </style>
 </head>
 <body>
@@ -166,11 +183,17 @@
             <p class="cashrecipttext">Cash Receipt</p>
         </div>
     
-        <div class="top-right-info">
-            @if (!empty($alldetails))
-            <p><strong>Receipt No:</strong> {{ $alldetails[0]->id }} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> {{ $alldetails[0]->date }}</p>
-
-            @endif
+        <div class="top-bar">
+            <div class="left-date">
+                @if (!empty($alldetails))
+                    <p><strong>Date:</strong> {{ isset($alldetails[0]->date) ? $alldetails[0]->date : '' }}</p>
+                @endif
+            </div>
+            <div class="right-receipt">
+                @if (!empty($alldetails))
+                    <p><strong>Receipt No:</strong> {{ isset($alldetails[0]->id) ? $alldetails[0]->id : '' }}</p>
+                @endif
+            </div>
         </div>
 
     <div class="info-section">
