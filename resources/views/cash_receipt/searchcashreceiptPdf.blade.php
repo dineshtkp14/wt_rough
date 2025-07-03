@@ -240,27 +240,29 @@
 </div>
 <p style="font-size: 14px !important; margin-top:50px;">Printed Time and Date: <span style="color: #4b4b4b; font-size: 14px;"><?php echo date("Y-m-d H:i:s"); ?></span></p>
 
-        <!-- 🔶 Added text-align: center; to center all content -->
-<div style="margin-top: 70px; background-color: black; color: white; border: 1px solid black; padding: 10px; **text-align: center;**">
-    <!-- 🔶 Wrapped Total Due in a simple label -->
-    <p><strong>Total Due Amount:</strong></p>
-    
-    <!-- 🔶 This span is now centered because of parent text-align -->
-    <span style="
-        display: inline-block;
-        font-size: 28px;
-        font-weight: bold;
-        color: black;
-        background-color: #c8e6c9;
-        border-radius: 10px;
-        padding: 10px;
-        border: 2px solid #333;
-    ">
-        {{ number_format($dts - $cts, 2) }}
-    </span> -/
+<div style="margin-top: 70px; background-color: black; color: white; border: 1px solid black; padding: 10px;">
+    <div style="font-size: 20px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;">
+        <span>Total Due Amount:</span>
 
-    <!-- 🔶 Centered time -->
-    <p style="font-size: 16px;">( as of the date and time: <?php echo date("Y-m-d H:i:s"); ?> )</p>
+        <span style="
+            display: inline-block;
+            font-size: 28px;
+            font-weight: bold;
+            color: black;
+            background-color: #c8e6c9;
+            border-radius: 10px;
+            padding: 10px 20px;
+            border: 2px solid #333;
+        ">
+            {{ number_format($dts - $cts, 2) }}
+        </span>
+
+        <span>-/</span>
+
+        <span style="font-size: 16px;">
+            (as of the date and time: <?php echo date("Y-m-d H:i:s"); ?>)
+        </span>
+    </div>
 </div>
 
 </body>
