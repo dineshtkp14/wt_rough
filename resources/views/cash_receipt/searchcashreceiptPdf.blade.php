@@ -11,9 +11,12 @@
 
         .header {
     text-align: center;
+    margin-top: 0;
+    padding-top: 0;
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: 2px solid #007bff;
+
 }
 .letterhead h1 {
     margin-top: -18px;  /* Moves title slightly up */
