@@ -111,14 +111,11 @@
     position: absolute;
     top: 10px;
     right: 25px;
-    font-size: 16px;         /* Medium, readable font size */
-    font-weight: 600;        /* Slightly bold but not overpowering */
-    text-align: right;
-    line-height: 1.4;
-    background-color: #f0f8ff;
-    padding: 8px 12px;
-    border-radius: 6px;
+    font-size: 15px;
+    padding: 6px 10px;
     border: 1px solid #007bff;
+    border-radius: 4px;
+    background-color: #f0f8ff;
 }
 
         @page {
@@ -171,8 +168,8 @@
     
         <div class="top-right-info">
             @if (!empty($alldetails))
-                <p><strong>Receipt No:</strong> {{ isset($alldetails[0]->id) ? $alldetails[0]->id : '' }}</p>
-                <p><strong>Date:</strong> {{ isset($alldetails[0]->date) ? $alldetails[0]->date : '' }}</p>
+            <p><strong>Receipt No:</strong> {{ $alldetails[0]->id }} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> {{ $alldetails[0]->date }}</p>
+
             @endif
         </div>
 
