@@ -240,30 +240,27 @@
 </div>
 <p style="font-size: 14px !important; margin-top:50px;">Printed Time and Date: <span style="color: #4b4b4b; font-size: 14px;"><?php echo date("Y-m-d H:i:s"); ?></span></p>
 
-        <div style="margin-top: 70px; background-color: black;color:white; border: 1px solid black; padding: 10px;">
-            Total Due Amount:
-            <span class="forunderline fw-bold ps-2">
-               {{-- my money is very good --}}
-               {{-- <b> {{ number_format($dts - $cts, 2) }} </b>  -/ --}}
-               {{-- <span style="font-size: 48px;"><b>{{ number_format($dts - $cts, 2) }}</b></span> -/ --}}
+<div style="margin-top: 70px; background-color: black;color:white; border: 1px solid black; padding: 10px;">
+    Total Due Amount:
+    <span class="forunderline fw-bold ps-2">
+        <span style="
+            display: inline-block;
+            width: 150px;
+            height: 150px;
+            font-size: 28px;
+            font-weight: bold;
+            color: black;
+            background-color: #fdd835;
+            border-radius: 50%;
+            border: 3px solid #333;
+            text-align: center;
+            line-height: 150px;
+        ">
+            {{ number_format($dts - $cts, 2) }}
+        </span> -/
+    </span>
+    <span style="font-size: 16px;"> ( as of the date and time: <?php echo date("Y-m-d H:i:s"); ?>) </span>
+</div>
 
-               <span style="
-    display: inline-block;
-    font-size: 28px;
-    font-weight: bold;
-    color: black;
-    background-color: #c8e6c9;
-    border-radius: 10px;
-    padding: 10px;
-    border: 2px solid #333;
-">
-    {{ number_format($dts - $cts, 2) }}
-</span> -/
-
-
-
-            </span>
-            <span style="font-size: 16px;"> ( as of the date and time: <?php echo date("Y-m-d H:i:s"); ?>) </span>
-        </div>
 </body>
 </html>
