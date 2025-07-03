@@ -10,9 +10,19 @@
         }
 
         .header {
-            text-align: center;
-            margin-bottom: 10px !important;
-        }
+    text-align: center;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 2px solid #007bff;
+}
+
+.letterhead h1 {
+    margin: 0;
+    font-size: 32px;
+    color: #000;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
 
         .header h3 {
             margin: 0;
@@ -31,10 +41,11 @@
         }
 
         .address-info {
-            text-align: center;
-            margin-top: 10px; /* Adjusted margin */
-            font-size: 20px;
-        }
+    font-size: 16px;
+    line-height: 1.4;
+    margin-top: 5px;
+    color: #333;
+}
 
         .info-section,
         .receipt-details {
@@ -90,11 +101,17 @@
         }
 
         .top-right-info {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 20px; /* Adjusted font size */
-        }
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 14px;
+    text-align: right;
+    line-height: 1.5;
+    background-color: #f0f8ff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #007bff;
+}
 
         @page {
             size: A5 landscape;
@@ -102,11 +119,15 @@
         }
 
         .cashrecipttext {
-            font-size: 24px; /* Adjusted font size */
-            font-weight: bold;
-            font-family: Fantasy;
-            text-decoration: underline;
-        }
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Georgia, serif;
+    color: #007bff;
+    text-transform: uppercase;
+    text-decoration: underline;
+    margin-top: 12px;
+    letter-spacing: 1px;
+}
 
         /* Added CSS to float Receiver's Signature to the right */
         .receiver-signature {
@@ -124,27 +145,27 @@
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="watermark">OHT</div>
-    <div class="header">
-        <div class="letterhead">
-            <h1>OM HARI TRADELINK</h1>
+    <div class="container">
+        <div class="watermark">OHT</div>
+    
+        <div class="header">
+            <div class="letterhead">
+                <h1>OM HARI TRADELINK</h1>
+            </div>
+    
+            <div class="address-info">
+                <p>Address: Tikapur, Kailali (In front of Tikapur Police Station)</p>
+                <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
+                <p class="cashrecipttext">Cash Receipt</p>
+            </div>
         </div>
     
-        <div class="address-info">
-            <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
-            <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
-            <p class="cashrecipttext">CASH RECEIPT</p>
+        <div class="top-right-info">
+            @if (!empty($alldetails))
+                <p><strong>Receipt No:</strong> {{ isset($alldetails[0]->id) ? $alldetails[0]->id : '' }}</p>
+                <p><strong>Date:</strong> {{ isset($alldetails[0]->date) ? $alldetails[0]->date : '' }}</p>
+            @endif
         </div>
-    </div>
-
-    <div class="top-right-info">
-        @if (!empty($alldetails))
-            <p>Receipt No: <strong> {{ isset($alldetails[0]->id) ? $alldetails[0]->id : '' }}</strong> </p>
-            <p><strong>Date:</strong> {{ isset($alldetails[0]->date) ? $alldetails[0]->date : '' }}</p>
-        @endif
-    </div>
 
     <div class="info-section">
         <h5>RECEIVED FROM</h5>
