@@ -247,7 +247,7 @@
                 <span style="
                 font-size: 40px;
                 font-weight: bold;
-                border: 2px solid #000;
+                border: 2px solid white;
                 padding: 5px 15px;
                 display: inline-block;
             ">
