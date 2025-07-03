@@ -244,7 +244,7 @@
             Total Due Amount:::: 
             <span class="forunderline fw-bold ps-2">
                
-               {{-- <b> {{ number_format($dts - $cts, 2) }} </b>  -/ --}} 
+               {{-- <b> {{ number_format($dts - $cts, 2) }} </b>  -/ --}}
                <span style="font-size: 48px;"><b>{{ number_format($dts - $cts, 2) }}</b></span> -/
 
             </span>
