@@ -111,7 +111,7 @@
     position: absolute;
     top: 10px;
     right: 25px;
-    font-size: 15px;
+    font-size: 25px;
     padding: 6px 10px;
     border: 1px solid #007bff;
     border-radius: 4px;
