@@ -242,8 +242,8 @@
 
         <div style="margin-top: 70px; background-color: black;color:white; border: 1px solid black; padding: 10px;">
             Total Due Amount: 
-            <span class="forunderline fw-bold ps-2">
-                {{-- {{ $dts - $cts }} -/ --}}
+            <span class="forunderline fw-bold ps-4">
+                {{-- {{ $dts - $cts }} -/ -----}}
                <b> {{ number_format($dts - $cts, 2) }} </b>  -/
             </span>
             <span style="font-size: 16px;"> ( as of the date and time: <?php echo date("Y-m-d H:i:s"); ?>) </span>
