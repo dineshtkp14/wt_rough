@@ -109,7 +109,7 @@
 
         .top-right-info {
     position: absolute;
-    top: -11px;
+    top: -31px;
     right: 25px;
     font-size: 24px;
     text-align: right;
