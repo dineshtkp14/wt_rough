@@ -19,7 +19,7 @@
 
 }
 .letterhead h1 {
-    margin-top: -18px;  /* Moves title slightly up */
+    margin-top: -30px;   /* Move up more */
     margin-bottom: 5px;
     font-size: 32px;
     color: #000;
