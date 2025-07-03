@@ -111,10 +111,10 @@
     position: absolute;
     top: 10px;
     right: 25px;
-    font-size: 14px;
-    font-weight: normal;
+    font-size: 16px;         /* Medium, readable font size */
+    font-weight: 600;        /* Slightly bold but not overpowering */
     text-align: right;
-    line-height: 1.5;
+    line-height: 1.4;
     background-color: #f0f8ff;
     padding: 8px 12px;
     border-radius: 6px;
