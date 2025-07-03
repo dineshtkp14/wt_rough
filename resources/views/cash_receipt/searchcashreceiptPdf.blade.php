@@ -248,18 +248,17 @@
                {{-- <span style="font-size: 48px;"><b>{{ number_format($dts - $cts, 2) }}</b></span> -/ --}}
 
                <span style="
-               display: inline-block;
-               font-size: 28px;
-               font-weight: bold;
-               color: black;
-               background-color: #fdd835;
-               border-radius: 50%;
-               padding: 20px 30px;
-               text-align: center;
-               border: 2px solid #333;
-           ">
-               {{ number_format($dts - $cts, 2) }}
-           </span> -/
+    display: inline-block;
+    font-size: 28px;
+    font-weight: bold;
+    color: black;
+    background-color: #c8e6c9;
+    border-radius: 10px;
+    padding: 10px 20px;
+    border: 2px solid #333;
+">
+    {{ number_format($dts - $cts, 2) }}
+</span> -/
 
 
 
