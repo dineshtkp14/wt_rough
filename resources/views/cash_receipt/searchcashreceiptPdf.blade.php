@@ -41,7 +41,7 @@
     
 
         .address-info {
-    font-size: 24px;
+    font-size: 20px;
     line-height: 1.3;
     margin-top: 5px;
     margin-bottom: 0;
