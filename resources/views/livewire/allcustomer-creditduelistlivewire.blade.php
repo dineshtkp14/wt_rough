@@ -56,9 +56,14 @@
                                     <td data-label="Customer Name"><b>{{ $item->cname }}</b>  &nbsp; ({{ $item->cphoneno }})</td>
                                     <td data-label="Total Due Amount"><b>{{ $item->debit_credit_difference }}
                                         @if ($item->debit_credit_difference >= 0 && $item->debit_credit_difference < 100)
-                                        <button class="btn btn-outline-warning btn-sm ms-2 border-2 rounded-pill">
+                                        <a href="{{ route('cpayments.create', [
+                                            'customerid' => $item->customerid,
+                                            'particulars' => 'discount',  // or any dynamic value you want
+                                            'voucher_type' => 'cash'      // or any default you prefer
+                                        ]) }}" 
+                                        class="btn btn-outline-warning btn-sm ms-2 border-2 rounded-pill">
                                             Discount
-                                        </button>                                        
+                                        </a>                                     
                                         @endif
                                     </td>
                                     <td data-label="Total Due Amount"><b>{{ $item->latest_date  }}</b></td>
