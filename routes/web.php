@@ -305,6 +305,10 @@ Route::get('/cpayments/{cpayments}/edit',[CustomerLedgerDetailsController::class
 Route::put('/cpayments/{cpayments}',[CustomerLedgerDetailsController::class,'update'])->name('cpayments.update');
 Route::delete('/cpayments/{cpayments}',[CustomerLedgerDetailsController::class,'destroy'])->name('cpayments.destroy');
 
+Route::post('/accl',[CreditdiscountController::class,'CreditdueDiscount'])->name('Creditcpayments.CreditdueDiscount');
+
+
+
 //Route::get('/clhs',[CustomerLedgerHistroy::class,'index'])->name('clhs.index');
 Route::get('/clhs',[CustomerLedgerHistroy::class,'returnchoosendatehistroy'])->name('clhs.returnchoosendatehistroy');
 Route::get('/allcashandcredit',[CustomerLedgerHistroy::class,'returnchoosendatehistroycashandcredit'])->name('returnchoosendatehistroycashandcredit');

@@ -84,12 +84,12 @@
     </div>
 </div>
 
-<div class="card mt-5 shadow" id="discountFormCard" style="display: ;">
+<div class="card mt-5 shadow" id="discountFormCard" style="display: none;">
     <div class="card-header bg-warning text-white fw-bold">
         Apply Discount
     </div>
     <div class="card-body">
-        <form action="{{ route('discount.apply') }}" method="POST">
+        <form action="{{ route('Creditcpayments.CreditdueDiscount') }}" method="POST">
             @csrf
 
             <!-- Hidden input to track customer -->
