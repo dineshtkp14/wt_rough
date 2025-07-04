@@ -54,7 +54,11 @@
                                     <td>{{ $sn++ }}</td>
                                     <td data-label="Customer Id"><b>{{ $item->customerid }}</b></td>
                                     <td data-label="Customer Name"><b>{{ $item->cname }}</b>  &nbsp; ({{ $item->cphoneno }})</td>
-                                    <td data-label="Total Due Amount"><b>{{ $item->debit_credit_difference }}<button>Discount </button></b></td>
+                                    <td data-label="Total Due Amount"><b>{{ $item->debit_credit_difference }}
+                                        @if ($item->debit_credit_difference >= 0 && $item->debit_credit_difference < 100)
+                                        <i class="fas fa-percentage me-1"></i> Discount
+                                        @endif
+                                    </td>
                                     <td data-label="Total Due Amount"><b>{{ $item->latest_date  }}</b></td>
 
                                 </tr>
