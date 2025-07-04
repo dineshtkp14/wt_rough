@@ -56,7 +56,9 @@
                                     <td data-label="Customer Name"><b>{{ $item->cname }}</b>  &nbsp; ({{ $item->cphoneno }})</td>
                                     <td data-label="Total Due Amount"><b>{{ $item->debit_credit_difference }}
                                         @if ($item->debit_credit_difference >= 0 && $item->debit_credit_difference < 100)
-                                        <i class="fas fa-percentage me-1"></i> Discount
+                                        <button class="btn btn-outline-warning btn-sm ms-2 border-2 rounded-pill">
+                                            Discount
+                                        </button>                                        
                                         @endif
                                     </td>
                                     <td data-label="Total Due Amount"><b>{{ $item->latest_date  }}</b></td>
