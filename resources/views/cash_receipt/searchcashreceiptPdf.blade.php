@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Print</title>
     <meta charset="UTF-8">
+    <title>Print</title>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
