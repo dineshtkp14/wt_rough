@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Print</title>
+    <meta charset="UTF-8">
     <style>
         body {
             font-family: Arial, sans-serif;
