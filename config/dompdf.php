@@ -190,15 +190,14 @@ return array(
 
 
         
-'custom_font_dir' => storage_path('fonts/'),
-'custom_font_data' => [
-    'noto' => [
-        'R' => 'NotoSansDevanagari-Regular.ttf',
-        'useOTL' => 0xFF,
-        'useKashida' => 75,
-    ],
-],
-
+        'custom_font_dir' => storage_path('fonts/'),
+        'custom_font_data' => [
+            'noto' => [
+                'R' => 'NotoSansDevanagari-Regular.ttf',
+                'useOTL' => 0xFF,
+                'useKashida' => 75,
+            ],
+        ],
         /**
          * Image DPI setting
          *

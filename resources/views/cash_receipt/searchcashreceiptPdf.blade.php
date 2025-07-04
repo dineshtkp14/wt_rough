@@ -275,7 +275,9 @@
             Total Due Amount(बाकी): 
 
             <p style="font-family: 'noto'">This is a font test for Nepali: बाकी रकम</p>
-
+            <p style="font-family: 'noto', Devanagari, sans-serif;">
+                This is a font test for Nepali: बाकी रकम
+            </p>
             <span class="forunderline fw-bold ps-2">
                 {{-- {{ $dts - $cts }} -/ --}}
                 <span style="
