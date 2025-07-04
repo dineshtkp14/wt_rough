@@ -89,7 +89,7 @@
         Apply Discount
     </div>
     <div class="card-body">
-        <form action="{{ route('Creditcpayments.CreditdueDiscount') }}" method="POST">
+        {{-- <form action="{{ route('Creditcpayments.CreditdueDiscount') }}" method="POST"> --}}
             @csrf
 
             <!-- Hidden input to track customer -->
