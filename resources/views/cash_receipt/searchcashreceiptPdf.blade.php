@@ -273,6 +273,9 @@
 
         <div style="margin-top: 100px; background-color: black;color:white; border: 1px solid black; padding: 10px;">
             Total Due Amount(बाकी): 
+            <div style="font-family: 'Noto Sans Devanagari', Mangal, sans-serif; font-size: 24px;">
+                Total Due Amount (बाकी):
+            </div>
             <span class="forunderline fw-bold ps-2">
                 {{-- {{ $dts - $cts }} -/ --}}
                 <span style="
