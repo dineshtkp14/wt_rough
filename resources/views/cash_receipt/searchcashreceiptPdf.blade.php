@@ -274,7 +274,7 @@
         <div style="margin-top: 100px; background-color: black;color:white; border: 1px solid black; padding: 10px;">
             Total Due Amount(बाकी): 
 
-            <p style="font-family: 'DejaVu Sans', sans-serif;">This is a font test for Nepali: बाकी रकम</p>
+            <p style="font-family: 'noto'">This is a font test for Nepali: बाकी रकम</p>
 
             <span class="forunderline fw-bold ps-2">
                 {{-- {{ $dts - $cts }} -/ --}}
