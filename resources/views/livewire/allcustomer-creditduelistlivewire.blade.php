@@ -88,34 +88,5 @@
     <div class="card-header bg-warning text-white fw-bold">
         Apply Discount
     </div>
-    <div class="card-body">
-        {{-- <form action="{{ route('Creditcpayments.CreditdueDiscount') }}" method="POST"> --}}
-            @csrf
-
-            <!-- Hidden input to track customer -->
-            <input type="hidden" name="customerid" id="discountCustomerId">
-
-            <div class="mb-3">
-                <label for="discountCustomerName" class="form-label">Customer Name</label>
-                <input type="text" id="discountCustomerName" class="form-control" disabled>
-            </div>
-
-            <div class="mb-3">
-                <label for="discount_amount" class="form-label">Discount Amount <span class="text-danger">*</span></label>
-                <input type="number" name="discount_amount" id="discount_amount" class="form-control @error('discount_amount') is-invalid @enderror" required>
-                @error('discount_amount')
-                    <p class="invalid-feedback">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="remarks" class="form-label">Remarks</label>
-                <textarea name="remarks" id="remarks" class="form-control" rows="2"></textarea>
-            </div>
-
-            <div class="text-end">
-                <button type="submit" class="btn btn-success">Submit Discount</button>
-            </div>
-        </form>
-    </div>
+   
 </div>
