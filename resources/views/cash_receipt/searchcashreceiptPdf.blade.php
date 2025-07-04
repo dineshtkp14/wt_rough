@@ -6,7 +6,7 @@
     
     <style>
         body {
-            font-family: 'DejaVu Sans', sans-serif;;
+            font-family: 'noto', sans-serif;
             margin: 0;
             padding: 0;
         }

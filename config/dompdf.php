@@ -186,7 +186,18 @@ return array(
          * Used if no suitable fonts can be found. This must exist in the font folder.
          * @var string
          */
-        "default_font" => "serif",
+        "default_font" => "noto",
+
+
+        
+'custom_font_dir' => storage_path('fonts/'),
+'custom_font_data' => [
+    'noto' => [
+        'R' => 'NotoSansDevanagari-Regular.ttf',
+        'useOTL' => 0xFF,
+        'useKashida' => 75,
+    ],
+],
 
         /**
          * Image DPI setting
