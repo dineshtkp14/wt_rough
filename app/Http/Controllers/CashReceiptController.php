@@ -115,7 +115,7 @@ $credittotalsumwithdate = $querycheck->sum('credit');
     ]);
 
     // Generate PDF using FacadePdf
-    $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfView);
+    $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'noto'])->loadHtml($pdfView);
 
     // Save the PDF to a temporary file
     $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');

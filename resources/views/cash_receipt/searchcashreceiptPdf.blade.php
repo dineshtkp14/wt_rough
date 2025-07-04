@@ -6,7 +6,7 @@
     
     <style>
         body {
-            font-family: 'Arial', 'Noto Sans Devanagari', 'Mangal', sans-serif;
+            font-family: 'noto', sans-serif;
             margin: 0;
             padding: 0;
         }
