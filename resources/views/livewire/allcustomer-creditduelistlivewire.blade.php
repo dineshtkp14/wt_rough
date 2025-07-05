@@ -61,6 +61,8 @@
                                             'customerid' => $item->customerid,
                                             'particulars' => 'discount',
                                             'voucher_type' => 'cash',
+                                            'amount' => $item->debit_credit_difference,
+
                                             'laptop' => 'acer'
 
                                         ]) }}" 
