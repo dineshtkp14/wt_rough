@@ -83,8 +83,10 @@
                     </div>
                 </div>
                 <div>
-                    <label for="" id="cname" name="cname"></label>
+                    <label><strong>Customer Name:</strong></label>
+                    <span id="cname"></span>
                 </div>
+                
                 <div style="width: 300px">
                     <div class="input-group mb-1">
                         <span class="input-group-text">Date: <span style="color: red;">*</span></span>
@@ -184,11 +186,12 @@
             document.getElementById('hiddenVt').value = voucherType;
         }
         if (cname) {
-            const cnameInput = document.getElementById('cname');
-            if (cnameInput) {
-                cnameInput.value = cname;
-            }
-        }
+    const cnameElement = document.getElementById('cname');
+    if (cnameElement) {
+        cnameElement.textContent = cname;
+    }
+}
+
         if (amountx) {
     document.getElementById('amount').value = amountx;
     if (typeof updateAmountInWords === 'function') {
