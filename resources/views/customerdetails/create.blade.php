@@ -183,9 +183,11 @@
             document.getElementById('vt').value = voucherType;
             document.getElementById('hiddenVt').value = voucherType;
         }
-        if (voucherType) {
-            document.getElementById('cname').value = cname;
-           
+        if (cname) {
+            const cnameInput = document.getElementById('cname');
+            if (cnameInput) {
+                cnameInput.value = cname;
+            }
         }
         if (amountx) {
     document.getElementById('amount').value = amountx;
