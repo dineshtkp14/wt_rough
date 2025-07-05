@@ -55,7 +55,7 @@
                                     <td data-label="Customer Id"><b>{{ $item->customerid }}</b></td>
                                     <td data-label="Customer Name"><b>{{ $item->cname }}</b>  &nbsp; ({{ $item->cphoneno }})</td>
                                     <td data-label="Total Due Amount"><b>{{ $item->debit_credit_difference }}
-                                        @if ($item->debit_credit_difference >= 0 && $item->debit_credit_difference < 100)
+                                        @if ($item->debit_credit_difference >= -100 && $item->debit_credit_difference <= 100)
                                         <a 
                                         href="{{ route('cpayments.create', [
                                             'customerid' => $item->customerid,
