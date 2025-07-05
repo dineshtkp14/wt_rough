@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <div>
-                    <label for="" name="disocuntname"></label>
+                    <label for="" id="cname" name="cname"></label>
                 </div>
                 <div style="width: 300px">
                     <div class="input-group mb-1">
