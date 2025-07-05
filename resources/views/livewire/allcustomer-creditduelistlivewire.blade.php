@@ -62,6 +62,8 @@
                                             'particulars' => 'discount',
                                             'voucher_type' => 'cash',
                                             'amount' => $item->debit_credit_difference,
+                                            'cname' => $item->cname,
+
 
                                             'laptop' => 'acer'
 
