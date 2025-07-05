@@ -83,8 +83,8 @@
                     </div>
                 </div>
                 <div>
-                    <label><strong>Customer Name:</strong></label>
-                    <span id="cname"></span>
+                    
+                    <span id="cname" style="font-size: 40px;"></span>
                 </div>
                 
                 <div style="width: 300px">
