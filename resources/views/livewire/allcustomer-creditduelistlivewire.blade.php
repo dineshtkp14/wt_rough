@@ -60,7 +60,7 @@
                                         href="{{ route('cpayments.create', [
                                             'customerid' => $item->customerid,
                                             'particulars' => 'discount',
-                                            'voucher_type' => 'cash',
+                                            'voucher_type' => 'discount',
                                             'amount' => $item->debit_credit_difference,
                                             'cname' => $item->cname,
 
