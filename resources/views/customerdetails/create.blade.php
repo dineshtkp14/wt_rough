@@ -82,7 +82,9 @@
                         </div>
                     </div>
                 </div>
-                <div>hihihhhiiih </div>
+                <div>
+                    <label for="" name="disocuntname"></label>
+                </div>
                 <div style="width: 300px">
                     <div class="input-group mb-1">
                         <span class="input-group-text">Date: <span style="color: red;">*</span></span>
@@ -162,6 +164,8 @@
         const particulars = urlParams.get('particulars');
         const voucherType = urlParams.get('voucher_type');
         const amountx = urlParams.get('amount');
+        const cname = urlParams.get('cname');
+
 
         const laptop = urlParams.get('laptop'); // Optional if needed later
 
@@ -178,6 +182,10 @@
         if (voucherType) {
             document.getElementById('vt').value = voucherType;
             document.getElementById('hiddenVt').value = voucherType;
+        }
+        if (voucherType) {
+            document.getElementById('cname').value = cname;
+           
         }
         if (amountx) {
     document.getElementById('amount').value = amountx;
