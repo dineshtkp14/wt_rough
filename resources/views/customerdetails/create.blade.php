@@ -179,8 +179,11 @@
             document.getElementById('hiddenVt').value = voucherType;
         }
         if (amountx) {
-            document.getElementById('amount').value = voucherType;
-        }
+    document.getElementById('amount').value = amountx;
+    if (typeof updateAmountInWords === 'function') {
+        updateAmountInWords();
+    }
+}
         
 
         // Optionally disable the checkbox and input fields if they are auto-filled
