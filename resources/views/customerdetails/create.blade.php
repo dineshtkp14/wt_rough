@@ -190,6 +190,11 @@
     if (cnameElement) {
         cnameElement.textContent = cname;
     }
+
+    const searchInput = document.getElementById('searchCustomerInput');
+    if (searchInput) {
+        searchInput.style.display = 'none';
+    }
 }
 
         if (amountx) {
