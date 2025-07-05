@@ -60,7 +60,9 @@
                                         href="{{ route('cpayments.create', [
                                             'customerid' => $item->customerid,
                                             'particulars' => 'discount',
-                                            'voucher_type' => 'cash'
+                                            'voucher_type' => 'cash',
+                                            'laptop' => 'acer'
+
                                         ]) }}" 
                                         class="btn btn-outline-warning btn-sm ms-2 border-2 rounded-pill"
                                         target="_self" {{-- ensures regular navigation, avoids Livewire interference --}}

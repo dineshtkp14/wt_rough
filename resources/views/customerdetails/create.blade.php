@@ -154,6 +154,39 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const customerId = urlParams.get('customerid');
+        const particulars = urlParams.get('particulars');
+        const voucherType = urlParams.get('voucher_type');
+        const laptop = urlParams.get('laptop'); // Optional if needed later
+
+        if (customerId) {
+            document.getElementById('customerIdInput').value = customerId;
+            // Optional: You can pre-fill search input or fetch customer info here
+        }
+
+        if (particulars) {
+            document.getElementById('particulars').value = particulars;
+            document.getElementById('hiddenParticulars').value = particulars;
+        }
+
+        if (voucherType) {
+            document.getElementById('vt').value = voucherType;
+            document.getElementById('hiddenVt').value = voucherType;
+        }
+
+        // Optionally disable the checkbox and input fields if they are auto-filled
+        if (particulars || voucherType) {
+            document.getElementById('disableFields').disabled = true;
+        }
+    });
+</script>
+
+
+
+<script>
    document.addEventListener('DOMContentLoaded', function() {
     const checkbox = document.getElementById('disableFields');
     const particularsInput = document.getElementById('particulars');
