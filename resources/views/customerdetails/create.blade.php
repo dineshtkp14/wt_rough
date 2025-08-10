@@ -99,10 +99,17 @@
             </div>
 
             <!-- Checkbox -->
-            <div class="col-md-12">
+            <div class="col-md-4">
                 <div class="form-check d-flex align-items-center">
                     <input class="form-check-input me-2" type="checkbox" id="disableFields" name="disableFields" style="width: 30px; height: 30px;">
                     <label class="form-check-label" for="disableFields">If Sales Return</label>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input me-2" type="checkbox" id="disableFields" name="disableFields" style="width: 30px; height: 30px;">
+                    <label class="form-check-label" for="disableFields">If Cash</label>
                 </div>
             </div>
 
