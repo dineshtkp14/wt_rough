@@ -170,7 +170,7 @@
             </div>
 
             <div class="d-grid gap-2 pt-2 pb-4">
-                <button type="submit" id="submitBtn" class="btn btn-lg btn-primary">Save</button>
+                <button type="submit" id="submitBtn" class="btn btn-lg btn-primary">Payment</button>
             </div>
         </form>
     </div>
