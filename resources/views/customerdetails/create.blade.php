@@ -146,7 +146,7 @@
             </div>
 
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Amount <span style="color: red;">*</span></label>
+                <label for="inputPassword4" class="form-label">Amount <span style="color: red;">*</span> Total due amount:-  <span> </span id="totaldueamountfornotclear"></label>
                 <input autocomplete="off" id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" style="font-weight: bold;font-size: 20px;"  >
                 @error('amount')
                 <p class="invalid-feedback">{{ $message }}</p>

@@ -72,6 +72,8 @@
 				<a href="{{ route('cpayments.create' , [
 					'customerid' => $cid,
 					'amount' => $allnotcash - $cts,
+					'totaldueamountfornotclear' => $allnotcash - $cts,
+
 					'cname' => ($cusinfoforpdfok[0]->name ?? '') . ' | ' . 
                    ($cusinfoforpdfok[0]->address ?? '') . ' | ' . 
                    ($cusinfoforpdfok[0]->phoneno ?? '')
