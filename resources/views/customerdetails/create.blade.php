@@ -84,7 +84,7 @@
                 </div>
                 <div>
                     
-                    <span id="cname" style="font-size: 20px; font-weight: bold;"></span>
+                    <span id="cname" style="font-size: 20px; font-weight: bold; background-color: black; color: white; padding: 4px 8px; border-radius: 4px;"></span>
                 </div>
                 
                 <div style="width: 300px">
