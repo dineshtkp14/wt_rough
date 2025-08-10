@@ -72,7 +72,9 @@
 				<a href="{{ route('cpayments.create' , [
 					'customerid' => $cid,
 					'amountt' => $allnotcash - $cts,
-					'cname' => $cusinfoforpdfok[0]->name ?? ''
+					'cname' => ($cusinfoforpdfok[0]->name ?? '') . ' | ' . 
+                   ($cusinfoforpdfok[0]->address ?? '') . ' | ' . 
+                   ($cusinfoforpdfok[0]->phoneno ?? '')
 				]) }}"  class="float-end btn btn-md btn-danger border border-5 border-warning" target="" rel="noopener noreferrer">
 					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
 					<b class="h5">CUSTOMER LEDGER PAYMENT</b>
