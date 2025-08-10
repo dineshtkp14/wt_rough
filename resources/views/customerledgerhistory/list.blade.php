@@ -5,7 +5,7 @@
 <div class="main-content"> 
 	@yield('breadcrumb')
 <div class="container">
-	
+	{{-- CUSTOMER LEDGER ONLY CASH --}}
     <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
         <div class="card-body">
             <h5 class="card-title">Customer Info</h5>
@@ -110,7 +110,7 @@
 						@endforeach
 
 						<h1 class="mt-2 floatleft btn {{ $dts - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
-							Total Due Amount: okoko
+							Total Due Amount: 
 							<span class="forunderline fw-bold ps-2">
 								{{-- {{ $dts - $cts }} -/ --}}
 								{{ number_format($dts - $cts, 2) }} -/
@@ -128,7 +128,7 @@
 
 			</div>
 		</div>
-		<div class="col-md-8"></div>
+		<div class="col-md-8">OKOKO</div>
 		<div class="col-md-4 mb-2">
 			<input class="form-control  border-warning border-2" id="filterInput" type="text" placeholder="Search Here">
 		</div>
