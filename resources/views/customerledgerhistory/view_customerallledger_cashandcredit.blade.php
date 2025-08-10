@@ -71,7 +71,7 @@
 			<div class="col-md-6">
 				<a href="{{ route('cpayments.create' , [
 					'customerid' => $cid,
-					'amountt' => $allnotcash - $cts,
+					'amount' => $allnotcash - $cts,
 					'cname' => ($cusinfoforpdfok[0]->name ?? '') . ' | ' . 
                    ($cusinfoforpdfok[0]->address ?? '') . ' | ' . 
                    ($cusinfoforpdfok[0]->phoneno ?? '')
