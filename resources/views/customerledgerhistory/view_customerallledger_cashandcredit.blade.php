@@ -69,7 +69,7 @@
 			</div>
 			
 			<div class="col-md-6">
-				<a href="{{ route('cpayments.create') }}" href="{{ route('cpayments.create', [
+				<a href="{{ route('cpayments.create' , [
 					'customerid' => $cid,
 					'amount' => $allnotcash - $cts,
 					'cname' => $cusinfoforpdfok[0]->name ?? ''
