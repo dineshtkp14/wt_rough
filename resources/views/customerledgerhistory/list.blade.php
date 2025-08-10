@@ -117,7 +117,23 @@
 
 							</span>
 						</h1>
-						<div class="col-md-2"> okok </div>
+						@if (!empty($cid))
+	<div class="col-md-2 mt-2">
+		<a href="{{ route('cpayments.create', [
+			'customerid' => $cid,
+			'amount' => $allnotcash - $cts,
+			'totaldueamountfornotclear' => $allnotcash - $cts,
+			'cname' => 
+				($cusinfoforpdfok[0]->name ?? '') . ' | ' .
+				($cusinfoforpdfok[0]->address ?? '') . ' | ' .
+				($cusinfoforpdfok[0]->phoneno ?? '')
+		]) }}" 
+		class="btn btn-md btn-danger border border-5 border-warning w-100">
+			<i class="fas fa-money-bill-wave"></i>
+			<b class="h6">Customer Ledger Payment</b>
+		</a>
+	</div>
+@endif
 				</div>
 				<div class="col-md-4">
 					<a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
