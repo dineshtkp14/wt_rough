@@ -108,8 +108,8 @@
 
             <div class="col-md-8">
                 <div class="form-check d-flex align-items-center">
-                    <input class="form-check-input me-2" type="checkbox" id="disableFields" name="disableFields" style="width: 30px; height: 30px;">
-                    <label class="form-check-label" for="disableFields">If Cash</label>
+                    <input class="form-check-input me-2" type="checkbox" id="forautoinputcash" name="forautoinputcash" style="width: 30px; height: 30px;">
+                    <label class="form-check-label" for="forautoinputcash">If Cash</label>
                 </div>
             </div>
 
@@ -219,7 +219,29 @@
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const checkbox = document.getElementById('forautoinputcash');
+    const particularsInput = document.getElementById('particulars');
+    const hiddenParticulars = document.getElementById('hiddenParticulars');
+    const vtInput = document.getElementById('vt');
+    const hiddenVt = document.getElementById('hiddenVt');
 
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+            particularsInput.value = 'cash';
+            hiddenParticulars.value = 'cash';
+            vtInput.value = 'cash';
+            hiddenVt.value = 'cash';
+        } else {
+            particularsInput.value = '';
+            hiddenParticulars.value = '';
+            vtInput.value = '';
+            hiddenVt.value = '';
+        }
+    });
+});
+</script>
 
 <script>
    document.addEventListener('DOMContentLoaded', function() {
