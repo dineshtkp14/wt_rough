@@ -118,17 +118,19 @@
 							</span>
 						</h1>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-2">
 					<a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
 						<div class="icon-box d-flex justify-content-center align-items-center">
 							<i class="fa-solid fa-print"></i>
 						</div>
 					</a>
 				</div>
+				<div class="col-md-2">OK </div>
+				
 
 			</div>
 		</div>
-		<div class="col-md-8">OKOKO</div>
+		<div class="col-md-8"></div>
 		<div class="col-md-4 mb-2">
 			<input class="form-control  border-warning border-2" id="filterInput" type="text" placeholder="Search Here">
 		</div>
