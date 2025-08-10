@@ -111,7 +111,7 @@
             <div class="col-md-6">
                 <div class="form-check d-flex align-items-center">
                     <input class="form-check-input me-2" type="checkbox" id="clearamount" name="clearamount" style="width: 30px; height: 30px;">
-                    <label class="form-check-label" for="clearamount">If Cash</label>
+                    <label class="form-check-label" for="clearamount">Clear Amount</label>
                 </div>
             </div>
             <div class="col-md-4">
@@ -224,6 +224,20 @@
         if (particulars || voucherType) {
             document.getElementById('disableFields').disabled = true;
         }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const clearAmountCheckbox = document.getElementById('clearamount');
+        const amountInput = document.getElementById('amount');
+
+        clearAmountCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                amountInput.value = '';
+                document.getElementById('amountInWords').innerText = '';
+            }
+        });
     });
 </script>
 
