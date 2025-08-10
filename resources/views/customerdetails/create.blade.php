@@ -84,7 +84,7 @@
                 </div>
                 <div>
                     
-                    <span id="cname" style="font-size: 40px;"></span>
+                    <span id="cname" style="font-size: 16px;"></span>
                 </div>
                 
                 <div style="width: 300px">
