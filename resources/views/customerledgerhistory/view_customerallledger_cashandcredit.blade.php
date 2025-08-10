@@ -71,7 +71,7 @@
 			<div class="col-md-6">
 				<a href="{{ route('cpayments.create' , [
 					'customerid' => $cid,
-					'amount' => $allnotcash - $cts,
+					'amountt' => $allnotcash - $cts,
 					'cname' => $cusinfoforpdfok[0]->name ?? ''
 				]) }}"  class="float-end btn btn-md btn-danger border border-5 border-warning" target="" rel="noopener noreferrer">
 					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
