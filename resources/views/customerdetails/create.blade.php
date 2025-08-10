@@ -268,6 +268,17 @@
 });
 </script>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const totalDue = urlParams.get('totaldueamountfornotclear');
+
+        if (totalDue && document.getElementById('totaldueamountfornotclear')) {
+            document.getElementById('totaldueamountfornotclear').innerText = totalDue;
+        }
+    });
+</script>
 <script>
    document.addEventListener('DOMContentLoaded', function() {
     const checkbox = document.getElementById('disableFields');
