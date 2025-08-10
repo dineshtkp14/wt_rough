@@ -148,7 +148,7 @@
             <div class="col-md-6">
                 <label for="amount" class="form-label">
                     Amount <span style="color: red;">*</span>
-                    :&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp; ( Old due amount: <span id="totaldueamountfornotclear" class="text-danger fw-bold"></span> )
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( Old due amount: <span id="totaldueamountfornotclear" class="text-danger fw-bold"></span> )
                 </label>                
                 <input autocomplete="off" id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" style="font-weight: bold;font-size: 20px;"  >
                 @error('amount')
