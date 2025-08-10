@@ -69,7 +69,11 @@
 			</div>
 			
 			<div class="col-md-6">
-				<a href="{{ route('cpayments.create') }}" class="float-end btn btn-md btn-danger border border-5 border-warning" target="" rel="noopener noreferrer">
+				<a href="{{ route('cpayments.create') }}" href="{{ route('cpayments.create', [
+					'customerid' => $cid,
+					'amount' => $allnotcash - $cts,
+					'cname' => $cusinfoforpdfok[0]->name ?? ''
+				]) }}"  class="float-end btn btn-md btn-danger border border-5 border-warning" target="" rel="noopener noreferrer">
 					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
 					<b class="h5">CUSTOMER LEDGER PAYMENT</b>
 				</a>
