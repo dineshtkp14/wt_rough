@@ -59,7 +59,7 @@
             @csrf
 
             <div class="py-4 d-flex justify-content-between align-items-center">
-                <div style="width: 300px">
+                <div style="width: 250px">
                     <div class="input-group mb-1">
                         <div class="search-box">
                             <input id="customerIdInput" name="customerid" hidden>
