@@ -110,7 +110,7 @@
 						@endforeach
 
 						<h1 class="mt-2 floatleft btn {{ $dts - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
-							Total Due Amount: 
+							Total Due Amount: okoko
 							<span class="forunderline fw-bold ps-2">
 								{{-- {{ $dts - $cts }} -/ --}}
 								{{ number_format($dts - $cts, 2) }} -/
