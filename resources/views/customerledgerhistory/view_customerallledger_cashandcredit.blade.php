@@ -69,19 +69,20 @@
 			</div>
 			
 			<div class="col-md-6">
-				<a href="{{ route('cpayments.create' , [
+				@if (!empty($cid))
+				<a href="{{ route('cpayments.create', [
 					'customerid' => $cid,
 					'amount' => $allnotcash - $cts,
 					'totaldueamountfornotclear' => $allnotcash - $cts,
-
-					'cname' => ($cusinfoforpdfok[0]->name ?? '') . ' | ' . 
-                   ($cusinfoforpdfok[0]->address ?? '') . ' | ' . 
-                   ($cusinfoforpdfok[0]->phoneno ?? '')
-				]) }}"  class="float-end btn btn-md btn-danger border border-5 border-warning" target="" rel="noopener noreferrer">
-					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
+					'cname' => 
+						($cusinfoforpdfok[0]->name ?? '') . ' | ' . 
+						($cusinfoforpdfok[0]->address ?? '') . ' | ' . 
+						($cusinfoforpdfok[0]->phoneno ?? '')
+				]) }}" class="float-end btn btn-md btn-danger border border-5 border-warning">
+					<i class="fas fa-money-bill-wave"></i>
 					<b class="h5">CUSTOMER LEDGER PAYMENT</b>
 				</a>
-
+			@endif
 				<a href="{{ route('chequedeposit.create') }}" class=" me-5 float-end btn btn-md btn-primary border border-5 border-danger" target="" rel="noopener noreferrer">
 					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
 					Cheque Deposit
