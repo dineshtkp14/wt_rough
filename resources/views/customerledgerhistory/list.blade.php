@@ -98,7 +98,7 @@
 		</div>
 		<div class="col-md-6">
 			<div class="row">
-				<div class="col-md-8">
+				<div class="col-md-6">
 						@foreach ($cusinfobyid as $i)
 								<div class="fw-bold">
 									Name: {{$i->name}}<br>
@@ -117,16 +117,15 @@
 
 							</span>
 						</h1>
+						<div class="col-md-2"> okok </div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-4">
 					<a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
 						<div class="icon-box d-flex justify-content-center align-items-center">
 							<i class="fa-solid fa-print"></i>
 						</div>
 					</a>
 				</div>
-				<div class="col-md-2">OK </div>
-				
 
 			</div>
 		</div>
