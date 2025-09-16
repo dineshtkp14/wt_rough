@@ -73,7 +73,11 @@
               </div>
             @endforeach
           </div>
-          <div class="col-md-1"></div>
+          <div class="col-md-1">
+            <a href="{{ route('itemsales.create') }}" class="btn btn-primary ms-3" style="background-color:#FF0066;border-color:#0be813;">
+                <i class="fas fa-file-invoice"></i> ADD NEW INVOICE
+              </a>
+          </div>
       </form>
 
 
