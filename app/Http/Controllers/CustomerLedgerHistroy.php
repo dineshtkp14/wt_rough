@@ -1070,6 +1070,7 @@ public function oldpricecheck(Request $req)
             'customeridfor'  => $customeridfor,
             'cusinfoforcard' => $cusinfoforcard,
             'cus'            => $cus,
+            'cusinfoforpdfok'   => $cusinfoforpdfok,
         ]);
     }
 
