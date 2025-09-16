@@ -168,23 +168,24 @@
                 </div>
 
                 <div class="col-md-6 float-end">
-                    <div class="col-md-6 float-end">
-                        <form method="get" action="{{ route('oldpricecheck') }}" id="tableSearchForm" class="float-end">
-                          {{-- keep current filters --}}
-                          @if(!empty($cid))  <input type="hidden" name="customerid" value="{{ $cid }}"> @endif
-                          @if(!empty($from)) <input type="hidden" name="date1" value="{{ $from }}"> @endif
-                          @if(!empty($to))   <input type="hidden" name="date2" value="{{ $to }}"> @endif
-                      
-                          <input type="text"
-                                 name="searchxx"
-                                 id="filterInputw"
-                                 class="form-control border-warning border border-5"
-                                 placeholder="Search Here"
-                                 style="width: 250px;"
-                                 value="{{ $searchxx ?? '' }}" />
-                        </form>
-                      </div>
-                </div>
+                    <form method="get" action="{{ route('oldpricecheck') }}" id="tableSearchForm" class="float-end">
+                      {{-- keep current filters on submit --}}
+                      @if(!empty($cid))  <input type="hidden" name="customerid" value="{{ $cid }}"> @endif
+                      @if(!empty($from)) <input type="hidden" name="date1" value="{{ $from }}">   @endif
+                      @if(!empty($to))   <input type="hidden" name="date2" value="{{ $to }}">     @endif
+                  
+                      <input type="text"
+                             name="searchxx"
+                             id="filterInput"
+                             class="form-control border-warning border-2"
+                             placeholder="Search Here"
+                             style="width: 250px;"
+                             value="{{ $searchxx ?? '' }}"
+                             autocomplete="off"
+                             autofocus />
+                    </form>
+                  </div>
+                  
             </div>
         </div>
         <div class="card-body">
@@ -284,17 +285,31 @@ function openPdfInNewTab(event, url) {
 
 </div>
 
-
 <script>
     (function(){
-      const el = document.getElementById('filterInputw');
-      if (!el) return;
+      const input = document.getElementById('filterInput');
+      if (!input) return;
+    
+      // Keep focus + caret after page reload (so it doesn't "disturb" you)
+      window.addEventListener('DOMContentLoaded', () => {
+        if (input.value !== '') {
+          input.focus();
+          const v = input.value;
+          // move caret to the end
+          input.setSelectionRange(v.length, v.length);
+          // keep it in view (optional)
+          input.scrollIntoView({ block: 'center' });
+        }
+      });
+    
+      // Auto-submit (server-side search) with a tiny debounce
       let t = null;
-      el.addEventListener('input', () => {
+      input.addEventListener('input', () => {
         clearTimeout(t);
-        t = setTimeout(() => el.form.submit(), 300); // debounce 300ms
+        t = setTimeout(() => input.form.submit(), 300);
       });
     })();
     </script>
+    
 
 @stop
