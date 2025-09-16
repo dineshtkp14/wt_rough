@@ -144,13 +144,7 @@
 	<span> 
 		
 
-		<div class="col-12 d-flex justify-content-end align-items-center pt-4">
-			<a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
-				<div class="icon-box d-flex justify-content-center align-items-center">
-					<i class="fa-solid fa-print"></i>
-				</div>
-			</a>
-		</div>
+	
 		
 		
 	</span>
@@ -165,103 +159,6 @@
 
 
 
-<table>
-	<thead>
-		<tr>
-			<th>ID</th>
-			<th>DATE</th>
-			<th>PARTICULARS</th>
-			<th>VOUCHER TYPE</th>
-			<th>INVOICE NO</th>
-            <th>INVOICE TYPE</th>
-            <th>SALES RETURN </th>
-            <th>CREDIT NOTES INVOICE NO</th>
-			<th>DEBIT</th>  
-            <th>CREDIT</th>
-            <th>CN INVOICE NO</th>
-
-		</tr>
-	</thead>
-	<tbody>
-        
-  
-                    @if($all!=null)
-					   @foreach ($all as $i)
-					   <tr>
-						   <td data-label="Id">{{ $i->id }}</td>
-						   <td data-label="Name">{{ $i->date }}</td>
-						   <td data-label="Address">{{ $i->particulars}}</td>
-						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-						   <td data-label="Contact No."><b>{{ $i->invoiceid }}
-
-							@if(!empty($i->invoiceid))
-							<a href="{{ url('onlyviewbill?invoiceid=' . $i->invoiceid) }}" class="btn btn-sm bg-info text-white">View</a>
-
-							   {{-- <a class="btn btn-sm bg-info text-white"> view </a></b> --}}
-							@endif
-							</td>
-
-                           <td data-label="Remarks"> {{ $i->invoicetype }}
-							@if($i->invoicetype == 'payment')
-								<b>CR-({{ $i->id }}) </b>
-
-								@if(!empty($i->invoicetype == 'payment'))
-								<a href="{{ url('cashreceipt?receiptno=' . $i->id) }}" class="btn btn-sm bg-info text-white">View</a>
-	
-								@endif
-
-
-							@endif
-						</td>
-						
-	                       <td data-label="Remarks">{{ $i->salesreturn }}</td>
-                           <td data-label="Remarks">{{ $i->returnidforcreditnotes }}</td>
-						   <td data-label="Amount">{{ $i->debit }}</td>
-						   <td data-label="Remarks">{{ $i->credit }}</td> 
-						   <td data-label="Remarks">{{ $i->cninvoiceid }}</td> 
-					   </tr>
-					   
-					   @endforeach
-					   <tr>
-						   <td>-</td>
-						   <td>-</td>
-						   <td>-</td>
-
-
-						   <td>-</td>
-			   
-						   <td>-</td>
-			   
-						   <td>-</td>
-						   <td>-</td>
-						   <td>-</td>
-
-
-			   
-						   <td>
-							   @if($dts!=null)
-								   Total(Only Credit): <h2>{{$allnotcash }}</h2></td>
-							   @endif
-						   </td>
-			   
-						   <td>
-							   @if($cts!=null)
-								   Total: <h2>{{$cts }}</h2></td>
-							   @endif
-						   </td>
-
-						   <td>-</td>
-
-			   
-					   </tr>
-					   
-					  
-					   @else
-                       <h2>Record Not Found </h2>
-					   @endif
-    
-	</tbody>
-</table>
 
 
 </div>
