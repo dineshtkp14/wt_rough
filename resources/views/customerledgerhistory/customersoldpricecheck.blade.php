@@ -68,8 +68,8 @@
             @foreach ($cusinfoforpdfok as $i)
               <div class="mb-3">
                 <span class="fw-bold">{{ $i->name }}</span>
-              ,, <span class="fw-bold">{{ $i->address }}</span>
-               ,, <span class="fw-bold">{{ $i->phoneno }}, {{ $i->alternate_phoneno }}</span>
+              --<span class="fw-bold">{{ $i->address }}</span>
+               -- <span class="fw-bold">{{ $i->phoneno }}, {{ $i->alternate_phoneno }}</span>
               </div>
             @endforeach
           </div>
