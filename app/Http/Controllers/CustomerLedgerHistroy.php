@@ -997,68 +997,84 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
 
 
 public function oldpricecheck(Request $req)
-    {
-        if (Auth::check()) {
-            $breadcrumb = [
-                'subtitle' => 'View  (old price check / )',
-                'title' => ' old price check',
-                'link' => ' old price check'
-            ];
-    
-            $customeridfor = $req->customerid;
-    
-            $forcashreceiptno = customerledgerdetails::where('invoicetype', 'payment')
-                ->where('customerid', $customeridfor)
-                ->pluck('id')
-                ->first();
-    
-            $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
-            $debittotalcrnotes = $creditnoteledger->sum('debit');
-    
-            $from = $req->date1;
-            $to = $req->date2;
-    
-            $cusinfoforpdf = customerinfo::where('id', $req->customerid)->get();
-    
-            $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();
-    
-            $querycheck = customerledgerdetails::where('customerid', $req->customerid)->orderBy('date', 'DESC');;
-            if ($from && $to) {
-                $querycheck->whereBetween('date', [$from, $to]);
-            }
-    
-            // Pagination settings
-            $perPage = 200; // Adjust according to your needs
-            $cusledgertails = $querycheck->paginate($perPage)->appends($req->all());
-    
-            // Calculate sum values for debit, credit, and debit not cash
-            $debittotalsumwithdate = $querycheck->sum('debit');
-            $credittotalsumwithdate = $querycheck->sum('credit');
-            $debitnotcash = $querycheck->where('invoicetype', '!=', 'cash')->sum('debit');
-    
-            // Calculate allnotcash and cts before storing them in the session
-            $allnotcash = $debitnotcash;
-            $cts = $credittotalsumwithdate;
-    
-          
-    
-            return view('customerledgerhistory.customersoldpricecheck', [
-                'cusinfoforpdfok' => $cusinfoforpdf,
-                'debittotalcrnotes' => $debittotalcrnotes,
-                'creditnoteledger' => $creditnoteledger,
-                'allnotcash' => $allnotcash,
-                'all' => $cusledgertails,
-                'allcus' => $allcusinfo,
-                'dts' => $debittotalsumwithdate,
-                'cts' => $cts,
-                'breadcrumb' => $breadcrumb,
-                'cid' => $customeridfor,
-                'from' => $from,
-                'to' => $to,
-                'forcashreceiptno' => $forcashreceiptno,
+{
+    if (Auth::check()) {
+        $breadcrumb = [
+            'subtitle' => 'View  (old price check / )',
+            'title'    => ' old price check',
+            'link'     => ' old price check'
+        ];
+
+        $customeridfor = $req->customerid;
+
+        // Validate only if the customerid is present in the request
+        if ($req->has('customerid')) {
+            $req->validate([
+                'customerid' => 'required|exists:customerinfos,id',
+            ], [
+                'customerid.required' => 'Please choose a customer from the list.',
+                'customerid.exists'   => 'Selected customer not found.',
             ]);
         }
+
+        // Default: empty paginator so blade pagination doesn't error
+        $cus = \App\Models\Salesitem::query()
+            ->whereRaw('1=0')
+            ->paginate(50);
+
+        $cusinfoforcard = null;
+
+        if (!empty($customeridfor)) {
+            // Customer card info
+            $cusinfoforcard = \App\Models\Customerinfo::where('id', $customeridfor)
+                ->select('id','name','address','email','phoneno')
+                ->first();
+
+            // Salesitems for that customer via invoice.customerid
+            $cus = \App\Models\Salesitem::query()
+                ->with([
+                    'invoice:id,customerid,inv_type',
+                    'item:id,itemsname,mrp,costprice'
+                ])
+                ->whereHas('invoice', function ($q) use ($customeridfor) {
+                    $q->where('customerid', $customeridfor);
+                })
+                ->orderByDesc('date')
+                ->paginate(50);
+
+            // Attach fields your blade expects (customername, inv_type, itemname, itemprice, itemdlp)
+            foreach ($cus as $data) {
+                if ($data->invoice) {
+                    $data->inv_type = $data->invoice->inv_type;
+
+                    // fetch customer name once from invoice->customerid
+                    $cname = \App\Models\Customerinfo::where('id', $data->invoice->customerid)
+                        ->value('name');
+
+                    if ($cname) {
+                        $data->customeridx  = $data->invoice->customerid;
+                        $data->customername = $cname;
+                    }
+                }
+
+                if ($data->item) {
+                    $data->itemname  = $data->item->itemsname;
+                    $data->itemprice = $data->item->mrp;
+                    $data->itemdlp   = $data->item->costprice;
+                }
+            }
+        }
+
+        return view('customerledgerhistory.customersoldpricecheck', [
+            'breadcrumb'     => $breadcrumb,
+            'customeridfor'  => $customeridfor,
+            'cusinfoforcard' => $cusinfoforcard,
+            'cus'            => $cus,
+        ]);
     }
+
+    return redirect()->route('login');
+}
 
 
 
