@@ -1027,7 +1027,7 @@ public function oldpricecheck(Request $req)
         collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
     );
     $cid = null;
-    $allnotcash = 0; $cts = 0; $dts = 0;
+    // $allnotcash = 0; $cts = 0; $dts = 0;
     $betweendate = customerledgerdetails::where('customerid', $req->customerid)->get();
 
     $debittotalsumwithdate = $betweendate->sum('debit');
@@ -1099,11 +1099,10 @@ public function oldpricecheck(Request $req)
         'cid'             => $cid,
         'from'            => $from,
         'to'              => $to,
-        'fordueamount'      => $allnotcash,
-        'cts'             => $cts,
-        'dts'             => $dts,
-        'dts1' => $debittotalsumwithdate,
-        'cts2' => $credittotalsumwithdate,
+        'allnotcash' => $debitnotcash,
+        'dts' => $debittotalsumwithdate,
+        'cts' => $credittotalsumwithdate,
+        
         'all'             => $all,
         'cusinfoforpdfok' => $cusinfoforpdfok,
         'searchxx'        => $searchxx,
