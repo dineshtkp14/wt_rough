@@ -8,7 +8,7 @@
   <div class="container">
 
     {{-- =============== Customer Card (collapsible) =============== --}}
-    <div class="card customer-card mb-4" id="customerCard" style="display:none;">
+    <div class="card customer-card " id="customerCard" style="display:none;">
       <div class="card-body">
         <h5 class="card-title">Customer Information</h5>
         <p><span>ID: </span><span id="customerId">...</span></p>
