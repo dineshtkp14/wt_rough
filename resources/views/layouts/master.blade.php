@@ -548,7 +548,7 @@
         
 
             <li class="mb-1 border border-success border-5">
-                <a href="{{ route('checkoldprice') }}" style="text-decoration:none;" class="text-white">
+                <a href="{{ route('oldpricecheck') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
                         <i class="fas fa-chevron-right opacity-75"></i>  Check Old Price
