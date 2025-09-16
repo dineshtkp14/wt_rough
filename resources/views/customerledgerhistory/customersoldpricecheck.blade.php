@@ -162,10 +162,9 @@
                     <a href="" style="width: 200px; text-decoration:none" class=" text-center  h3 text-dark"> ITEMSALES  TABLE</a>
                     <a href="{{ route('itemsales.create') }}" class="btn btn-primary ms-5" style="background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-file-invoice"></i> ADD NEW INVOICE</a>
                 </div>
-
                 <div class="col-md-6 float-end">
                     <form method="get" action="{{ route('oldpricecheck') }}" id="tableSearchForm" class="float-end">
-                      {{-- keep current filters on submit --}}
+                      {{-- keep current filters on submit (optional) --}}
                       @if(!empty($cid))  <input type="hidden" name="customerid" value="{{ $cid }}"> @endif
                       @if(!empty($from)) <input type="hidden" name="date1" value="{{ $from }}">   @endif
                       @if(!empty($to))   <input type="hidden" name="date2" value="{{ $to }}">     @endif
@@ -176,13 +175,13 @@
                              class="form-control border-warning border-2"
                              placeholder="Search Here"
                              style="width: 250px;"
-                             value="{{ $searchxx ?? '' }}"
+                             value="{{ request('searchxx') }}"  {{-- keeps value after reload --}}
                              autocomplete="off"
                              autofocus />
                     </form>
                   </div>
                   
-        </div>
+            </div>
         <div class="card-body">
             <table>
                 <thead>
