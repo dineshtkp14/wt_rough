@@ -273,7 +273,33 @@ function openPdfInNewTab(event, url) {
 
 
 </script>
-
+<script>
+    (function(){
+      const input = document.getElementById('filtertext');
+      const form  = document.getElementById('tableSearchForm');
+      if (!input || !form) return;
+    
+      // Debounced server-side search on type
+      let t = null;
+      input.addEventListener('input', () => {
+        clearTimeout(t);
+        t = setTimeout(() => form.submit(), 300);
+      });
+    
+      // Keep focus + caret after each reload
+      window.addEventListener('pageshow', () => {
+        input.focus();
+        const v = input.value || '';
+        try { input.setSelectionRange(v.length, v.length); } catch(_) {}
+      });
+    
+      // Enter submits immediately
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); form.submit(); }
+      });
+    })();
+    </script>
+    
 
 
 
