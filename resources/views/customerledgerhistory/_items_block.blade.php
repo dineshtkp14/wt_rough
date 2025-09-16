@@ -23,7 +23,7 @@
                 <td>{{ $item->customername }}</td>
                 <td>{{ $item->itemname ?: '-' }}</td>
                 <td>{{ $item->unstockedname ?: '-' }}</td>
-                <td>{{ $item->quantity }}{{ $item->unit }}</td>
+                <td>{{ $item->quantity }}-{{ $item->unit }}</td>
                 <td>{{ $item->itemdlp }}</td>
                 <td>{{ $item->price }}</td>
               </tr>
