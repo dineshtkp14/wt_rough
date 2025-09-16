@@ -169,25 +169,34 @@
                       @if(!empty($cid))  <input type="hidden" name="customerid" value="{{ $cid }}"> @endif
                      
                   
-                      <div class="col-md-6 float-end">
-                        <form method="get" action="{{ route('oldpricecheck') }}" id="tableSearchForm" class="float-end">
-                          {{-- keep current filters on submit (optional) --}}
-                          @if(!empty($cid))  <input type="hidden" name="customerid" value="{{ $cid }}"> @endif
-                          @if(!empty($from)) <input type="hidden" name="date1" value="{{ $from }}">   @endif
-                          @if(!empty($to))   <input type="hidden" name="date2" value="{{ $to }}">     @endif
-                      
-                          <input type="text"
-                                 name="searchxx"
-                                 id="filtertext"
-                                 class="form-control border-warning border-2"
-                                 placeholder="Search Here"
-                                 style="width: 250px;"
-                                 value="{{ request('searchxx') }}"  {{-- keeps value after reload --}}
-                                 autocomplete="off"
-                                 autofocus />
-                        </form>
-                      </div>
-                      
+                      <script>
+                        (function(){
+                          const input = document.getElementById('filtertext');
+                          const form  = document.getElementById('tableSearchForm');
+                          if (!input || !form) return;
+                        
+                          // Debounced server-side search on type
+                          let t = null;
+                          input.addEventListener('input', () => {
+                            clearTimeout(t);
+                            t = setTimeout(() => form.submit(), 300);
+                          });
+                        
+                          // Keep focus + caret after each reload
+                          window.addEventListener('pageshow', () => {
+                            input.focus();
+                            const v = input.value || '';
+                            try { input.setSelectionRange(v.length, v.length); } catch(_) {}
+                          });
+                        
+                          // Enter submits immediately
+                          input.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter') { e.preventDefault(); form.submit(); }
+                          });
+                        })();
+                        </script>
+                    </div>                        
+
                   
         </div>
         <div class="card-body">
@@ -283,33 +292,7 @@ function openPdfInNewTab(event, url) {
 </script>
 
 
-<script>
-    (function(){
-      const input = document.getElementById('filtertext');
-      const form  = document.getElementById('tableSearchForm');
-      if (!input || !form) return;
-    
-      // Debounced server-side search on type
-      let t = null;
-      input.addEventListener('input', () => {
-        clearTimeout(t);
-        t = setTimeout(() => form.submit(), 300);
-      });
-    
-      // Keep focus + caret after each reload
-      window.addEventListener('pageshow', () => {
-        input.focus();
-        const v = input.value || '';
-        try { input.setSelectionRange(v.length, v.length); } catch(_) {}
-      });
-    
-      // Enter submits immediately
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); form.submit(); }
-      });
-    })();
-    </script>
-    
+
 
 </div>
 
