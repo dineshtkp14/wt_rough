@@ -1001,9 +1001,9 @@ public function oldpricecheck(Request $req)
     if (!Auth::check()) return redirect()->route('login');
 
     $breadcrumb = [
-        'subtitle' => 'View',
-        'title'    => 'View Invoice Sales Details',
-        'link'     => 'View Invoice Sales Details',
+        
+        'title'    => 'Check Old Price',
+        'link'     => 'Check Old Price',
     ];
 
     // inputs
