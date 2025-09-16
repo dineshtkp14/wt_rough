@@ -1018,7 +1018,7 @@ public function oldpricecheck(Request $req)
         }
 
         // Default: empty paginator so blade pagination doesn't error
-        $cus = \App\Models\Salesitem::query()
+        $cus = Salesitem::query()
             ->whereRaw('1=0')
             ->paginate(50);
 
@@ -1026,12 +1026,12 @@ public function oldpricecheck(Request $req)
 
         if (!empty($customeridfor)) {
             // Customer card info
-            $cusinfoforcard = \App\Models\Customerinfo::where('id', $customeridfor)
+            $cusinfoforcard = customerinfo::where('id', $customeridfor)
                 ->select('id','name','address','email','phoneno')
                 ->first();
 
             // Salesitems for that customer via invoice.customerid
-            $cus = \App\Models\Salesitem::query()
+            $cus = Salesitem::query()
                 ->with([
                     'invoice:id,customerid,inv_type',
                     'item:id,itemsname,mrp,costprice'
@@ -1048,7 +1048,7 @@ public function oldpricecheck(Request $req)
                     $data->inv_type = $data->invoice->inv_type;
 
                     // fetch customer name once from invoice->customerid
-                    $cname = \App\Models\Customerinfo::where('id', $data->invoice->customerid)
+                    $cname = Customerinfo::where('id', $data->invoice->customerid)
                         ->value('name');
 
                     if ($cname) {
