@@ -63,7 +63,7 @@
             <i class="fas fa-search"></i> Search
           </button>
         </div>
-
+        <div class="col-md-2"></div>
         <div class="col-md-6">
             @foreach ($cusinfoforpdfok as $i)
               <div class="mb-3">
