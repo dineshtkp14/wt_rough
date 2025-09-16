@@ -78,8 +78,7 @@
 						($cusinfoforpdfok[0]->name ?? '') . ' | ' . 
 						($cusinfoforpdfok[0]->address ?? '') . ' | ' . 
 						($cusinfoforpdfok[0]->phoneno ?? '')
-				]) }}" class="float-end btn btn-md btn-danger border border-5 border-warning">
-					<i class="fas fa-money-bill-wave"></i>
+				]) }}" class="">
 				</a>
 			@endif
 				
