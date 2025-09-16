@@ -1095,7 +1095,7 @@ public function oldpricecheck(Request $req)
                 'it.mrp as itemprice',
                 'it.costprice as itemdlp',
             ])
-            ->paginate(50)
+            ->paginate(10)
             ->appends($req->only(['customerid','date1','date2','searchxx'])); // keep filters in pagination links
     }
 
