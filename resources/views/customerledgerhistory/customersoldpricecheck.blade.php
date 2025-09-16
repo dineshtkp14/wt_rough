@@ -32,7 +32,7 @@
     </div>
 	
 	<div class="row">
-	  <form action="{{ route('returnchoosendatehistroycashandcredit') }}" method="get" id="chosendatepdfform">
+	  <form action="{{ route('oldpricecheck') }}" method="get" id="chosendatepdfform">
 
 		<div class="row">
 			<div class="mb-4" style="width: 300px;">
