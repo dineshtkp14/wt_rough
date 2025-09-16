@@ -63,13 +63,13 @@
             <i class="fas fa-search"></i> Search
           </button>
         </div>
-        
+        <div class="col-md-1"></div>
         <div class="col-md-4">
             @foreach ($cusinfoforpdfok as $i)
               <div class="mb-3">
-                <span class="fw-semibold">{{ $i->name }}</span>
-              ,, <span class="fw-semibold">{{ $i->address }}</span>
-               ,, <span class="fw-semibold">{{ $i->phoneno }}, {{ $i->alternate_phoneno }}</span>
+                <span class="fw-bold">{{ $i->name }}</span>
+              ,, <span class="fw-bold">{{ $i->address }}</span>
+               ,, <span class="fw-bold">{{ $i->phoneno }}, {{ $i->alternate_phoneno }}</span>
               </div>
             @endforeach
           </div>
