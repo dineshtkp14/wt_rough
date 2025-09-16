@@ -996,7 +996,69 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
 }
 
 
-
+public function oldpricecheck(Request $req)
+    {
+        if (Auth::check()) {
+            $breadcrumb = [
+                'subtitle' => 'View  (old price check / )',
+                'title' => ' old price check',
+                'link' => ' old price check'
+            ];
+    
+            $customeridfor = $req->customerid;
+    
+            $forcashreceiptno = customerledgerdetails::where('invoicetype', 'payment')
+                ->where('customerid', $customeridfor)
+                ->pluck('id')
+                ->first();
+    
+            $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
+            $debittotalcrnotes = $creditnoteledger->sum('debit');
+    
+            $from = $req->date1;
+            $to = $req->date2;
+    
+            $cusinfoforpdf = customerinfo::where('id', $req->customerid)->get();
+    
+            $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();
+    
+            $querycheck = customerledgerdetails::where('customerid', $req->customerid)->orderBy('date', 'DESC');;
+            if ($from && $to) {
+                $querycheck->whereBetween('date', [$from, $to]);
+            }
+    
+            // Pagination settings
+            $perPage = 200; // Adjust according to your needs
+            $cusledgertails = $querycheck->paginate($perPage)->appends($req->all());
+    
+            // Calculate sum values for debit, credit, and debit not cash
+            $debittotalsumwithdate = $querycheck->sum('debit');
+            $credittotalsumwithdate = $querycheck->sum('credit');
+            $debitnotcash = $querycheck->where('invoicetype', '!=', 'cash')->sum('debit');
+    
+            // Calculate allnotcash and cts before storing them in the session
+            $allnotcash = $debitnotcash;
+            $cts = $credittotalsumwithdate;
+    
+          
+    
+            return view('customerledgerhistory.oldpricecheck', [
+                'cusinfoforpdfok' => $cusinfoforpdf,
+                'debittotalcrnotes' => $debittotalcrnotes,
+                'creditnoteledger' => $creditnoteledger,
+                'allnotcash' => $allnotcash,
+                'all' => $cusledgertails,
+                'allcus' => $allcusinfo,
+                'dts' => $debittotalsumwithdate,
+                'cts' => $cts,
+                'breadcrumb' => $breadcrumb,
+                'cid' => $customeridfor,
+                'from' => $from,
+                'to' => $to,
+                'forcashreceiptno' => $forcashreceiptno,
+            ]);
+        }
+    }
 
 
 

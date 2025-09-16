@@ -315,6 +315,8 @@ Route::get('/allcashandcredit',[CustomerLedgerHistroy::class,'returnchoosendateh
 Route::get('clhs/pdf/convert/',[CustomerLedgerHistroy::class,'PdfGenerateCustomerDetails'])->name('clhspdf.convert');
 Route::get('allcashandcredit/pdf/convert/',[CustomerLedgerHistroy::class,'pdfreturnchoosendatehistroycashandcredit'])->name('pdfreturnchoosendatehistroycashandcredit.convert');
 
+Route::get('/oldpricecheck',[CustomerLedgerHistroy::class,'oldpricecheck'])->name('oldpricecheck');
+
 
 
 //cashReceipt
