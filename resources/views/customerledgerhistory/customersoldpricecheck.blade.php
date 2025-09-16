@@ -103,7 +103,7 @@
                 type="text"
                 name="searchxx"
                 id="filtertext"
-                class="form-control border-warning border-2"
+                class="form-control border-warning border-4 p-3"
                 placeholder="Search Here"
                 style="max-width: 360px;"
                 value="{{ request('searchxx') }}"
