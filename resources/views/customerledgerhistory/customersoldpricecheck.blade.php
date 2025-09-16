@@ -67,9 +67,9 @@
         <div class="col-md-4">
             @foreach ($cusinfoforpdfok as $i)
               <div class="mb-3">
-                NAME: <span class="fw-semibold">{{ $i->name }}</span>
-                ADDRESS: <span class="fw-semibold">{{ $i->address }}</span>
-                PHONE NO: <span class="fw-semibold">{{ $i->phoneno }}, {{ $i->alternate_phoneno }}</span>
+                <span class="fw-semibold">{{ $i->name }}</span>
+              ,, <span class="fw-semibold">{{ $i->address }}</span>
+               ,, <span class="fw-semibold">{{ $i->phoneno }}, {{ $i->alternate_phoneno }}</span>
               </div>
             @endforeach
           </div>
