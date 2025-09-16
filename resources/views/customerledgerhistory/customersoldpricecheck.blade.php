@@ -67,12 +67,9 @@
         <div class="col-md-6">
             @foreach ($cusinfoforpdfok as $i)
               <div class="mb-3">
-                {{-- <div>CUSTOMER ID: <span class="fw-semibold">{{ $i->id }}</span></div> --}}
                 <div>NAME: <span class="fw-semibold">{{ $i->name }}</span></div>
                 <div>ADDRESS: <span class="fw-semibold">{{ $i->address }}</span></div>
                 <div>PHONE NO: <span class="fw-semibold">{{ $i->phoneno }}, {{ $i->alternate_phoneno }}</span></div>
-                {{-- <div>EMAIL: <span class="fw-semibold">{{ $i->email }}</span></div>
-                <div>NOTES: <span class="fw-semibold">{{ $i->remarks }}</span></div> --}}
               </div>
             @endforeach
           </div>
@@ -83,12 +80,10 @@
     </div>
 
     {{-- =============== Selected Customer Info (from $cusinfoforpdfok) =============== --}}
-    <div class="row mt-4">
-    
-    </div>
+  
 
     {{-- =============== Items Table Card =============== --}}
-    <div class="card mt-4">
+    <div class="card mt-0">
       <div class="card-header">
         <div class="row align-items-center">
           <div class="col-md-6">
