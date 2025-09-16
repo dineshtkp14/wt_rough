@@ -1008,72 +1008,75 @@ public function oldpricecheck(Request $req)
         'link'     => 'View Invoice Sales Details',
     ];
 
-    // Was the Search button/form actually used?
-    $searched = $req->filled('customerid') || $req->filled('q') || $req->filled('date1') || $req->filled('date2');
-
-    // Inputs
-    $term       = trim($req->input('q', ''));
-    $like       = "%{$term}%";
+    // inputs
     $customerid = $req->input('customerid');
     $from       = $req->input('date1');
     $to         = $req->input('date2');
+    $searchxx   = trim($req->input('searchxx', ''));   // header "Search Here"
+    $like       = "%{$searchxx}%";
 
-    // Resolve actual table names from your imported models
+    // show data only after any search/filter is provided
+    $searched = $req->filled('customerid') || $req->filled('searchxx') || $req->filled('date1') || $req->filled('date2');
+
+    // resolve real table names from your models (avoids 'invoice' vs 'invoices' errors)
     $tblSales = (new salesitem)->getTable();
     $tblItem  = (new item)->getTable();
     $tblInv   = (new invoice)->getTable();
     $tblCust  = (new customerinfo)->getTable();
 
-    // Safe defaults so Blade never errors on first load (no search yet)
+    // safe defaults so Blade never errors on first load
     $cus = new \Illuminate\Pagination\LengthAwarePaginator(
         collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
     );
-    $cid             = null;
-    $allnotcash      = 0;
-    $cts             = 0;
-    $dts             = 0;
-    $all             = new \Illuminate\Pagination\LengthAwarePaginator(
+    $cid = null;
+
+    $allnotcash = 0;
+    $cts        = 0;
+    $dts        = 0;
+    $all        = new \Illuminate\Pagination\LengthAwarePaginator(
         collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
     );
     $cusinfoforpdfok = collect();
 
-    // Only run the query AFTER a search
+    // run the query only after a search/filter is used
     if ($searched) {
-        $query =salesitem::from($tblSales.' as s')
+        $q = salesitem::from($tblSales.' as s')
             ->leftJoin($tblItem.' as it', 'it.id', '=', 's.itemid')
             ->leftJoin($tblInv.' as inv', 'inv.id', '=', 's.invoiceid')
             ->leftJoin($tblCust.' as c', 'c.id', '=', 'inv.customerid');
 
         if (!empty($customerid)) {
-            $query->where('inv.customerid', $customerid);
+            $q->where('inv.customerid', $customerid);
             $cid = $customerid;
 
-            // customer card details for your header block
-            $c =customerinfo::select('id','name','address','email','phoneno','alternate_phoneno','remarks')
+            // customer card info for your header block
+            $cinfo = customerinfo::select('id','name','address','email','phoneno','alternate_phoneno','remarks')
                 ->find($customerid);
-            if ($c) {
-                $cusinfoforpdfok = collect([$c]); // your Blade uses foreach and [0]
+            if ($cinfo) {
+                $cusinfoforpdfok = collect([$cinfo]); // your blade uses foreach and [0]
             }
         }
 
-        if ($term !== '') {
-            $query->where(function ($qq) use ($like) {
+        if (!empty($from) && !empty($to)) {
+            $q->whereBetween('s.date', [$from, $to]);
+        }
+
+        if ($searchxx !== '') {
+            // group all ORs to this single LIKE term
+            $q->where(function ($qq) use ($like) {
                 $qq->orWhere('it.itemsname', 'like', $like)
                    ->orWhere('s.unstockedname', 'like', $like)
-                   ->orWhere('s.quantity', 'like', $like)
+                   ->orWhere('c.name', 'like', $like)
                    ->orWhere('s.invoiceid', 'like', $like)
                    ->orWhere('s.date', 'like', $like)
-                   ->orWhere('s.price', 'like', $like)
-                   ->orWhere('s.subtotal', 'like', $like)
-                   ->orWhere('c.name', 'like', $like); // search by customer name
+                   // numeric columns casted to string for LIKE
+                   ->orWhereRaw('CAST(s.quantity AS CHAR) LIKE ?', [$like])
+                   ->orWhereRaw('CAST(s.price    AS CHAR) LIKE ?', [$like])
+                   ->orWhereRaw('CAST(s.subtotal AS CHAR) LIKE ?', [$like]);
             });
         }
 
-        if (!empty($from) && !empty($to)) {
-            $query->whereBetween('s.date', [$from, $to]);
-        }
-
-        $cus = $query->orderByDesc('s.id')
+        $cus = $q->orderByDesc('s.id')
             ->select([
                 's.id',
                 's.date',
@@ -1084,7 +1087,7 @@ public function oldpricecheck(Request $req)
                 's.price',
                 's.subtotal',
                 's.unit',
-                // aliases expected by your Blade
+                // aliases your Blade expects
                 'inv.inv_type as inv_type',
                 'c.id as customeridx',
                 'c.name as customername',
@@ -1092,14 +1095,13 @@ public function oldpricecheck(Request $req)
                 'it.mrp as itemprice',
                 'it.costprice as itemdlp',
             ])
-            ->paginate(10)
-            ->appends($req->only(['q','customerid','date1','date2']));
+            ->paginate(50)
+            ->appends($req->only(['customerid','date1','date2','searchxx'])); // keep filters in pagination links
     }
 
     return view('customerledgerhistory.customersoldpricecheck', [
         'breadcrumb'      => $breadcrumb,
         'cus'             => $cus,
-        'term'            => $term,
         'cid'             => $cid,
         'from'            => $from,
         'to'              => $to,
@@ -1108,7 +1110,8 @@ public function oldpricecheck(Request $req)
         'dts'             => $dts,
         'all'             => $all,
         'cusinfoforpdfok' => $cusinfoforpdfok,
-        'searched'        => $searched, // <- use this in Blade to show results only after search
+        'searchxx'        => $searchxx,
+        'searched'        => $searched,
     ]);
 }
 

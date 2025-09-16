@@ -168,9 +168,22 @@
                 </div>
 
                 <div class="col-md-6 float-end">
-                    <input type="text" class="form-control float-end border-warning border border-5" 
-                        placeholder="Search Here" style="width: 250px;" 
-                        wire:model.debounce.500ms="searchTerm" />
+                    <div class="col-md-6 float-end">
+                        <form method="get" action="{{ route('oldpricecheck') }}" id="tableSearchForm" class="float-end">
+                          {{-- keep current filters --}}
+                          @if(!empty($cid))  <input type="hidden" name="customerid" value="{{ $cid }}"> @endif
+                          @if(!empty($from)) <input type="hidden" name="date1" value="{{ $from }}"> @endif
+                          @if(!empty($to))   <input type="hidden" name="date2" value="{{ $to }}"> @endif
+                      
+                          <input type="text"
+                                 name="searchxx"
+                                 id="filterInputw"
+                                 class="form-control border-warning border border-5"
+                                 placeholder="Search Here"
+                                 style="width: 250px;"
+                                 value="{{ $searchxx ?? '' }}" />
+                        </form>
+                      </div>
                 </div>
             </div>
         </div>
@@ -266,7 +279,22 @@ function openPdfInNewTab(event, url) {
 
 </script>
 
+
+
+
 </div>
 
+
+<script>
+    (function(){
+      const el = document.getElementById('filterInputw');
+      if (!el) return;
+      let t = null;
+      el.addEventListener('input', () => {
+        clearTimeout(t);
+        t = setTimeout(() => el.form.submit(), 300); // debounce 300ms
+      });
+    })();
+    </script>
 
 @stop
