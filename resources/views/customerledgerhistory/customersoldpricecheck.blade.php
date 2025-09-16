@@ -182,70 +182,8 @@
                   </div>
                   
             </div>
-        <div class="card-body">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
+            @include('customerledgerhistory._items_block', ['cus' => $cus, 'searchxx' => $searchxx ?? ''])
 
-                        <th>Created at </th>
-                        <th>Bill No</th>
-                        <th>Name</th>
-                        <th>Invoice Type</th>
-
-
-                        <th>Items Name</th>
-                        <th>Unstocked Name</th>
-                        <th>Quantity</th>
-                        <th>Cost Price</th>
-                        <th>Original Sell Price</th>
-                        <th>Sold Price</th>
-                        <th>Sub-Total</th>
-                        <th>Profit</th>
-                        {{-- <th>Action</th> --}}
-
-                    </tr>
-                </thead>
-                <tbody>
-                    @if ($cus->isNotEmpty())
-                        @foreach ($cus as $item)
-
-                        <tr @if (date('Y-m-d', strtotime($item->date)) === date('Y-m-d')) style="font-weight:bold;color:white;background:red;" @endif>
-
-                                <td data-label="Bill No">{{ $item->date }}</td>
-
-                                <td data-label="Bill No">{{ $item->created_at }}</td>
-
-                                <td data-label="Bill No">{{ $item->invoiceid }}</td>
-                                <td data-label="Bill No">{{ $item->customername }}</td>
-                                <td data-label="Bill No">{{ $item->inv_type }}</td>
-
-
-                                <td data-label="Items Name">{{ $item->itemname ? $item->itemname : '-' }}</td>
-                                <td data-label="Unstocked Name">{{ $item->unstockedname ? $item->unstockedname : '-' }}</td>
-                                <td data-label="Quantity">{{ $item->quantity }}</td>
-                                <td data-label="cost Price">{{ $item->itemdlp}}</td>
-
-                                <td data-label="Originl Price">{{ $item->itemprice ? $item->itemprice : '-' }}</td>
-                                <td data-label="sold Price">{{ $item->price }}</td>
-                                <td data-label="Sub-Total">{{ $item->subtotal }}</td>
-                                {{-- <td data-label="profit">{{ ($item->price-$item->itemdlp)*$item->quantity }}</td> --}}
-                                <td data-label="Sub-Total">{{ !empty($item->itemdlp) ? ($item->price - $item->itemdlp) * $item->quantity : '-' }}  </td>
-                              
-
-                                {{-- <td><a href="{{ route('itemsales.edit', $item->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a> </td> --}}
-                               
-
-                            </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="8"><h3>No Record Found.</h3></td>
-                        </tr>
-                    @endif
-                </tbody>
-            </table>
-        </div>
         <div class="card-footer text-muted">
             {{ $cus->links() }}
         </div>
@@ -273,32 +211,90 @@ function openPdfInNewTab(event, url) {
 
 
 </script>
+ 
+
 <script>
     (function(){
       const input = document.getElementById('filtertext');
       const form  = document.getElementById('tableSearchForm');
+      const block = document.getElementById('itemsBlock') || document.querySelector('#itemsBlock') || document.body;
       if (!input || !form) return;
     
-      // Debounced server-side search on type
+      // Build URL with form params + ajax=1
+      function buildAjaxUrl(base) {
+        const params = new URLSearchParams(new FormData(form));
+        params.set('ajax', '1');
+        return base + '?' + params.toString();
+      }
+    
+      async function fetchBlock(url) {
+        try {
+          const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+          const json = await res.json();
+          if (json.html) {
+            // replace the whole block (table + pagination)
+            const container = document.getElementById('itemsBlock');
+            if (container) container.outerHTML = json.html;
+    
+            // update URL in address bar (remove ajax=1)
+            const clean = new URL(url, window.location.origin);
+            clean.searchParams.delete('ajax');
+            window.history.replaceState({}, '', clean.toString());
+    
+            // re-bind pagination clicks after DOM update
+            bindPagination();
+            // keep focus + caret
+            input.focus();
+            const v = input.value || '';
+            try { input.setSelectionRange(v.length, v.length); } catch(_) {}
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    
+      // Debounced live search
       let t = null;
       input.addEventListener('input', () => {
         clearTimeout(t);
-        t = setTimeout(() => form.submit(), 300);
+        t = setTimeout(() => {
+          fetchBlock(buildAjaxUrl(form.action));
+        }, 250);
       });
     
-      // Keep focus + caret after each reload
-      window.addEventListener('pageshow', () => {
-        input.focus();
-        const v = input.value || '';
-        try { input.setSelectionRange(v.length, v.length); } catch(_) {}
-      });
-    
-      // Enter submits immediately
+      // Enter submits immediately via AJAX
       input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); form.submit(); }
+        if (e.key === 'Enter') { e.preventDefault(); fetchBlock(buildAjaxUrl(form.action)); }
       });
+    
+      // AJAX pagination (intercept page links)
+      function bindPagination() {
+        const wrap = document.getElementById('itemsPaginationWrap');
+        if (!wrap) return;
+        wrap.querySelectorAll('a.page-link, .pagination a').forEach(a => {
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const href = a.getAttribute('href');
+            if (!href) return;
+    
+            // merge the pagination href with current filters + ajax=1
+            const url = new URL(href, window.location.origin);
+            const params = new URLSearchParams(new FormData(form));
+            // keep page from href, keep filters from form
+            url.searchParams.forEach((v,k)=>{}); // no-op, we only need the "page" param that’s already in href
+            params.forEach((v,k)=> url.searchParams.set(k,v));
+            url.searchParams.set('ajax','1');
+    
+            fetchBlock(url.toString());
+          });
+        });
+      }
+    
+      // bind once on first load
+      bindPagination();
     })();
     </script>
+    
     
 
 

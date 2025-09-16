@@ -998,9 +998,7 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
 
 public function oldpricecheck(Request $req)
 {
-    if (!Auth::check()) {
-        return redirect()->route('login');
-    }
+    if (!Auth::check()) return redirect()->route('login');
 
     $breadcrumb = [
         'subtitle' => 'View',
@@ -1012,33 +1010,29 @@ public function oldpricecheck(Request $req)
     $customerid = $req->input('customerid');
     $from       = $req->input('date1');
     $to         = $req->input('date2');
-    $searchxx   = trim($req->input('searchxx', ''));   // header "Search Here"
+    $searchxx   = trim($req->input('searchxx', ''));
     $like       = "%{$searchxx}%";
 
-    // show data only after any search/filter is provided
+    // only load data after any filter/search
     $searched = $req->filled('customerid') || $req->filled('searchxx') || $req->filled('date1') || $req->filled('date2');
 
-    // resolve real table names from your models (avoids 'invoice' vs 'invoices' errors)
+    // resolve table names from your models (you said you already import them)
     $tblSales = (new salesitem)->getTable();
     $tblItem  = (new item)->getTable();
     $tblInv   = (new invoice)->getTable();
     $tblCust  = (new customerinfo)->getTable();
 
-    // safe defaults so Blade never errors on first load
+    // defaults so Blade never errors
     $cus = new \Illuminate\Pagination\LengthAwarePaginator(
         collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
     );
     $cid = null;
-
-    $allnotcash = 0;
-    $cts        = 0;
-    $dts        = 0;
-    $all        = new \Illuminate\Pagination\LengthAwarePaginator(
+    $allnotcash = 0; $cts = 0; $dts = 0;
+    $all = new \Illuminate\Pagination\LengthAwarePaginator(
         collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
     );
     $cusinfoforpdfok = collect();
 
-    // run the query only after a search/filter is used
     if ($searched) {
         $q = salesitem::from($tblSales.' as s')
             ->leftJoin($tblItem.' as it', 'it.id', '=', 's.itemid')
@@ -1049,12 +1043,9 @@ public function oldpricecheck(Request $req)
             $q->where('inv.customerid', $customerid);
             $cid = $customerid;
 
-            // customer card info for your header block
             $cinfo = customerinfo::select('id','name','address','email','phoneno','alternate_phoneno','remarks')
-                ->find($customerid);
-            if ($cinfo) {
-                $cusinfoforpdfok = collect([$cinfo]); // your blade uses foreach and [0]
-            }
+                    ->find($customerid);
+            if ($cinfo) $cusinfoforpdfok = collect([$cinfo]);
         }
 
         if (!empty($from) && !empty($to)) {
@@ -1062,43 +1053,40 @@ public function oldpricecheck(Request $req)
         }
 
         if ($searchxx !== '') {
-            // group all ORs to this single LIKE term
             $q->where(function ($qq) use ($like) {
                 $qq->orWhere('it.itemsname', 'like', $like)
                    ->orWhere('s.unstockedname', 'like', $like)
                    ->orWhere('c.name', 'like', $like)
                    ->orWhere('s.invoiceid', 'like', $like)
                    ->orWhere('s.date', 'like', $like)
-                   // numeric columns casted to string for LIKE
                    ->orWhereRaw('CAST(s.quantity AS CHAR) LIKE ?', [$like])
-                   ->orWhereRaw('CAST(s.price    AS CHAR) LIKE ?', [$like])
+                   ->orWhereRaw('CAST(s.price AS CHAR) LIKE ?',    [$like])
                    ->orWhereRaw('CAST(s.subtotal AS CHAR) LIKE ?', [$like]);
             });
         }
 
         $cus = $q->orderByDesc('s.id')
             ->select([
-                's.id',
-                's.date',
-                's.created_at',
-                's.invoiceid',
-                's.unstockedname',
-                's.quantity',
-                's.price',
-                's.subtotal',
-                's.unit',
-                // aliases your Blade expects
+                's.id','s.date','s.created_at','s.invoiceid','s.unstockedname','s.quantity','s.price','s.subtotal','s.unit',
                 'inv.inv_type as inv_type',
-                'c.id as customeridx',
-                'c.name as customername',
-                'it.itemsname as itemname',
-                'it.mrp as itemprice',
-                'it.costprice as itemdlp',
+                'c.id as customeridx','c.name as customername',
+                'it.itemsname as itemname','it.mrp as itemprice','it.costprice as itemdlp',
             ])
-            ->paginate(10)
-            ->appends($req->only(['customerid','date1','date2','searchxx'])); // keep filters in pagination links
+            ->paginate(50)
+            ->appends($req->only(['customerid','date1','date2','searchxx']));
     }
 
+    // === AJAX branch: return only the HTML block for table+pagination ===
+    if ($req->ajax() || $req->boolean('ajax')) {
+        $html = view('customerledgerhistory._items_block', [
+            'cus'       => $cus,
+            'searchxx'  => $searchxx,
+        ])->render();
+
+        return response()->json(['html' => $html]);
+    }
+
+    // Full page (first load or non-AJAX navigation)
     return view('customerledgerhistory.customersoldpricecheck', [
         'breadcrumb'      => $breadcrumb,
         'cus'             => $cus,
