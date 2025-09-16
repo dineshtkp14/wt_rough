@@ -1042,7 +1042,7 @@ public function oldpricecheck(Request $req)
     
           
     
-            return view('customerledgerhistory.oldpricecheck', [
+            return view('customerledgerhistory.customersoldpricecheck', [
                 'cusinfoforpdfok' => $cusinfoforpdf,
                 'debittotalcrnotes' => $debittotalcrnotes,
                 'creditnoteledger' => $creditnoteledger,
