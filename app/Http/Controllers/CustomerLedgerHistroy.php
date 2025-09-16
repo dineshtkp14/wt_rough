@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 use App\Models\customerinfo;
 use App\Models\customerledgerdetails;
