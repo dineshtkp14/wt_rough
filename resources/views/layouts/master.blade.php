@@ -551,7 +551,7 @@
                 <a href="{{ route('oldpricecheck') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-receipt"></i>  Check Old Price
+                        <i class="fas fa-rupee-sign"></i>  Check Old Price
                     </button>
                 </a>
             </li>
