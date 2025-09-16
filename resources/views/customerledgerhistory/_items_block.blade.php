@@ -6,7 +6,7 @@
             <th>Date</th>
          
             <th>Bill No</th>
-            <th>Name</th>
+            {{-- <th>Name</th> --}}
             <th>Items Name</th>
             <th>Unstocked Name</th>
             <th>Quantity</th>
@@ -20,7 +20,7 @@
               <tr @if (date('Y-m-d', strtotime($item->date)) === date('Y-m-d')) style="font-weight:bold;color:white;background:red;" @endif>
                 <td>{{ $item->date }}</td>
                 <td>{{ $item->invoiceid }}</td>
-                <td>{{ $item->customername }}</td>
+                {{-- <td>{{ $item->customername }}</td> --}}
                 <td>{{ $item->itemname ?: '-' }}</td>
                 <td>{{ $item->unstockedname ?: '-' }}</td>
                 <td>{{ $item->quantity }}-{{ $item->unit }}</td>
