@@ -1011,7 +1011,7 @@ public function oldpricecheck(Request $req)
     $term = trim($req->input('q', ''));
     $like = "%{$term}%";
 
-    $cus = \App\Models\Salesitem::from('salesitems as s')
+    $cus = salesitem::from('salesitems as s')
         ->leftJoin('items as it', 'it.id', '=', 's.itemid')
         ->leftJoin('invoice as inv', 'inv.id', '=', 's.invoiceid')
         ->leftJoin('customerinfo as c', 'c.id', '=', 'inv.customerid')
