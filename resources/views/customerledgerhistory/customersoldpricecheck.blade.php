@@ -287,28 +287,31 @@ function openPdfInNewTab(event, url) {
 <script>
     (function(){
       const input = document.getElementById('filterInput');
-      if (!input) return;
+      const form  = document.getElementById('tableSearchForm');
+      if (!input || !form) return;
     
-      // Keep focus + caret after page reload (so it doesn't "disturb" you)
-      window.addEventListener('DOMContentLoaded', () => {
-        if (input.value !== '') {
-          input.focus();
-          const v = input.value;
-          // move caret to the end
-          input.setSelectionRange(v.length, v.length);
-          // keep it in view (optional)
-          input.scrollIntoView({ block: 'center' });
-        }
+      // Keep focus + caret after reload (works better than DOMContentLoaded)
+      window.addEventListener('pageshow', () => {
+        input.focus();
+        const v = input.value || '';
+        // Move caret to end
+        try { input.setSelectionRange(v.length, v.length); } catch (_) {}
       });
     
-      // Auto-submit (server-side search) with a tiny debounce
+      // Debounced server-side search while typing
       let t = null;
       input.addEventListener('input', () => {
         clearTimeout(t);
-        t = setTimeout(() => input.form.submit(), 300);
+        t = setTimeout(() => form.submit(), 300);
+      });
+    
+      // Optional: Enter key submits immediately
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); form.submit(); }
       });
     })();
     </script>
+    
     
 
 @stop
