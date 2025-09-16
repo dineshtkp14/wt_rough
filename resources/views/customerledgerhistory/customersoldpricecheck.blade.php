@@ -23,7 +23,7 @@
     </div>
 
     {{-- =============== Customer Picker Form =============== --}}
-    <div class="row">
+    <div class="row m-0">
       <form action="{{ route('oldpricecheck') }}" method="get" id="chosendatepdfform" class="row g-3">
         <div class="col-auto" style="width: 300px;">
           <div class="search-box position-relative">
