@@ -172,7 +172,7 @@
                   
                       <input type="text"
                              name="searchxx"
-                             id="filterInput"
+                             id="filtertext"
                              class="form-control border-warning border-2"
                              placeholder="Search Here"
                              style="width: 250px;"
