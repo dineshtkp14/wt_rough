@@ -1028,6 +1028,8 @@ public function oldpricecheck(Request $req)
     );
     $cid = null;
     $allnotcash = 0; $cts = 0; $dts = 0;
+    $betweendate = customerledgerdetails::where('customerid', $req->customerid)->get();
+
     $debittotalsumwithdate = $betweendate->sum('debit');
     $credittotalsumwithdate = $betweendate->sum('credit');
 
