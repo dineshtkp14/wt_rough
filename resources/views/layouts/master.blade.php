@@ -541,7 +541,7 @@
                 <a href="{{ route('returnchoosendatehistroycashandcredit') }}" style="text-decoration:none;" class="text-white">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-book"></i>  Customer Ledger
+                        <i class="fas fa-book"></i>  Customer Ledgerr
                     </button>
                 </a>
             </li>
