@@ -1052,7 +1052,7 @@ public function oldpricecheck(Request $req)
             }
 
             // salesitems for that customer via invoice.customerid
-            $cus = Salesitem::query()
+            $cus = salesitem::query()
                 ->with([
                     'invoice:id,customerid,inv_type',
                     'item:id,itemsname,mrp,costprice'
@@ -1085,14 +1085,7 @@ public function oldpricecheck(Request $req)
             // set cid for routes that expect it
             $cid = $customeridfor;
 
-            // ===== TODO: compute your ledger block numbers here as needed =====
-            // $allnotcash = Credit total for this customer
-            // $cts        = Cash total for this customer
-            // $dts        = Total transaction amount
-            // $all        = Paginator of ledger rows for the big table
-            // Example placeholders (leave as defaults if not ready):
-            // $all = YourLedgerModel::where('customerid', $customeridfor)->paginate(50);
-            // $allnotcash = ...; $cts = ...; $dts = ...;
+          
         }
 
         return view('customerledgerhistory.customersoldpricecheck', [
