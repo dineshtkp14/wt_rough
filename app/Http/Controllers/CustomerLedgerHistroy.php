@@ -996,116 +996,59 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
     }
 }
 
-
 public function oldpricecheck(Request $req)
 {
-    if (Auth::check()) {
-        $breadcrumb = [
-            'subtitle' => 'View  (old price check / )',
-            'title'    => ' old price check',
-            'link'     => ' old price check'
-        ];
-
-        $customeridfor = $req->customerid;
-
-        // validate only if present
-        if ($req->has('customerid')) {
-            $req->validate([
-                'customerid' => 'required|exists:customerinfos,id',
-            ], [
-                'customerid.required' => 'Please choose a customer from the list.',
-                'customerid.exists'   => 'Selected customer not found.',
-            ]);
-        }
-
-        // ===== SAFE DEFAULTS so Blade never errors =====
-        $cus = Salesitem::query()->whereRaw('1=0')->paginate(50);
-        $cusinfoforcard   = null;
-
-        // variables your blade uses elsewhere
-        $cid        = null;
-        $from       = $req->date1 ?? null;
-        $to         = $req->date2 ?? null;
-        $allnotcash = 0;     // total credit (example default)
-        $cts        = 0;     // total cash (example default)
-        $dts        = 0;     // total txn amount (example default)
-
-        // paginator for $all to keep $all->links() working on first load
-        $all = new LengthAwarePaginator([], 0, 50);
-
-        // make sure this ALWAYS exists (your blade does foreach and [0] access)
-        $cusinfoforpdfok = collect();
-
-        // =================================================
-
-        if (!empty($customeridfor)) {
-            // customer card + pdf data
-            $cusinfo = Customerinfo::where('id', $customeridfor)
-                ->select('id','name','address','email','phoneno','alternate_phoneno','remarks')
-                ->first();
-
-            $cusinfoforcard = $cusinfo;
-
-            // for @foreach ($cusinfoforpdfok as $i) and also $cusinfoforpdfok[0]-style access
-            if ($cusinfo) {
-                $cusinfoforpdfok = collect([$cusinfo]);
-            }
-
-            // salesitems for that customer via invoice.customerid
-            $cus = salesitem::query()
-                ->with([
-                    'invoice:id,customerid,inv_type',
-                    'item:id,itemsname,mrp,costprice'
-                ])
-                ->whereHas('invoice', function ($q) use ($customeridfor) {
-                    $q->where('customerid', $customeridfor);
-                })
-                ->orderByDesc('date')
-                ->paginate(50);
-
-            // attach fields your blade expects
-            foreach ($cus as $data) {
-                if ($data->invoice) {
-                    $data->inv_type = $data->invoice->inv_type;
-
-                    $cname = Customerinfo::where('id', $data->invoice->customerid)->value('name');
-                    if ($cname) {
-                        $data->customeridx  = $data->invoice->customerid;
-                        $data->customername = $cname;
-                    }
-                }
-
-                if ($data->item) {
-                    $data->itemname  = $data->item->itemsname;
-                    $data->itemprice = $data->item->mrp;
-                    $data->itemdlp   = $data->item->costprice;
-                }
-            }
-
-            // set cid for routes that expect it
-            $cid = $customeridfor;
-
-          
-        }
-
-        return view('customerledgerhistory.customersoldpricecheck', [
-            'breadcrumb'        => $breadcrumb,
-            'customeridfor'     => $customeridfor,
-            'cusinfoforcard'    => $cusinfoforcard,
-            'cus'               => $cus,
-            'cusinfoforpdfok'   => $cusinfoforpdfok, // <-- now always defined
-            // extras your blade references
-            'cid'               => $cid,
-            'from'              => $from,
-            'to'                => $to,
-            'allnotcash'        => $allnotcash,
-            'cts'               => $cts,
-            'dts'               => $dts,
-            'all'               => $all,
-        ]);
+    if (!Auth::check()) {
+        return redirect()->route('login');
     }
 
-    return redirect()->route('login');
+    $breadcrumb = [
+        'subtitle' => 'View',
+        'title'    => 'View Invoice Sales Details',
+        'link'     => 'View Invoice Sales Details',
+    ];
+
+    $term = trim($req->input('q', ''));
+    $like = "%{$term}%";
+
+    $cus = \App\Models\Salesitem::from('salesitems as s')
+        ->leftJoin('items as it', 'it.id', '=', 's.itemid')
+        ->leftJoin('invoice as inv', 'inv.id', '=', 's.invoiceid')
+        ->leftJoin('customerinfo as c', 'c.id', '=', 'inv.customerid')
+        ->when($term !== '', function ($q) use ($like) {
+            $q->where(function ($qq) use ($like) {
+                $qq->orWhere('it.itemsname', 'like', $like)
+                   ->orWhere('s.unstockedname', 'like', $like)
+                   ->orWhere('s.quantity', 'like', $like)
+                   ->orWhere('s.invoiceid', 'like', $like)
+                   ->orWhere('s.date', 'like', $like)
+                   ->orWhere('s.price', 'like', $like)
+                   ->orWhere('s.subtotal', 'like', $like)
+                   ->orWhere('c.name', 'like', $like); // ✅ search by customer name
+            });
+        })
+        ->orderByDesc('s.id')
+        ->select([
+            's.id',
+            's.date',
+            's.created_at',
+            's.invoiceid',
+            's.unstockedname',
+            's.quantity',
+            's.price',
+            's.subtotal',
+            's.unit',
+            'inv.inv_type as inv_type',
+            'c.id as customeridx',
+            'c.name as customername',
+            'it.itemsname as itemname',
+            'it.mrp as itemprice',
+            'it.costprice as itemdlp',
+        ])
+        ->paginate(50)
+        ->appends(['q' => $term]); // keep search in pagination links
+
+    return view('customerledgerhistory.customersoldpricecheck', compact('cus', 'breadcrumb', 'term'));
 }
 
 
