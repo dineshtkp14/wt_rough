@@ -218,7 +218,7 @@ $words = convertNumberToWords($number);
 echo $words;
 
             @endphp
-			only -/ 
+			
 			
 			)
 
