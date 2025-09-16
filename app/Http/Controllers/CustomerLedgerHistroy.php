@@ -1013,10 +1013,10 @@ public function oldpricecheck(Request $req)
     $like = "%{$term}%";
 
     // -------- get actual table names from models ----------
-    $tblSales = (new \App\Models\Salesitem)->getTable();      // e.g., 'salesitems'
-    $tblItem  = (new \App\Models\Item)->getTable();           // e.g., 'items'
-    $tblInv   = (new \App\Models\Invoice)->getTable();        // e.g., 'invoices'
-    $tblCust  = (new \App\Models\Customerinfo)->getTable();   // e.g., 'customerinfos'
+    $tblSales = (new salesitem)->getTable();
+    $tblItem  = (new item)->getTable();
+    $tblInv   = (new invoice)->getTable();
+    $tblCust  = (new customerinfo)->getTable();
 
     // -------- build query with proper table names ----------
     $cus = \App\Models\Salesitem::from($tblSales.' as s')
