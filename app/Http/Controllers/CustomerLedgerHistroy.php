@@ -1028,6 +1028,10 @@ public function oldpricecheck(Request $req)
     );
     $cid = null;
     $allnotcash = 0; $cts = 0; $dts = 0;
+    $debittotalsumwithdate = $betweendate->sum('debit');
+    $credittotalsumwithdate = $betweendate->sum('credit');
+
+    $debitnotcash = $betweendate->where('invoicetype', '!=', 'cash')->sum('debit');
     $all = new \Illuminate\Pagination\LengthAwarePaginator(
         collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
     );
@@ -1093,9 +1097,11 @@ public function oldpricecheck(Request $req)
         'cid'             => $cid,
         'from'            => $from,
         'to'              => $to,
-        'allnotcash'      => $allnotcash,
+        'fordueamount'      => $allnotcash,
         'cts'             => $cts,
         'dts'             => $dts,
+        'dts1' => $debittotalsumwithdate,
+        'cts2' => $credittotalsumwithdate,
         'all'             => $all,
         'cusinfoforpdfok' => $cusinfoforpdfok,
         'searchxx'        => $searchxx,
