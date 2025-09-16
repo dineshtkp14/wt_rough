@@ -182,7 +182,7 @@
                   </div>
                   
             </div>
-            @include('customerledgerhistory._items_block', ['cus' => $cus, 'searchxx' => $searchxx ?? ''])
+            @include('_items_block', ['cus' => $cus, 'searchxx' => $searchxx ?? ''])
 {{-- /okokokoko --}}
         <div class="card-footer text-muted">
             {{ $cus->links() }}
