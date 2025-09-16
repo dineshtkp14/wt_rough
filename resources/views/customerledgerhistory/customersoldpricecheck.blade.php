@@ -105,7 +105,7 @@
                 id="filtertext"
                 class="form-control border-warning border-2"
                 placeholder="Search Here"
-                style="max-width: 260px;"
+                style="max-width: 360px;"
                 value="{{ request('searchxx') }}"
                 autocomplete="off" />
             </form>
