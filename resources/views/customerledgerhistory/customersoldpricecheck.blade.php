@@ -64,7 +64,7 @@
           </button>
         </div>
         <div class="col-md-1"></div>
-        <div class="col-md-2">
+        <div class="col-md-4">
             @foreach ($cusinfoforpdfok as $i)
               <div class="mb-3">
                 <div>NAME: <span class="fw-semibold">{{ $i->name }}</span></div>
@@ -72,11 +72,6 @@
                 <div>PHONE NO: <span class="fw-semibold">{{ $i->phoneno }}, {{ $i->alternate_phoneno }}</span></div>
               </div>
             @endforeach
-          </div>
-          <div class="col-md-3">
-            <a href="{{ route('itemsales.create') }}" class="btn btn-primary ms-3" style="background-color:#FF0066;border-color:#0be813;">
-                <i class="fas fa-file-invoice"></i> ADD NEW INVOICE
-              </a>
           </div>
       </form>
 
@@ -92,7 +87,9 @@
       <div class="card-header">
         <div class="row align-items-center">
           <div class="col-md-6">
-           
+            <a href="{{ route('itemsales.create') }}" class="btn btn-primary ms-3" style="background-color:#FF0066;border-color:#0be813;">
+              <i class="fas fa-file-invoice"></i> ADD NEW INVOICE
+            </a>
           </div>
 
           <div class="col-md-6">
