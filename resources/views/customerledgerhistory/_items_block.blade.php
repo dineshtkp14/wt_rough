@@ -25,7 +25,7 @@
                 <td>{{ $item->unstockedname ?: '-' }}</td>
                 <td>{{ $item->quantity }}-{{ $item->unit }}</td>
                 <td>{{ $item->itemdlp }}</td>
-                <td ><button class="btn btn-primary">{{ $item->price }}</button></td>
+                <td ><button class="btn btn-dark">{{ $item->price }}</button></td>
               </tr>
             @endforeach
           @else
