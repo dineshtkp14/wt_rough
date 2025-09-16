@@ -1007,7 +1007,7 @@ public function oldpricecheck(Request $req)
 
         $customeridfor = $req->customerid;
 
-        // Validate only if the customerid is present in the request
+        // validate only if present
         if ($req->has('customerid')) {
             $req->validate([
                 'customerid' => 'required|exists:customerinfos,id',
@@ -1017,20 +1017,40 @@ public function oldpricecheck(Request $req)
             ]);
         }
 
-        // Default: empty paginator so blade pagination doesn't error
-        $cus = Salesitem::query()
-            ->whereRaw('1=0')
-            ->paginate(50);
+        // ===== SAFE DEFAULTS so Blade never errors =====
+        $cus = Salesitem::query()->whereRaw('1=0')->paginate(50);
+        $cusinfoforcard   = null;
 
-        $cusinfoforcard = null;
+        // variables your blade uses elsewhere
+        $cid        = null;
+        $from       = $req->date1 ?? null;
+        $to         = $req->date2 ?? null;
+        $allnotcash = 0;     // total credit (example default)
+        $cts        = 0;     // total cash (example default)
+        $dts        = 0;     // total txn amount (example default)
+
+        // paginator for $all to keep $all->links() working on first load
+        $all = new LengthAwarePaginator([], 0, 50);
+
+        // make sure this ALWAYS exists (your blade does foreach and [0] access)
+        $cusinfoforpdfok = collect();
+
+        // =================================================
 
         if (!empty($customeridfor)) {
-            // Customer card info
-            $cusinfoforcard = customerinfo::where('id', $customeridfor)
-                ->select('id','name','address','email','phoneno')
+            // customer card + pdf data
+            $cusinfo = Customerinfo::where('id', $customeridfor)
+                ->select('id','name','address','email','phoneno','alternate_phoneno','remarks')
                 ->first();
 
-            // Salesitems for that customer via invoice.customerid
+            $cusinfoforcard = $cusinfo;
+
+            // for @foreach ($cusinfoforpdfok as $i) and also $cusinfoforpdfok[0]-style access
+            if ($cusinfo) {
+                $cusinfoforpdfok = collect([$cusinfo]);
+            }
+
+            // salesitems for that customer via invoice.customerid
             $cus = Salesitem::query()
                 ->with([
                     'invoice:id,customerid,inv_type',
@@ -1042,15 +1062,12 @@ public function oldpricecheck(Request $req)
                 ->orderByDesc('date')
                 ->paginate(50);
 
-            // Attach fields your blade expects (customername, inv_type, itemname, itemprice, itemdlp)
+            // attach fields your blade expects
             foreach ($cus as $data) {
                 if ($data->invoice) {
                     $data->inv_type = $data->invoice->inv_type;
 
-                    // fetch customer name once from invoice->customerid
-                    $cname = Customerinfo::where('id', $data->invoice->customerid)
-                        ->value('name');
-
+                    $cname = Customerinfo::where('id', $data->invoice->customerid)->value('name');
                     if ($cname) {
                         $data->customeridx  = $data->invoice->customerid;
                         $data->customername = $cname;
@@ -1063,20 +1080,39 @@ public function oldpricecheck(Request $req)
                     $data->itemdlp   = $data->item->costprice;
                 }
             }
+
+            // set cid for routes that expect it
+            $cid = $customeridfor;
+
+            // ===== TODO: compute your ledger block numbers here as needed =====
+            // $allnotcash = Credit total for this customer
+            // $cts        = Cash total for this customer
+            // $dts        = Total transaction amount
+            // $all        = Paginator of ledger rows for the big table
+            // Example placeholders (leave as defaults if not ready):
+            // $all = YourLedgerModel::where('customerid', $customeridfor)->paginate(50);
+            // $allnotcash = ...; $cts = ...; $dts = ...;
         }
 
         return view('customerledgerhistory.customersoldpricecheck', [
-            'breadcrumb'     => $breadcrumb,
-            'customeridfor'  => $customeridfor,
-            'cusinfoforcard' => $cusinfoforcard,
-            'cus'            => $cus,
-            'cusinfoforpdfok'   => $cusinfoforpdfok,
+            'breadcrumb'        => $breadcrumb,
+            'customeridfor'     => $customeridfor,
+            'cusinfoforcard'    => $cusinfoforcard,
+            'cus'               => $cus,
+            'cusinfoforpdfok'   => $cusinfoforpdfok, // <-- now always defined
+            // extras your blade references
+            'cid'               => $cid,
+            'from'              => $from,
+            'to'                => $to,
+            'allnotcash'        => $allnotcash,
+            'cts'               => $cts,
+            'dts'               => $dts,
+            'all'               => $all,
         ]);
     }
 
     return redirect()->route('login');
 }
-
 
 
 
