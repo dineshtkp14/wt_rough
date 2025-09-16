@@ -91,7 +91,7 @@
               <i class="fas fa-file-invoice"></i>ADD NEW INVOICE
             </a>
             Total Due Amount: 
-        <span class="btn btn-success" style="color: {{ $allnotcash - $cts < 0 ? 'red' : 'green' }}">
+        <span class="btn btn-success text-white" style="color: {{ $allnotcash - $cts < 0 ? 'red' : 'green' }}">
             {{-- {{ $allnotcash - $cts }}  --}}
             {{ number_format($allnotcash - $cts, 2) }}
           </div>
