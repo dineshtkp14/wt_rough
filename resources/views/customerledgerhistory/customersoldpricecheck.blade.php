@@ -87,7 +87,6 @@
       <div class="card-header">
         <div class="row align-items-center">
           <div class="col-md-6">
-            <a href="#" class="h3 text-dark text-decoration-none">ITEMSALES TABLE</a>
             <a href="{{ route('itemsales.create') }}" class="btn btn-primary ms-3" style="background-color:#FF0066;border-color:#0be813;">
               <i class="fas fa-file-invoice"></i> ADD NEW INVOICE
             </a>
