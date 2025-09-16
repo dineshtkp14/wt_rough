@@ -88,7 +88,7 @@
         <div class="row align-items-center">
           <div class="col-md-6">
             <a href="{{ route('itemsales.create') }}" class="btn btn-primary ms-3" style="background-color:#FF0066;border-color:#0be813;">
-              <i class="fas fa-file-invoice"></i> ADD NEW INVOICE
+              <i class="fas fa-file-invoice"></i> ADD NEW INVOICE  {{ number_format($allnotcash - $cts, 2) }}
             </a>
           </div>
 
