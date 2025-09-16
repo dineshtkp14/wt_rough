@@ -167,28 +167,20 @@
                     <form method="get" action="{{ route('oldpricecheck') }}" id="tableSearchForm" class="float-end">
                       {{-- keep current filters on submit --}}
                       @if(!empty($cid))  <input type="hidden" name="customerid" value="{{ $cid }}"> @endif
-                     
+                      @if(!empty($from)) <input type="hidden" name="date1" value="{{ $from }}">   @endif
+                      @if(!empty($to))   <input type="hidden" name="date2" value="{{ $to }}">     @endif
                   
-                      <div class="col-md-6 float-end">
-                        <form method="get" action="{{ route('oldpricecheck') }}" id="tableSearchForm" class="float-end">
-                          {{-- keep current filters on submit (optional) --}}
-                          @if(!empty($cid))  <input type="hidden" name="customerid" value="{{ $cid }}"> @endif
-                          @if(!empty($from)) <input type="hidden" name="date1" value="{{ $from }}">   @endif
-                          @if(!empty($to))   <input type="hidden" name="date2" value="{{ $to }}">     @endif
-                      
-                          <input type="text"
-                                 name="searchxx"
-                                 id="filtertext"
-                                 class="form-control border-warning border-2"
-                                 placeholder="Search Here"
-                                 style="width: 250px;"
-                                 value="{{ request('searchxx') }}"  {{-- keeps value after reload --}}
-                                 autocomplete="off"
-                                 autofocus />
-                        </form>
-                      </div>
-                      
-
+                      <input type="text"
+                             name="searchxx"
+                             id="filtertext"
+                             class="form-control border-warning border-2"
+                             placeholder="Search Here"
+                             style="width: 250px;"
+                             value="{{ $searchxx ?? '' }}"
+                             autocomplete="off"
+                             autofocus />
+                    </form>
+                  </div>
                   
         </div>
         <div class="card-body">
