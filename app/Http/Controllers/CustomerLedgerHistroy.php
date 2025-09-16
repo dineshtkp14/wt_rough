@@ -1008,13 +1008,21 @@ public function oldpricecheck(Request $req)
         'link'     => 'View Invoice Sales Details',
     ];
 
+    // -------- search term (optional) ----------
     $term = trim($req->input('q', ''));
     $like = "%{$term}%";
 
-    $cus = salesitem::from('salesitems as s')
-        ->leftJoin('items as it', 'it.id', '=', 's.itemid')
-        ->leftJoin('invoice as inv', 'inv.id', '=', 's.invoiceid')
-        ->leftJoin('customerinfo as c', 'c.id', '=', 'inv.customerid')
+    // -------- get actual table names from models ----------
+    $tblSales = (new \App\Models\Salesitem)->getTable();      // e.g., 'salesitems'
+    $tblItem  = (new \App\Models\Item)->getTable();           // e.g., 'items'
+    $tblInv   = (new \App\Models\Invoice)->getTable();        // e.g., 'invoices'
+    $tblCust  = (new \App\Models\Customerinfo)->getTable();   // e.g., 'customerinfos'
+
+    // -------- build query with proper table names ----------
+    $cus = \App\Models\Salesitem::from($tblSales.' as s')
+        ->leftJoin($tblItem.' as it', 'it.id', '=', 's.itemid')
+        ->leftJoin($tblInv.' as inv', 'inv.id', '=', 's.invoiceid')
+        ->leftJoin($tblCust.' as c', 'c.id', '=', 'inv.customerid')
         ->when($term !== '', function ($q) use ($like) {
             $q->where(function ($qq) use ($like) {
                 $qq->orWhere('it.itemsname', 'like', $like)
@@ -1024,7 +1032,7 @@ public function oldpricecheck(Request $req)
                    ->orWhere('s.date', 'like', $like)
                    ->orWhere('s.price', 'like', $like)
                    ->orWhere('s.subtotal', 'like', $like)
-                   ->orWhere('c.name', 'like', $like); // ✅ search by customer name
+                   ->orWhere('c.name', 'like', $like); // search by customer name
             });
         })
         ->orderByDesc('s.id')
@@ -1048,8 +1056,38 @@ public function oldpricecheck(Request $req)
         ->paginate(50)
         ->appends(['q' => $term]); // keep search in pagination links
 
-    return view('customerledgerhistory.customersoldpricecheck', compact('cus', 'breadcrumb', 'term'));
+    // ---------- SAFE DEFAULTS for other Blade vars in your view ----------
+    $cid = null;
+    $from = $req->date1 ?? null;
+    $to   = $req->date2 ?? null;
+
+    $allnotcash = 0;
+    $cts        = 0;
+    $dts        = 0;
+
+    // empty paginator so $all->links() never errors
+    $all = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 50);
+
+    // collection so @foreach ($cusinfoforpdfok as $i) works
+    $cusinfoforpdfok = collect();
+
+    return view('customerledgerhistory.customersoldpricecheck', [
+        'breadcrumb'      => $breadcrumb,
+        'cus'             => $cus,
+        'term'            => $term,
+
+        // extras your Blade references
+        'cid'             => $cid,
+        'from'            => $from,
+        'to'              => $to,
+        'allnotcash'      => $allnotcash,
+        'cts'             => $cts,
+        'dts'             => $dts,
+        'all'             => $all,
+        'cusinfoforpdfok' => $cusinfoforpdfok,
+    ]);
 }
+
 
 
 
