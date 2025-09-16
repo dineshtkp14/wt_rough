@@ -87,21 +87,7 @@
 		</div>
 
 		<div class="row">
-			<div class="col-md-3 mb-3">
-				<label class="visually-hidden" for="specificSizeInputGroupUsername">Username</label>
-				<div class="input-group">
-				  <div class="input-group-text">Choose Start Date</div>
-					<input type="date" name="date1" value="" class="form-control" id="inputs">
-				</div>
-			</div>
-
-			<div class="col-md-3 mb-3">
-				<label class="visually-hidden" for="specificSizeInputGroupUsername">Username</label>
-				<div class="input-group">
-			  		<div class="input-group-text">Choose End Date</div>
-						<input type="date" name="date2" value=""class="form-control">
-				</div>
-			</div>
+			
 			<div class="col-md-2">
 				<button type="submit" class="btn btn-dark mx-2 w-100" name="">
 					<i class="fas fa-search"></i> Search 
