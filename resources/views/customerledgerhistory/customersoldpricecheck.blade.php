@@ -93,11 +93,7 @@
 				</button>
 								 </form>
 			</div>
-			<div class="col-md-3 mt-3 mt-md-0">
-				<div class="float-lg-end">
-					<input class="form-control  border-warning border-2" id="filterInput" type="text" placeholder="Search Here">
-				</div>
-			</div>
+			
 
 		</div>
 
@@ -283,35 +279,5 @@ function openPdfInNewTab(event, url) {
 
 
 </div>
-
-<script>
-    (function(){
-      const input = document.getElementById('filterInput');
-      const form  = document.getElementById('tableSearchForm');
-      if (!input || !form) return;
-    
-      // Keep focus + caret after reload (works better than DOMContentLoaded)
-      window.addEventListener('pageshow', () => {
-        input.focus();
-        const v = input.value || '';
-        // Move caret to end
-        try { input.setSelectionRange(v.length, v.length); } catch (_) {}
-      });
-    
-      // Debounced server-side search while typing
-      let t = null;
-      input.addEventListener('input', () => {
-        clearTimeout(t);
-        t = setTimeout(() => form.submit(), 300);
-      });
-    
-      // Optional: Enter key submits immediately
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); form.submit(); }
-      });
-    })();
-    </script>
-    
-    
 
 @stop
