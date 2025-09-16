@@ -1008,23 +1008,56 @@ public function oldpricecheck(Request $req)
         'link'     => 'View Invoice Sales Details',
     ];
 
-    // -------- search term (optional) ----------
-    $term = trim($req->input('q', ''));
-    $like = "%{$term}%";
+    // Was the Search button/form actually used?
+    $searched = $req->filled('customerid') || $req->filled('q') || $req->filled('date1') || $req->filled('date2');
 
-    // -------- get actual table names from models ----------
+    // Inputs
+    $term       = trim($req->input('q', ''));
+    $like       = "%{$term}%";
+    $customerid = $req->input('customerid');
+    $from       = $req->input('date1');
+    $to         = $req->input('date2');
+
+    // Resolve actual table names from your imported models
     $tblSales = (new salesitem)->getTable();
     $tblItem  = (new item)->getTable();
     $tblInv   = (new invoice)->getTable();
     $tblCust  = (new customerinfo)->getTable();
 
-    // -------- build query with proper table names ----------
-    $cus = \App\Models\Salesitem::from($tblSales.' as s')
-        ->leftJoin($tblItem.' as it', 'it.id', '=', 's.itemid')
-        ->leftJoin($tblInv.' as inv', 'inv.id', '=', 's.invoiceid')
-        ->leftJoin($tblCust.' as c', 'c.id', '=', 'inv.customerid')
-        ->when($term !== '', function ($q) use ($like) {
-            $q->where(function ($qq) use ($like) {
+    // Safe defaults so Blade never errors on first load (no search yet)
+    $cus = new \Illuminate\Pagination\LengthAwarePaginator(
+        collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
+    );
+    $cid             = null;
+    $allnotcash      = 0;
+    $cts             = 0;
+    $dts             = 0;
+    $all             = new \Illuminate\Pagination\LengthAwarePaginator(
+        collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
+    );
+    $cusinfoforpdfok = collect();
+
+    // Only run the query AFTER a search
+    if ($searched) {
+        $query =salesitem::from($tblSales.' as s')
+            ->leftJoin($tblItem.' as it', 'it.id', '=', 's.itemid')
+            ->leftJoin($tblInv.' as inv', 'inv.id', '=', 's.invoiceid')
+            ->leftJoin($tblCust.' as c', 'c.id', '=', 'inv.customerid');
+
+        if (!empty($customerid)) {
+            $query->where('inv.customerid', $customerid);
+            $cid = $customerid;
+
+            // customer card details for your header block
+            $c =customerinfo::select('id','name','address','email','phoneno','alternate_phoneno','remarks')
+                ->find($customerid);
+            if ($c) {
+                $cusinfoforpdfok = collect([$c]); // your Blade uses foreach and [0]
+            }
+        }
+
+        if ($term !== '') {
+            $query->where(function ($qq) use ($like) {
                 $qq->orWhere('it.itemsname', 'like', $like)
                    ->orWhere('s.unstockedname', 'like', $like)
                    ->orWhere('s.quantity', 'like', $like)
@@ -1034,49 +1067,39 @@ public function oldpricecheck(Request $req)
                    ->orWhere('s.subtotal', 'like', $like)
                    ->orWhere('c.name', 'like', $like); // search by customer name
             });
-        })
-        ->orderByDesc('s.id')
-        ->select([
-            's.id',
-            's.date',
-            's.created_at',
-            's.invoiceid',
-            's.unstockedname',
-            's.quantity',
-            's.price',
-            's.subtotal',
-            's.unit',
-            'inv.inv_type as inv_type',
-            'c.id as customeridx',
-            'c.name as customername',
-            'it.itemsname as itemname',
-            'it.mrp as itemprice',
-            'it.costprice as itemdlp',
-        ])
-        ->paginate(50)
-        ->appends(['q' => $term]); // keep search in pagination links
+        }
 
-    // ---------- SAFE DEFAULTS for other Blade vars in your view ----------
-    $cid = null;
-    $from = $req->date1 ?? null;
-    $to   = $req->date2 ?? null;
+        if (!empty($from) && !empty($to)) {
+            $query->whereBetween('s.date', [$from, $to]);
+        }
 
-    $allnotcash = 0;
-    $cts        = 0;
-    $dts        = 0;
-
-    // empty paginator so $all->links() never errors
-    $all = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 50);
-
-    // collection so @foreach ($cusinfoforpdfok as $i) works
-    $cusinfoforpdfok = collect();
+        $cus = $query->orderByDesc('s.id')
+            ->select([
+                's.id',
+                's.date',
+                's.created_at',
+                's.invoiceid',
+                's.unstockedname',
+                's.quantity',
+                's.price',
+                's.subtotal',
+                's.unit',
+                // aliases expected by your Blade
+                'inv.inv_type as inv_type',
+                'c.id as customeridx',
+                'c.name as customername',
+                'it.itemsname as itemname',
+                'it.mrp as itemprice',
+                'it.costprice as itemdlp',
+            ])
+            ->paginate(50)
+            ->appends($req->only(['q','customerid','date1','date2']));
+    }
 
     return view('customerledgerhistory.customersoldpricecheck', [
         'breadcrumb'      => $breadcrumb,
         'cus'             => $cus,
         'term'            => $term,
-
-        // extras your Blade references
         'cid'             => $cid,
         'from'            => $from,
         'to'              => $to,
@@ -1085,6 +1108,7 @@ public function oldpricecheck(Request $req)
         'dts'             => $dts,
         'all'             => $all,
         'cusinfoforpdfok' => $cusinfoforpdfok,
+        'searched'        => $searched, // <- use this in Blade to show results only after search
     ]);
 }
 
