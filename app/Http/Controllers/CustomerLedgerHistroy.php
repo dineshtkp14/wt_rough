@@ -1072,7 +1072,7 @@ public function oldpricecheck(Request $req)
                 'c.id as customeridx','c.name as customername',
                 'it.itemsname as itemname','it.mrp as itemprice','it.costprice as itemdlp',
             ])
-            ->paginate(50)
+            ->paginate(10)
             ->appends($req->only(['customerid','date1','date2','searchxx']));
     }
 
