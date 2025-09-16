@@ -64,7 +64,7 @@
           </button>
         </div>
         <div class="col-md-2"></div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             @foreach ($cusinfoforpdfok as $i)
               <div class="mb-3">
                 <div>NAME: <span class="fw-semibold">{{ $i->name }}</span></div>
