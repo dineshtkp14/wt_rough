@@ -121,21 +121,7 @@
   </div>
 
 
-  <div class="col-md-3 mt-5">
-	<br> <br> <br> 
-	<h1 class="floatleft btn {{ $allnotcash - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
-		Total Due Amount: 
-		<span class="forunderline fw-bold ps-2">
-			{{-- {{ $allnotcash - $cts }} -/ --}}
 
-
-			{{ number_format($allnotcash - $cts, 2) }} -/
-
-		</span>
-	</h1>
-	
-	
-  </div>
 
 
 
@@ -169,16 +155,6 @@
     <h6 class="floatleft">Total Transaction Amount: <span class="forunderline">{{ $dts }} /-</span></h6>
 @endif
 
-<h1 class="floatleft btn btn-lg {{ $allnotcash - $cts < 0 ? 'btn-danger' : 'btn-success' }}">
-    Total Due Amounttt: 
-    <span class="forunderline">
-        {{-- {{ $allnotcash - $cts }} -/ --}}
-		{{ number_format($allnotcash - $cts, 2) }}
-
-		
-    </span>
-	
-</h1>
 
 (
 @php
