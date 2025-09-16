@@ -1001,7 +1001,7 @@ public function oldpricecheck(Request $req)
     if (!Auth::check()) return redirect()->route('login');
 
     $breadcrumb = [
-        'subtitle' => '',
+        'subtitle' => 'view',
         'title'    => 'Check Old Price',
         'link'     => 'Check Old Price',
     ];
