@@ -104,7 +104,7 @@
                 name="searchxx"
                 id="filtertext"
                 class="form-control border-warning border-5 p-2 fs-3"
-                placeholder="Search Here ....."
+                placeholder="Search Items Name here ....."
                 style="max-width: 400px;"
                 value="{{ request('searchxx') }}"
                 autocomplete="off" />
