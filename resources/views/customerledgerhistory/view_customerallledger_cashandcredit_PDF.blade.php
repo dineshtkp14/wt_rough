@@ -135,7 +135,7 @@
             @foreach ($all as $i)
                 <tr>
                     <td class="ad-date"
-                    data-ad="{{ \Carbon\Carbon::parse({{ $i->date }})->format('Y-m-d') }}"
+                    data-ad="{{ \Carbon\Carbon::parse( $i->date)->format('Y-m-d') }}"
                     data-lang="np"></td>
                     {{-- <td data-label="Name">{{ $i->date }}</td> --}}
                     <td data-label="Address">{{ $i->particulars}}</td>
