@@ -3,8 +3,8 @@
       <table>
         <thead>
           <tr>
-            <th>Date</th>
-         
+            <th>Eng Date</th>
+            <th>Nepali Date</th>
             <th>Bill No</th>
             {{-- <th>Name</th> --}}
             <th>Items Name</th>
@@ -21,6 +21,8 @@
                 {{-- <td class="ad-date"
                 data-ad="{{ \Carbon\Carbon::parse($item->date)->format('Y-m-d') }}"
                 data-lang="np"></td> --}}
+
+                <td>{{ $item->date }}</td>
 
                 <td>{{ \App\Support\NepaliDate::adToBsString($item->date, 'np') }}</td>
 
