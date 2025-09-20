@@ -1,3 +1,9 @@
+@php
+  // English dateलाई साफ "YYYY-MM-DD" बनाउने
+  $adDate = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+@endphp
+
+
 <div id="itemsBlock">
     <div class="card-body">
       <table>
