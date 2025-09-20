@@ -7,20 +7,16 @@
         /* Example: */
 
         @font-face{
-  font-family:'NotoSansDev';
-  src:url('https://cdn.jsdelivr.net/gh/google/fonts/ofl/notosansdevanagari/NotoSansDevanagari-Regular.ttf') format('truetype');
-  font-weight:400;
+            font-family: "Noto Sans Devanagari", sans-serif;
+          src: url('{{ public_path('fonts/NotoSansDevanagari-Regular.ttf') }}') format('truetype');
+  font-weight: normal; font-style: normal;
 }
-@font-face{
-  font-family:'NotoSansDev';
-  src:url('https://cdn.jsdelivr.net/gh/google/fonts/ofl/notosansdevanagari/NotoSansDevanagari-Bold.ttf') format('truetype');
-  font-weight:700;
-}
+
 
 
      
         body {
-            font-family: 'NotoSansDev', DejaVu Sans, sans-serif;
+            font-family: "Noto Sans Devanagari", sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f9f9f9;
