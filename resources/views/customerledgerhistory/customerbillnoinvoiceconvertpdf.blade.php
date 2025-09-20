@@ -148,6 +148,8 @@
                         <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
                     @endif
                     <p>Date: {{ $forinvoicetype->date }}</p>
+                    <td>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date, 'np') }}</td>
+
                 @endif
             
             </div>
