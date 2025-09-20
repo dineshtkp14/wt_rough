@@ -163,7 +163,7 @@ html, body, table, td, th, p, span, h1, h2, h3, b, strong{
                     @endif
                     <p>Date: {{ $forinvoicetype->date }}</p>
 
-                    <p>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date, 'np') }}</p>
+                    {{-- <p>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date, 'np') }}</p> --}}
 
                 @endif
             
