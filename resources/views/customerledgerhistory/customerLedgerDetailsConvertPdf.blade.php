@@ -7,11 +7,15 @@
         /* Example: */
 
         @font-face{
-  font-family: 'NotoSansDev';
-  src: url('{{ public_path('fonts/NotoSansDevanagari-Regular.ttf') }}') format('truetype');
-  font-weight: normal; font-style: normal;
+  font-family:'NotoSansDev';
+  src:url('https://cdn.jsdelivr.net/gh/google/fonts/ofl/notosansdevanagari/NotoSansDevanagari-Regular.ttf') format('truetype');
+  font-weight:400;
 }
-
+@font-face{
+  font-family:'NotoSansDev';
+  src:url('https://cdn.jsdelivr.net/gh/google/fonts/ofl/notosansdevanagari/NotoSansDevanagari-Bold.ttf') format('truetype');
+  font-weight:700;
+}
 
 
      
