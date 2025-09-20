@@ -20,7 +20,7 @@
               <tr @if (date('Y-m-d', strtotime($item->date)) === date('Y-m-d')) style="font-weight:bold;color:white;background:red;" @endif>
                 {{-- <td>{{ $item->date }}</td> --}}
                 <td class="bs-date" data-ad="{{ $item->date }}">
-                  {{ $item->date }}
+                a  {{ $item->date }}
                 </td>
                 
                 <td>{{ $item->invoiceid }}</td>
