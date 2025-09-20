@@ -24,8 +24,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/number-to-words"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-    <script src="https://unpkg.com/nepali-date-converter/dist/nepali-date-converter.min.js"></script>
-
+   
 
     {{-- //forhtmltabletoexport --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
@@ -46,28 +45,6 @@
 
 <body>
    
-    \<script src="https://unpkg.com/nepali-date-converter/dist/nepali-date-converter.min.js"></script>
-    <script>
-      function convertBsDates() {
-        const conv = new NepaliDateConverter();
-        const nepDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
-        const pad = n => String(n).padStart(2,'0');
-    
-        document.querySelectorAll('.bs-date').forEach(el => {
-          const ad = el.getAttribute('data-ad'); // 2025-09-20
-          if (!ad) return;
-          const [y,m,d] = ad.split('-').map(Number);
-          const bs = conv.adToBs(y,m,d); // {year,month,day}
-          let out = `${bs.year}-${pad(bs.month)}-${pad(bs.day)}`;
-          // Nepali अंकमा बदल्ने
-          out = out.replace(/[0-9]/g, d => nepDigits[d]);
-          el.textContent = out;
-        });
-      }
-    
-      document.addEventListener('DOMContentLoaded', convertBsDates);
-    </script>
-    
 
     <main class="side-nav d-flex flex-nowrap">
         <h1 class="visually-hidden">Sidebars </h1>
