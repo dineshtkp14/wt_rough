@@ -22,22 +22,23 @@
         </thead>
         <tbody>
           @if ($cus->isNotEmpty())
-            @foreach ($cus as $item)
-              <tr @if (date('Y-m-d', strtotime($item->date)) === date('Y-m-d')) style="font-weight:bold;color:white;background:red;" @endif>
-                {{-- <td>{{ $item->date }}</td> --}}
-                <td class="bs-date" data-ad="{{ $item->date }}">
-                a  {{ $item->date }}
-                </td>
-                
-                <td>{{ $item->invoiceid }}</td>
-                {{-- <td>{{ $item->customername }}</td> --}}
-                <td>{{ $item->itemname ?: '-' }}</td>
-                <td>{{ $item->unstockedname ?: '-' }}</td>
-                <td>{{ $item->quantity }}-{{ $item->unit }}</td>
-                <td>{{ $item->itemdlp }}</td>
-                <td ><button class="btn btn-dark">{{ $item->price }}</button></td>
-              </tr>
-            @endforeach
+          @foreach ($cus as $item)
+          @php
+              // Force clean AD date as YYYY-MM-DD (handles timestamps too)
+              $adDate = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+          @endphp
+          <tr @if (date('Y-m-d', strtotime($item->date)) === date('Y-m-d')) style="font-weight:bold;color:white;background:red;" @endif>
+            <td class="bs-date" data-ad="{{ $adDate }}">{{ $adDate }}</td>
+        
+            <td>{{ $item->invoiceid }}</td>
+            <td>{{ $item->itemname ?: '-' }}</td>
+            <td>{{ $item->unstockedname ?: '-' }}</td>
+            <td>{{ $item->quantity }}-{{ $item->unit }}</td>
+            <td>{{ $item->itemdlp }}</td>
+            <td><button class="btn btn-dark">{{ $item->price }}</button></td>
+          </tr>
+        @endforeach
+        
           @else
             <tr>
               <td colspan="13" class="text-center py-4"><h3>No Record Found.</h3></td>
