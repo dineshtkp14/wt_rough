@@ -18,9 +18,12 @@
           @if ($cus->isNotEmpty())
             @foreach ($cus as $item)
               <tr @if (date('Y-m-d', strtotime($item->date)) === date('Y-m-d')) style="font-weight:bold;color:white;background:red;" @endif>
-                <td class="ad-date"
+                {{-- <td class="ad-date"
                 data-ad="{{ \Carbon\Carbon::parse($item->date)->format('Y-m-d') }}"
-                data-lang="np"></td>
+                data-lang="np"></td> --}}
+
+                <td>{{ \App\Support\NepaliDate::adToBsString($item->date, 'np') }}</td>
+
                 <td>{{ $item->invoiceid }}</td>
                 {{-- <td>{{ $item->customername }}</td> --}}
                 <td>{{ $item->itemname ?: '-' }}</td>
