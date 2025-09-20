@@ -1,6 +1,4 @@
 
-
-
 <div id="itemsBlock">
     <div class="card-body">
       <table>
