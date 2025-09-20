@@ -24,7 +24,8 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/number-to-words"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-   
+    <script src="https://unpkg.com/nepali-date-converter/dist/nepali-date-converter.min.js"></script>
+
 
     {{-- //forhtmltabletoexport --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
