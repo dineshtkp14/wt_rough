@@ -38,6 +38,9 @@
     <!-- Select2 JS -->
     {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script> --}}
     <script src="{{ asset('assets/js/common.js') }}"></script>
+    <script src="{{ asset('assets/js/nepali-date-converter.umd.js') }}"></script>
+
+    
     <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sidebars/">
 
 
