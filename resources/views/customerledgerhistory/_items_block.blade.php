@@ -18,7 +18,11 @@
           @if ($cus->isNotEmpty())
             @foreach ($cus as $item)
               <tr @if (date('Y-m-d', strtotime($item->date)) === date('Y-m-d')) style="font-weight:bold;color:white;background:red;" @endif>
-                <td>{{ $item->date }}</td>
+                {{-- <td>{{ $item->date }}</td> --}}
+                <td class="bs-date" data-ad="{{ $item->date }}">
+                  {{ $item->date }}
+                </td>
+                
                 <td>{{ $item->invoiceid }}</td>
                 {{-- <td>{{ $item->customername }}</td> --}}
                 <td>{{ $item->itemname ?: '-' }}</td>
@@ -42,3 +46,23 @@
     </div>
   </div>
   
+  <script>
+    function convertBsDates() {
+      const conv = new NepaliDateConverter();
+      const nepDigits = {'0':'०','1':'१','2':'२','3':'३','4':'४','5':'५','6':'६','7':'७','8':'८','9':'९'};
+      const pad = n => String(n).padStart(2,'0');
+    
+      document.querySelectorAll('.bs-date').forEach(el => {
+        const ad = el.getAttribute('data-ad'); // "YYYY-MM-DD"
+        if (!ad) return;
+        const [y,m,d] = ad.split('-').map(Number);
+        const bs = conv.adToBs(y, m, d);
+        let out = `${bs.year}-${pad(bs.month)}-${pad(bs.day)}`;
+        out = out.replace(/[0-9]/g, d => nepDigits[d]); // Nepali digits
+        el.textContent = out;
+      });
+    }
+    
+    document.addEventListener('DOMContentLoaded', convertBsDates);
+    </script>
+    

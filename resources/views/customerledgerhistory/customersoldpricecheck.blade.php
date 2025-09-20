@@ -80,9 +80,7 @@
     </div>
 
     {{-- =============== Selected Customer Info (from $cusinfoforpdfok) =============== --}}
-    <td class="bs-date" data-ad="{{ $model->created_at->format('Y-m-d') }}">
-      {{ $model->created_at->format('Y-m-d') }}
-    </td>
+  
 
     {{-- =============== Items Table Card =============== --}}
     <div class="card mt-0">
@@ -210,8 +208,4 @@
   bindPagination();
 })();
 </script>
-
-{{-- //fordateconverter --}}
-<script src="https://unpkg.com/nepali-date-converter/dist/nepali-date-converter.min.js"></script>
-
 @endsection
