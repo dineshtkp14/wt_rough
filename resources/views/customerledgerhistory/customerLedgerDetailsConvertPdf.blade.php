@@ -5,8 +5,18 @@
     <style>
         /* Add your CSS styles here */
         /* Example: */
+
+        @font-face{
+  font-family: 'NotoSansDev';
+  src: url('{{ public_path('fonts/NotoSansDevanagari-Regular.ttf') }}') format('truetype');
+  font-weight: normal; font-style: normal;
+}
+
+
+
+     
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'NotoSansDev', DejaVu Sans, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f9f9f9;

@@ -40,6 +40,10 @@
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script src="{{ asset('assets/js/nepali-date-converter.umd.js') }}"></script>
 
+    {{-- //nepalifontfor pdf pages --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100..900&display=swap" rel="stylesheet">
     
     <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sidebars/">
 
@@ -689,30 +693,7 @@
 
 
     {{-- //for date converter --}}
-    <script>
-        function adToBsString(adStr, lang = 'en') {
-          try {
-            const [y,m,d] = String(adStr).split('-').map(Number);
-            const nd = NepaliDate.fromAD(new Date(y, (m||1)-1, d||1));
-            return nd.format('YYYY-MM-DD', lang); // 'en' वा 'np'
-          } catch (e) {
-            console.warn('AD→BS failed for', adStr, e);
-            return adStr; // fallback
-          }
-        }
-      
-        function convertAllAdDates(root = document) {
-          root.querySelectorAll('[data-ad]').forEach(el => {
-            const lang = el.getAttribute('data-lang') || 'en';
-            el.textContent = adToBsString(el.getAttribute('data-ad'), lang);
-          });
-        }
-      
-        document.addEventListener('DOMContentLoaded', () => convertAllAdDates());
-      
-        // Dynamic update (Livewire/Ajax) पछि चलाउन:
-        window.addEventListener('reconvert-ad-bs', () => convertAllAdDates());
-      </script>
+    
     
 </body>
 
