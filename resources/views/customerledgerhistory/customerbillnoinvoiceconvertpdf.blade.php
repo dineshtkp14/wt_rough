@@ -148,7 +148,7 @@
                     @else
                         <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
                     @endif
-                    <p>Date: {{ $forinvoicetype->date }}</p>
+                    <p>Datee: {{ $forinvoicetype->date }}</p>
 
                     {{-- <p>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date, 'np') }}</p> --}}
 
