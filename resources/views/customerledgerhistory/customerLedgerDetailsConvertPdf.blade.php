@@ -16,34 +16,36 @@
     @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
 
     /* ------------ Page & global spacing ------------ */
-    @page { size: A5 portrait; margin: 30px; }
+    /* Page has NO margin; we simulate “page padding” with the .container padding */
+    @page { size: A5 portrait; margin: 0; }
 
     html, body{
       font-family: 'NotoSansEnglish','HindDevanagari',sans-serif;
-      margin:0 !important; padding:20px !important;
-      line-height:1.14;          /* more legible */
-      font-size:16px;            /* base size */
+      margin:0 !important; 
+      padding:0 !important;              /* ← no body padding */
+      line-height:1.14;
+      font-size:16px;
     }
     *{ box-sizing:border-box; }
     p{ margin:0 0 2px 0; line-height:1.14; }
 
-    /* Container */
-    .container{ margin:0 auto; padding:52px; background:#fff; }
+    /* Container = the page content area with 20px padding all around */
+    .container{ margin:0 auto; padding:20px; background:#fff; }
 
     /* Header */
-    .letterhead{ color:#000; padding:0 20px 10px; text-align:center; }
+    .letterhead{ color:#000; padding:0 0 8px; text-align:center; }
     .letterhead h1{ margin:0 0 6px; font-size:34px; text-decoration:underline; line-height:1.05; }
 
-    .address-info{ font-size:15px; text-align:center; margin-top:8px; }
+    .address-info{ font-size:15px; text-align:center; margin-top:6px; }
     .address-info p{ margin:2px 0; }
 
-    .invoice-info{ font-size:15px; margin-top:10px; }
+    .invoice-info{ font-size:15px; margin-top:8px; }
     .invoice-info p{ margin:2px 0; }
 
     /* move the Invoice Type / Date / Miti block slightly up on the right */
     .firstdiv{
-      float: right;
-      margin-top: -24px !important;  /* tweak: -18 to -32 for fine-tuning */
+      float:right;
+      margin-top:-22px !important;   /* tweak -18 to -30 as you like */
     }
 
     .seconddiv{ margin-top:-14px !important; }
@@ -54,21 +56,21 @@
 
     /* ===== INVOICE NO / PAN block (moved up + emphasized number) ===== */
     .forbillandpan{
-      margin-top:-80px !important;  /* move up; adjust as needed */
+      margin-top:-72px !important;  /* adjust as needed after the 20px page padding */
       line-height:1.14;
     }
     .invoice-no{
       font-size:20px;
-      font-weight:700;              /* Dompdf fakes bold with regular TTF */
+      font-weight:700;
       letter-spacing:.3px;
       margin-bottom:2px;
     }
-    .invoice-no .num{ font-weight:800; } /* emphasized */
+    .invoice-no .num{ font-weight:800; }
     .pan-line{ font-size:15px; margin-top:0; }
 
     /* Table */
     table{
-      width:100%; border-collapse:collapse; margin-top:12px;
+      width:100%; border-collapse:collapse; margin-top:10px;
       font-size:20px;
     }
     th,td{
@@ -126,7 +128,7 @@
         @endif
       </div>
 
-      <!-- ===== INVOICE NO + PAN (moved up, number bolded) ===== -->
+      <!-- ===== INVOICE NO + PAN ===== -->
       <div class="forbillandpan">
         <div class="invoice-no">
           INVOICE NO: <span class="num">{{ $invoiceid }}</span>
@@ -140,7 +142,7 @@
           @endforeach
         @endif
       </div>
-      <!-- ======================================================= -->
+      <!-- ================================= -->
 
       <div class="seconddiv forfontsizebll">
         @if ($cinfodetails)
