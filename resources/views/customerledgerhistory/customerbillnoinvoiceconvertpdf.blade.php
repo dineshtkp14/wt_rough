@@ -11,21 +11,25 @@
     {{-- <script src="{{ asset('assets/js/common.js') }}"></script> --}}
 
     <style>
-       @font-face {
+     @font-face {
     font-family: 'NotoSansDevanagari';
-    src: url("{{ asset('NotoSansDevanagari-Regular.ttf') }}") format('truetype');
+    src: url("{{ asset('fonts/NotoSansDevanagari-Regular.ttf') }}") format('truetype');
+    font-weight: normal;
+    font-style: normal;
   }
 
+  /* English (your condensed font) */
   @font-face {
     font-family: 'NotoSansEnglish';
-    src: url("{{ asset('NotoSans_Condensed-Regular') }}") format('truetype');
+    src: url("{{ asset('fonts/NotoSans_Condensed-Regular.ttf') }}") format('truetype');
+    font-weight: normal;
+    font-style: normal;
   }
 
-
-    html, body{
-        font-family: 'NotoSansDevanagari', 'NotoSansEnglish', sans-serif;
-      margin:0; padding:0;
-    }
+  html, body {
+    font-family: 'NotoSansDevanagari', 'NotoSansEnglish', sans-serif;
+    margin: 0; padding: 0;
+  }
 
         * {
             margin-top: 0 !important; /* Set top margin to 0 for all elements */
