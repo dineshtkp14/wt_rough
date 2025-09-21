@@ -1,144 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Print</title>
-    
+  <meta charset="UTF-8">
+  <title>Print</title>
+
   @php
-        $nep = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));
-        $eng = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));
+    // Absolute filesystem paths for Dompdf
+    $nepR = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));                  // Nepali (works well with Dompdf)
+    $nepB = str_replace('\\','/', public_path('fonts/Hind-Bold.ttf'));                    // Optional (if present)
+    $engR = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));   // English
+    $engB = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Bold.ttf'));      // Optional (if present)
   @endphp
-    <script src="{{ asset('assets/js/common.js') }}"></script>
 
-    <style>
-        @font-face{
-    font-family:'HindDevanagari';
-    src:url('file://{{ $nep }}') format('truetype');
-    font-weight:normal; font-style:normal;
-  }
-  @font-face{
-    font-family:'NotoSansEnglish';
-    src:url('file://{{ $eng }}') format('truetype');
-    font-weight:normal; font-style:normal;
-  }
-  html, body{
-  font-family: 'NotoSansEnglish', 'HindDevanagari', sans-serif;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-.label-nep { font-family:'HindDevanagari', 'NotoSansDevanagari', sans-serif; }
+  <style>
+    /* -------- Fonts (filesystem URLs for Dompdf) -------- */
+    @font-face{
+      font-family:'HindDevanagari';
+      src:url('file://{{ $nepR }}') format('truetype');
+      font-weight:normal; font-style:normal;
+    }
+    @font-face{
+      font-family:'HindDevanagari';
+      src:url('file://{{ $nepB }}') format('truetype');
+      font-weight:bold; font-style:normal;
+    }
+    @font-face{
+      font-family:'NotoSansEnglish';
+      src:url('file://{{ $engR }}') format('truetype');
+      font-weight:normal; font-style:normal;
+    }
+    @font-face{
+      font-family:'NotoSansEnglish';
+      src:url('file://{{ $engB }}') format('truetype');
+      font-weight:bold; font-style:normal;
+    }
 
+    /* -------- Page & global spacing -------- */
+    @page {
+      size: A5 portrait;
+      margin: 30px;
+    }
+    html, body{
+      font-family: 'NotoSansEnglish','HindDevanagari',sans-serif;
+      margin: 0 !important;
+      padding: 0 !important;
+      line-height: 1.15; /* tighter than default */
+    }
+    * { box-sizing: border-box; }
 
-.nepfix { padding-left:4px; margin-left:4px; line-height:1.35; }
+    /* Paragraphs – remove big default margins */
+    p { margin: 0 0 2px 0; line-height: 1.15; }
 
+    /* Sections */
+    .container { margin: 0 auto; padding: 20px; background:#fff; }
+    .letterhead { color:#000; padding: 0 20px 10px; text-align:center; }
+    .letterhead h1 { margin: 0 0 6px; font-size: 30px; text-decoration: underline; line-height:1.05; }
 
-        * {
-            margin-top: 0 !important; /* Set top margin to 0 for all elements */
-        }
+    .address-info p,
+    .invoice-info p { margin: 2px 0; line-height:1.15; }
 
-        .container {
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-        }
+    .firstdiv { float: right; }
+    .seconddiv { margin-top:-24px !important; } /* a bit less than before */
 
-        @page {
-            size: A5 portrait;
-            margin: 30px; /* Set margin to 0 for the page */
-            padding: 10px !important;
-        }
+    /* Table – compact rows */
+    table { width:100%; border-collapse: collapse; margin-top: 14px; font-size: 20px; }
+    th, td {
+      border: 1px solid #000;
+      padding: 1px 4px;          /* tighter cell padding */
+      line-height: 1.12;         /* compact row height */
+      vertical-align: middle;
+      text-align: center;
+    }
+    th { background:#fff; }
 
-        p {
-            font-size: 16px !important;
-        }
+    .text-right { text-align:right; }
+    .notes { margin-top:12px; max-height:100px; overflow:hidden; font-size:14px; }
 
-        .letterhead {
-            color: black;
-            padding: 20px;
-            text-align: center;
-        }
+    .forfontsizebll p { font-size: 16px !important; line-height:1.15; }
+    .forbillandpan { margin-top: -60px !important; }
 
-        .letterhead h1 {
-            margin: 0;
-            font-size: 30px;
-            text-decoration: underline;
-        }
+    /* Nepali runs – tiny padding to avoid matra clipping */
+    .nep { font-family:'HindDevanagari',sans-serif; line-height:1.16; }
+    .label-nep { font-family:'HindDevanagari',sans-serif; display:inline-block; padding-left:3px; line-height:1.16; }
 
-        .address-info {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .firstdiv {
-            float: right;
-        }
-
-        .seconddiv {
-            margin-top: -30px !important;
-        }
-
-        .address-info p {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-
-        .invoice-info {
-            margin-top: 20px;
-        }
-
-        .invoice-info p {
-            margin: 5px 0;
-            font-size: 16px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 22px; /* Increase font size for table */
-        }
-
-        th, td {
-            border: 1px solid #000;
-            padding: 2px; /* Increase padding for table cells */
-            text-align: center;
-        }
-
-        th {
-            background-color: white;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .notes {
-            margin-top: 20px;
-            max-height: 100px;
-            overflow: hidden;
-            font-size: 14px;
-        }
-
-       .forfontsizebll p{
-        font-size: 18px !important;
-       }
-
-        .forbillandpan {
-            margin-top: -70px !important;
-        }
-        
-        .watermark {
-            position: fixed;
-            top: 45%; /* Adjust the vertical position */
-            left: 35%; /* Adjust the horizontal position */
-            transform: rotate(-45deg); /* Rotate the text */
-            font-size: 148px;
-            opacity: 0.1; /* Adjust the opacity */
-            color: gray; /* Adjust the color */
-        }
-      
-      
-    </style>
+    /* Watermark */
+    .watermark {
+      position: fixed; top: 45%; left: 35%;
+      transform: rotate(-45deg);
+      font-size: 148px; opacity: 0.1; color: gray;
+    }
+  </style>
 </head>
 <body>
 
