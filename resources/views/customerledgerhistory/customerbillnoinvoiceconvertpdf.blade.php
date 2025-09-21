@@ -5,14 +5,14 @@
     <title>Print</title>
     
   @php
-        $nep = str_replace('\\','/', public_path('fonts/NotoSansDevanagari-Regular.ttf'));
+        $nep = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));
         $eng = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));
   @endphp
     <script src="{{ asset('assets/js/common.js') }}"></script>
 
     <style>
         @font-face{
-    font-family:'NotoSansDevanagari';
+    font-family:'HindDevanagari';
     src:url('file://{{ $nep }}') format('truetype');
     font-weight:normal; font-style:normal;
   }
@@ -22,11 +22,11 @@
     font-weight:normal; font-style:normal;
   }
   html, body{
-  font-family: 'NotoSansEnglish', 'NotoSansDevanagari', sans-serif;
+  font-family: 'NotoSansEnglish', 'HindDevanagari', sans-serif;
   margin: 0 !important;
   padding: 0 !important;
 }
-.nep { font-family:'NotoSansDevanagari', sans-serif; }
+.nep { font-family:'HindDevanagari', sans-serif; }
 .nepfix { padding-left:4px; margin-left:4px; line-height:1.35; }
 
 
@@ -168,7 +168,7 @@
                     @endif
                     <p>Date: {{ $forinvoicetype->date }}</p>
 
-                    <p style="font-family:'NotoSansDevanagari'; display:inline-block; padding-left:3px">
+                    <p style="font-family:'HindDevanagari'; display:inline-block; padding-left:3px">
                         म&#x093F;&#x200C;ति: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
                       </p>
                       
