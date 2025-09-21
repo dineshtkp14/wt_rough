@@ -141,9 +141,7 @@
     $fontData = base64_encode(file_get_contents($fontPath));
 @endphp
 <div class="container">
-    <div class="watermark">OHT <p style="font-size:18px">
-        टेस्ट: काठमाण्डौ • १२३४५६७८९० • ज्ञ श्र क्ष कि की कु कू
-      </p></div> <!-- Watermark text -->
+    <div class="watermark">OHT </div> <!-- Watermark text -->
 
 
     <div class="letterhead">
@@ -153,6 +151,9 @@
     <div class="address-info">
         <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
         <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
+        <p style="font-size:18px">
+            टेस्ट: काठमाण्डौ • १२३४५६७८९० • ज्ञ श्र क्ष कि की कु कू
+          </p>
     </div>
 
   
