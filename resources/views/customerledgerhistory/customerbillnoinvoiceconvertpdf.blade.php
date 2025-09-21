@@ -11,21 +11,23 @@
   @endphp
 
   <style>
-    /* ------------ Fonts (filesystem paths for Dompdf) ------------ */
-    @font-face { font-family:'HindDevanagari';   src:url('file://{{ $nepR }}') format('truetype');  font-weight:normal; font-style:normal; }
-    @font-face { font-family:'NotoSansEnglish';  src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
+    /* ---------- Fonts (filesystem paths for Dompdf) ---------- */
+    @font-face { font-family:'HindDevanagari';  src:url('file://{{ $nepR }}') format('truetype');  font-weight:normal; font-style:normal; }
+    @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
 
-    /* ------------ Page & global spacing ------------ */
-    @page { size: A5 portrait; margin: 30px; }
+    /* ---------- REAL page margins (use mm) ---------- */
+    @page { size: A5 portrait; margin: 20mm; }   /* ← page margin on all sides */
+
     html, body{
-      font-family: 'NotoSansEnglish','HindDevanagari',sans-serif;
-      margin:0 !important; padding:0 !important;
-      line-height:1.12; font-size:14px;
+      margin:0; padding:0;                       /* leave body with no spacing */
+      font-family:'NotoSansEnglish','HindDevanagari',sans-serif;
+      font-size:14px; line-height:1.12;
     }
     *{ box-sizing:border-box; }
     p{ margin:0 0 1px 0; line-height:1.12; }
 
-    .container{ margin:0 auto; padding:20px; background:#fff; }
+    /* ---------- Inner page padding box ---------- */
+    .page{ padding:20px; background:#fff; }      /* ← 20px page padding */
 
     /* Header */
     .letterhead{ color:#000; padding:0 20px 8px; text-align:center; }
@@ -43,52 +45,32 @@
     .nep, .label-nep{ font-family:'HindDevanagari',sans-serif; line-height:1.14; }
     .label-nep{ display:inline-block; padding-left:3px; } /* avoids matra clipping */
 
-    /* ===== INVOICE NO / PAN block (moved up) ===== */
-    .forbillandpan{
-      margin-top:-80px !important;   /* move up; make more negative to move further */
-      line-height:1.12;
-    }
-    .invoice-no{
-      font-size:18px;
-      font-weight:700;               /* Dompdf will fake bold with regular font */
-      letter-spacing:.3px;
-      margin-bottom:1px;
-    }
-    .invoice-no .num{
-      font-weight:800;               /* also faked; no bold TTF needed */
-    }
-    .pan-line{
-      font-size:14px;
-      margin-top:0;
-    }
+    /* INVOICE NO / PAN block */
+    .forbillandpan{ margin-top:-80px !important; line-height:1.12; }
+    .invoice-no{ font-size:18px; font-weight:700; letter-spacing:.3px; margin-bottom:1px; }
+    .invoice-no .num{ font-weight:800; }
+    .pan-line{ font-size:14px; margin-top:0; }
 
     /* Table */
     table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:18px; }
-    th,td{
-      border:1px solid #000;
-      padding:0 3px;
-      height:20px;
-      line-height:1.08;
-      vertical-align:middle;
-      text-align:center;
-    }
+    th,td{ border:1px solid #000; padding:0 3px; height:20px; line-height:1.08; vertical-align:middle; text-align:center; }
     th{ font-weight:700; }
 
     .text-right{ text-align:right; }
     .notes{ margin-top:8px; font-size:13px; line-height:1.12; }
-
     .forfontsizebll p{ font-size:16px !important; line-height:1.12; }
 
     /* Watermark */
     .watermark{
       position:fixed; top:45%; left:35%;
       transform:rotate(-45deg);
-      font-size:120px; opacity:.1; color:gray;
+      font-size:120px; opacity:.1; color:gray; pointer-events:none;
     }
+    .clearfix::after{ content:""; display:block; clear:both; }
   </style>
 </head>
 <body>
-<div class="container">
+<div class="page"><!-- inner padding box -->
   <div class="watermark">OHT</div>
 
   <div class="letterhead">
@@ -100,56 +82,47 @@
     <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
   </div>
 
-  <div class="invoice-info">
-    <div class="row">
-      <div class="firstdiv">
-        @if(isset($forinvoicetype) && !empty($forinvoicetype))
-          @if($forinvoicetype->invoicetype == 'credit')
-            <p style="background:#000;color:#fff;padding:6px 10px;font-size:16px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
-          @else
-            <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+  <div class="invoice-info clearfix">
+    <div class="firstdiv">
+      @if(isset($forinvoicetype) && !empty($forinvoicetype))
+        @if($forinvoicetype->invoicetype == 'credit')
+          <p style="background:#000;color:#fff;padding:6px 10px;font-size:16px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+        @else
+          <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+        @endif
+        <p>Date: {{ $forinvoicetype->date }}</p>
+        <p class="label-nep">
+          Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+        </p>
+      @endif
+    </div>
+
+    <div class="forbillandpan">
+      <div class="invoice-no">INVOICE NO: <span class="num">{{ $invoiceid }}</span></div>
+      @if ($allinvoices)
+        @foreach($allinvoices as $i)
+          @if ($i->total < 19900)
+            <div class="pan-line">PAN No. 608641838</div>
           @endif
-          <p>Date: {{ $forinvoicetype->date }}</p>
+        @endforeach
+      @endif
+    </div>
 
-          <!-- If you want Nepali label, replace 'Miti' with म&#x093F;&#x200C;ति -->
-          <p class="label-nep">
-            Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
-          </p>
-        @endif
-      </div>
+    <div class="seconddiv forfontsizebll">
+      @if ($cinfodetails)
+        @foreach($cinfodetails as $i)
+          <p>Name: {{ $i->name }}</p>
+          <p>Address: {{ $i->address }}</p>
+          <p>Email: {{ $i->email }}</p>
+          <p>Contact No: {{ $i->phoneno }}, {{ $i->alternate_phoneno }}</p>
+        @endforeach
+      @endif
 
-      <!-- ===== INVOICE NO + PAN (moved up, number emphasized) ===== -->
-      <div class="forbillandpan">
-        <div class="invoice-no">
-          INVOICE NO: <span class="num">{{ $invoiceid }}</span>
-        </div>
-
-        @if ($allinvoices)
-          @foreach($allinvoices as $i)
-            @if ($i->total < 19900)
-              <div class="pan-line">PAN No. 608641838</div>
-            @endif
-          @endforeach
-        @endif
-      </div>
-      <!-- ========================================================== -->
-
-      <div class="seconddiv forfontsizebll">
-        @if ($cinfodetails)
-          @foreach($cinfodetails as $i)
-            <p>Name: {{ $i->name }}</p>
-            <p>Address: {{ $i->address }}</p>
-            <p>Email: {{ $i->email }}</p>
-            <p>Contact No: {{ $i->phoneno }}, {{ $i->alternate_phoneno }}</p>
-          @endforeach
-        @endif
-
-        @if ($allinvoices)
-          @foreach($allinvoices as $i)
-            <p>Customer Id: {{ $i->customerid }}</p>
-          @endforeach
-        @endif
-      </div>
+      @if ($allinvoices)
+        @foreach($allinvoices as $i)
+          <p>Customer Id: {{ $i->customerid }}</p>
+        @endforeach
+      @endif
     </div>
   </div>
 
@@ -202,17 +175,17 @@
                 <b>Amount in Words: </b>
                 @php
                   function convertNumberToWords($num) {
-                      $ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
-                      $tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
-                      if ($num == 0) return "Zero";
-                      $words = "";
-                      if ($num >= 10000000) { $words .= convertNumberToWords(floor($num/10000000))." Crore "; $num %= 10000000; }
-                      if ($num >= 100000)   { $words .= convertNumberToWords(floor($num/100000))." Lakh ";  $num %= 100000; }
-                      if ($num >= 1000)     { $words .= convertNumberToWords(floor($num/1000))." Thousand "; $num %= 1000; }
-                      if ($num >= 100)      { $words .= convertNumberToWords(floor($num/100))." Hundred ";  $num %= 100; }
-                      if ($num >= 20)       { $words .= $tens[floor($num/10)]." "; $num %= 10; }
-                      if ($num > 0)         { $words .= $ones[(int)$num]." "; }
-                      return trim($words);
+                    $ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+                    $tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+                    if ($num == 0) return "Zero";
+                    $words = "";
+                    if ($num >= 10000000) { $words .= convertNumberToWords(floor($num/10000000))." Crore "; $num %= 10000000; }
+                    if ($num >= 100000)   { $words .= convertNumberToWords(floor($num/100000))." Lakh ";  $num %= 100000; }
+                    if ($num >= 1000)     { $words .= convertNumberToWords(floor($num/1000))." Thousand "; $num %= 1000; }
+                    if ($num >= 100)      { $words .= convertNumberToWords(floor($num/100))." Hundred ";  $num %= 100; }
+                    if ($num >= 20)       { $words .= $tens[floor($num/10)]." "; $num %= 10; }
+                    if ($num > 0)         { $words .= $ones[(int)$num]." "; }
+                    return trim($words);
                   }
                   echo convertNumberToWords($i->total) . " only/-";
                 @endphp
@@ -238,6 +211,6 @@
       </p>
     @endforeach
   @endif
-</div>
+</div><!-- /.page -->
 </body>
 </html>
