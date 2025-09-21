@@ -182,11 +182,7 @@
                 @endif
             
             </div>
-            <p class="nep">
-                {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
-              </p>
-              
-              <td class="nep">{{$i->unit}}</td>   {{-- if your unit labels are Nepali --}}
+       
        <div class="forbillandpan">
         <span style="font-size: 18px;"> INVOICE NO: </span><b>{{$invoiceid}} </b><br>
 
@@ -257,6 +253,12 @@
                                 
                                     <td>{{$i->quantity}}</td>
                                     <td>{{$i->unit}}</td>
+
+                                    <p class="nep">
+                                        {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+                                      </p>
+                                      
+                                      <td class="nep">{{$i->unit}}</td>   {{-- if your unit labels are Nepali --}}
                                     <td>{{$i->price}}</td>
                                     <td>{{$i->subtotal}}</td>
                                 </tr>
