@@ -15,8 +15,10 @@
     @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
 
     /* -------- Real page margins on all sides -------- */
-    @page { size: A5 portrait; margin: 20px; }   /* ← this is your page “padding” */
-
+    @page {
+  size: A5 portrait;        /* or A4, etc. */
+  margin: 50px;             /* same on all sides */
+}
     html, body{
       font-family: 'NotoSansEnglish','HindDevanagari',sans-serif;
       margin:0 !important;
