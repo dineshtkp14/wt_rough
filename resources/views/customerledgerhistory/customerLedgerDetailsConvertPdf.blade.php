@@ -20,7 +20,7 @@
 
     html, body{
       font-family: 'NotoSansEnglish','HindDevanagari',sans-serif;
-      margin:0 !important; padding:0 !important;
+      margin:0 !important; padding:20px !important;
       line-height:1.14;          /* more legible */
       font-size:16px;            /* base size */
     }
