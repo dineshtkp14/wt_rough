@@ -213,9 +213,7 @@
 						   data-ad="{{ \Carbon\Carbon::parse($i->date)->format('Y-m-d') }}"
 						   data-lang="np"></td> --}}
 
-						   {{-- <td data-label="Name">{{ $i->date }}</td> --}}
-						   {{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'np') }}
-
+						   <td data-label="Name">{{ $i->date }}</td>
 
                           {{-- <td>{{ \App\Support\NepaliDate::adToBsString($i->date, 'np') }}</td> --}}
 
