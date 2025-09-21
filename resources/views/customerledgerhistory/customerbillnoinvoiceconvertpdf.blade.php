@@ -47,6 +47,9 @@
     .nep, .label-nep{ font-family:'HindDevanagari',sans-serif; line-height:1.14; }
     .label-nep{ display:inline-block; padding-left:3px; font-size: 18px; } /* avoids matra clipping */
 
+    .forfontdate{
+        font-size: 18px;
+    }
     /* INVOICE NO / PAN block */
     .forbillandpan{ margin-top:-80px !important; line-height:1.12; }
     .invoice-no{ font-size:18px; font-weight:700; letter-spacing:.3px; margin-bottom:1px; }
@@ -92,8 +95,8 @@
         @else
           <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
         @endif
-        <p class="label-nep">Date: {{ $forinvoicetype->date }}</p>
-        <p class="label-nep">
+        <p class="forfontdate">Date: {{ $forinvoicetype->date }}</p>
+        <p class="forfontdate">
           Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
         </p>
       @endif
