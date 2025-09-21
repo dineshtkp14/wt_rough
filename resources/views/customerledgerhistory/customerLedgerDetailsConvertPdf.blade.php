@@ -5,32 +5,30 @@
   <title>Print</title>
 
   @php
-    // REGULAR fonts only (no bold files needed)
     $nepR = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));                 // Nepali
     $engR = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));  // English
   @endphp
 
   <style>
-    /* ------------ Fonts (filesystem paths for Dompdf) ------------ */
+    /* Fonts (filesystem paths for Dompdf) */
     @font-face { font-family:'HindDevanagari';  src:url('file://{{ $nepR }}') format('truetype');  font-weight:normal; font-style:normal; }
     @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
 
-    /* ------------ Page & global spacing ------------ */
-    /* Page has NO margin; we simulate “page padding” with the .container padding */
+    /* Page box: NO margin. We'll simulate "page padding" with .container */
     @page { size: A5 portrait; margin: 0; }
 
     html, body{
       font-family: 'NotoSansEnglish','HindDevanagari',sans-serif;
-      margin:0 !important; 
-      padding:0 !important;              /* ← no body padding */
+      margin:0 !important;
+      padding:0 !important;     /* important: no body padding */
       line-height:1.14;
       font-size:16px;
     }
     *{ box-sizing:border-box; }
     p{ margin:0 0 2px 0; line-height:1.14; }
 
-    /* Container = the page content area with 20px padding all around */
-    .container{ margin:0 auto; padding:20px; background:#fff; }
+    /* This is your page content area with 20px "page padding" */
+    .container{ margin:0; padding:20px; background:#fff; }
 
     /* Header */
     .letterhead{ color:#000; padding:0 0 8px; text-align:center; }
@@ -42,26 +40,26 @@
     .invoice-info{ font-size:15px; margin-top:8px; }
     .invoice-info p{ margin:2px 0; }
 
-    /* move the Invoice Type / Date / Miti block slightly up on the right */
+    /* Right block (Invoice Type / Date / Miti) slightly up */
     .firstdiv{
       float:right;
-      margin-top:-22px !important;   /* tweak -18 to -30 as you like */
+      margin-top:-22px !important;   /* adjust -18 .. -30 if needed */
     }
 
     .seconddiv{ margin-top:-14px !important; }
 
     /* Nepali runs */
     .nep, .label-nep{ font-family:'HindDevanagari',sans-serif; line-height:1.16; }
-    .label-nep{ display:inline-block; padding-left:3px; } /* avoids matra clipping */
+    .label-nep{ display:inline-block; padding-left:3px; }
 
-    /* ===== INVOICE NO / PAN block (moved up + emphasized number) ===== */
+    /* INVOICE NO / PAN block */
     .forbillandpan{
-      margin-top:-72px !important;  /* adjust as needed after the 20px page padding */
+      margin-top:-72px !important;   /* adjust after adding page padding */
       line-height:1.14;
     }
     .invoice-no{
       font-size:20px;
-      font-weight:700;
+      font-weight:700;               /* Dompdf fakes bold with regular TTF */
       letter-spacing:.3px;
       margin-bottom:2px;
     }
@@ -85,7 +83,6 @@
 
     .text-right{ text-align:right; }
     .notes{ margin-top:10px; font-size:14px; line-height:1.14; }
-
     .forfontsizebll p{ font-size:17px !important; line-height:1.14; }
 
     /* Watermark */
@@ -120,7 +117,6 @@
           @endif
 
           <p>Date: {{ $forinvoicetype->date }}</p>
-
           <!-- If you prefer Nepali label, replace 'Miti' with: म&#x093F;&#x200C;ति -->
           <p class="label-nep">
             Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
@@ -128,7 +124,6 @@
         @endif
       </div>
 
-      <!-- ===== INVOICE NO + PAN ===== -->
       <div class="forbillandpan">
         <div class="invoice-no">
           INVOICE NO: <span class="num">{{ $invoiceid }}</span>
@@ -142,7 +137,6 @@
           @endforeach
         @endif
       </div>
-      <!-- ================================= -->
 
       <div class="seconddiv forfontsizebll">
         @if ($cinfodetails)
@@ -221,7 +215,7 @@
                       if ($num >= 1000)     { $words .= convertNumberToWords(floor($num/1000))." Thousand "; $num %= 1000; }
                       if ($num >= 100)      { $words .= convertNumberToWords(floor($num/100))." Hundred ";  $num %= 100; }
                       if ($num >= 20)       { $words .= $tens[floor($num/10)]." "; $num %= 10; }
-                      if ($num > 0)         { $words .= $ones[(int)$num]." "; }
+                      if ($num > 0)         { $words += $ones[(int)$num]." "; }
                       return trim($words);
                   }
                   echo convertNumberToWords($i->total) . " only/-";
