@@ -28,7 +28,6 @@
 }
 /* .nep { font-family: 'NotoSansDevanagari', sans-serif; } */
 
-.nep { font-family: 'NotoSansDevanagari', sans-serif; }
 
         * {
             margin-top: 0 !important; /* Set top margin to 0 for all elements */
@@ -168,10 +167,9 @@
                     @endif
                     <p>Date: {{ $forinvoicetype->date }}</p>
 
-                    <p class="nep">
-                        <span style="font-weight:bold">मिति:</span>&nbsp;
-                        {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
-                      </p>         
+                    <p style="font-family:'NotoSansDevanagari'">
+                     {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+                      </p>               
                        @endif
             
             </div>
