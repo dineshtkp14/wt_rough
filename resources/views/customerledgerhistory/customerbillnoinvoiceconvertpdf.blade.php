@@ -154,7 +154,10 @@
                         <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
                     @endif
                     <p>Datee: {{ $forinvoicetype->date }}</p>
-                    <p>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date, 'np') }}</p>
+                    <p style="font-family:'NotoSansDevanagariCondensed'">
+                        {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date, 'np') }}
+                    </p>
+                    
 
                 @endif
             
