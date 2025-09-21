@@ -6,14 +6,14 @@
 
   @php
     // Absolute filesystem paths for Dompdf to embed fonts
-    $nepR = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));
-    $nepB = str_replace('\\','/', public_path('fonts/Hind-Bold.ttf'));
-    $engR = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));
-    $engB = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Bold.ttf'));
+    $nepR = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));                 // Nepali
+    $nepB = str_replace('\\','/', public_path('fonts/Hind-Bold.ttf'));                   // Nepali Bold (optional)
+    $engR = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));  // English
+    $engB = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Bold.ttf'));     // English Bold (optional)
   @endphp
 
   <style>
-    /* ------------ Fonts (use filesystem paths for Dompdf) ------------ */
+    /* ------------ Fonts (filesystem paths for Dompdf) ------------ */
     @font-face { font-family:'HindDevanagari'; src:url('file://{{ $nepR }}') format('truetype'); font-weight:normal; font-style:normal; }
     @font-face { font-family:'HindDevanagari'; src:url('file://{{ $nepB }}') format('truetype'); font-weight:bold;   font-style:normal; }
     @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype'); font-weight:normal; font-style:normal; }
@@ -21,55 +21,73 @@
 
     /* ------------ Page & global spacing ------------ */
     @page { size: A5 portrait; margin: 30px; }
-    html, body {
+    html, body{
       font-family: 'NotoSansEnglish','HindDevanagari',sans-serif;
-      margin: 0 !important; padding: 0 !important;
-      line-height: 1.12;      /* tighter baseline everywhere */
-      font-size: 14px;
+      margin:0 !important; padding:0 !important;
+      line-height:1.12; font-size:14px;
     }
-    * { box-sizing: border-box; }
-    p { margin: 0 0 1px 0; line-height: 1.12; }   /* kill big default p margins */
+    *{ box-sizing:border-box; }
+    p{ margin:0 0 1px 0; line-height:1.12; }
 
-    /* Sections */
-    .container { margin: 0 auto; padding: 20px; background:#fff; }
-    .letterhead { color:#000; padding: 0 20px 10px; text-align:center; }
-    .letterhead h1 { margin: 0 0 4px; font-size: 30px; text-decoration: underline; line-height: 1.04; }
+    .container{ margin:0 auto; padding:20px; background:#fff; }
 
-    .address-info { font-size: 13px; text-align:center; margin-top: 8px; }
-    .address-info p { margin: 1px 0; }
+    /* Header */
+    .letterhead{ color:#000; padding:0 20px 8px; text-align:center; }
+    .letterhead h1{ margin:0 0 4px; font-size:30px; text-decoration:underline; line-height:1.04; }
 
-    .invoice-info   { font-size: 13px; margin-top: 8px; }
-    .invoice-info p { margin: 1px 0; }
-    .firstdiv  { float: right; }
-    .seconddiv { margin-top: -16px !important; }
+    .address-info{ font-size:13px; text-align:center; margin-top:6px; }
+    .address-info p{ margin:1px 0; }
 
-    /* Nepali runs – safe shaping & a touch of headroom */
-    .nep, .label-nep { font-family:'HindDevanagari',sans-serif; line-height: 1.14; }
-    .label-nep { display:inline-block; padding-left:3px; }  /* avoids matra clipping */
+    .invoice-info{ font-size:13px; margin-top:8px; }
+    .invoice-info p{ margin:1px 0; }
+    .firstdiv{ float:right; }
+    .seconddiv{ margin-top:-16px !important; }
 
-    /* Table — compact rows */
-    table { width:100%; border-collapse:collapse; margin-top:10px; font-size: 18px; }
-    th, td {
+    /* Nepali runs */
+    .nep, .label-nep{ font-family:'HindDevanagari',sans-serif; line-height:1.14; }
+    .label-nep{ display:inline-block; padding-left:3px; } /* avoids matra clipping */
+
+    /* ===== INVOICE NO / PAN block (moved up + bold number) ===== */
+    .forbillandpan{
+      margin-top:-80px !important;   /* move up; make more negative to move further */
+      line-height:1.12;
+    }
+    .invoice-no{
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:.3px;
+      margin-bottom:1px;
+    }
+    .invoice-no .num{
+      font-weight:800;               /* stronger bold for the number */
+    }
+    .pan-line{
+      font-size:14px;
+      margin-top:0;
+    }
+
+    /* Table */
+    table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:18px; }
+    th,td{
       border:1px solid #000;
-      padding: 0 3px;         /* minimal vertical padding */
-      height: 20px;           /* cap row height */
-      line-height: 1.08;      /* tight lines inside cells */
-      vertical-align: middle;
+      padding:0 3px;
+      height:20px;
+      line-height:1.08;
+      vertical-align:middle;
       text-align:center;
     }
-    th { font-weight:700; }
+    th{ font-weight:700; }
 
-    .text-right { text-align:right; }
-    .notes { margin-top: 8px; font-size: 13px; line-height: 1.12; }
+    .text-right{ text-align:right; }
+    .notes{ margin-top:8px; font-size:13px; line-height:1.12; }
 
-    .forfontsizebll p { font-size: 16px !important; line-height:1.12; }
-    .forbillandpan   { margin-top: -50px !important; }
+    .forfontsizebll p{ font-size:16px !important; line-height:1.12; }
 
     /* Watermark */
-    .watermark {
-      position: fixed; top: 45%; left: 35%;
-      transform: rotate(-45deg);
-      font-size: 120px; opacity: 0.1; color: gray;
+    .watermark{
+      position:fixed; top:45%; left:35%;
+      transform:rotate(-45deg);
+      font-size:120px; opacity:.1; color:gray;
     }
   </style>
 </head>
@@ -91,29 +109,34 @@
       <div class="firstdiv">
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
           @if($forinvoicetype->invoicetype == 'credit')
-            <p style="background:#000; color:#fff; padding:6px 10px; font-size:16px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+            <p style="background:#000;color:#fff;padding:6px 10px;font-size:16px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
           @else
             <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
           @endif
           <p>Date: {{ $forinvoicetype->date }}</p>
 
-          <!-- Use ZWNJ after the "ि" to stop Dompdf from mis-shaping "मिति" as "मति" -->
+          <!-- ZWNJ after the "ि" stops Dompdf mis-shaping "मिति" -->
           <p class="label-nep">
             म&#x093F;&#x200C;ति: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
           </p>
         @endif
       </div>
 
+      <!-- ===== INVOICE NO + PAN (moved up + bold number) ===== -->
       <div class="forbillandpan">
-        <span style="font-size:18px;">INVOICE NO: </span><b>{{ $invoiceid }}</b><br>
+        <div class="invoice-no">
+          INVOICE NO: <span class="num">{{ $invoiceid }}</span>
+        </div>
+
         @if ($allinvoices)
           @foreach($allinvoices as $i)
             @if ($i->total < 19900)
-              <span style="font-size: 16px;">PAN No. 608641838</span>
+              <div class="pan-line">PAN No. 608641838</div>
             @endif
           @endforeach
         @endif
       </div>
+      <!-- ======================================================= -->
 
       <div class="seconddiv forfontsizebll">
         @if ($cinfodetails)
@@ -173,13 +196,13 @@
             </tr>
             <tr>
               <td colspan="5">
-                <p style="font-size:13px; text-align:left;"># Goods once sold won't be returned</p>
+                <p style="font-size:13px;text-align:left;"># Goods once sold won't be returned</p>
               </td>
               <td class="text-right">E-Discount:</td>
               <td>{{ $i->discount }}</td>
             </tr>
             <tr>
-              <td colspan="5" style="font-size:14px; text-align:left;">
+              <td colspan="5" style="font-size:14px;text-align:left;">
                 <b>Amount in Words: </b>
                 @php
                   function convertNumberToWords($num) {
@@ -214,7 +237,7 @@
   @if ($allinvoices)
     @foreach($allinvoices as $i)
       <p>Bill Created_by: {{ $i->added_by }}</p>
-      <p style="font-size: 13px;">Printed Time and Date:
+      <p style="font-size:13px;">Printed Time and Date:
         <span style="color:#4b4b4b;">{{ date('Y-m-d H:i:s') }}</span>
       </p>
     @endforeach
