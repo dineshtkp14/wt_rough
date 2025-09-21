@@ -254,11 +254,7 @@
                                     <td>{{$i->quantity}}</td>
                                     <td>{{$i->unit}}</td>
 
-                                    <p class="nep">
-                                        {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
-                                      </p>
-                                      
-                                      <td class="nep">{{$i->unit}}</td>   {{-- if your unit labels are Nepali --}}
+                                    
                                     <td>{{$i->price}}</td>
                                     <td>{{$i->subtotal}}</td>
                                 </tr>
