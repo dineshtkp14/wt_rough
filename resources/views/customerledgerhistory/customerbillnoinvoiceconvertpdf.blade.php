@@ -5,20 +5,25 @@
     <script src="{{ asset('assets/js/common.js') }}"></script>
 
     <style>
-   @font-face {
-    font-family: 'NotoSansDevanagariCondensed';
-    src: url('{{ public_path("fonts/NotoSansDevanagari_Condensed-Regular.ttf") }}') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+    @font-face{
+  font-family:'NotoSansDevanagari';
+  font-weight:400;
+  src:url('https://fonts.gstatic.com/ea/notosansdevanagari/v3/NotoSansDevanagari-Regular.ttf') format('truetype');
+}
+@font-face{
+  font-family:'NotoSansDevanagari';
+  font-weight:700;
+  src:url('https://fonts.gstatic.com/ea/notosansdevanagari/v3/NotoSansDevanagari-Bold.ttf') format('truetype');
+}
+html, body, table, td, th, p, span, h1, h2, h3, b, strong{
+  font-family:'NotoSansDevanagari','DejaVu Sans',sans-serif !important;
 }
 
-
-
-        body {
-           font-family: 'NotoSansDevanagariCondensed', 'DejaVu Sans', sans-serif;
+        /* body {
+            font-family: 'NotoSansDevanagari';
             margin: 0 !important;
             padding: 0 !important;
-        }
+        } */
 
         * {
             margin-top: 0 !important; /* Set top margin to 0 for all elements */
@@ -156,9 +161,9 @@
                     @else
                         <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
                     @endif
-                    <p>Datee: {{ $forinvoicetype->date }}</p>
+                    <p>Date: {{ $forinvoicetype->date }}</p>
 
-                    <p>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date, 'np') }}</p>
+                    {{-- <p>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date, 'np') }}</p> --}}
 
                 @endif
             
