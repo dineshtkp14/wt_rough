@@ -5,9 +5,8 @@
     <script src="{{ asset('assets/js/common.js') }}"></script>
 
     <style>
-
         body {
-            font-family: 'NotoSansDevanagari';
+            font-family: Arial, sans-serif;
             margin: 0 !important;
             padding: 0 !important;
         }
@@ -148,10 +147,7 @@
                     @else
                         <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
                     @endif
-                    <p>Datee: {{ $forinvoicetype->date }}</p>
-
-                    {{-- <p>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date, 'np') }}</p> --}}
-
+                    <p>Date: {{ $forinvoicetype->date }}</p>
                 @endif
             
             </div>
