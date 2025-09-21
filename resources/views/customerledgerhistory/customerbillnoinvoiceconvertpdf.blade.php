@@ -11,16 +11,16 @@
     <script src="{{ asset('assets/js/common.js') }}"></script>
 
     <style>
-        @font-face{
-    font-family:'NotoSansDevanagari';
-    src:url('file://{{ $nep }}') format('truetype');
-    font-weight:normal; font-style:normal;
-  }
-  @font-face{
-    font-family:'NotoSansEnglish';
-    src:url('file://{{ $eng }}') format('truetype');
-    font-weight:normal; font-style:normal;
-  }
+       @font-face{
+  font-family:'NotoSansDevanagari';
+  src:url('file://{{ str_replace('\\','/', public_path('fonts/NotoSansDevanagari-Regular.ttf')) }}') format('truetype');
+  font-weight:normal; font-style:normal;
+}
+@font-face{
+  font-family:'NotoSansDevanagari';
+  src:url('file://{{ str_replace('\\','/', public_path('fonts/NotoSansDevanagari-Bold.ttf')) }}') format('truetype');
+  font-weight:bold; font-style:normal;
+}
   html, body{
   font-family: 'NotoSansEnglish', 'NotoSansDevanagari', sans-serif;
   margin: 0 !important;
