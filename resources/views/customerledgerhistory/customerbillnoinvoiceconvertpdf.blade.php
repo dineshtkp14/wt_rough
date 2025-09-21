@@ -157,6 +157,7 @@
     </div>
 
   
+    @php if (!file_exists($fontPath)) echo '<div>FONT NOT FOUND</div>'; @endphp
 
 
     <div class="invoice-info">
