@@ -5,25 +5,12 @@
     <script src="{{ asset('assets/js/common.js') }}"></script>
 
     <style>
-    @font-face{
-  font-family:'NotoSansDevanagari';
-  font-weight:400;
-  src:url('https://fonts.gstatic.com/ea/notosansdevanagari/v3/NotoSansDevanagari-Regular.ttf') format('truetype');
-}
-@font-face{
-  font-family:'NotoSansDevanagari';
-  font-weight:700;
-  src:url('https://fonts.gstatic.com/ea/notosansdevanagari/v3/NotoSansDevanagari-Bold.ttf') format('truetype');
-}
-html, body, table, td, th, p, span, h1, h2, h3, b, strong{
-  font-family:'NotoSansDevanagari','DejaVu Sans',sans-serif !important;
-}
 
-        /* body {
+        body {
             font-family: 'NotoSansDevanagari';
             margin: 0 !important;
             padding: 0 !important;
-        } */
+        }
 
         * {
             margin-top: 0 !important; /* Set top margin to 0 for all elements */
