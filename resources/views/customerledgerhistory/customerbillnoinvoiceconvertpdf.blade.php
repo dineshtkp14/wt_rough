@@ -12,7 +12,7 @@
     $fontData = base64_encode(file_get_contents($fontPath));
 @endphp
 
-    <script src="{{ asset('assets/js/common.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/common.js') }}"></script> --}}
 
     <style>
          @font-face{
@@ -137,7 +137,8 @@
 </head>
 <body>
     @php
-    $fontData = base64_encode(file_get_contents(public_path('fonts/NotoSansDevanagari-Regular.ttf')));
+    $fontPath = public_path('fonts/NotoSansDevanagari-Regular.ttf');
+    $fontData = base64_encode(file_get_contents($fontPath));
 @endphp
 <div class="container">
     <div class="watermark">OHT</div> <!-- Watermark text -->
