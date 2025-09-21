@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Print</title>
     <script src="{{ asset('assets/js/common.js') }}"></script>
 
