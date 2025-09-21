@@ -16,7 +16,7 @@
 
     /* -------- Real page margins on all sides -------- */
     @page { size: A5 portrait; margin: 0; }
-html, body { margin: 0; padding: 0; }
+
 .wrapper { padding: 20px; }  /* visual padding inside the page */
 
     html, body{
