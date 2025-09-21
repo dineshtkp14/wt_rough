@@ -6,19 +6,16 @@
     <title>Print</title>
 
     @php
-    $fontPath = public_path('fonts/NotoSansDevanagari-Regular.ttf');
-    // sanity check (remove after testing)
-    // if (!file_exists($fontPath)) { echo '<!-- FONT NOT FOUND: '.e($fontPath).' -->'; }
-    $fontData = base64_encode(file_get_contents($fontPath));
-@endphp
-
+    $fontFile = str_replace('\\','/', public_path('fonts/NotoSansDevanagari-Regular.ttf'));
+  @endphp
     {{-- <script src="{{ asset('assets/js/common.js') }}"></script> --}}
 
     <style>
          @font-face{
       font-family: 'NotoSansDevanagari';
-      src: url('data:font/truetype;base64,{{ $fontData }}') format('truetype');
-      font-weight: normal;
+      font-family: 'NotoSansDevanagari';
+  src: url('file://{{ $fontFile }}') format('truetype');
+        font-weight: normal;
       font-style: normal;
     }
 
