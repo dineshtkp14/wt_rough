@@ -816,8 +816,8 @@ class CustomerLedgerHistroy extends Controller
                 'isRemoteEnabled' => true,
                 'defaultFont' => 'NotoSansDevanagari',
                 'chroot' => public_path(),
-                'enable_font_subsetting' => true,
-            ])
+                'enable_font_subsetting' => false,   // ← try false for Devanagari
+                ])
             ->loadView('customerledgerhistory.customerbillnoinvoiceconvertpdf', [
                 'allinvoices'    => $allInvoices,
                 'allcusbyid'     => $allcusbyid,
