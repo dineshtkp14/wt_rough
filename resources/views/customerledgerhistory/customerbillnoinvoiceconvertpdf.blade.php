@@ -14,7 +14,7 @@
         @font-face{
     font-family:'NotoSansDevanagari';
     src:url('file://{{ $nep }}') format('truetype');
-    font-weight:bold; font-style:normal;
+    font-weight:normal; font-style:normal;
   }
   @font-face{
     font-family:'NotoSansEnglish';
