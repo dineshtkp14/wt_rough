@@ -165,7 +165,7 @@
             </tr>
             <tr>
               <td colspan="5">
-                <p style="font-size:13px;text-align:left;"># Goods once sold won't be returned</p>
+                <p style="font-size:13px;text-align:left;"># gGoods once sold won't be returned</p>
               </td>
               <td class="text-right">E-Discount:</td>
               <td>{{ $i->discount }}</td>
