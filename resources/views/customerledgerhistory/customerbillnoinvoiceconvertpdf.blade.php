@@ -117,7 +117,7 @@
 
           <!-- ZWNJ after the "ि" stops Dompdf mis-shaping "मिति" -->
           <p class="label-nep">
-            म&#x093F;&#x200C;ति: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+            Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
           </p>
         @endif
       </div>
