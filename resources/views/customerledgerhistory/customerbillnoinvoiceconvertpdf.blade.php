@@ -38,7 +38,9 @@
 
     .invoice-info{ font-size:13px; margin-top:8px; }
     .invoice-info p{ margin:1px 0; }
-    .firstdiv{ float:right; }
+    .firstdiv{ float:right;
+        margin-top: -100px;
+     }
     .seconddiv{ margin-top:-16px !important; }
 
     /* Nepali runs */
