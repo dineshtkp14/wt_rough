@@ -167,8 +167,10 @@
                     @endif
                     <p>Date: {{ $forinvoicetype->date }}</p>
 
-                    {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
-                @endif
+                    <p style="font-family:'NotoSansDevanagari'">
+                        {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+                      </p>               
+                       @endif
             
             </div>
        
