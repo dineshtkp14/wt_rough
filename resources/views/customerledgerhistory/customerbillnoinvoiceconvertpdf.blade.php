@@ -2,18 +2,22 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    @php
+    $fontData = base64_encode(file_get_contents(public_path('fonts/NotoSansDevanagari-Regular.ttf')));
+@endphp
     <title>Print</title>
     <script src="{{ asset('assets/js/common.js') }}"></script>
 
     <style>
         @font-face {
-    font-family: 'NotoSansDevanagariCondensed';
-    src: url('{{ public_path("fonts/NotoSansDevanagari_Condensed-Regular.ttf") }}') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+            @font-face{
+  font-family: 'NotoSansDevanagari';
+  src: url('data:font/truetype;base64,{{ $fontData }}') format('truetype');
+  font-weight: normal; font-style: normal;
+}
 }
         body {
-            font-family: 'NotoSansDevanagariCondensed', 'DejaVu Sans', sans-serif;
+            font-family: 'NotoSansDevanagari', 'DejaVu Sans', sans-serif;
             margin: 0 !important;
             padding: 0 !important;
         }
@@ -127,7 +131,9 @@
     </style>
 </head>
 <body>
-
+    @php
+    $fontData = base64_encode(file_get_contents(public_path('fonts/NotoSansDevanagari-Regular.ttf')));
+@endphp
 <div class="container">
     <div class="watermark">OHT</div> <!-- Watermark text -->
 
@@ -155,9 +161,10 @@
                         <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
                     @endif
                     <p>Datee: {{ $forinvoicetype->date }}</p>
-                    <p style="font-family:'NotoSansDevanagariCondensed'">
-                        {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date, 'np') }}
-                    </p>
+                    <p style="font-family:'NotoSansDevanagari'">
+                        {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+                      </p>
+                      
                     
 
                 @endif

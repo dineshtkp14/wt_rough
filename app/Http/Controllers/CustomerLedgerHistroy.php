@@ -822,9 +822,11 @@ class CustomerLedgerHistroy extends Controller
             // Generate PDF using FacadePdf
             $pdf = FacadePdf::setOptions([
                 'dpi' => 150,
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true,
-            'defaultFont' => 'NotoSansDevanagariCondensed', // <<< important
+        'isHtml5ParserEnabled' => true,
+        'isRemoteEnabled' => true,
+        'defaultFont' => 'NotoSansDevanagari', // Blade को @font-face family सँग मिल्नु पर्छ
+        'chroot' => public_path(),             // महत्त्वपूर्ण: public/ भित्रका फाइल पढ्न दिन्छ
+        'enable_font_subsetting' => true,  
              ])->loadHtml($pdfView);
     
             // Save the PDF to a temporary file
