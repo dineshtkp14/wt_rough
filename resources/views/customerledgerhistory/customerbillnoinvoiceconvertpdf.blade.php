@@ -7,17 +7,17 @@
   @php
     // Absolute filesystem paths for Dompdf to embed fonts
     $nepR = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));                 // Nepali
-    $nepB = str_replace('\\','/', public_path('fonts/Hind-Bold.ttf'));                   // Nepali Bold (optional)
+    // $nepB = str_replace('\\','/', public_path('fonts/Hind-Bold.ttf'));                   // Nepali Bold (optional)
     $engR = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));  // English
-    $engB = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Bold.ttf'));     // English Bold (optional)
+    // $engB = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Bold.ttf'));     // English Bold (optional)
   @endphp
 
   <style>
     /* ------------ Fonts (filesystem paths for Dompdf) ------------ */
     @font-face { font-family:'HindDevanagari'; src:url('file://{{ $nepR }}') format('truetype'); font-weight:normal; font-style:normal; }
-    @font-face { font-family:'HindDevanagari'; src:url('file://{{ $nepB }}') format('truetype'); font-weight:bold;   font-style:normal; }
+    /* @font-face { font-family:'HindDevanagari'; src:url('file://{{ $nepB }}') format('truetype'); font-weight:bold;   font-style:normal; } */
     @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype'); font-weight:normal; font-style:normal; }
-    @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engB }}') format('truetype'); font-weight:bold;   font-style:normal; }
+    /* @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engB }}') format('truetype'); font-weight:bold;   font-style:normal; } */
 
     /* ------------ Page & global spacing ------------ */
     @page { size: A5 portrait; margin: 30px; }
