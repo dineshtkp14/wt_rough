@@ -28,7 +28,7 @@
     p{ margin:0 0 2px 0; line-height:1.14; }
 
     /* Container */
-    .container{ margin:0 auto; padding:22px; background:#fff; }
+    .container{ margin:0 auto; padding:52px; background:#fff; }
 
     /* Header */
     .letterhead{ color:#000; padding:0 20px 10px; text-align:center; }
