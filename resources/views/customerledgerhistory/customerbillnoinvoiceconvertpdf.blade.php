@@ -14,7 +14,7 @@
         @font-face{
     font-family:'NotoSansDevanagari';
     src:url('file://{{ $nep }}') format('truetype');
-    font-weight:normal; font-style:normal;
+    font-weight:bold; font-style:normal;
   }
   @font-face{
     font-family:'NotoSansEnglish';
@@ -167,7 +167,7 @@
                     @endif
                     <p>Date: {{ $forinvoicetype->date }}</p>
 
-                    <p style="font-weight:bold">
+                    <p style="font-family:'NotoSansDevanagari'">
                         {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
                       </p>               
                        @endif
