@@ -16,7 +16,7 @@
     @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
 
     /* ---------- REAL page margins (use mm) ---------- */
-    @page { size: A4 portrait; margin: 200mm; }   /* ← page margin on all sides */
+    @page { size: A5 portrait; margin: 200mm; }   /* ← page margin on all sides */
 
     html, body{
       margin:0; padding:0;                       /* leave body with no spacing */
@@ -27,7 +27,7 @@
     p{ margin:0 0 1px 0; line-height:1.12; }
 
     /* ---------- Inner page padding box ---------- */
-    .page{ padding:20px; background:#fff; }      /* ← 20px page padding */
+    .page{ padding:50px; background:#fff; }      /* ← 20px page padding */
 
     /* Header */
     .letterhead{ color:#000; padding:0 20px 8px; text-align:center; }
