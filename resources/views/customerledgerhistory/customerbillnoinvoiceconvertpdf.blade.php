@@ -92,8 +92,8 @@
         @else
           <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
         @endif
-        <p class="forfontdate">Date: {{ $forinvoicetype->date }}</p>
-        <p class="forfontdate">
+        <p>Date: {{ $forinvoicetype->date }}</p>
+        <p class="label-nep">
           Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
         </p>
       @endif
