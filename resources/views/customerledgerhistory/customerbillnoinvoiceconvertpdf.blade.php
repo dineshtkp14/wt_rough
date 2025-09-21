@@ -27,7 +27,7 @@
     p{ margin:0 0 1px 0; line-height:1.12; }
 
     /* ---------- Inner page padding box ---------- */
-    .page{ padding:50px; background:#fff; }      /* ← 20px page padding */
+    .page{ padding:90px; background:#fff; }      /* ← 20px page padding */
 
     /* Header */
     .letterhead{ color:#000; padding:0 20px 8px; text-align:center; }
