@@ -810,37 +810,26 @@ class CustomerLedgerHistroy extends Controller
                 }
             }
     
-            // Load the Blade view for the PDF
-            $pdfView = view('customerledgerhistory.customerbillnoinvoiceconvertpdf', [
-                'allinvoices' => $allInvoices,
-                'allcusbyid' => $allcusbyid,
-                'invoiceid' => $invoiceid,
-                'cinfodetails' => $customerinfodetails,
-                'forinvoicetype' => $forinvoicetype,
-            ]);
-    
-            // Generate PDF using FacadePdf
             $pdf = FacadePdf::setOptions([
                 'dpi' => 150,
-        'isHtml5ParserEnabled' => true,
-        'isRemoteEnabled' => true,
-        'defaultFont' => 'NotoSansDevanagari', // Blade को @font-face family सँग मिल्नु पर्छ
-        'chroot' => public_path(),             // महत्त्वपूर्ण: public/ भित्रका फाइल पढ्न दिन्छ
-        'enable_font_subsetting' => true,  
-             ])->loadHtml($pdfView);
-    
-            // Save the PDF to a temporary file
-            $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
-            $pdf->save($pdfFile);
-    
-            // Send headers to instruct the browser to open the PDF in a new tab
-            return response()->file($pdfFile, [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="invoice.pdf"',
-            ]);
-        }
-
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'NotoSansDevanagari',
+                'chroot' => public_path(),
+                'enable_font_subsetting' => true,
+            ])
+            ->loadView('customerledgerhistory.customerbillnoinvoiceconvertpdf', [
+                'allinvoices'    => $allInvoices,
+                'allcusbyid'     => $allcusbyid,
+                'invoiceid'      => $invoiceid,
+                'cinfodetails'   => $customerinfodetails ?? collect(),
+                'forinvoicetype' => $forinvoicetype ?? null,
+            ])
+            ->setPaper('A5', 'portrait');
         
+        return $pdf->stream('invoice.pdf');
+
+            }
     }
 
 
