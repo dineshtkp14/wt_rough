@@ -1,307 +1,245 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Invoice</title>
-    <style>
-        /* Add your CSS styles here */
-        /* Example: */
+  <meta charset="UTF-8">
+  <title>Print</title>
 
-        @font-face{
-            font-family: "Noto Sans Devanagari", sans-serif;
-          src: url('{{ public_path('fonts/NotoSansDevanagari-Regular.ttf') }}') format('truetype');
-  font-weight: normal; font-style: normal;
-}
+  @php
+    // REGULAR fonts only (no bold files needed)
+    $nepR = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));                 // Nepali
+    $engR = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));  // English
+  @endphp
 
+  <style>
+    /* ------------ Fonts (filesystem paths for Dompdf) ------------ */
+    @font-face { font-family:'HindDevanagari';  src:url('file://{{ $nepR }}') format('truetype');  font-weight:normal; font-style:normal; }
+    @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
 
+    /* ------------ Page & global spacing ------------ */
+    @page { size: A5 portrait; margin: 30px; }
 
-     
-        body {
-            font-family: "Noto Sans Devanagari", sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-        }
-        .container {
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .letterhead {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .letterhead h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #333;
-            text-decoration: underline;
-        }
-        .address-info {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .address-info p {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        table, th, td {
-            border: 1px solid black; /* Update border to black */
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .total-due {
-            font-size: 20px;
-            color: #ff5733; /* Adjust color as needed */
-            margin-top: 20px;
-        }
-        .printed-info {
-            font-size: 12px;
-            color: #888;
-            text-align: right;
-        }
-        @page{
-            margin:40px;
-        }
-        .left-side {
-            float: left;
-            width: 50%;
-        }
-        .right-side {
-            float: right;
-            width: 50%;
-            text-align: right;
-        }
-        .makedown{
-            margin-top: 12%;
-        }
-    </style>
+    html, body{
+      font-family: 'NotoSansEnglish','HindDevanagari',sans-serif;
+      margin:0 !important; padding:0 !important;
+      line-height:1.14;          /* more legible */
+      font-size:16px;            /* ↑ base size */
+    }
+    *{ box-sizing:border-box; }
+    p{ margin:0 0 2px 0; line-height:1.14; }
+
+    /* Container */
+    .container{ margin:0 auto; padding:22px; background:#fff; }
+
+    /* Header */
+    .letterhead{ color:#000; padding:0 20px 10px; text-align:center; }
+    .letterhead h1{ margin:0 0 6px; font-size:34px; text-decoration:underline; line-height:1.05; } /* ↑ */
+
+    .address-info{ font-size:15px; text-align:center; margin-top:8px; }
+    .address-info p{ margin:2px 0; }
+
+    .invoice-info{ font-size:15px; margin-top:10px; }
+    .invoice-info p{ margin:2px 0; }
+    .firstdiv{ float:right; }
+    .seconddiv{ margin-top:-14px !important; }
+
+    /* Nepali runs */
+    .nep, .label-nep{ font-family:'HindDevanagari',sans-serif; line-height:1.16; }
+    .label-nep{ display:inline-block; padding-left:3px; } /* avoids matra clipping */
+
+    /* ===== INVOICE NO / PAN block (moved up + emphasized number) ===== */
+    .forbillandpan{
+      margin-top:-80px !important;  /* move up; adjust as needed */
+      line-height:1.14;
+    }
+    .invoice-no{
+      font-size:20px;   /* ↑ */
+      font-weight:700;  /* Dompdf fakes bold with regular TTF */
+      letter-spacing:.3px;
+      margin-bottom:2px;
+    }
+    .invoice-no .num{ font-weight:800; } /* emphasized */
+    .pan-line{ font-size:15px; margin-top:0; }
+
+    /* Table */
+    table{
+      width:100%; border-collapse:collapse; margin-top:12px;
+      font-size:20px;          /* ↑ table text */
+    }
+    th,td{
+      border:1px solid #000;
+      padding:2px 5px;         /* a bit more padding for readability */
+      height:22px;             /* ↑ row height */
+      line-height:1.12;
+      vertical-align:middle;
+      text-align:center;
+    }
+    th{ font-weight:700; }
+
+    .text-right{ text-align:right; }
+    .notes{ margin-top:10px; font-size:14px; line-height:1.14; }
+
+    .forfontsizebll p{ font-size:17px !important; line-height:1.14; }
+
+    /* Watermark */
+    .watermark{
+      position:fixed; top:45%; left:35%;
+      transform:rotate(-45deg);
+      font-size:120px; opacity:.1; color:gray;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-       
-        <div class="letterhead">
-            <h1>OM HARI TRADELINK</h1>
-            <CENTER>CUSTOMER LEDGER </CENTER>
-        </div>
-        <div class="address-info">
-            <p style="font-size: 16px;">Address: Tikapur, Kailali (in front of Tikapur Police Station)</p> <!-- Decrease font size -->
-            <p style="font-size: 16px;">Mobile No: 9860378262, 9848448624, 9812656284</p> <!-- Decrease font size -->
-        </div>
-
-	
-      
-    <Center><h4 class="text-danger my-5 bold">DATE:  ({{$fromdate}}  To  {{$todate}})</h4></Center>
-
-    <h1></h1>
-
-<div class="left-side">
-    @foreach ($cusinfobyid as $i)
-    Name: {{$i->name}}<br> 
-     Address: {{$i->address}}<br>
-    Phone No: {{$i->phoneno}}<br>
-    Alternate Phoneno: {{$i->phoneno}}<br>
-    Email: {{$i->email}}<br>
-    @endforeach
-</div>
-
-
-<div class="right-side">
-
-    Total Due Amount: 
-    <span class="forunderline" style="color: {{ $dts - $cts < 0 ? 'red' : 'green' }}">
-        {{-- {{ $dts - $cts }} -/ --}}
-        {{ number_format($dts - $cts, 2) }} -/
-
-    </span>
-    {{-- <h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2> --}}
-</div>
-
 <div class="container">
-	
+  <div class="watermark">OHT</div>
 
-   <div class="makedown">
+  <div class="letterhead">
+    <h1>OM HARI TRADELINK</h1>
+  </div>
 
+  <div class="address-info">
+    <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
+    <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
+  </div>
 
+  <div class="invoice-info">
+    <div class="row">
+      <div class="firstdiv">
+        @if(isset($forinvoicetype) && !empty($forinvoicetype))
+          @if($forinvoicetype->invoicetype == 'credit')
+            <p style="background:#000;color:#fff;padding:6px 10px;font-size:16px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+          @else
+            <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+          @endif
 
+          <p>Date: {{ $forinvoicetype->date }}</p>
 
-<table>
-	<thead>
-		<tr>
-            <th>#</th>
-			<th>Date</th>
-            <th>Created_at</th>
-			
-			
-			<th>Particulars</th>
-			<th>Voucher Type</th>
-			<th>Invoice Type</th>
+          <!-- If you prefer Nepali label, replace 'Miti' with: म&#x093F;&#x200C;ति -->
+          <p class="label-nep">
+            Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+          </p>
+        @endif
+      </div>
 
-			<th>Invoice No</th>
-			<th>Debit</th>  
-            <th>Credit</th>
-           
+      <!-- ===== INVOICE NO + PAN (moved up, number bolded) ===== -->
+      <div class="forbillandpan">
+        <div class="invoice-no">
+          INVOICE NO: <span class="num">{{ $invoiceid }}</span>
+        </div>
 
-			
-		</tr>
-	</thead>
-	<tbody>
-        @php $serial = 1 @endphp <!-- Initialize serial number variable -->
+        @if ($allinvoices)
+          @foreach($allinvoices as $i)
+            @if ($i->total < 19900)
+              <div class="pan-line">PAN No. 608641838</div>
+            @endif
+          @endforeach
+        @endif
+      </div>
+      <!-- ======================================================= -->
 
-  
-        @if($all!=null)
-        @foreach ($all as $i)
+      <div class="seconddiv forfontsizebll">
+        @if ($cinfodetails)
+          @foreach($cinfodetails as $i)
+            <p>Name: {{ $i->name }}</p>
+            <p>Address: {{ $i->address }}</p>
+            <p>Email: {{ $i->email }}</p>
+            <p>Contact No: {{ $i->phoneno }}, {{ $i->alternate_phoneno }}</p>
+          @endforeach
+        @endif
+
+        @if ($allinvoices)
+          @foreach($allinvoices as $i)
+            <p>Customer Id: {{ $i->customerid }}</p>
+          @endforeach
+        @endif
+      </div>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
         <tr>
-         <td>{{ $serial++ }}</td> <!-- Increment and display serial number -->
+          <th>#</th>
+          <th>ITEM ID</th>
+          <th>ITEM Name</th>
+          <th>Quantity</th>
+          <th>Unit</th>
+          <th>Sold Price</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        @php $serialNo = 1; @endphp
 
-					 
-						 
-                           <td data-label="Name">{{ $i->date }}</td>
-						   <td data-label="Name">{{ $i->created_at }}</td>
-                           {{-- <td>{{ \App\Support\NepaliDate::adToBsString($i->date, 'np') }}</td> --}}
+        @if ($allcusbyid)
+          @foreach($allcusbyid as $i)
+            <tr>
+              <td>{{ $serialNo++ }}</td>
+              <td>{{ $i->itemidorg }}</td>
+              <td>{{ $i->itemid }}</td>
+              <td>{{ $i->quantity }}</td>
+              <td class="nep">{{ $i->unit }}</td>
+              <td>{{ $i->price }}</td>
+              <td>{{ $i->subtotal }}</td>
+            </tr>
+          @endforeach
+        @endif
 
-						   <td data-label="Address">{{ $i->particulars}}</td>
-						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-                           <td data-label="Remarks"> {{ $i->invoicetype }}
-                            @if($i->invoicetype == 'payment')
-                                <b>CR-({{ $i->id }}) </b>
-                            
-                            @endif
-                        </td>
-                        
-						   <td data-label="Contact No."><b>{{ $i->invoiceid }}</b></td>
-			   
-						   <td data-label="Amount">{{ $i->debit }}</td>
-						   
-						  
-						   <td data-label="Remarks">{{ $i->credit }}</td>
-						   
-						   
-					   </tr>
-					   
-					   @endforeach
-					   <tr>
-						   <td></td>
-						   <td></td>
-			   
-						   <td></td>
-			   
-						   <td></td>
-						   <td></td>
-                           <td></td>
-						   <td></td>
-			   
-						   <td>
-							   @if($dts!=null)
-								   Total: <h3>{{$dts }}</h3></td>
-							   @endif
-						   </td>
-			   
-						   <td>
-							   @if($cts!=null)
-								   Total: <h3>{{$cts }}</h3></td>
-							   @endif
-						   </td>
-			   
-					   </tr>
+        @if ($allinvoices)
+          @foreach($allinvoices as $i)
+            <tr>
+              <td colspan="5"></td>
+              <td class="text-right"><b>Sub-Total:</b></td>
+              <td><b>{{ $i->subtotal }}</b></td>
+            </tr>
+            <tr>
+              <td colspan="5">
+                <p style="font-size:14px;text-align:left;"># Goods once sold won't be returned</p>
+              </td>
+              <td class="text-right">E-Discount:</td>
+              <td>{{ $i->discount }}</td>
+            </tr>
+            <tr>
+              <td colspan="5" style="font-size:15px;text-align:left;">
+                <b>Amount in Words: </b>
+                @php
+                  function convertNumberToWords($num) {
+                      $ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+                      $tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+                      if ($num == 0) return "Zero";
+                      $words = "";
+                      if ($num >= 10000000) { $words .= convertNumberToWords(floor($num/10000000))." Crore "; $num %= 10000000; }
+                      if ($num >= 100000)   { $words .= convertNumberToWords(floor($num/100000))." Lakh ";  $num %= 100000; }
+                      if ($num >= 1000)     { $words .= convertNumberToWords(floor($num/1000))." Thousand "; $num %= 1000; }
+                      if ($num >= 100)      { $words .= convertNumberToWords(floor($num/100))." Hundred ";  $num %= 100; }
+                      if ($num >= 20)       { $words .= $tens[floor($num/10)]." "; $num %= 10; }
+                      if ($num > 0)         { $words .= $ones[(int)$num]." "; }
+                      return trim($words);
+                  }
+                  echo convertNumberToWords($i->total) . " only/-";
+                @endphp
+              </td>
+              <td class="text-right"><b>Total Amount:</b></td>
+              <td>{{ $i->total }}</td>
+            </tr>
+            <tr>
+              <td colspan="7" class="notes" style="text-align:left"><b>Notes:</b> {{ $i->notes }}</td>
+            </tr>
+          @endforeach
+        @endif
+      </tbody>
+    </table>
+  </div>
 
-					  
-					  
-					   @else
-                       <h2>Record Not Found </h2>
-					   @endif
-
-    
-	</tbody>
-</table>
+  <br>
+  @if ($allinvoices)
+    @foreach($allinvoices as $i)
+      <p>Bill Created_by: {{ $i->added_by }}</p>
+      <p style="font-size:14px;">Printed Time and Date:
+        <span style="color:#4b4b4b;">{{ date('Y-m-d H:i:s') }}</span>
+      </p>
+    @endforeach
+  @endif
 </div>
-{{-- <h2 class="floatleft">Total Due Amount: <span class="forunderline">{{ $dts - $cts }} /-</span></h2> --}}
-
-
-
-Total Due Amount: 
-<span class="forunderline" style="color: {{ $dts - $cts < 0 ? 'red' : 'green' }}">
-    {{-- {{ $dts - $cts }} -/ --}}
-    	{{ number_format($dts - $cts, 2) }} -/
-
-</span>
-(
-@php
-              function convertNumberToWords($num) {
-    $ones = array(
-        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-    );
-    $tens = array(
-        "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-    );
-
-    // Handle negative numbers
-    if ($num < 0) {
-        return "Minus " . convertNumberToWords(abs($num));
-    }
-
-    if ($num == 0) {
-        return "Zero";
-    }
-
-    $words = "";
-
-    if ($num >= 10000000) {
-        $words .= convertNumberToWords(floor($num / 10000000)) . " Crore ";
-        $num %= 10000000;
-    }
-
-    if ($num >= 100000) {
-        $words .= convertNumberToWords(floor($num / 100000)) . " Lakh ";
-        $num %= 100000;
-    }
-
-    if ($num >= 1000) {
-        $words .= convertNumberToWords(floor($num / 1000)) . " Thousand ";
-        $num %= 1000;
-    }
-
-    if ($num >= 100) {
-        $words .= convertNumberToWords(floor($num / 100)) . " Hundred ";
-        $num %= 100;
-    }
-
-    if ($num >= 20) {
-        $words .= $tens[floor($num / 10)] . " ";
-        $num %= 10;
-    }
-
-    if ($num > 0) {
-        $words .= $ones[$num] . " ";
-    }
-
-    return $words;
-}
-
-// Retrieve the numerical value from your data
-$number = $dts - $cts;
-// Convert the numerical value to words
-$words = convertNumberToWords($number);
-
-echo $words;
-
-            @endphp
-			only -/ 
-			
-			)
-
-</div>
-
-
 </body>
 </html>
-
