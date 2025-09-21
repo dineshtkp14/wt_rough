@@ -168,9 +168,10 @@
                     @endif
                     <p>Date: {{ $forinvoicetype->date }}</p>
 
-                    <p style="font-family:'NotoSansDevanagari' !important; display:inline-block; letter-spacing:0;">
-                        &#8203;मिति: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+                    <p style="font-family:'NotoSansDevanagari'; display:inline-block; padding-left:3px">
+                        म&#x093F;&#x200C;ति: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
                       </p>
+                      
                                 
                        @endif
             
