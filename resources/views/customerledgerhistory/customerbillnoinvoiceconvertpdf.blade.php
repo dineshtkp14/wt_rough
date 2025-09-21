@@ -27,7 +27,7 @@
     p{ margin:0 0 1px 0; line-height:1.12; }
 
     /* ---------- Inner page padding box ---------- */
-    .page{ padding:50px; background:#fff; }      /* ← 20px page padding */
+    .page{ padding:50px; background:#fff; }      /* ← page padding */
 
     /* Header */
     .letterhead{ color:#000; padding:0 20px 8px; text-align:center; }
@@ -38,10 +38,12 @@
 
     .invoice-info{ font-size:13px; margin-top:8px; }
     .invoice-info p{ margin:1px 0; }
-    .firstdiv{ float:right;
-        margin-top: -100px;
-     }
+    .firstdiv{ float:right; margin-top:-100px; }
     .seconddiv{ margin-top:-16px !important; }
+
+    /* Bigger text for Date + Miti ONLY */
+    .date-line{ font-size:18px; }
+    .miti-line{ font-size:18px; font-family:'HindDevanagari',sans-serif; }
 
     /* Nepali runs */
     .nep, .label-nep{ font-family:'HindDevanagari',sans-serif; line-height:1.14; }
@@ -92,8 +94,10 @@
         @else
           <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
         @endif
-        <p>Date: {{ $forinvoicetype->date }}</p>
-        <p class="label-nep">
+
+        <p class="date-line">Date: {{ $forinvoicetype->date }}</p>
+
+        <p class="label-nep miti-line">
           Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
         </p>
       @endif
