@@ -811,14 +811,6 @@ class CustomerLedgerHistroy extends Controller
             }
     
             // Load the Blade view for the PDF
-            $pdfView = view('customerledgerhistory.customerbillnoinvoiceconvertpdf', [
-                'allinvoices' => $allInvoices,
-                'allcusbyid' => $allcusbyid,
-                'invoiceid' => $invoiceid,
-                'cinfodetails' => $customerinfodetails,
-                'forinvoicetype' => $forinvoicetype,
-            ]);
-    
             $pdf = FacadePdf::setOptions([
                 'dpi' => 150,
                 'isHtml5ParserEnabled' => true,
@@ -836,7 +828,15 @@ class CustomerLedgerHistroy extends Controller
     
         // Best: stream inline (lets browser open new tab)
         return $pdf->stream('invoice.pdf');
-        }
+    
+        // If you MUST write a temp file:
+        // $pdfFile = tempnam(sys_get_temp_dir(), 'invoice_') . '.pdf';
+        // file_put_contents($pdfFile, $pdf->output());
+        // return response()->file($pdfFile, [
+        //     'Content-Type' => 'application/pdf',
+        //     'Content-Disposition' => 'inline; filename="invoice.pdf"',
+        // ]);
+    }
 
         
     }
