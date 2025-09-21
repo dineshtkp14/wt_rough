@@ -22,11 +22,12 @@
     src:url('file://{{ $eng }}') format('truetype');
     font-weight:normal; font-style:normal;
   }
-  html,body{
-    font-family:'NotoSansDevanagari','NotoSansEnglish',sans-serif;
-  }
+  html, body{
+  font-family: 'NotoSansEnglish', 'NotoSansDevanagari', sans-serif;
+}
 
-        * {
+.nep { font-family: 'NotoSansDevanagari', sans-serif; }
+* {
             margin-top: 0 !important; /* Set top margin to 0 for all elements */
         }
 
@@ -145,6 +146,8 @@
 
     <div class="letterhead">
         <h1>OM HARI TRADELINK</h1>
+        <p class="nep">टेस्ट: काठमाण्डौ • १२३४५६७८९० • ज्ञ श्र क्ष कि की कु कू</p>
+
     </div>
 
     <div class="address-info">
@@ -179,7 +182,11 @@
                 @endif
             
             </div>
-       
+            <p class="nep">
+                {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+              </p>
+              
+              <td class="nep">{{$i->unit}}</td>   {{-- if your unit labels are Nepali --}}
        <div class="forbillandpan">
         <span style="font-size: 18px;"> INVOICE NO: </span><b>{{$invoiceid}} </b><br>
 
