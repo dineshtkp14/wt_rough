@@ -39,7 +39,10 @@
 
     .invoice-info{ font-size:15px; margin-top:10px; }
     .invoice-info p{ margin:2px 0; }
-    .firstdiv{ float:right; }
+    .firstdiv{
+  float: right;
+  margin-top: -22px !important;  /* tweak: -18 ~ -30 depending on how high you want it */
+}
     .seconddiv{ margin-top:-14px !important; }
 
     /* Nepali runs */
