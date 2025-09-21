@@ -819,23 +819,23 @@ class CustomerLedgerHistroy extends Controller
                 'forinvoicetype' => $forinvoicetype,
             ]);
     
-            // Generate PDF using FacadePdf
             $pdf = FacadePdf::setOptions([
                 'dpi' => 150,
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true,
-            'defaultFont' => 'NotoSansDevanagariCondensed', // <<< important
-             ])->loadHtml($pdfView);
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'NotoSansDevanagariCondensed', // must match @font-face family
+            ])
+            ->loadView('customerledgerhistory.customerbillnoinvoiceconvertpdf', [
+                'allinvoices'    => $allInvoices,
+                'allcusbyid'     => $allcusbyid,
+                'invoiceid'      => $invoiceid,
+                'cinfodetails'   => $customerinfodetails,
+                'forinvoicetype' => $forinvoicetype,
+            ])
+            ->setPaper('A5', 'portrait');
     
-            // Save the PDF to a temporary file
-            $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
-            $pdf->save($pdfFile);
-    
-            // Send headers to instruct the browser to open the PDF in a new tab
-            return response()->file($pdfFile, [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="invoice.pdf"',
-            ]);
+        // Best: stream inline (lets browser open new tab)
+        return $pdf->stream('invoice.pdf');
         }
 
         
