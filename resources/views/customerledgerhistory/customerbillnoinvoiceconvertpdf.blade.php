@@ -16,7 +16,7 @@
     @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
 
     /* ---------- REAL page margins (use mm) ---------- */
-    @page { size: A5 portrait; margin: 100px; }   /* ← page margin on all sides */
+    @page { size: A5 portrait; margin: 200mm; }   /* ← page margin on all sides */
 
     html, body{
       margin:0; padding:0;                       /* leave body with no spacing */
