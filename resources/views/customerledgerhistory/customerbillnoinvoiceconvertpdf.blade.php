@@ -26,7 +26,9 @@
   margin: 0 !important;
   padding: 0 !important;
 }
-.nep { font-family:'HindDevanagari', sans-serif; }
+.label-nep { font-family:'HindDevanagari', 'NotoSansDevanagari', sans-serif; }
+
+
 .nepfix { padding-left:4px; margin-left:4px; line-height:1.35; }
 
 
@@ -168,8 +170,8 @@
                     @endif
                     <p>Date: {{ $forinvoicetype->date }}</p>
 
-                    <p style="font-family:'HindDevanagari'; display:inline-block; padding-left:3px">
-                        म&#x093F;&#x200C;ति: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+                    <p class="label-nep" style="display:inline-block; padding-left:3px">
+                        मिति: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
                       </p>
                       
                                 
