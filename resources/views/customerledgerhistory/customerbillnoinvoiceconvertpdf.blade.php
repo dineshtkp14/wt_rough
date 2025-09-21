@@ -6,29 +6,24 @@
     <title>Print</title>
 
     @php
-    $fontFile = str_replace('\\','/', public_path('fonts/NotoSansDevanagari-Regular.ttf'));
-  @endphp
+  $nep = str_replace('\\','/', public_path('fonts/NotoSansDevanagari-Regular.ttf'));
+  $eng = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));
+@endphp
     {{-- <script src="{{ asset('assets/js/common.js') }}"></script> --}}
 
     <style>
-     @font-face {
-    font-family: 'NotoSansDevanagari';
-    src: url("{{ asset('fonts/NotoSansDevanagari-Regular.ttf') }}") format('truetype');
-    font-weight: normal;
-    font-style: normal;
+     @font-face{
+    font-family:'NotoSansDevanagari';
+    src:url('file://{{ $nep }}') format('truetype');
+    font-weight:normal; font-style:normal;
   }
-
-  /* English (your condensed font) */
-  @font-face {
-    font-family: 'NotoSansEnglish';
-    src: url("{{ asset('fonts/NotoSans_Condensed-Regular.ttf') }}") format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  @font-face{
+    font-family:'NotoSansEnglish';
+    src:url('file://{{ $eng }}') format('truetype');
+    font-weight:normal; font-style:normal;
   }
-
-  html, body {
-    font-family: 'NotoSansDevanagari', 'NotoSansEnglish', sans-serif;
-    margin: 0; padding: 0;
+  html,body{
+    font-family:'NotoSansDevanagari','NotoSansEnglish',sans-serif;
   }
 
         * {
