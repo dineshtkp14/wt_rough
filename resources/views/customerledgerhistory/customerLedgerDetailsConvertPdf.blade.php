@@ -41,8 +41,9 @@
     .invoice-info p{ margin:2px 0; }
     .firstdiv{
   float: right;
-  margin-top: 2px !important;  /* tweak: -18 ~ -30 depending on how high you want it */
+  margin-top: 11112px !important;  /* tweak: -18 ~ -30 depending on how high you want it */
 }
+
     .seconddiv{ margin-top:-14px !important; }
 
     /* Nepali runs */
