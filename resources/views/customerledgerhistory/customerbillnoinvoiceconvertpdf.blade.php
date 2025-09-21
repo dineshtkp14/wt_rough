@@ -6,28 +6,24 @@
     <title>Print</title>
 
     @php
-  $devPath = public_path('fonts/NotoSansDevanagari-Regular.ttf');
-  $latPath = public_path('fonts/NotoSans-Regular.ttf');
-  $devData = base64_encode(file_get_contents($devPath));
-  $latData = base64_encode(file_get_contents($latPath));
-@endphp
+    $fontFile = str_replace('\\','/', public_path('fonts/NotoSansDevanagari-Regular.ttf'));
+  @endphp
     {{-- <script src="{{ asset('assets/js/common.js') }}"></script> --}}
 
     <style>
-        @font-face{
-  font-family:'NotoSansLatin';
-  src:url('data:font/truetype;base64,{{ $latData }}') format('truetype');
-  font-weight:normal; font-style:normal;
-}
-@font-face{
-  font-family:'NotoSansDevanagari';
-  src:url('data:font/truetype;base64,{{ $devData }}') format('truetype');
-  font-weight:normal; font-style:normal;
-}
+         @font-face{
+      font-family: 'NotoSansDevanagari';
+      font-family: 'NotoSansDevanagari';
+  src: url('file://{{ $fontFile }}') format('truetype');
+        font-weight: normal;
+      font-style: normal;
+    }
 
-/* Default = English/Latin */
-html, body { font-family:'NotoSansLatin', sans-serif;
- }
+    html, body{
+      font-family: 'NotoSansDevanagari', sans-serif;
+      margin:0; padding:0;
+    }
+
         * {
             margin-top: 0 !important; /* Set top margin to 0 for all elements */
         }
