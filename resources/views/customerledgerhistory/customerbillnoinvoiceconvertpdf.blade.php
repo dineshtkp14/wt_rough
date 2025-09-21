@@ -5,8 +5,14 @@
     <script src="{{ asset('assets/js/common.js') }}"></script>
 
     <style>
+        @font-face {
+    font-family: 'NotoSansDevanagariCondensed';
+    src: url('{{ public_path("fonts/NotoSansDevanagari_Condensed-Regular.ttf") }}') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'NotoSansDevanagariCondensed', 'DejaVu Sans', sans-serif;
             margin: 0 !important;
             padding: 0 !important;
         }
