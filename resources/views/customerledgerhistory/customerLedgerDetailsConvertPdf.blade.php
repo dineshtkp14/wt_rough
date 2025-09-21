@@ -17,7 +17,7 @@
     /* -------- Real page margins on all sides -------- */
     @page {
   size: A5 portrait;        /* or A4, etc. */
-  margin: 50px;             /* same on all sides */
+  margin: 50px !important;             /* same on all sides */
 }
     html, body{
       font-family: 'NotoSansEnglish','HindDevanagari',sans-serif;
