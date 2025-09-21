@@ -1,33 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-   
     <title>Print</title>
-
-    @php
-  $nep = str_replace('\\','/', public_path('fonts/NotoSansDevanagari-Regular.ttf'));
-  $eng = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));
-@endphp
-    {{-- <script src="{{ asset('assets/js/common.js') }}"></script> --}}
+    <script src="{{ asset('assets/js/common.js') }}"></script>
 
     <style>
-     @font-face{
-    font-family:'NotoSansDevanagari';
-    src:url('file://{{ $nep }}') format('truetype');
-    font-weight:normal; font-style:normal;
-  }
-  @font-face{
-    font-family:'NotoSansEnglish';
-    src:url('file://{{ $eng }}') format('truetype');
-    font-weight:normal; font-style:normal;
-  }
-  html, body{
-  font-family: 'NotoSansEnglish', 'NotoSansDevanagari', sans-serif;
-}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
 
-.nep { font-family: 'NotoSansDevanagari', sans-serif; }
-* {
+        * {
             margin-top: 0 !important; /* Set top margin to 0 for all elements */
         }
 
@@ -136,30 +120,21 @@
     </style>
 </head>
 <body>
-    @php
-    $fontPath = public_path('fonts/NotoSansDevanagari-Regular.ttf');
-    $fontData = base64_encode(file_get_contents($fontPath));
-@endphp
+
 <div class="container">
-    <div class="watermark">OHT </div> <!-- Watermark text -->
+    <div class="watermark">OHT</div> <!-- Watermark text -->
 
 
     <div class="letterhead">
         <h1>OM HARI TRADELINK</h1>
-        <p class="nep">टेस्ट: काठमाण्डौ • १२३४५६७८९० • ज्ञ श्र क्ष कि की कु कू</p>
-
     </div>
 
     <div class="address-info">
         <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
-        <p>Mobile No: 9860378262, 9848448624, 98126562843</p>
-        <p style="font-size:18px">
-            टेस्ट: काठमाण्डौ • १२३४५६७८९० • ज्ञ श्र क्ष कि की कु कू
-          </p>
+        <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
     </div>
 
   
-    @php if (!file_exists($fontPath)) echo '<div>FONT NOT FOUND</div>'; @endphp
 
 
     <div class="invoice-info">
@@ -172,13 +147,7 @@
                     @else
                         <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
                     @endif
-                    <p>Datee: {{ $forinvoicetype->date }}</p>
-                    <p style="font-family:'NotoSansDevanagari'">
-                        {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
-                      </p>
-                      
-                    
-
+                    <p>Date: {{ $forinvoicetype->date }}</p>
                 @endif
             
             </div>
@@ -253,8 +222,6 @@
                                 
                                     <td>{{$i->quantity}}</td>
                                     <td>{{$i->unit}}</td>
-
-                                    
                                     <td>{{$i->price}}</td>
                                     <td>{{$i->subtotal}}</td>
                                 </tr>
