@@ -22,7 +22,7 @@
       font-family: 'NotoSansEnglish','HindDevanagari',sans-serif;
       margin:0 !important; padding:0 !important;
       line-height:1.14;          /* more legible */
-      font-size:16px;            /* ↑ base size */
+      font-size:16px;            /* base size */
     }
     *{ box-sizing:border-box; }
     p{ margin:0 0 2px 0; line-height:1.14; }
@@ -32,17 +32,19 @@
 
     /* Header */
     .letterhead{ color:#000; padding:0 20px 10px; text-align:center; }
-    .letterhead h1{ margin:0 0 6px; font-size:34px; text-decoration:underline; line-height:1.05; } /* ↑ */
+    .letterhead h1{ margin:0 0 6px; font-size:34px; text-decoration:underline; line-height:1.05; }
 
     .address-info{ font-size:15px; text-align:center; margin-top:8px; }
     .address-info p{ margin:2px 0; }
 
     .invoice-info{ font-size:15px; margin-top:10px; }
     .invoice-info p{ margin:2px 0; }
+
+    /* move the Invoice Type / Date / Miti block slightly up on the right */
     .firstdiv{
-  float: right;
-  margin-top: 11112px !important;  /* tweak: -18 ~ -30 depending on how high you want it */
-}
+      float: right;
+      margin-top: -24px !important;  /* tweak: -18 to -32 for fine-tuning */
+    }
 
     .seconddiv{ margin-top:-14px !important; }
 
@@ -56,8 +58,8 @@
       line-height:1.14;
     }
     .invoice-no{
-      font-size:20px;   /* ↑ */
-      font-weight:700;  /* Dompdf fakes bold with regular TTF */
+      font-size:20px;
+      font-weight:700;              /* Dompdf fakes bold with regular TTF */
       letter-spacing:.3px;
       margin-bottom:2px;
     }
@@ -67,12 +69,12 @@
     /* Table */
     table{
       width:100%; border-collapse:collapse; margin-top:12px;
-      font-size:20px;          /* ↑ table text */
+      font-size:20px;
     }
     th,td{
       border:1px solid #000;
-      padding:2px 5px;         /* a bit more padding for readability */
-      height:22px;             /* ↑ row height */
+      padding:2px 5px;
+      height:22px;
       line-height:1.12;
       vertical-align:middle;
       text-align:center;
