@@ -2,25 +2,30 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    @php
-    $fontData = base64_encode(file_get_contents(public_path('fonts/NotoSansDevanagari-Regular.ttf')));
-@endphp
+   
     <title>Print</title>
+
+    @php
+    $fontPath = public_path('fonts/NotoSansDevanagari-Regular.ttf');
+    // sanity check (remove after testing)
+    // if (!file_exists($fontPath)) { echo '<!-- FONT NOT FOUND: '.e($fontPath).' -->'; }
+    $fontData = base64_encode(file_get_contents($fontPath));
+@endphp
+
     <script src="{{ asset('assets/js/common.js') }}"></script>
 
     <style>
-        @font-face {
-            @font-face{
-  font-family: 'NotoSansDevanagari';
-  src: url('data:font/truetype;base64,{{ $fontData }}') format('truetype');
-  font-weight: normal; font-style: normal;
-}
-}
-        body {
-            font-family: 'NotoSansDevanagari', 'DejaVu Sans', sans-serif;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
+         @font-face{
+      font-family: 'NotoSansDevanagari';
+      src: url('data:font/truetype;base64,{{ $fontData }}') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html, body{
+      font-family: 'NotoSansDevanagari', sans-serif;
+      margin:0; padding:0;
+    }
 
         * {
             margin-top: 0 !important; /* Set top margin to 0 for all elements */
