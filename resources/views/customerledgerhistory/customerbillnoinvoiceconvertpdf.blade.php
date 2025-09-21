@@ -5,19 +5,15 @@
   <title>Print</title>
 
   @php
-    // Absolute filesystem paths for Dompdf to embed fonts
+    // Absolute filesystem paths for Dompdf to embed fonts (REGULAR ONLY)
     $nepR = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));                 // Nepali
-    // $nepB = str_replace('\\','/', public_path('fonts/Hind-Bold.ttf'));                   // Nepali Bold (optional)
     $engR = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));  // English
-    // $engB = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Bold.ttf'));     // English Bold (optional)
   @endphp
 
   <style>
     /* ------------ Fonts (filesystem paths for Dompdf) ------------ */
-    @font-face { font-family:'HindDevanagari'; src:url('file://{{ $nepR }}') format('truetype'); font-weight:normal; font-style:normal; }
-    /* @font-face { font-family:'HindDevanagari'; src:url('file://{{ $nepB }}') format('truetype'); font-weight:bold;   font-style:normal; } */
-    @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype'); font-weight:normal; font-style:normal; }
-    /* @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engB }}') format('truetype'); font-weight:bold;   font-style:normal; } */
+    @font-face { font-family:'HindDevanagari';   src:url('file://{{ $nepR }}') format('truetype');  font-weight:normal; font-style:normal; }
+    @font-face { font-family:'NotoSansEnglish';  src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
 
     /* ------------ Page & global spacing ------------ */
     @page { size: A5 portrait; margin: 30px; }
@@ -47,19 +43,19 @@
     .nep, .label-nep{ font-family:'HindDevanagari',sans-serif; line-height:1.14; }
     .label-nep{ display:inline-block; padding-left:3px; } /* avoids matra clipping */
 
-    /* ===== INVOICE NO / PAN block (moved up + bold number) ===== */
+    /* ===== INVOICE NO / PAN block (moved up) ===== */
     .forbillandpan{
       margin-top:-80px !important;   /* move up; make more negative to move further */
       line-height:1.12;
     }
     .invoice-no{
       font-size:18px;
-      font-weight:700;
+      font-weight:700;               /* Dompdf will fake bold with regular font */
       letter-spacing:.3px;
       margin-bottom:1px;
     }
     .invoice-no .num{
-      font-weight:800;               /* stronger bold for the number */
+      font-weight:800;               /* also faked; no bold TTF needed */
     }
     .pan-line{
       font-size:14px;
@@ -115,14 +111,14 @@
           @endif
           <p>Date: {{ $forinvoicetype->date }}</p>
 
-          <!-- ZWNJ after the "ि" stops Dompdf mis-shaping "मिति" -->
+          <!-- If you want Nepali label, replace 'Miti' with म&#x093F;&#x200C;ति -->
           <p class="label-nep">
             Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
           </p>
         @endif
       </div>
 
-      <!-- ===== INVOICE NO + PAN (moved up + bold number) ===== -->
+      <!-- ===== INVOICE NO + PAN (moved up, number emphasized) ===== -->
       <div class="forbillandpan">
         <div class="invoice-no">
           INVOICE NO: <span class="num">{{ $invoiceid }}</span>
@@ -136,7 +132,7 @@
           @endforeach
         @endif
       </div>
-      <!-- ======================================================= -->
+      <!-- ========================================================== -->
 
       <div class="seconddiv forfontsizebll">
         @if ($cinfodetails)
