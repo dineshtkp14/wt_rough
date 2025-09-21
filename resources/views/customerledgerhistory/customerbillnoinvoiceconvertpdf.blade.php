@@ -45,7 +45,7 @@
 
     /* Nepali runs */
     .nep, .label-nep{ font-family:'HindDevanagari',sans-serif; line-height:1.14; }
-    .label-nep{ display:inline-block; padding-left:3px; } /* avoids matra clipping */
+    .label-nep{ display:inline-block; padding-left:3px; font-size: 20px; } /* avoids matra clipping */
 
     /* INVOICE NO / PAN block */
     .forbillandpan{ margin-top:-80px !important; line-height:1.12; }
@@ -167,7 +167,7 @@
             </tr>
             <tr>
               <td colspan="5">
-                <p style="font-size:13px;text-align:left;"># gGoods once sold won't be returned</p>
+                <p style="font-size:13px;text-align:left;"># Goods once sold won't be returned</p>
               </td>
               <td class="text-right">E-Discount:</td>
               <td>{{ $i->discount }}</td>
