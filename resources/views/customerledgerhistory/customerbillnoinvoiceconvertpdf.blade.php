@@ -1,15 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Print</title>
+    
+  @php
+        $nep = str_replace('\\','/', public_path('fonts/NotoSansDevanagari-Regular.ttf'));
+        $eng = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));
+  @endphp
     <script src="{{ asset('assets/js/common.js') }}"></script>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
+        @font-face{
+    font-family:'NotoSansDevanagari';
+    src:url('file://{{ $nep }}') format('truetype');
+    font-weight:normal; font-style:normal;
+  }
+  @font-face{
+    font-family:'NotoSansEnglish';
+    src:url('file://{{ $eng }}') format('truetype');
+    font-weight:normal; font-style:normal;
+  }
+  html, body{
+  font-family: 'NotoSansEnglish', 'NotoSansDevanagari', sans-serif;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* .nep { font-family: 'NotoSansDevanagari', sans-serif; } */
+
 
         * {
             margin-top: 0 !important; /* Set top margin to 0 for all elements */
@@ -148,6 +166,8 @@
                         <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
                     @endif
                     <p>Date: {{ $forinvoicetype->date }}</p>
+
+                    {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
                 @endif
             
             </div>
