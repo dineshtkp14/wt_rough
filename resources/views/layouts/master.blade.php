@@ -59,7 +59,7 @@
 
 html body{
     font-family:'NotoSansEnglish','HindDevanagari',sans-serif;
-      font-size:14px; line-height:1.12;
+      font-size:18px; line-height:1.12;
 }
 </style>
 
