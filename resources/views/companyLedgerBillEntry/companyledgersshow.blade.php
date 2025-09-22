@@ -133,6 +133,8 @@
             <tr>
                 <th>Id</th>
                 <th>Date</th>
+                <th>Date</th>
+
                 <th>Particulars</th>
                 <th>Voucher Type</th>
                 <th>Bill No</th>
@@ -146,6 +148,8 @@
                     <tr>
                         <td>{{ $i->id }}</td>
                         <td>{{ $i->date }}</td>
+                       <td>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}</td>
+
                         <td>{{ $i->particulars }}</td>
                         <td>{{ $i->voucher_type }}</td>
                         <td>{{ $i->voucher_no }}</td>
