@@ -148,7 +148,7 @@
                     <tr>
                         <td>{{ $i->id }}</td>
                         <td>{{ $i->date }}</td>
-                       <td>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}</td>
+                       <td>{{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'en') }}</td>
 
                         <td>{{ $i->particulars }}</td>
                         <td>{{ $i->voucher_type }}</td>
