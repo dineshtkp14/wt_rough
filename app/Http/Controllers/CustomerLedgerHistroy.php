@@ -935,7 +935,7 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
         $debitnotcash = null;
 
         // Get all customer information
-        $allcusinfo = customerinfo::orderBy('id', 'asc')->get();
+        $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();
 
         if ($from == "" || $to == "") {
             // No date range specified, fetch data without filtering by date

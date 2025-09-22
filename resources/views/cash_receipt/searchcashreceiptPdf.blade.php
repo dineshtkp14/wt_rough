@@ -172,6 +172,8 @@
             @if (!empty($alldetails))
                 <p><strong>Receipt No:</strong> {{ isset($alldetails[0]->id) ? $alldetails[0]->id : '' }}</p>
                 <p><strong>Date:</strong> {{ isset($alldetails[0]->date) ? $alldetails[0]->date : '' }}</p>
+                <p><strong>Miti (BS):</strong> {{ isset($alldetails[0]->date) ? \App\Support\NepaliDate::adToBsString($alldetails[0]->date, 'en') : '' }}</p>
+
             @endif
         </div>
 
