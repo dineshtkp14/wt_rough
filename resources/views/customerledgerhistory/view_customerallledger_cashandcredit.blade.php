@@ -216,7 +216,7 @@
 						   {{-- <td data-label="Name">{{ $i->date }}</td> --}}
 
                           {{-- <td>{{ \App\Support\NepaliDate::adToBsString($i->date, 'np') }}</td> --}}
-						  <td data-label="date"{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'np') }} </td>
+						  <td data-label="date">{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'np') }} </td>
 
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
