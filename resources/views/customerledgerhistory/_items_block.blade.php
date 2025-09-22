@@ -3,8 +3,11 @@
       <table>
         <thead>
           <tr>
-            <th>Eng Date</th>
-            <th>Nepali Date</th>
+            @if(Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com')
+            <th>DATE</th>
+            @endif   
+
+            <th> Date</th>
             <th>Bill No</th>
             {{-- <th>Name</th> --}}
             <th>Items Name</th>
@@ -18,11 +21,12 @@
           @if ($cus->isNotEmpty())
             @foreach ($cus as $item)
               <tr @if (date('Y-m-d', strtotime($item->date)) === date('Y-m-d')) style="font-weight:bold;color:white;background:red;" @endif>
-                {{-- <td class="ad-date"
-                data-ad="{{ \Carbon\Carbon::parse($item->date)->format('Y-m-d') }}"
-                data-lang="np"></td> --}}
+               
+            @if(Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com')
 
                 <td>{{ $item->date }}</td>
+
+               @endif
 
                 <td data-label="date" class="label-nep">{{ \App\Support\NepaliDate::adToBsString($item->date ?? now()->toDateString(), 'en') }} </td>  
 
