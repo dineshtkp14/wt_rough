@@ -24,7 +24,7 @@
 
                 <td>{{ $item->date }}</td>
 
-                <td>{{ \App\Support\NepaliDate::adToBsString($item->date, 'np') }}</td>
+                <td>{{ \App\Support\NepaliDate::adToBsString($item->date, 'en') }}</td>
 
                 <td>{{ $item->invoiceid }}</td>
                 {{-- <td>{{ $item->customername }}</td> --}}
