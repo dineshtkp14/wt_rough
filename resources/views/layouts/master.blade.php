@@ -10,6 +10,13 @@
         BASE_URL = "<?php echo url(''); ?>";
     </script>
 
+@php
+    // Absolute filesystem paths for Dompdf to embed fonts (REGULAR ONLY)
+    $nepR = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));                 // Nepali
+    $engR = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));  // English
+  @endphp
+
+  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon_white.png') }}" type="image/x-icon">
     <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
@@ -46,7 +53,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100..900&display=swap" rel="stylesheet">
     
     <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sidebars/">
+<style>
+    @font-face { font-family:'HindDevanagari';  src:url('file://{{ $nepR }}') format('truetype');  font-weight:normal; font-style:normal; }
+    @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
 
+html body{
+    font-family:'NotoSansEnglish','HindDevanagari',sans-serif;
+      font-size:14px; line-height:1.12;
+}
+</style>
 
 </head>
 
