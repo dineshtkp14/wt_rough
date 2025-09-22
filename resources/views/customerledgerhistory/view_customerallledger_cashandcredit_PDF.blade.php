@@ -121,6 +121,8 @@
         <thead>
         <tr>
             <th>DATE</th>
+            <th>DATE</th>
+
             <th>PARTICULARS</th>
             <th>VOUCHER TYPE</th>
             <th>INVOICE NO</th>
@@ -137,6 +139,9 @@
                     {{-- <td>{{ \App\Support\NepaliDate::adToBsString($i->date, 'np') }}</td> --}}
 
                     <td data-label="Name">{{ $i->date }}</td>
+
+                    <td data-label="date" class="label-nep">{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }} </td>  
+
                     <td data-label="Address">{{ $i->particulars}}</td>
                     <td data-label="Contact No.">{{ $i->voucher_type }}</td>
                     <td data-label="Contact No.">{{ $i->invoiceid }}</td>
