@@ -163,6 +163,8 @@
                     <td>-</td>
                     <td>-</td>
                     <td>-</td>
+                    <td>-</td>
+
                     <td>@if($dts != null) Total: <strong>{{ $dts }}</strong></td> @endif
                     <td>@if($cts != null) Total: <strong>{{ $cts }}</strong></td> @endif
                 </tr>
