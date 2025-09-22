@@ -188,6 +188,11 @@
 	<thead>
 		<tr>
 			<th>ID</th>
+
+			@if(Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com')
+    		<th>DATE</th>
+			@endif
+
 			<th>DATE</th>
 			<th>PARTICULARS</th>
 			<th>VOUCHER TYPE</th>
@@ -214,9 +219,13 @@
 						   data-lang="np"></td> --}}
 
 						   {{-- <td data-label="Name">{{ $i->date }}</td> --}}
+						   
+							@if(Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com')
+						   	<td data-label="Name">{{ $i->date }}</td>
+							@endif
 
-                          {{-- <td>{{ \App\Support\NepaliDate::adToBsString($i->date, 'np') }}</td> --}}
-						  <td data-label="date" class="label-nep">{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }} </td>
+						  {{-- type en for englisg date np for nepali date --}}
+						  <td data-label="date" class="label-nep">{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }} </td>  
 
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
