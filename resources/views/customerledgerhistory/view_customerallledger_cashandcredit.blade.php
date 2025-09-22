@@ -217,6 +217,8 @@
 
                           {{-- <td>{{ \App\Support\NepaliDate::adToBsString($i->date, 'np') }}</td> --}}
 
+						  Miti: {{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'np') }}
+
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
 						   <td data-label="Contact No."><b>{{ $i->invoiceid }}

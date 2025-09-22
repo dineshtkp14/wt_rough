@@ -120,10 +120,7 @@
     <table class="table1">
         <thead>
         <tr>
-        <?php if(isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'dineshtkp14@gmail.com'): ?>
             <th>DATE</th>
-        <?php endif; ?>
-            <th>DATE Np</th>
             <th>PARTICULARS</th>
             <th>VOUCHER TYPE</th>
             <th>INVOICE NO</th>
@@ -138,12 +135,8 @@
             @foreach ($all as $i)
                 <tr>
                     {{-- <td>{{ \App\Support\NepaliDate::adToBsString($i->date, 'np') }}</td> --}}
-                    <?php if(isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'dineshtkp14@gmail.com'): ?>
-                        <td data-label="Name">{{ $i->date }}</td>
-                    <?php endif; ?>
 
-                    {{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'np') }}
-
+                    <td data-label="Name">{{ $i->date }}</td>
                     <td data-label="Address">{{ $i->particulars}}</td>
                     <td data-label="Contact No.">{{ $i->voucher_type }}</td>
                     <td data-label="Contact No.">{{ $i->invoiceid }}</td>
