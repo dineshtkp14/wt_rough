@@ -145,7 +145,7 @@
                 @foreach ($all as $i)
                     <tr>
                         <td>{{ $i->id }}</td>
-                        <td>{{ $i->created_at }}</td>
+                        <td>{{ $i->date }}</td>
                         <td>{{ $i->particulars }}</td>
                         <td>{{ $i->voucher_type }}</td>
                         <td>{{ $i->voucher_no }}</td>
