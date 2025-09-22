@@ -61,6 +61,8 @@ html body{
     font-family:'NotoSansEnglish','HindDevanagari',sans-serif;
       font-size:18px; line-height:1.12;
 }
+.nep, .label-nep{ font-family:'HindDevanagari',sans-serif; line-height:1.14; }
+    .label-nep{ display:inline-block; padding-left:3px; } /* avoids matra clipping */
 </style>
 
 </head>
