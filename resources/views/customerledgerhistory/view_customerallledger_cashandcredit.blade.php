@@ -189,9 +189,7 @@
 		<tr>
 			<th>ID</th>
 
-			@if(Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com')
     		<th>DATE</th>
-			@endif
 
 			<th>DATE</th>
 			<th>PARTICULARS</th>
@@ -220,9 +218,8 @@
 
 						   {{-- <td data-label="Name">{{ $i->date }}</td> --}}
 						   
-							@if(Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com')
 						   	<td data-label="Name">{{ $i->date }}</td>
-							@endif
+							
 
 						  {{-- type en for englisg date np for nepali date --}}
 						  <td data-label="date" class="label-nep">{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }} </td>  
