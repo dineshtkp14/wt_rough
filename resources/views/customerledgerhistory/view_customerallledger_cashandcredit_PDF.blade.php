@@ -121,7 +121,7 @@
         <thead>
         <tr>
             <th>DATE</th>
-            <th>DATE</th>
+            <th>Miti</th>
 
             <th>PARTICULARS</th>
             <th>VOUCHER TYPE</th>
