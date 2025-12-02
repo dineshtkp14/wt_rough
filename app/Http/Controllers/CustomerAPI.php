@@ -13,7 +13,12 @@ class CustomerAPI extends Controller
     public function index(Request $req)
     {
 
-        $cus = customerinfo::where('name', 'LIKE', '%'.$req->name.'%')->orWhere('email', 'LIKE', '%'.$req->name.'%')->orWhere('phoneno', 'LIKE', '%'.$req->name.'%')->get();
+        // $cus = customerinfo::where('name', 'LIKE', '%'.$req->name.'%')->orWhere('email', 'LIKE', '%'.$req->name.'%')->orWhere('phoneno', 'LIKE', '%'.$req->name.'%')->get();
+        $cus = customerinfo::where('name', 'LIKE', '%'.$req->name.'%')
+            ->orWhere('email', 'LIKE', '%'.$req->name.'%')
+            ->orWhere('phoneno', 'LIKE', '%'.$req->name.'%')
+            ->orWhere('address', 'LIKE', '%'.$req->name.'%')
+            ->get();
         return json_encode($cus);
       
 
