@@ -45,8 +45,11 @@
 
                         <td data-label="Invoice Id">{{ $i->invoiceid }}</td>
                         <td data-label="Particulars">{{ $i->particulars }}</td>
-                        <td data-label="Invoice Type">{{ $i->invoicetype }}</td>
-
+                        {{-- <td data-label="Invoice Type">{{ $i->invoicetype }}</td> --}}
+                        <td data-label="Invoice Type"
+                        style="{{ $i->invoicetype == 'payment' ? 'background:green; color:white;' : '' }}">
+                        {{ $i->invoicetype }}
+                    </td>
                         <td data-label="Voucher Type">{{ $i->voucher_type }}</td>
                         <td data-label="Debit">{{ $i->debit }}</td>
                         <td data-label="Credit">{{ $i->credit }}</td>
