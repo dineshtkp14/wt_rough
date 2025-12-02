@@ -43,7 +43,15 @@
                         <td data-label="Customer Id">{{ $i->customerid }}</td>
                         <td data-label="Customer Id">{{ $i->cname }}</td>
 
-                        <td data-label="Invoice Id">{{ $i->invoiceid }}</td>
+                        {{-- <td data-label="Invoice Id">{{ $i->invoiceid }}</td> --}}
+                        <td data-label="Contact No."><b>{{ $i->invoiceid }}
+							@if(!empty($i->invoiceid))
+                                <a href="{{ url('onlyviewbill?invoiceid=' . $i->invoiceid) }}" class="btn btn-sm bg-info text-white">
+                                    View
+                                </a>
+							@endif
+						</td>
+
                         <td data-label="Particulars">{{ $i->particulars }}</td>
                         {{-- <td data-label="Invoice Type">{{ $i->invoicetype }}</td> --}}
                         <td data-label="Invoice Type"
