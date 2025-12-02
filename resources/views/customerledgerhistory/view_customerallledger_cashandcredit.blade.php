@@ -212,9 +212,15 @@
 					   <tr>
 						   <td data-label="Id">{{ $i->id }}</td>
 
-						
+						   {{-- <td class="ad-date"
+						   data-ad="{{ \Carbon\Carbon::parse($i->date)->format('Y-m-d') }}"
+						   data-lang="np"></td> --}}
+
+						   {{-- <td data-label="Name">{{ $i->date }}</td> --}}
 						   
 						   	{{-- <td data-label="Name">{{ $i->date }}</td> --}}
+							
+
 							   <td data-label="Name"
 							   @if($i->date->isToday())
 								   style="background:red; color:white;"
@@ -223,7 +229,6 @@
 							   {{ $i->date }}
 						   </td>
 						   
-
 						  {{-- type en for englisg date np for nepali date --}}
 						  <td data-label="date" class="label-nep">{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }} </td>  
 
