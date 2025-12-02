@@ -218,17 +218,11 @@
 
 						   {{-- <td data-label="Name">{{ $i->date }}</td> --}}
 						   
-						   	{{-- <td data-label="Name">{{ $i->date }}</td> --}}
-							
+						   <td data-label="Name"
+						   style="{{ $i->date == now()->toDateString() ? 'background:red; color:white;' : '' }}">
+						   {{ $i->date }}
+					   </td>							
 
-							   <td data-label="Name"
-							   @if($i->date->isToday())
-								   style="background:red; color:white;"
-							   @endif
-						   >
-							   {{ $i->date }}
-						   </td>
-						   
 						  {{-- type en for englisg date np for nepali date --}}
 						  <td data-label="date" class="label-nep">{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }} </td>  
 
