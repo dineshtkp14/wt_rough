@@ -42,7 +42,7 @@
 					<input type="text" class="search-input @error('customerid') is-invalid @enderror" placeholder="Search Customer"
 					id="searchCustomerInput" data-api="customer_search" autocomplete="off">
 						@error('customerid')
-							<p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">okoktest{{ $message }}</p>
+							<p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
 						@enderror  
 						
 					<i class="fas fa-search search-icon"> </i>

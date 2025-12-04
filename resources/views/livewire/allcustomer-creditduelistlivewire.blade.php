@@ -43,6 +43,12 @@
                     </tr>
                 </thead>
                 <tbody>
+
+                    {{-- //forredlist --}}
+                    @php
+                      $isOld = \Carbon\Carbon::parse($item->latest_date)->lte(now()->subYear());
+                    @endphp
+
                     @php
                         $sn = ($all->currentPage() - 1) * $all->perPage() + 1;
                     @endphp
@@ -52,7 +58,16 @@
                             @if ($item->debit_credit_difference != 0)
                                 <tr>
                                     <td>{{ $sn++ }}</td>
-                                    <td data-label="Customer Id"><b>{{ $item->customerid }}</b></td>
+                                    {{-- <td data-label="Customer Id"><b>{{ $item->customerid }}</b></td> --}}
+                                    <td data-label="Customer Id">
+                                        <b>
+                                            {{ $item->customerid }}
+                                            @if($isOld)
+                                                (Redlist)
+                                            @endif
+                                        </b>
+                                    </td>
+                                    
                                     <td data-label="Customer Name"><b>{{ $item->cname }}</b>  &nbsp; ({{ $item->cphoneno }})</td>
                                     <td data-label="Total Due Amount"><b>{{ $item->debit_credit_difference }}
                                         @if ($item->debit_credit_difference >= -100 && $item->debit_credit_difference <= 100)
