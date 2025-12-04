@@ -29,6 +29,8 @@
                 <option value="desc">High to Low</option> 
                 <option value="date_asc">Oldest First</option>
                 <option value="date_desc">Newest First</option> 
+                <option value="redlist">Redlist Customer</option>
+
             </select>
         </div>
         <div class="card-body">
@@ -53,7 +55,7 @@
                     @if (!$all->isEmpty())
                         @foreach ($all as $item)
                             @if ($item->debit_credit_difference != 0)
-                            
+
                               {{-- //forredlist --}}
                                     @php
                                          $isOld = \Carbon\Carbon::parse($item->latest_date)->lte(now()->subYear());

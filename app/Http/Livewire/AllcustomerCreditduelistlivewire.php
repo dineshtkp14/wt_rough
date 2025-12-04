@@ -19,6 +19,8 @@ class AllcustomerCreditduelistlivewire extends Component
 
     public function render()
     {
+
+        
         // Main query to get individual customer data
         $query = customerledgerdetails::select(
             'customerid',
@@ -55,7 +57,10 @@ class AllcustomerCreditduelistlivewire extends Component
         }, 0);
         
         
-
+//forredlist
+        if ($this->redlistFilter) {
+            $query->havingRaw('MAX(date) <= ?', [now()->subYear()->format('Y-m-d')]);
+        }
 
 // Apply sorting for debit_credit_difference if sortBy is not related to date
 if ($this->sortBy !== 'date_asc' && $this->sortBy !== 'date_desc') {
@@ -73,7 +78,10 @@ $query->orderBy('latest_date', 'asc');
 $query->orderBy('latest_date', 'desc');
 }
 
-
+// New Redlist option
+if ($this->sortBy === 'redlist') {
+    $query->havingRaw('MAX(date) <= ?', [now()->subYear()->format('Y-m-d')]);
+}
 
 
 
