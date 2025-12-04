@@ -29,7 +29,7 @@
                 <option value="desc">High to Low</option> 
                 <option value="date_asc">Oldest First</option>
                 <option value="date_desc">Newest First</option> 
-                <option value="redlist">Redlist Customer</option>
+                <option value="redlistFilter">Redlist Customer</option>
 
             </select>
         </div>
