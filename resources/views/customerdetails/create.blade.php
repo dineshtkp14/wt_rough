@@ -238,46 +238,51 @@
     });
 </script>
 
-
 <script>
+    //modefonepayandcash
     document.addEventListener('DOMContentLoaded', function () {
-    const checkbox = document.getElementById('forautoinputcash');
-    const checkboxfonepay = document.getElementById('forautoinputfonepay');
-
-    const particularsInput = document.getElementById('particulars');
-    const hiddenParticulars = document.getElementById('hiddenParticulars');
-    const vtInput = document.getElementById('vt');
-    const hiddenVt = document.getElementById('hiddenVt');
-
-    checkbox.addEventListener('change', function () {
-        if (this.checked) {
-            particularsInput.value = 'cash';
-            hiddenParticulars.value = 'cash';
-            vtInput.value = 'cash';
-            hiddenVt.value = 'cash';
-        } else {
+        const cashCheckbox = document.getElementById('forautoinputcash');
+        const fonepayCheckbox = document.getElementById('forautoinputfonepay');
+    
+        const particularsInput = document.getElementById('particulars');
+        const hiddenParticulars = document.getElementById('hiddenParticulars');
+        const vtInput = document.getElementById('vt');
+        const hiddenVt = document.getElementById('hiddenVt');
+    
+        function setPaymentMode(mode) {
+            particularsInput.value = mode;
+            hiddenParticulars.value = mode;
+            vtInput.value = mode;
+            hiddenVt.value = mode;
+        }
+    
+        function clearPaymentMode() {
             particularsInput.value = '';
             hiddenParticulars.value = '';
             vtInput.value = '';
             hiddenVt.value = '';
         }
+    
+        cashCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                fonepayCheckbox.checked = false;
+                setPaymentMode('cash');
+            } else {
+                clearPaymentMode();
+            }
+        });
+    
+        fonepayCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                cashCheckbox.checked = false;
+                setPaymentMode('fonepay');
+            } else {
+                clearPaymentMode();
+            }
+        });
     });
-
-    checkboxfonepay.addEventListener('change', function () {
-        if (this.checked) {
-            particularsInput.value = 'fonepay';
-            hiddenParticulars.value = 'fonepay';
-            vtInput.value = 'fonepay';
-            hiddenVt.value = 'fonepay';
-        } else {
-            particularsInput.value = '';
-            hiddenParticulars.value = '';
-            vtInput.value = '';
-            hiddenVt.value = '';
-        }
-    });
-});
-</script>
+    </script>
+    
 
 
 <script>
