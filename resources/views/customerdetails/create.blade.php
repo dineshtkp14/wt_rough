@@ -362,6 +362,8 @@ $(document).ready(function () {
                 // 🔥 STYLE CHANGE
                 amountInput.style.backgroundColor = 'black';
                 amountInput.style.color = 'white';
+                amountInput.style.border = '2px solid #ffc107'; // yellow border
+
 
                 if (typeof updateAmountInWords === 'function') {
                     updateAmountInWords();
@@ -373,6 +375,8 @@ $(document).ready(function () {
                 // 🔄 RESET STYLE
                 amountInput.style.backgroundColor = '';
                 amountInput.style.color = '';
+                amountInput.style.border = '';
+
             }
         });
     });
