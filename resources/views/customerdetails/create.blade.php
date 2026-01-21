@@ -346,29 +346,38 @@ $(document).ready(function () {
         });
 </script>
 
-
-
 <script>
-    //for nilling account script
+    // for nilling account script
     document.addEventListener('DOMContentLoaded', function () {
         const nilCheckbox = document.getElementById('nilaccount');
         const amountInput = document.getElementById('amount');
         const dueSpan = document.getElementById('totaldueamountfornotclear');
-    
+        const amountInWords = document.getElementById('amountInWords');
+
         nilCheckbox.addEventListener('change', function () {
             if (this.checked) {
                 let dueAmount = dueSpan.innerText.replace(/,/g, '');
                 amountInput.value = dueAmount || '';
+
+                // 🔥 STYLE CHANGE
+                amountInput.style.backgroundColor = 'black';
+                amountInput.style.color = 'white';
+
                 if (typeof updateAmountInWords === 'function') {
                     updateAmountInWords();
                 }
             } else {
                 amountInput.value = '';
-                document.getElementById('amountInWords').innerText = '';
+                amountInWords.innerText = '';
+
+                // 🔄 RESET STYLE
+                amountInput.style.backgroundColor = '';
+                amountInput.style.color = '';
             }
         });
     });
-    </script>
+</script>
+
     
 
     <script>
