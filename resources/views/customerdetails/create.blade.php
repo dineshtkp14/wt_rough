@@ -362,7 +362,7 @@ $(document).ready(function () {
                 // 🔥 STYLE CHANGE
                 amountInput.style.backgroundColor = 'black';
                 amountInput.style.color = 'white';
-                amountInput.style.border = '12px solid #ffc107'; // yellow border
+                amountInput.style.border = '12px solid red'; // yellow border
 
 
                 if (typeof updateAmountInWords === 'function') {
