@@ -117,8 +117,8 @@
 
             <div class="col-md-6">
                 <div class="form-check d-flex align-items-center">
-                    <input class="form-check-input me-2" type="checkbox" id="clearamount" name="clearamount" style="width: 30px; height: 30px;">
-                    <label class="form-check-label" for="clearamount">Nil Account</label>
+                    <input class="form-check-input me-2" type="checkbox" id="nilaccount" name="nilaccount" style="width: 30px; height: 30px;">
+                    <label class="form-check-label" for="nilaccount">Nil Account</label>
                 </div>
             </div>
 
@@ -345,6 +345,37 @@ $(document).ready(function () {
 
 
 
+       
+<script>
+     // this script is for nill account
+    document.addEventListener('DOMContentLoaded', function () {
+        const nilAccountCheckbox = document.getElementById('nilaccount');
+        const amountInput = document.getElementById('amount');
+        const amountInWords = document.getElementById('amountInWords');
+    
+        // Store default / auto-filled amount
+        let storedAmount = amountInput.value;
+    
+        nilAccountCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                // Save current amount before clearing
+                storedAmount = amountInput.value;
+    
+                // Clear amount
+                amountInput.value = '';
+                amountInWords.innerText = '';
+                amountInput.focus();
+            } else {
+                // Restore amount when unchecked
+                amountInput.value = storedAmount || '';
+    
+                if (typeof updateAmountInWords === 'function' && amountInput.value !== '') {
+                    updateAmountInWords();
+                }
+            }
+        });
+    });
+    </script>
 
 <script>
     function convertNumberToWords(num) {
