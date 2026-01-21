@@ -114,6 +114,14 @@
                     <label class="form-check-label" for="clearamount">Clear Amount</label>
                 </div>
             </div>
+
+            <div class="col-md-6">
+                <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input me-2" type="checkbox" id="clearamount" name="clearamount" style="width: 30px; height: 30px;">
+                    <label class="form-check-label" for="clearamount">Nil Account</label>
+                </div>
+            </div>
+
             <div class="col-md-4">
                 <div class="form-check d-flex align-items-center">
                     <input class="form-check-input me-2" type="checkbox" id="disableFields" name="disableFields" style="width: 30px; height: 30px;">
