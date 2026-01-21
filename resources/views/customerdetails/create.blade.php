@@ -223,12 +223,12 @@
     }
 }
 
-        if (amountx) {
-    document.getElementById('amount').value = amountx;
-    if (typeof updateAmountInWords === 'function') {
-        updateAmountInWords();
-    }
-}
+//         if (amountx) {
+//     document.getElementById('amount').value = amountx;
+//     if (typeof updateAmountInWords === 'function') {
+//         updateAmountInWords();
+//     }
+// }
         
 
         // Optionally disable the checkbox and input fields if they are auto-filled
@@ -345,37 +345,29 @@ $(document).ready(function () {
 
 
 
-       
 <script>
-     // this script is for nill account
+    //for nilling account script
     document.addEventListener('DOMContentLoaded', function () {
-        const nilAccountCheckbox = document.getElementById('nilaccount');
+        const nilCheckbox = document.getElementById('nilaccount');
         const amountInput = document.getElementById('amount');
-        const amountInWords = document.getElementById('amountInWords');
+        const dueSpan = document.getElementById('totaldueamountfornotclear');
     
-        // Store default / auto-filled amount
-        let storedAmount = amountInput.value;
-    
-        nilAccountCheckbox.addEventListener('change', function () {
+        nilCheckbox.addEventListener('change', function () {
             if (this.checked) {
-                // Save current amount before clearing
-                storedAmount = amountInput.value;
-    
-                // Clear amount
-                amountInput.value = '';
-                amountInWords.innerText = '';
-                amountInput.focus();
-            } else {
-                // Restore amount when unchecked
-                amountInput.value = storedAmount || '';
-    
-                if (typeof updateAmountInWords === 'function' && amountInput.value !== '') {
+                let dueAmount = dueSpan.innerText.replace(/,/g, '');
+                amountInput.value = dueAmount || '';
+                if (typeof updateAmountInWords === 'function') {
                     updateAmountInWords();
                 }
+            } else {
+                amountInput.value = '';
+                document.getElementById('amountInWords').innerText = '';
             }
         });
     });
     </script>
+    
+
 
 <script>
     function convertNumberToWords(num) {
