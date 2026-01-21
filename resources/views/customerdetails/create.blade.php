@@ -131,7 +131,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label"> Particulars <span class="text-success fw-bold"> (Bank Name / Fone Pay / Payment) </span> <span style="color: red;">*</span></label>
-                <input autocomplete="off" id="particulars" type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars') }}" >
+                <input autocomplete="off" id="particulars" type="text" class="form-control fs-1 @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars') }}" >
                 <input  id="hiddenParticulars" type="hidden" name="hiddenParticulars" value="{{ old('hiddenParticulars') }}">
                 @error('particulars')
                 <p class="invalid-feedback">{{ $message }}</p>
