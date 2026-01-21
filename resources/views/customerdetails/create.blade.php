@@ -108,6 +108,13 @@
                 </div>
             </div>
 
+            <div class="col-md-2">
+                <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input me-2" type="checkbox" id="forautoinputfonepay" name="forautoinputfonepay" style="width: 30px; height: 30px;">
+                    <label class="form-check-label" for="forautoinputfonepay">If Fonepay</label>
+                </div>
+            </div>
+
             <div class="col-md-6">
                 <div class="form-check d-flex align-items-center">
                     <input class="form-check-input me-2" type="checkbox" id="clearamount" name="clearamount" style="width: 30px; height: 30px;">
@@ -255,6 +262,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
     const checkbox = document.getElementById('forautoinputcash');
+    const checkboxfonepay = document.getElementById('forautoinputfonepay');
+
     const particularsInput = document.getElementById('particulars');
     const hiddenParticulars = document.getElementById('hiddenParticulars');
     const vtInput = document.getElementById('vt');
@@ -266,6 +275,20 @@
             hiddenParticulars.value = 'cash';
             vtInput.value = 'cash';
             hiddenVt.value = 'cash';
+        } else {
+            particularsInput.value = '';
+            hiddenParticulars.value = '';
+            vtInput.value = '';
+            hiddenVt.value = '';
+        }
+    });
+
+    checkboxfonepay.addEventListener('change', function () {
+        if (this.checked) {
+            particularsInput.value = 'fonepay';
+            hiddenParticulars.value = 'fonepay';
+            vtInput.value = 'fonepay';
+            hiddenVt.value = 'fonepay';
         } else {
             particularsInput.value = '';
             hiddenParticulars.value = '';
