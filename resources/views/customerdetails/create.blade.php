@@ -117,13 +117,6 @@
 
             <div class="col-md-6">
                 <div class="form-check d-flex align-items-center">
-                    <input class="form-check-input me-2" type="checkbox" id="clearamount" name="clearamount" style="width: 30px; height: 30px;">
-                    <label class="form-check-label" for="clearamount">Clear Amount</label>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-check d-flex align-items-center">
                     <input class="form-check-input me-2" type="checkbox" id="nilaccount" name="nilaccount" style="width: 30px; height: 30px;">
                     <label class="form-check-label" for="nilaccount">Nil Account</label>
                 </div>
@@ -245,19 +238,6 @@
     });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const clearAmountCheckbox = document.getElementById('clearamount');
-        const amountInput = document.getElementById('amount');
-
-        clearAmountCheckbox.addEventListener('change', function () {
-            if (this.checked) {
-                amountInput.value = '';
-                document.getElementById('amountInWords').innerText = '';
-            }
-        });
-    });
-</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
