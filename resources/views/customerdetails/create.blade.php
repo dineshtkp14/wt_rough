@@ -266,7 +266,7 @@
         cashCheckbox.addEventListener('change', function () {
             if (this.checked) {
                 fonepayCheckbox.checked = false;
-                setPaymentMode('cash');
+                setPaymentMode('CASH');
             } else {
                 clearPaymentMode();
             }
@@ -275,7 +275,7 @@
         fonepayCheckbox.addEventListener('change', function () {
             if (this.checked) {
                 cashCheckbox.checked = false;
-                setPaymentMode('fonepay');
+                setPaymentMode('FONEPAY');
             } else {
                 clearPaymentMode();
             }
