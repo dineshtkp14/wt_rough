@@ -371,6 +371,38 @@ $(document).ready(function () {
     </script>
     
 
+    <script>
+        //forvalidation of submit or payment button disable and enable 
+        document.addEventListener('DOMContentLoaded', function () {
+            const particulars = document.getElementById('particulars');
+            const voucherType = document.getElementById('vt');
+            const amount = document.getElementById('amount');
+            const submitBtn = document.getElementById('submitBtn');
+        
+            function validateForm() {
+                const isValid =
+                    particulars.value.trim() !== '' &&
+                    voucherType.value.trim() !== '' &&
+                    amount.value.trim() !== '';
+        
+                submitBtn.disabled = !isValid;
+            }
+        
+            // Initial state (DISABLED on page load)
+            submitBtn.disabled = true;
+        
+            // Listen to all possible changes
+            particulars.addEventListener('input', validateForm);
+            voucherType.addEventListener('input', validateForm);
+            amount.addEventListener('input', validateForm);
+        
+            // Also trigger validation when checkboxes change (auto-fill cases)
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', validateForm);
+            });
+        });
+        </script>
+        
 
 <script>
     function convertNumberToWords(num) {
