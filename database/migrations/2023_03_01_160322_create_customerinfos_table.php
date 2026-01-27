@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phoneno')->unique();
             $table->string('alternate_phoneno')->nullable();
-
+            $table->string('type')->nullable()->after('phoneno');
             $table->text('remarks')->nullable();
             $table->timestamps();
             $table->string('added_by');
