@@ -142,6 +142,28 @@
                             <label class="my-3"><b>Amount in words: </b><span id="totalAmountWords"
                                     style="text-transform: capitalize;">...</span></label><br>
                             <textarea autocomplete="off" placeholder="Additional notes" class="form-control" id="noteInput" rows="3" cols="20"></textarea>
+
+                            {{-- /forcreditdaystextbox --}}
+                            <div class="d-flex justify-content-center">
+                                <div class="d-inline-flex align-items-center mt-3 px-3 py-2 border rounded shadow-sm"
+                                     id="creditDaysWrapper" style="display:none; background:#f8f9fa;">
+                            
+                                    <span class="fw-semibold me-2" style="font-size:16px;">
+                                        ⏳ Credit Days
+                                    </span>
+                            
+                                    <input type="number"
+                                           class="form-control"
+                                           id="creditDays"
+                                           name="credit_days"
+                                           placeholder="30"
+                                           min="0"
+                                           style="width:90px; font-size:16px; font-weight:600; text-align:center;">
+                                </div>
+                            </div>
+                            
+                       {{-- //endforcredidays --}}
+
                         </div>
                     </div>
                     <div class="col-md-3">
