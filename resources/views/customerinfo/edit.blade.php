@@ -57,6 +57,24 @@
                 @enderror
         </div>
 
+        <div class="col-md-6">
+            <label class="form-label">
+                Customer Type <span style="color: red;">*</span>
+            </label>
+        <select name="type" class="form-control @error('type') is-invalid @enderror">
+            <option value="">-- Select Type --</option>
+        
+            <option value="shop"
+                {{ old('type', $cus->type) == 'shop' ? 'selected' : '' }}>
+                Shop
+            </option>
+        
+            <option value="customer"
+                {{ old('type', $cus->type) == 'customer' ? 'selected' : '' }}>
+                Customer
+            </option>
+        </select>
+        </div>
            
 
             <div class="col-md-6">

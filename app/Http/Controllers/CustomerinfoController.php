@@ -79,6 +79,8 @@ return redirect('/login');
         $cusinfo->address=strtoupper($req->address);
         $cusinfo->email=$req->email;
         $cusinfo->phoneno=$req->phoneno;
+        $cusinfo->type=$req->type;
+
         $cusinfo->alternate_phoneno=$req->alternate_phoneno;
 
         $cusinfo->remarks=$req->remarks;
@@ -148,6 +150,7 @@ return redirect('/login');
              $cusinfo->address=strtoupper($req->address);
             $cusinfo->email=$req->email;
             $cusinfo->phoneno=$req->phoneno;
+            $cusinfo->type=$req->type;
             $cusinfo->alternate_phoneno=$req->alternate_phoneno;
             $cusinfo->remarks=$req->remarks;
             $cusinfo->added_by = session('user_email');

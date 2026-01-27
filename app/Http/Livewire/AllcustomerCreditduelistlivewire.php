@@ -87,6 +87,19 @@ if ($this->sortBy === 'credittime_expired') {
     ->having('debit_credit_difference', '>', 0);
 }
 
+//forshopithcredttimeexpiredonly
+// FILTER: Shop + Credit Limit Time Expired
+
+
+
+// /forshoponlytodisplay
+// filter only shop customers withcredittimeexpired
+
+
+
+
+
+
 
 
 // Apply sorting for debit_credit_difference if sortBy is not related to date
@@ -120,13 +133,49 @@ return $item->debit_credit_difference < 0;
         // Fetch additional data
         foreach ($allResults as $data) {
             if ($data->customerid) {
-                $item = customerinfo::where('id', $data->customerid)->select('name', 'phoneno')->first();
+                $item = customerinfo::where('id', $data->customerid)->select('name', 'phoneno','type')->first();
                 if ($item) {
                     $data->cname = $item->name;
                     $data->cphoneno = $item->phoneno;
+                    $data->ctype = $item->type;
+
                 }
+
+                
             }
         }
+
+
+        // FILTER: Shop + Credit Limit Time Expired
+if ($this->sortBy === 'shop_credit_expired') {
+    $allResults->setCollection(
+        $allResults->getCollection()->filter(function ($row) {
+
+            if (!isset($row->ctype) || $row->ctype !== 'shop') {
+                return false;
+            }
+
+            if (empty($row->latest_date) || empty($row->credit_limit_days)) {
+                return false;
+            }
+
+            $expiryDate = \Carbon\Carbon::parse($row->latest_date)
+                ->addDays($row->credit_limit_days);
+
+            return $expiryDate->lt(now()) && $row->debit_credit_difference > 0;
+        })
+    );
+}
+
+        // FILTER: Shop only (customerinfo.type = shop)
+if ($this->sortBy === 'shop') {
+    $allResults->setCollection(
+        $allResults->getCollection()->filter(function ($row) {
+            return isset($row->ctype) && $row->ctype === 'shop';
+        })
+    );
+}
+
 
     
 

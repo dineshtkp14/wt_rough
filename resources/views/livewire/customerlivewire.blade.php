@@ -15,12 +15,17 @@
                             <th>Name</th>
                             <th >Address</th>
                             <th >Email</th>
+                            <th >Type</th>
+
                             <th >Phoneno</th>
                             <th>Remarks</th>
                             <th>Added By</th>
                             <th>Created_at</th>
-                            <th>Updated_at</th>
 
+                            @if(auth()->check() && auth()->user()->email === 'dineshtkp14@gmail.com')
+
+                            <th>Updated_at</th>
+                              @endif
                             <th style="width: 160px;" >Action</th>
 
 
@@ -34,13 +39,18 @@
                                       <td class="text-center">{{ $i->name }}</td>
                                       <td class="text-center">{{ $i->address }}</td>
                                       <td class="text-center">{{ $i->email }}</td>
+                                      <td class="text-center">{{ $i->type }}</td>
+
                                       <td class="text-center">{!! $i->phoneno . ' <b>,</b> ' . $i->alternate_phoneno !!}</td>
                                       <td class="text-center">{{ $i->remarks}}</td>
                                       <td>{{ $i->added_by}}</td>
                                       <td>{{ $i->created_at}}</td>
-                                      <td>{{ $i->updated_at}}</td>
 
+                                      @if(auth()->check() && auth()->user()->email === 'dineshtkp14@gmail.com')
 
+                                        <td>{{ $i->updated_at}}</td>
+
+                                        @endif
 
                                         
                                         <td style="width: 160px;" class="text-center">

@@ -31,6 +31,10 @@
                 <option value="date_desc">Newest First</option> 
                 <option value="redlist">Redlist Customer</option>
                 <option value="credittime_expired">Credit Limit Time Expired</option>
+                <option value="shop">Shop only</option>
+                <option value="shop_credit_expired">Shop with Credit Time Expired</option>
+
+
 
 
             </select>
@@ -41,7 +45,7 @@
                     <tr>
                         <th>S.N</th>
                         <th>Customer Id</th>
-                        <th>Customer Name</th>
+                        <th>Customer Name </th>
                         <th>Total Due Amount</th>
                         <th>Date</th>
                     </tr>

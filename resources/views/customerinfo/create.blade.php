@@ -56,6 +56,22 @@
                 @enderror
             </div>
 
+          
+            <div class="col-md-6">
+                <label class="form-label">
+                    Customer Type <span style="color: red;">*</span>
+                </label>
+                <select name="type" class="form-control @error('type') is-invalid @enderror">
+                    <option value="">-- Select Type --</option>
+                    <option value="shop" {{ old('type') == 'shop' ? 'selected' : '' }}>Shop</option>
+                    <option value="customer" {{ old('type') == 'customer' ? 'selected' : '' }}>Customer</option>
+                </select>
+            
+                @error('type')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                @enderror
+            </div>
+            
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Notes</label>
                 <textarea type="text" class="form-control @error('remarks') is-invalid @enderror" 
@@ -64,6 +80,7 @@
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
+            
 
             <div class="d-grid gap-2 pt-2 pb-4">
                 <button type="submit" class="btn btn-lg btn-primary">Save</button>
