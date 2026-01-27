@@ -34,6 +34,7 @@ return new class extends Migration
             $table->string('counter_deposit')->nullable();;;
 
 
+
             $table->timestamps();
             $table->string('added_by')->nullable();
 

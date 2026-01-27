@@ -153,13 +153,16 @@
                                     </span>
                             
                                     <input type="number"
-                                           class="form-control"
-                                           id="creditDays"
-                                           name="credit_days"
-                                           placeholder="30"
-                                           min="0"
-                                           style="width:90px; font-size:16px; font-weight:600; text-align:center;">
-                                </div>
+                                        class="form-control"
+                                        id="creditDays"
+                                        name="credit_days"
+                                        placeholder="Enter days"
+                                        min="0"
+                                        step="1"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                        style="width:130px; font-size:16px; font-weight:600; text-align:center;">
+
+                                    </div>
                             </div>
                             
                        {{-- //endforcredidays --}}
