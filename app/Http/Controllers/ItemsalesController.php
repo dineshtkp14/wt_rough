@@ -118,6 +118,7 @@ class ItemsalesController extends Controller
         $cus_data->voucher_type = "sales";
         $cus_data->invoicetype = $req->invoice_type;
         $cus_data->debit =  $final_arr[0]->total;
+        $cus_data->credit_limit_days = $req->credit_days;
         $cus_data->added_by = session('user_email');
 
         $cus_data->save();

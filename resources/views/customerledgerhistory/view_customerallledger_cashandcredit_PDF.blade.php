@@ -140,6 +140,7 @@
 
                     <td data-label="Name">{{ $i->date }}</td>
 
+
                     <td data-label="date" class="label-nep">{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }} </td>  
 
                     <td data-label="Address">{{ $i->particulars}}</td>

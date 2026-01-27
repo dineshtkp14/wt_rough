@@ -27,6 +27,8 @@ class AllcustomerCreditduelistlivewire extends Component
             // 'date', // Assuming 'date' is the field containing the date
             \DB::raw('MAX(date) as latest_date'),
             \DB::raw('SUM(debit) AS total_debit'),
+            \DB::raw('MAX(credit_limit_days) as credit_limit_days'),
+
             \DB::raw('COALESCE(SUM(credit), 0) AS total_credit'),
             \DB::raw('COALESCE(SUM(debit), 0) - COALESCE(SUM(credit), 0) AS debit_credit_difference'
             ))
@@ -61,6 +63,30 @@ class AllcustomerCreditduelistlivewire extends Component
 if ($this->sortBy === 'redlist') {
     $query->havingRaw('MAX(date) <= ?', [now()->subYear()->format('Y-m-d')]);
 }
+
+//forcredttimeexpired
+// credit limit time expired customers
+// credit limit time expired customers (CORRECT LOGIC)
+// credit limit time expired customers (FINAL & CORRECT)
+// credit limit time expired customers (FINAL & CORRECT)
+if ($this->sortBy === 'credittime_expired') {
+    $query->havingRaw(
+        '
+        DATE_ADD(
+            MAX(CASE WHEN invoicetype = "credit" THEN date END),
+            INTERVAL 
+            MAX(
+                CASE 
+                    WHEN invoicetype = "credit" AND credit_limit_days IS NOT NULL 
+                    THEN credit_limit_days 
+                END
+            ) DAY
+        ) < CURDATE()
+        '
+    )
+    ->having('debit_credit_difference', '>', 0);
+}
+
 
 
 // Apply sorting for debit_credit_difference if sortBy is not related to date

@@ -23,13 +23,15 @@
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Advance Payment: <span class="h3"><b>{{ $totalNegativeDebitCreditDifference }}</b></span>
             
             <!-- Filter dropdown for sorting -->
-            <select class="form-select float-end border-warning border border-5" style="width: 150px;" wire:model="sortBy">
+            <select class="form-select float-end border-warning border border-5" style="width: 300px;" wire:model="sortBy">
                 <option value="">Sort By</option>
                 <option value="asc">Low to High</option>
                 <option value="desc">High to Low</option> 
                 <option value="date_asc">Oldest First</option>
                 <option value="date_desc">Newest First</option> 
                 <option value="redlist">Redlist Customer</option>
+                <option value="credittime_expired">Credit Limit Time Expired</option>
+
 
             </select>
         </div>
@@ -69,6 +71,13 @@
                                             @if($isOld)
                                                 (Redlist)
                                             @endif
+
+                                            @if(!is_null($item->credit_limit_days))
+                                            <small class="text-muted">
+                                                credit time: {{ $item->credit_limit_days }} days
+                                            </small>
+                                            @endif
+                                        
                                         </b>
                                     </td>
 
@@ -95,7 +104,12 @@
                                                                            
                                         @endif
                                     </td>
-                                    <td data-label="Total Due Amount"><b>{{ $item->latest_date  }}</b></td>
+                                    <td data-label="Total Due Amount"><b>{{ $item->latest_date  }} 
+                                        <small class="text-muted">
+                                        {{ \Carbon\Carbon::parse($item->latest_date)->diffInDays(now()) }} days
+                                        
+                                        </small>
+                                </b></td>
 
                                 </tr>
                             @endif
