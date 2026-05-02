@@ -138,11 +138,11 @@ class ModernDashboardController extends Controller
 
         $recentPayments = [];
         foreach ($recentPaymentsRaw as $pay) {
-            $mode = trim($pay->particulars ?? '');
-            if (empty($mode)) {
-                $mode = trim($pay->voucher_type ?? '');
-            }
+            $mode = trim($pay->voucher_type ?? '');
             if (empty($mode) || strtoupper($mode) === 'VOUCHER TYPE') {
+                $mode = trim($pay->particulars ?? '');
+            }
+            if (empty($mode)) {
                 $mode = 'Cash';
             }
 
