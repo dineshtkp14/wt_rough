@@ -118,7 +118,8 @@
                             <tr>
                                 <td><strong>#{{ $sn++ }}</strong></td>
                                 <td>{{ $i->id }}</td>
-                                <td><span class="stock-item-name">{{ $i->itemsname }}</span></td>
+                                <td><span class="stock-item-name wrap"
+                                        title="{{ $i->itemsname }}">{{ $i->itemsname }}</span></td>
                                 <td><span class="stock-quantity">{{ $i->quantity }}</span></td>
                                 <td>{{ $i->unit }}</td>
                                 <td>{{ $i->item_store_area }}</td>
@@ -135,10 +136,11 @@
                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
-                                                <div class="stock-modal-header bg-primary text-light">
+                                                <div class="stock-modal-header">
                                                     <h5 class="modal-title" id="exampleModalLabel"><i
                                                             class="fas fa-info-circle me-2"></i>Additional Details
-                                                        (Excl. VAT 13%)</h5>
+                                                        (Excl. VAT 13%)
+                                                    </h5>
                                                     <button type="button" class="btn-close btn-close-white"
                                                         data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
