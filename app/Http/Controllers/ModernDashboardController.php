@@ -139,9 +139,11 @@ class ModernDashboardController extends Controller
         $recentPayments = [];
         foreach ($recentPaymentsRaw as $pay) {
             $mode = 'Cash';
-            if ($pay->bank_deposit || stripos($pay->voucher_type ?? '', 'bank') !== false)      $mode = 'Bank Deposit';
-            elseif ($pay->counter_deposit || stripos($pay->voucher_type ?? '', 'counter') !== false) $mode = 'Counter';
-            elseif (strtoupper($pay->particulars ?? '') === 'FONEPAY') $mode = 'Fonepay';
+            $part = strtoupper($pay->particulars ?? '');
+            $vchr = strtoupper($pay->voucher_type ?? '');
+            if ($part === 'FONEPAY') $mode = 'Fonepay';
+            elseif ($pay->bank_deposit || stripos($vchr, 'bank') !== false || stripos($part, 'BANK') !== false || stripos($part, 'DEPOSIT') !== false)      $mode = 'Bank Deposit';
+            elseif ($pay->counter_deposit || stripos($vchr, 'counter') !== false || stripos($part, 'COUNTER') !== false) $mode = 'Counter';
 
             $recentPayments[] = [
                 'customer' => $pay->customer,
