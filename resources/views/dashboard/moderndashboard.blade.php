@@ -248,7 +248,7 @@
         }
 
         .badge-warning {
-            background: #fef3c7;
+            background: #fecc01;
             color: #92400e;
         }
 
