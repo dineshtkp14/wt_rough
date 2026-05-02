@@ -129,7 +129,7 @@ class ModernDashboardController extends Controller
         }
 
         $recentPaymentsRaw = customerledgerdetails::join('customerinfos', 'customerledgerdetails.customerid', '=', 'customerinfos.id')
-            ->select('customerinfos.name as customer', 'customerledgerdetails.credit as amount', 'customerledgerdetails.date', 'customerledgerdetails.id', 'customerledgerdetails.bank_deposit', 'customerledgerdetails.counter_deposit', 'customerledgerdetails.particulars')
+            ->select('customerinfos.name as customer', 'customerledgerdetails.credit as amount', 'customerledgerdetails.date', 'customerledgerdetails.id', 'customerledgerdetails.bank_deposit', 'customerledgerdetails.counter_deposit', 'customerledgerdetails.particulars', 'customerledgerdetails.voucher_type')
             ->where('customerledgerdetails.invoicetype', 'payment')
             ->orderByDesc('customerledgerdetails.date')
             ->orderByDesc('customerledgerdetails.id')
@@ -139,8 +139,8 @@ class ModernDashboardController extends Controller
         $recentPayments = [];
         foreach ($recentPaymentsRaw as $pay) {
             $mode = 'Cash';
-            if ($pay->bank_deposit)      $mode = 'Bank Deposit';
-            elseif ($pay->counter_deposit) $mode = 'Counter';
+            if ($pay->bank_deposit || stripos($pay->voucher_type ?? '', 'bank') !== false)      $mode = 'Bank Deposit';
+            elseif ($pay->counter_deposit || stripos($pay->voucher_type ?? '', 'counter') !== false) $mode = 'Counter';
             elseif (strtoupper($pay->particulars ?? '') === 'FONEPAY') $mode = 'Fonepay';
 
             $recentPayments[] = [
