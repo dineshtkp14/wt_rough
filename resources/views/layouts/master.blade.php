@@ -10,16 +10,17 @@
         BASE_URL = "<?php echo url(''); ?>";
     </script>
 
-@php
-    // Absolute filesystem paths for Dompdf to embed fonts (REGULAR ONLY)
-    $nepR = str_replace('\\','/', public_path('fonts/Hind-Regular.ttf'));                 // Nepali
-    $engR = str_replace('\\','/', public_path('fonts/NotoSans_Condensed-Regular.ttf'));  // English
-  @endphp
+    @php
+        // Absolute filesystem paths for Dompdf to embed fonts (REGULAR ONLY)
+        $nepR = str_replace('\\', '/', public_path('fonts/Hind-Regular.ttf')); // Nepali
+        $engR = str_replace('\\', '/', public_path('fonts/NotoSans_Condensed-Regular.ttf')); // English
+    @endphp
 
-  
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon_white.png') }}" type="image/x-icon">
     <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/modern-sidebar.css') }}" rel="stylesheet">
     @yield('page-css')
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
@@ -32,7 +33,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/number-to-words"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-   
+
 
     {{-- //forhtmltabletoexport --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
@@ -51,621 +52,522 @@
     {{-- //nepalifontfor pdf pages --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100..900&display=swap" rel="stylesheet">
-    
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sidebars/">
-<style>
-    @font-face { font-family:'HindDevanagari';  src:url('file://{{ $nepR }}') format('truetype');  font-weight:normal; font-style:normal; }
-    @font-face { font-family:'NotoSansEnglish'; src:url('file://{{ $engR }}') format('truetype');  font-weight:normal; font-style:normal; }
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100..900&display=swap"
+        rel="stylesheet">
 
-html body{
-    font-family:'NotoSansEnglish','HindDevanagari',sans-serif;
-      font-size:18px; line-height:1.12;
-}
-.nep, .label-nep{ font-family:'HindDevanagari',sans-serif; line-height:1.14; }
-    .label-nep{ padding-left:3px; } /* avoids matra clipping */
-</style>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sidebars/">
+    <style>
+        @font-face {
+            font-family: 'HindDevanagari';
+            src: url('file://{{ $nepR }}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'NotoSansEnglish';
+            src: url('file://{{ $engR }}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html body {
+            font-family: 'NotoSansEnglish', 'HindDevanagari', sans-serif;
+            font-size: 18px;
+            line-height: 1.12;
+        }
+
+        .nep,
+        .label-nep {
+            font-family: 'HindDevanagari', sans-serif;
+            line-height: 1.14;
+        }
+
+        .label-nep {
+            padding-left: 3px;
+        }
+
+        /* avoids matra clipping */
+    </style>
 
 </head>
 
 <body>
-   
+    <!-- Modern Sidebar -->
+    <aside class="side-nav">
+        <h1 class="visually-hidden">Sidebar Navigation</h1>
 
-    <main class="side-nav d-flex flex-nowrap">
-        <h1 class="visually-hidden">Sidebars </h1>
-
-
-        <div class="flex-shrink-0 p-3" style="width: 280px;">
-            <a class="nav-link text-white btn btn-danger p-2 mb-3" href="{{ route('signout') }}"><h4>LOG OUT</h4></a>
-            <h6 class="text-white">Hello!!  {{ session('user_email'); }}</h6>
-            @auth
-    <!-- User is authenticated, show content here -->
-        {{-- <div class="text-white">Welcome, {{ Auth::user()->name }}</div> --}}
-@else
-    <!-- User is not authenticated, redirect to login page -->
-    <script>window.location = "{{ route('login') }}";</script>
-@endauth
-
-            <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none "
-                style="border-bottom:1px solid #e5e7eb7e;">
-                {{-- <img src="{{ asset('assets/images/logo.png') }}" class="logo-img" alt="logo" style="height: ;"> --}}
+        <!-- User Header Section -->
+        <div class="sidebar-header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <div class="user-email">{{ session('user_email') }}</div>
+                    <div class="user-role">
+                        {{ Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com' ? 'Administrator' : 'User' }}
+                    </div>
+                </div>
+            </div>
+            <a href="{{ route('signout') }}" class="btn-logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Log Out</span>
             </a>
-            @if(Auth::check() && Auth::user() && Auth::user()->email == 'dineshtkp14@gmail.com')
-
-        {{-- @if(Auth::user()->email == 'dineshtkp14@gmail.com') --}}
-     
-            <ul class="list-unstyled ps-0">
-
-                <li class="mb-1 border border-success border-5 
-                ">
-                  <a href="{{ route('dashboard.index') }}">  <button class=" btn btn-toggle d-inline-flex align-items-center  border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-gauge"></i> Dashboard
-                    </button>
-                  </a>
-
-                </li>
-
-                <li class="mb-1 border border-success border-5">
-                  <a href="{{ route('modern.dashboard') }}">  <button class="btn btn-toggle d-inline-flex align-items-center border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#modern-dash-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-chart-line"></i> Modern Dashboard
-                    </button>
-                  </a>
-                </li>
-               
-
-                <li class="mb-1 border border-success border-5 ">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapse" aria-expanded="false">
-                        <i class="fas fa-file-invoice"></i> INVOICE 
-                    </button>
-                    <div class="collapse" id="Invoice-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('itemsales.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>ADD NEW 
-                                        INVOICE</a></li>
-
-                                        <li><a href="{{ route('customer.billno') }}"
-                                            class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>SEARCH INVOICE
-                                        </a></li>
-                            <li><a href="{{ route('itemsales.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW
-                                   SALES ITEMS TABLE</a></li>
-                                    
-
-                                    <li><a href="{{ route('invoice.index') }}"
-                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW INVOICES TABLE
-                                        </a></li>
-                                    
-                                        <li><a href="{{ route('deletedcustomer.deletebillno') }}"
-                                            class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                                class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>SEARCH DELETED INVOICE</a></li>
-                                               
-                                                <li><a href="{{ route('deleted.invoice') }}"
-                                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW DELETED INVOICE TABLE</a></li>
-        
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#cnorders-collapse" aria-expanded="false">
-                        <i class="fas fa-file-alt"></i>CREDIT NOTES / SALES RETURN
-                    </button>
-                    <div class="collapse" id="cnorders-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('creditnotes.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
-                                    ADD NEW CREDIT NOTES</a></li>
-
-                                    <li><a href="{{ route('creditnotescustomer.billno') }}"
-                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                      SEARCH CREDIT NOTES INVOICE</a></li>
-
-                            <li><a href="{{ route('creditnotes.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                    VIEW CREDIT NOTES SALES DETAIL TABLE</a></li>
-
-                              
-                                    
-                                       <li><a href="{{ route('creditnotescustomer.billno') }}"
-                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                    VIEW CREDIT NOTES INVOICES TABLE</a></li>
-
-                                      <li><a href="{{ route('deletedcncustomer.deletebillno') }}"
-                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>SEARCH CN DELETED BILL</a></li>
-
-                                            <li><a href="{{ route('deletedcn.invoice') }}"
-                                                class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                                    class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW DELETED CN INVOICE</a></li>
-    
-
-
-                        </ul>
-                    </div>
-                </li>
-
-
-
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#trackorders-collapse" aria-expanded="false">
-                        <i class="fas fa-university"></i> Track
-                    </button>
-                    <div class="collapse" id="trackorders-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('trackinvoice.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                   Track Invoice</a></li>
-                            <li><a href="{{ route('trackcreditnotes.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                   Track Credit Notes</a></li>
-
-                                   <li><a href="{{ route('trackitemstable.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                   Track Items</a></li>
-
-                                   <li><a href="{{ route('trackcustomerledger.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                   Track CustomerLedger Payment</a></li>
-
-                                   <li><a href="{{ route('Trackcompanyledger.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                   Track Company Ledger</a></li>
-
-                                 
-
-                        </ul>
-                    </div>
-                </li>
-
-
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
-                        <i class="fas fa-university"></i> Banks
-                    </button>
-                    <div class="collapse" id="orders-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('banks.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
-                                    DEPOSIT AMOUNT</a></li>
-                            <li><a href="{{ route('banks.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW
-                                    DEPOSIT TABLE</a></li>
-
-                        </ul>
-                    </div>
-                </li>
-
-               
-
-
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#items-collapse" aria-expanded="false">
-                        <i class="fas fa-box"></i> ITEM
-                    </button>
-                    <div class="collapse" id="items-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('items.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>ADD
-                                    ITEM</a></li>
-                            <li><a href="{{ route('items.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW
-                                    ITEMS TABLE</a></li>
-
-                        </ul>
-                    </div>
-                </li>
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#daybook-collapse" aria-expanded="false">
-                        <i class="fas fa-calendar-day"></i> DAYBOOK
-                    </button>
-                    <div class="collapse" id="daybook-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('daybooks.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>ADD
-                                    AMOUNT</a></li>
-                            <li><a href="{{ route('daybooks.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW
-                                    DAYBOOK TABLE</a></li>
-
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#company-collapse" aria-expanded="false">
-                        <i class="fas fa-building"></i> SUPPLIER/COMPANY
-                    </button>
-                    <div class="collapse" id="company-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('companys.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>ADD NEW COMPANY
-                                   </a></li>
-                            <li><a href="{{ route('companys.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW COMPANY DETAILS TABLE
-                                   </a></li>
-
-                                   
-
-                        </ul>
-                    </div>
-                </li>
-
-
-
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#PUROR-collapse" aria-expanded="false">
-                        <i class="fas fa-shopping-cart"></i> PURCHASE ORDER
-                    </button>
-                    <div class="collapse" id="PUROR-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('purorder.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>ADD NEW PURCHASE ORDER
-                                   </a></li>
-                            <li><a href="{{ route('purorder.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW PURCHASE ORDER TABLE
-                                   </a></li>
-
-                                   
-
-                        </ul>
-                    </div>
-                </li>
-
-
-
-
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#companyledger" aria-expanded="false">
-                        <i class="fas fa-book"></i> COMPANY LEDGER
-                    </button>
-                    <div class="collapse" id="companyledger">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{route('companybillentry.create') }}"
-                                class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                    class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
-                             BILL ENTRY </a></li>
-
-                             <li><a href="{{route('companybillentry.index') }}"
-                                class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                    class="fa-solid fa-money-check-dollar px-2  d-flex justify-content-center align-items-center"></i>
-                               VIEW BILL ENTRY TABLE</a></li>
-
-                              <li><a href="{{route('companyledgerdetails.returnchoosendatehistroy') }}"
-                                class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                    class="fa-solid fa-money-check-dollar px-2  d-flex justify-content-center align-items-center"></i>
-                               VIEW COMPANY LEDGER</a></li>
-
-                               <li><a href="{{route('companyLedgerspay.create') }}"
-                                class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                    class="fa-solid fa-money-check-dollar px-2  d-flex justify-content-center align-items-center"></i>
-                               COMPANY PAYMENENT</a></li>
-
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#customer-collapse" aria-expanded="false">
-                        <i class="fas fa-users"></i> CUSTOMER
-                    </button>
-                    <div class="collapse" id="customer-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('customerinfos.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"> <i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>ADD NEW CUSTOMER
-                                   </a></li>
-                            <li><a href="{{ route('customerinfos.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-solid fa-eye px-2 d-flex justify-content-center align-items-center"></i>
-                                    VIEW CUSTOMER TABLE</a></li>
-                            <li><a href="{{ route('clhs.returnchoosendatehistroy') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
-                                    CUSTOMER LEDGER</a></li>
-
-
-                                    <li><a href="{{ route('cashreceipt.search') }}"
-                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                       SEARCH CUSTOMER PAYMENT CASH RECEIPT </a></li>
-
-                                    <li><a href="{{ route('allsalesdetails.showallcuscreditdetails') }}"
-                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>View
-                                       ALL CUSTOMER LEDGER DUE LIST</a></li>
-
-                            <li><a href="{{ route('cpayments.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-solid fa-money-check-dollar  px-2  d-flex justify-content-center align-items-center"></i>CUSTOMER LEDGER PAYMENT
-                                </a></li>
-                                    <li><a href="{{ route('openingbalances.create') }}"
-                                        class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                            class="fa-solid fa-money-check-dollar  px-2  d-flex justify-content-center align-items-center"></i>OPENING BALANCE
-                                         </a></li>
-
-
-                                         <li><a href="{{ route('returnchoosendatehistroycashandcredit') }}"
-                                            class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                                class="fa-solid fa-money-check-dollar  px-2  d-flex justify-content-center align-items-center"></i>CASH/CREDIT LEDGER
-                                             </a></li>
-
-
-                                         
-
-
-                        </ul>
-                    </div>
-                </li>
-
-               
-
-                <li class="mb-1 border border-success border-5">
-                  <a href="{{ route('employees.index') }}">  <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#emp" aria-expanded="false">
-                        <i class="fas fa-list-alt"></i> VIEW EMPLOYEE
-                    </button>
-                  </a>
-                </li>
-
-                 <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#price-collapse" aria-expanded="false">
-                        <i class="fas fa-list-alt"></i> PRICE LIST
-                    </button>
-                    <div class="collapse" id="price-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('pricelists.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
-                                    ADD ITEMS PRICE </a></li>
-                            <li><a href="{{ route('pricelists.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>VIEW ITEM PRICE LIST TABLE
-                                    </a></li>
-
-                        </ul>
-                    </div>
-                </li>
-                
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#stocks" aria-expanded="false">
-                        <i class="fas fa-cubes"></i> STOCK
-                    </button>
-                    <div class="collapse" id="stocks">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('stocks.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
-                                   VIEW STOCK </a></li>
-
-                                   <li><a href="{{ route('adminstocks.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                   VIEW ADMIN STOCK </a></li>
-                            
-
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#expenses" aria-expanded="false">
-                        <i class="fas fa-cubes"></i> Expenses
-                    </button>
-                    <div class="collapse" id="expenses">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('expenses.create') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-plus px-2  d-flex justify-content-center align-items-center"></i>
-                                   ADD EXPENSES </a></li>
-
-
-
-                                   <li><a href="{{ route('expenses.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i
-                                        class="fa-sharp fa-solid fa-eye px-2  d-flex justify-content-center align-items-center"></i>
-                                   VIEW EXPENSES </a></li>
-
-
-                                 
-                            
-
-                        </ul>
-                    </div>
-                </li>
-
-
-                <li style="border-bottom:1px solid #e5e7eb7e;"></li>
-                <li class="mb-1 border border-success border-5">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-user"></i> EXTRA
-                    </button>
-                    <div class="collapse" id="account-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="{{ route('profit') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded "><i class="fas fa-chart-line"></i> CALCULATE PROFIT</a></li>
-                            <li><a href="{{ route('totalsales.index') }}"
-                                    class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-chart-bar"></i>  CALCULATE TOTAL SALES</a></li>
-                                   
-                                    <li><a href="{{ route('allsalesdetails.showdetails') }}"
-                                        class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-money-bill-wave"></i>  SHOW TOTAL SALES</a></li>
-                                            <li><a href="{{ route('showonlysalesperday.pp') }}"
-                                            class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-calendar"></i> SHOW PER DAY</a></li>
-                                    
-                                            <li><a href="{{ route('CheckBankDeposit.index') }}"
-                                                class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-calendar"></i> Check Bank Deposit</a></li>
-                                        
-
-                                                <li><a href="{{ route('CheckCounterDeposit.index') }}"
-                                                    class="link-dark d-inline-flex text-decoration-none rounded"><i class="fas fa-calendar"></i> Check Counter Deposit</a></li>
-                                            
-                        </ul>
-                    </div>
-                </li>
-            </ul>
-        
-        
-        {{-- foruseronlynav --}}
-
-        @else
-
-        <ul class="list-unstyled ps-0">
-            <li class="mb-1 border border-success border-5 bg-dark">
-                <a href="{{ route('userdash') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </button>
-                </a>
-            </li>
-
-            <li class="mb-1 border border-success border-5 bg-dark">
-                <a href="{{ route('modern.dashboard') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#modern-dash-collapse" aria-expanded="false">
-                        <i class="fa-solid fa-chart-line"></i> Modern Dashboard
-                    </button>
-                </a>
-            </li>
-
-            <li class="mb-1 border border-warning border-5 bg-dark ">
-                <a href="{{ route('itemsales.create') }}" style="text-decoration:none;" class="text-warning">
-                    <button class="text-warning btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-file-invoice"></i><b> Invoice</b>
-                    </button>
-                </a>
-            </li>
-        
-           
-        
-            <!-- Add icons to the remaining menu items -->
-            <li class="mb-1 border border-success border-5">
-                <a href="{{ route('returnchoosendatehistroycashandcredit') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-book"></i>  Customer Ledger
-                    </button>
-                </a>
-            </li>
-        
-
-            <li class="mb-1 border border-success border-5">
-                <a href="{{ route('oldpricecheck') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-rupee-sign"></i>  Check Old Price
-                    </button>
-                </a>
-            </li>
-
-            <li class="mb-1 border border-success border-5">
-                <a href="{{ route('stocks.index') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-cube"></i> Check Stock
-                    </button>
-                </a>
-            </li>
-        
-            <li class="mb-1 border border-success border-5">
-                <a href="{{ route('companyledgerdetails.returnchoosendatehistroy') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-bookmark"></i>  Company Ledger
-                    </button>
-                </a>
-            </li>
-        
-            <li class="mb-1 border border-success border-5">
-                <a href="{{ route('showonlysalesperdayinone_table.pp') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-calendar-day"></i> Show Per Day
-                    </button>
-                </a>
-            </li>
-
-            <li class="mb-1 border border-success border-5">
-                <a href="{{ route('creditnotes.create') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-file-invoice"></i> Sales Return / Credit Notes
-                    </button>
-                </a>
-            </li>
-        
-            {{-- <li class="mb-1 border border-success border-5">
-                <a href="{{ route('banks.create') }}" style="text-decoration:none;" class="text-white">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Invoice-collapsee" aria-expanded="false">
-                        <i class="fas fa-piggy-bank"></i> Bank Deposit
-                    </button>
-                </a>
-            </li> --}}
-
-            
-        </ul>
-        
-
-        @endif
-
-        
-        
-        
-        
-        
-        
-        
-        
         </div>
-    </main>
 
+        @auth
+            <!-- Admin Navigation -->
+            @if (Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com')
+                <ul class="nav-menu">
+                    <!-- Dashboard -->
+                    <li class="nav-item dashboard">
+                        <a href="{{ route('dashboard.index') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-gauge"></i>
+                                <span>Dashboard</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
 
+                    <!-- Modern Dashboard -->
+                    <li class="nav-item dashboard">
+                        <a href="{{ route('modern.dashboard') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#modern-dash-collapse"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <span>Modern Dashboard</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
 
+                    <!-- Invoice -->
+                    <li class="nav-item invoice">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#Invoice-collapse"
+                            aria-expanded="false">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>Invoice</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="Invoice-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('itemsales.create') }}"><i class="fa-solid fa-plus"></i>Add New
+                                        Invoice</a></li>
+                                <li><a href="{{ route('customer.billno') }}"><i
+                                            class="fa-solid fa-magnifying-glass"></i>Search Invoice</a></li>
+                                <li><a href="{{ route('itemsales.index') }}"><i class="fa-solid fa-eye"></i>View Sales
+                                        Items</a></li>
+                                <li><a href="{{ route('invoice.index') }}"><i class="fa-solid fa-list"></i>View
+                                        Invoices</a></li>
+                                <li><a href="{{ route('deletedcustomer.deletebillno') }}"><i
+                                            class="fa-solid fa-trash-can"></i>Search Deleted Invoice</a></li>
+                                <li><a href="{{ route('deleted.invoice') }}"><i class="fa-solid fa-eye"></i>View Deleted
+                                        Invoices</a></li>
+                            </ul>
+                        </div>
+                    </li>
 
+                    <!-- Credit Notes -->
+                    <li class="nav-item credit">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#cnorders-collapse"
+                            aria-expanded="false">
+                            <i class="fas fa-rotate-left"></i>
+                            <span>Credit Notes / Sales Return</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="cnorders-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('creditnotes.create') }}"><i class="fa-solid fa-plus"></i>Add New
+                                        Credit Note</a></li>
+                                <li><a href="{{ route('creditnotescustomer.billno') }}"><i
+                                            class="fa-solid fa-magnifying-glass"></i>Search Credit Note</a></li>
+                                <li><a href="{{ route('creditnotes.index') }}"><i class="fa-solid fa-eye"></i>View Credit
+                                        Note Sales</a></li>
+                                <li><a href="{{ route('deletedcncustomer.deletebillno') }}"><i
+                                            class="fa-solid fa-trash-can"></i>Search Deleted CN</a></li>
+                                <li><a href="{{ route('deletedcn.invoice') }}"><i class="fa-solid fa-eye"></i>View
+                                        Deleted CN</a></li>
+                            </ul>
+                        </div>
+                    </li>
 
-    
+                    <!-- Track -->
+                    <li class="nav-item track">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#trackorders-collapse"
+                            aria-expanded="false">
+                            <i class="fas fa-route"></i>
+                            <span>Track</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="trackorders-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('trackinvoice.index') }}"><i
+                                            class="fa-solid fa-file-invoice"></i>Track Invoice</a></li>
+                                <li><a href="{{ route('trackcreditnotes.index') }}"><i
+                                            class="fa-solid fa-rotate-left"></i>Track Credit Notes</a></li>
+                                <li><a href="{{ route('trackitemstable.index') }}"><i class="fa-solid fa-box"></i>Track
+                                        Items</a></li>
+                                <li><a href="{{ route('trackcustomerledger.index') }}"><i
+                                            class="fa-solid fa-users"></i>Track Customer Ledger</a></li>
+                                <li><a href="{{ route('Trackcompanyledger.index') }}"><i
+                                            class="fa-solid fa-building"></i>Track Company Ledger</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Banks -->
+                    <li class="nav-item bank">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#orders-collapse"
+                            aria-expanded="false">
+                            <i class="fas fa-building-columns"></i>
+                            <span>Banks</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="orders-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('banks.create') }}"><i class="fa-solid fa-plus"></i>Deposit
+                                        Amount</a></li>
+                                <li><a href="{{ route('banks.index') }}"><i class="fa-solid fa-eye"></i>View Deposits</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Items -->
+                    <li class="nav-item item">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#items-collapse"
+                            aria-expanded="false">
+                            <i class="fas fa-box"></i>
+                            <span>Items</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="items-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('items.create') }}"><i class="fa-solid fa-plus"></i>Add Item</a>
+                                </li>
+                                <li><a href="{{ route('items.index') }}"><i class="fa-solid fa-eye"></i>View Items</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Daybook -->
+                    <li class="nav-item">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#daybook-collapse"
+                            aria-expanded="false">
+                            <i class="fas fa-book-open"></i>
+                            <span>Daybook</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="daybook-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('daybooks.create') }}"><i class="fa-solid fa-plus"></i>Add
+                                        Amount</a></li>
+                                <li><a href="{{ route('daybooks.index') }}"><i class="fa-solid fa-eye"></i>View
+                                        Daybook</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Supplier/Company -->
+                    <li class="nav-item company">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#company-collapse"
+                            aria-expanded="false">
+                            <i class="fas fa-building"></i>
+                            <span>Supplier / Company</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="company-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('companys.create') }}"><i class="fa-solid fa-plus"></i>Add
+                                        Company</a></li>
+                                <li><a href="{{ route('companys.index') }}"><i class="fa-solid fa-eye"></i>View
+                                        Companies</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Purchase Order -->
+                    <li class="nav-item">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#PUROR-collapse"
+                            aria-expanded="false">
+                            <i class="fas fa-cart-shopping"></i>
+                            <span>Purchase Order</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="PUROR-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('purorder.create') }}"><i class="fa-solid fa-plus"></i>Add Purchase
+                                        Order</a></li>
+                                <li><a href="{{ route('purorder.index') }}"><i class="fa-solid fa-eye"></i>View
+                                        Orders</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Company Ledger -->
+                    <li class="nav-item company">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#companyledger"
+                            aria-expanded="false">
+                            <i class="fas fa-book"></i>
+                            <span>Company Ledger</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="companyledger">
+                            <ul class="submenu">
+                                <li><a href="{{ route('companybillentry.create') }}"><i class="fa-solid fa-plus"></i>Bill
+                                        Entry</a></li>
+                                <li><a href="{{ route('companybillentry.index') }}"><i class="fa-solid fa-eye"></i>View
+                                        Bill Entries</a></li>
+                                <li><a href="{{ route('companyledgerdetails.returnchoosendatehistroy') }}"><i
+                                            class="fa-solid fa-eye"></i>View Company Ledger</a></li>
+                                <li><a href="{{ route('companyLedgerspay.create') }}"><i
+                                            class="fa-solid fa-money-bill-wave"></i>Company Payment</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Customer -->
+                    <li class="nav-item customer">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#customer-collapse"
+                            aria-expanded="false">
+                            <i class="fas fa-users"></i>
+                            <span>Customer</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="customer-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('customerinfos.create') }}"><i class="fa-solid fa-plus"></i>Add
+                                        Customer</a></li>
+                                <li><a href="{{ route('customerinfos.index') }}"><i class="fa-solid fa-eye"></i>View
+                                        Customers</a></li>
+                                <li><a href="{{ route('clhs.returnchoosendatehistroy') }}"><i
+                                            class="fa-solid fa-book"></i>Customer Ledger</a></li>
+                                <li><a href="{{ route('cashreceipt.search') }}"><i class="fa-solid fa-receipt"></i>Cash
+                                        Receipt</a></li>
+                                <li><a href="{{ route('allsalesdetails.showallcuscreditdetails') }}"><i
+                                            class="fa-solid fa-list-check"></i>Due List</a></li>
+                                <li><a href="{{ route('cpayments.create') }}"><i
+                                            class="fa-solid fa-money-bill-wave"></i>Payment Entry</a></li>
+                                <li><a href="{{ route('openingbalances.create') }}"><i
+                                            class="fa-solid fa-scale-balanced"></i>Opening Balance</a></li>
+                                <li><a href="{{ route('returnchoosendatehistroycashandcredit') }}"><i
+                                            class="fa-solid fa-file-invoice-dollar"></i>Cash/Credit Ledger</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Employee -->
+                    <li class="nav-item">
+                        <a href="{{ route('employees.index') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#emp"
+                                aria-expanded="false">
+                                <i class="fas fa-user-tie"></i>
+                                <span>View Employee</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <!-- Price List -->
+                    <li class="nav-item">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#price-collapse"
+                            aria-expanded="false">
+                            <i class="fas fa-tags"></i>
+                            <span>Price List</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="price-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('pricelists.create') }}"><i class="fa-solid fa-plus"></i>Add
+                                        Price</a></li>
+                                <li><a href="{{ route('pricelists.index') }}"><i class="fa-solid fa-eye"></i>View
+                                        Prices</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Stock -->
+                    <li class="nav-item stock">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#stocks"
+                            aria-expanded="false">
+                            <i class="fas fa-cubes"></i>
+                            <span>Stock</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="stocks">
+                            <ul class="submenu">
+                                <li><a href="{{ route('stocks.index') }}"><i class="fa-solid fa-eye"></i>View Stock</a>
+                                </li>
+                                <li><a href="{{ route('adminstocks.index') }}"><i class="fa-solid fa-eye"></i>View Admin
+                                        Stock</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Expenses -->
+                    <li class="nav-item expense">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#expenses"
+                            aria-expanded="false">
+                            <i class="fas fa-wallet"></i>
+                            <span>Expenses</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="expenses">
+                            <ul class="submenu">
+                                <li><a href="{{ route('expenses.create') }}"><i class="fa-solid fa-plus"></i>Add
+                                        Expense</a></li>
+                                <li><a href="{{ route('expenses.index') }}"><i class="fa-solid fa-eye"></i>View
+                                        Expenses</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Divider -->
+                    <li class="nav-divider"></li>
+
+                    <!-- Extra -->
+                    <li class="nav-item">
+                        <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#account-collapse"
+                            aria-expanded="false">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                            <span>Extra</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="account-collapse">
+                            <ul class="submenu">
+                                <li><a href="{{ route('profit') }}"><i class="fa-solid fa-chart-line"></i>Calculate
+                                        Profit</a></li>
+                                <li><a href="{{ route('totalsales.index') }}"><i class="fa-solid fa-chart-bar"></i>Total
+                                        Sales</a></li>
+                                <li><a href="{{ route('allsalesdetails.showdetails') }}"><i
+                                            class="fa-solid fa-money-bill-wave"></i>Show Sales</a></li>
+                                <li><a href="{{ route('showonlysalesperday.pp') }}"><i
+                                            class="fa-solid fa-calendar-day"></i>Show Per Day</a></li>
+                                <li><a href="{{ route('CheckBankDeposit.index') }}"><i
+                                            class="fa-solid fa-building-columns"></i>Check Bank Deposit</a></li>
+                                <li><a href="{{ route('CheckCounterDeposit.index') }}"><i
+                                            class="fa-solid fa-cash-register"></i>Check Counter Deposit</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- User Navigation (Non-Admin) -->
+            @else
+                <ul class="nav-menu">
+                    <li class="nav-item dashboard">
+                        <a href="{{ route('userdash') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-dashboard"
+                                aria-expanded="false">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>Dashboard</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item dashboard">
+                        <a href="{{ route('modern.dashboard') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-modern-dash"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <span>Modern Dashboard</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item invoice">
+                        <a href="{{ route('itemsales.create') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-invoice"
+                                aria-expanded="false">
+                                <i class="fas fa-file-invoice"></i>
+                                <span>Invoice</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item customer">
+                        <a href="{{ route('returnchoosendatehistroycashandcredit') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-ledger"
+                                aria-expanded="false">
+                                <i class="fas fa-book"></i>
+                                <span>Customer Ledger</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('oldpricecheck') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-price"
+                                aria-expanded="false">
+                                <i class="fas fa-tags"></i>
+                                <span>Check Old Price</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item stock">
+                        <a href="{{ route('stocks.index') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-stock"
+                                aria-expanded="false">
+                                <i class="fas fa-cubes"></i>
+                                <span>Check Stock</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item company">
+                        <a href="{{ route('companyledgerdetails.returnchoosendatehistroy') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-company"
+                                aria-expanded="false">
+                                <i class="fas fa-building"></i>
+                                <span>Company Ledger</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('showonlysalesperdayinone_table.pp') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-perday"
+                                aria-expanded="false">
+                                <i class="fas fa-calendar-day"></i>
+                                <span>Show Per Day</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item credit">
+                        <a href="{{ route('creditnotes.create') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-cn"
+                                aria-expanded="false">
+                                <i class="fas fa-rotate-left"></i>
+                                <span>Sales Return / Credit Notes</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+                </ul>
+            @endif
+        @else
+            <script>
+                window.location = "{{ route('login') }}";
+            </script>
+        @endauth
+    </aside>
+
     @yield('content')
+
     <script>
         $(document).ready(function() {
             $("#filterInput").on("keyup", function() {
@@ -679,28 +581,14 @@ html body{
             $(".alert").fadeTo(2000, 500).slideUp(500, function() {
                 $(".alert").slideUp(500);
             });
-
         });
-
-        // function delfunction(id) {
-        //     if (confirm("Are You Sure You want to delete")) {
-        //         document.getElementById('eea' + id).submit();
-        //     }
-        // }
 
         function delfunctionusers(id) {
             if (confirm("Are You Sure You want to delete ?????")) {
                 document.getElementById('eea' + id).submit();
             }
         }
-
-        // select input ok
-        // $('#selectCustomerInput').select2();
-
-
-        //
     </script>
-
 
     @php
         $items_data = null;
@@ -711,25 +599,11 @@ html body{
 
     <script>
         var ITEMS_DATA = @json($items_data);
-
-
-        //forsidenavbarcollpse
-        $(document).ready(function() {
-            // Toggle side nav bar when button is clicked
-            $('#toggleSidebarBtn').click(function() {
-                $('.side-nav').toggleClass('collapsed');
-            });
-        });
     </script>
 
     <script src="{{ asset('assets/js/script.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/game.js') }}"></script> --}}
 
-
-
-    {{-- //for date converter --}}
-    
-    
 </body>
 
 </html>
