@@ -72,6 +72,7 @@ use App\Http\Controllers\TrackcustomerinfoController;
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\trackCreditnotesController;
+use App\Http\Controllers\ModernDashboardController;
 
 
 
@@ -435,4 +436,4 @@ Route::get('/onetable_showsalesperda', [showperday_controller::class, 'showonlys
  Route::post('postsignup', [CustomAuthController::class, 'signupsave'])->name('postsignup'); 
  Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout');
 
-
+ Route::get('/modern-dashboard', [ModernDashboardController::class, 'index'])->name('modern.dashboard');

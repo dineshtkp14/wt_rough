@@ -20,6 +20,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon_white.png') }}" type="image/x-icon">
     <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
+    @yield('page-css')
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
         integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
@@ -102,7 +103,15 @@ html body{
                         <i class="fa-solid fa-gauge"></i> Dashboard
                     </button>
                   </a>
-                    
+
+                </li>
+
+                <li class="mb-1 border border-success border-5">
+                  <a href="{{ route('modern.dashboard') }}">  <button class="btn btn-toggle d-inline-flex align-items-center border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#modern-dash-collapse" aria-expanded="false">
+                        <i class="fa-solid fa-chart-line"></i> Modern Dashboard
+                    </button>
+                  </a>
                 </li>
                
 
@@ -548,7 +557,16 @@ html body{
                     </button>
                 </a>
             </li>
-        
+
+            <li class="mb-1 border border-success border-5 bg-dark">
+                <a href="{{ route('modern.dashboard') }}" style="text-decoration:none;" class="text-white">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#modern-dash-collapse" aria-expanded="false">
+                        <i class="fa-solid fa-chart-line"></i> Modern Dashboard
+                    </button>
+                </a>
+            </li>
+
             <li class="mb-1 border border-warning border-5 bg-dark ">
                 <a href="{{ route('itemsales.create') }}" style="text-decoration:none;" class="text-warning">
                     <button class="text-warning btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
