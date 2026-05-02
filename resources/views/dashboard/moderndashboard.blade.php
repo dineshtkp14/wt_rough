@@ -28,7 +28,7 @@
 .table-modern th{text-align:left;padding:.6rem .75rem;color:#6b7280;font-weight:600;font-size:.75rem;text-transform:uppercase;border-bottom:1px solid #f3f4f6}
 .table-modern td{padding:.6rem .75rem;border-bottom:1px solid #f9fafb;color:#374151}
 .table-modern tr:hover td{background:#f9fafb}
-.badge{font-size:.75rem;padding:.25rem .5rem;border-radius:.375rem;font-weight:500}
+.badge{font-size:.75rem;padding:.25rem .5rem;border-radius:.375rem;font-weight:500;white-space:normal;word-break:break-word;display:inline-block;line-height:1.2}
 .badge-success{background:#d1fae5;color:#065f46}.badge-warning{background:#fef3c7;color:#92400e}
 .badge-danger{background:#fee2e2;color:#991b1b}.badge-info{background:#dbeafe;color:#1e40af}
 .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:.25rem}
