@@ -282,6 +282,48 @@
             background: var(--warning);
         }
 
+        /* Payment Mode Badges - Stronger Contrast */
+        .badge-mode {
+            font-size: 0.75rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            text-transform: capitalize;
+        }
+
+        .badge-cash {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .badge-bank {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .badge-fonepay {
+            background: #e0e7ff;
+            color: #4338ca;
+            border: 1px solid #c7d2fe;
+        }
+
+        .badge-counter {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .badge-default {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
         /* Links */
         .view-all {
             font-size: 0.8rem;
@@ -329,7 +371,7 @@
     <div class="dash-hd">
         <h2>Dashboard Overview</h2>
         <span class="dt-badge">
-            <i class="far fa-calendar"></i> {{ now()->format('l, F d, Y') }}
+            <i class="far fa-calendar"></i> {{ \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en') }}
         </span>
     </div>
 
@@ -504,7 +546,19 @@
                                     <small style="color:#9ca3af">{{ $pay['date'] }}</small>
                                 </td>
                                 <td>{{ $pay['customer'] }}</td>
-                                <td><span class="badge badge-info">{{ $pay['mode'] }}</span></td>
+                                <td>
+                                    @php
+                                        $modeKey = strtolower($pay['mode']);
+                                        $modeClass = match(true) {
+                                            str_contains($modeKey, 'cash') => 'badge-cash',
+                                            str_contains($modeKey, 'bank') => 'badge-bank',
+                                            str_contains($modeKey, 'fonepay') => 'badge-fonepay',
+                                            str_contains($modeKey, 'counter') => 'badge-counter',
+                                            default => 'badge-default',
+                                        };
+                                    @endphp
+                                    <span class="badge-mode {{ $modeClass }}">{{ $pay['mode'] }}</span>
+                                </td>
                                 <td>Rs {{ number_format($pay['amount'], 2) }}</td>
                             </tr>
                         @endforeach

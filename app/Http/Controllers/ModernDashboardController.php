@@ -13,6 +13,7 @@ use App\Models\Bank;
 use App\Models\Expense;
 use App\Models\customerledgerdetails;
 use App\Models\salesitem;
+use App\Support\NepaliDate;
 
 class ModernDashboardController extends Controller
 {
@@ -123,7 +124,7 @@ class ModernDashboardController extends Controller
                 'customer' => $inv->customer,
                 'amount'   => (float) $inv->amount,
                 'type'     => ucfirst($inv->type),
-                'date'     => $inv->date,
+                'date'     => NepaliDate::adToBsString($inv->date, 'en'),
                 'status'   => $isPaid ? 'paid' : 'pending',
             ];
         }
@@ -150,7 +151,7 @@ class ModernDashboardController extends Controller
                 'customer' => $pay->customer,
                 'amount'   => (float) $pay->amount,
                 'mode'     => $mode,
-                'date'     => $pay->date,
+                'date'     => NepaliDate::adToBsString($pay->date, 'en'),
                 'receipt'  => 'RCP-' . $pay->id,
             ];
         }
