@@ -21,6 +21,7 @@
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon_white.png') }}" type="image/x-icon">
     <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/modern-sidebar.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/modern-stock.css') }}" rel="stylesheet">
     @yield('page-css')
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
