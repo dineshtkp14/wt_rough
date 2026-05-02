@@ -118,7 +118,7 @@
                             <tr>
                                 <td><strong>#{{ $sn++ }}</strong></td>
                                 <td>{{ $i->id }}</td>
-                                <td><span class="stock-item-name wrap"
+                                <td><span class="stock-item-name"
                                         title="{{ $i->itemsname }}">{{ $i->itemsname }}</span></td>
                                 <td><span class="stock-quantity">{{ $i->quantity }}</span></td>
                                 <td>{{ $i->unit }}</td>
@@ -126,8 +126,7 @@
                                 <td><strong>{{ $i->firm_name }}</strong></td>
                                 <td><strong style="color: var(--stock-primary);">Rs. {{ $i->mrp }}</strong></td>
                                 <td>
-                                    <button type="button" class="stock-btn stock-btn-secondary"
-                                        style="padding: 0.4rem 0.75rem; font-size: 0.75rem;" data-bs-toggle="modal"
+                                    <button type="button" class="stock-btn stock-btn-secondary" data-bs-toggle="modal"
                                         data-bs-target="#exampleModal{{ $i->id }}">
                                         <i class="fas fa-info-circle"></i> Extra
                                     </button>
@@ -174,12 +173,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                </td>
 
-
+                                <td><strong>{{ $i->showwarning }}</strong></td>
 
                                 <td>
-                                    <button type="button" class="stock-btn stock-btn-primary"
-                                        style="padding: 0.4rem 0.75rem; font-size: 0.75rem;" data-bs-toggle="modal"
+                                    <button type="button" class="stock-btn stock-btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#eexampleModal{{ $i->id }}">
                                         <i class="fas fa-edit"></i> Update Price
                                     </button>
@@ -257,11 +256,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </td>
-
-
-                                <td><strong>{{ $i->showwarning }}</strong></td>
-                                <td>
                                     @if ($i->quantity <= $i->showwarning && $i->quantity > 0)
                                         <span class="stock-badge stock-badge-warning">
                                             <i class="fas fa-exclamation-triangle"></i> Warning
