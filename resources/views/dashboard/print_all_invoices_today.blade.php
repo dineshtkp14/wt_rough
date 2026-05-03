@@ -148,7 +148,7 @@
         }
 
         .label-highlight {
-            background: black;
+            background: rgb(216, 18, 141) !important;
             padding: 3px 8px;
             color: #f4f2ee;
             border-radius: 4px;
