@@ -520,7 +520,7 @@
                         @foreach ($recentInvoices as $inv)
                             <tr>
                                 <td>
-                                    <a href="{{ route('customer.billno', ['invoiceid' => $inv['invoice_id']]) }}" class="invoice-link">
+                                    <a href="{{ route('invoicebillno.convert', ['invoiceid' => $inv['invoice_id']]) }}" class="invoice-link" target="_blank">
                                         <strong>{{ $inv['id'] }}</strong>
                                     </a><br>
                                     <small style="color:#9ca3af">{{ $inv['date'] }}</small>
