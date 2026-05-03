@@ -12,7 +12,7 @@
         }
 
         @page {
-            size: A4 portrait;
+            size: A5 portrait;
             margin: 0;
         }
 
