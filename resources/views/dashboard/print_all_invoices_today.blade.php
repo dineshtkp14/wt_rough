@@ -12,16 +12,22 @@
         }
 
         @page {
-            margin: 25mm;
+            size: A5 portrait;
+            margin: 10mm;
         }
 
         body {
             font-family: 'Noto Sans', Arial, sans-serif;
-            font-size: 18px;
+            font-size: 14px;
             color: #1f2937;
-            line-height: 1.8;
+            line-height: 1.6;
             margin: 0;
             padding: 0;
+        }
+
+        .page {
+            padding: 30px;
+            background: #fff;
         }
 
         .header {
@@ -174,14 +180,10 @@
         .page-break {
             page-break-after: always;
         }
-
-        .container {
-            padding: 20mm;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="page">
     <div class="header">
         <h1>OM HARI TRADELINK</h1>
         <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
