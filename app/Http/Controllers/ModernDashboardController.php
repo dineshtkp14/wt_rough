@@ -189,4 +189,58 @@ class ModernDashboardController extends Controller
             'lowStockAlerts'
         ));
     }
+
+    public function getInvoiceData(Request $req)
+    {
+        if (!Auth::check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $invoiceId = $req->query('invoiceid');
+
+        $invoice = invoice::with('customer')->find($invoiceId);
+        if (!$invoice) {
+            return response()->json(['error' => 'Invoice not found'], 404);
+        }
+
+        $items = salesitem::where('invoiceid', $invoiceId)
+            ->with('item')
+            ->get()
+            ->map(function($si) {
+                return [
+                    'item_id' => $si->itemid,
+                    'item_name' => $si->item ? $si->item->itemsname : $si->unstockedname,
+                    'mrp' => $si->mrp,
+                    'quantity' => $si->quantity,
+                    'unit' => $si->unit,
+                    'price' => $si->price,
+                    'subtotal' => $si->subtotal,
+                ];
+            });
+
+        $isPaid = ($invoice->inv_type === 'cash') || customerledgerdetails::where('invoiceid', $invoiceId)->where('credit', '>', 0)->exists();
+
+        return response()->json([
+            'invoice_id' => $invoice->id,
+            'invoice_no' => 'INV-' . $invoice->id,
+            'type' => $invoice->inv_type,
+            'date' => $invoice->inv_date,
+            'nepali_date' => NepaliDate::adToBsString($invoice->inv_date, 'en'),
+            'subtotal' => $invoice->subtotal,
+            'discount' => $invoice->discount,
+            'total' => $invoice->total,
+            'notes' => $invoice->notes,
+            'added_by' => $invoice->added_by,
+            'status' => $isPaid ? 'paid' : 'pending',
+            'customer' => [
+                'id' => $invoice->customerid,
+                'name' => $invoice->customer ? $invoice->customer->name : 'N/A',
+                'address' => $invoice->customer ? $invoice->customer->address : 'N/A',
+                'pan_no' => $invoice->customer ? $invoice->customer->pan_no : null,
+                'contact_no' => $invoice->customer ? $invoice->customer->contact_no : null,
+                'email' => $invoice->customer ? $invoice->customer->email : null,
+            ],
+            'items' => $items,
+        ]);
+    }
 }

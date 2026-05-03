@@ -611,153 +611,101 @@
         body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading invoice...</p></div>';
         modal.style.display = 'block';
 
-        // Fetch invoice data
-        fetch('{{ route("customer.billno") }}?invoiceid=' + invoiceId)
-            .then(response => response.text())
-            .then(html => {
-                // Extract invoice content from the returned HTML
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-
-                // Try to find the invoice table and details
-                const table = doc.querySelector('table');
-                const invoiceInfo = doc.querySelector('.thisisforhideandshow');
-
-                if (table) {
-                    // Build clean invoice display
-                    let invoiceHtml = '<div class="invoice-display">';
-
-                    // Header
-                    invoiceHtml += '<div class="inv-header">';
-                    invoiceHtml += '<h2>OM HARI TRADELINK</h2>';
-                    invoiceHtml += '<p style="margin:5px 0;font-size:0.875rem;">Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>';
-                    invoiceHtml += '<p style="margin:0;font-size:0.8rem;">Mobile No: 9860378262, 9848448624, 9812566284</p>';
-                    invoiceHtml += '</div>';
-
-                    // Get invoice details from the page
-                    const allInvoices = doc.querySelectorAll('[class*="invoice"], [class*="bg-dark"]');
-                    let invType = 'credit';
-                    let invDate = '';
-                    let customerName = '';
-                    let customerAddress = '';
-                    let customerPan = '';
-
-                    // Try to extract data from the HTML
-                    const rows = table.querySelectorAll('tr');
-                    const metaText = doc.body.innerText;
-
-                    // Parse customer info from meta text
-                    const customerMatch = metaText.match(/Name:\s*([^\n]+)/);
-                    if (customerMatch) customerName = customerMatch[1];
-
-                    const addressMatch = metaText.match(/Address:\s*([^\n]+)/);
-                    if (addressMatch) customerAddress = addressMatch[1];
-
-                    const panMatch = metaText.match(/PAN No\.?\s*:?\s*(\d+)/);
-                    if (panMatch) customerPan = panMatch[1];
-
-                    // Invoice meta section
-                    invoiceHtml += '<div class="inv-meta">';
-                    invoiceHtml += '<div class="inv-meta-left">';
-                    invoiceHtml += '<strong>INVOICE NO: ' + invoiceId + '</strong><br>';
-                    if (customerPan) invoiceHtml += 'PAN No. ' + customerPan + '<br>';
-                    invoiceHtml += '<br>';
-                    invoiceHtml += '<strong>Name:</strong> ' + (customerName || 'N/A') + '<br>';
-                    invoiceHtml += '<strong>Address:</strong> ' + (customerAddress || 'N/A') + '<br>';
-                    invoiceHtml += '</div>';
-                    invoiceHtml += '<div class="inv-meta-right">';
-                    invoiceHtml += '<span class="inv-badge">Invoice Type: ' + invType + '</span><br><br>';
-                    invoiceHtml += '<strong>Date:</strong> ' + new Date().toISOString().split('T')[0] + '<br>';
-                    invoiceHtml += '</div>';
-                    invoiceHtml += '</div>';
-
-                    // Items table
-                    invoiceHtml += '<table>';
-                    invoiceHtml += '<thead><tr>';
-                    invoiceHtml += '<th>#</th>';
-                    invoiceHtml += '<th>ITEM ID</th>';
-                    invoiceHtml += '<th>ITEM Name</th>';
-                    invoiceHtml += '<th>Quantity</th>';
-                    invoiceHtml += '<th>Unit</th>';
-                    invoiceHtml += '<th>Sold Price</th>';
-                    invoiceHtml += '<th>Amount</th>';
-                    invoiceHtml += '</tr></thead>';
-                    invoiceHtml += '<tbody>';
-
-                    // Process rows
-                    let sn = 1;
-                    let subtotal = 0;
-                    let discount = 0;
-                    let total = 0;
-                    let notes = '';
-
-                    rows.forEach(row => {
-                        const cells = row.querySelectorAll('td');
-                        if (cells.length >= 7 && !row.innerText.includes('Sub-Total') && !row.innerText.includes('Discount') && !row.innerText.includes('Total')) {
-                            invoiceHtml += '<tr>';
-                            invoiceHtml += '<td>' + sn + '</td>';
-                            invoiceHtml += '<td>' + (cells[1]?.innerText || '') + '</td>';
-                            invoiceHtml += '<td>' + (cells[2]?.innerText || '') + '</td>';
-                            invoiceHtml += '<td>' + (cells[4]?.innerText || '') + '</td>';
-                            invoiceHtml += '<td>' + (cells[5]?.innerText || '') + '</td>';
-                            invoiceHtml += '<td>' + (cells[6]?.innerText || '') + '</td>';
-                            invoiceHtml += '<td>' + (cells[7]?.innerText || cells[cells.length-1]?.innerText || '') + '</td>';
-                            invoiceHtml += '</tr>';
-                            sn++;
-                        }
-                        // Look for totals
-                        if (row.innerText.includes('Sub-Total')) {
-                            const val = row.innerText.match(/[\d,.]+/);
-                            if (val) subtotal = val[0];
-                        }
-                        if (row.innerText.includes('Discount')) {
-                            const val = row.innerText.match(/[\d,.]+/);
-                            if (val) discount = val[0];
-                        }
-                        if (row.innerText.includes('Total Amount')) {
-                            const val = row.innerText.match(/[\d,.]+/);
-                            if (val) total = val[0];
-                        }
-                        if (row.innerText.includes('Notes:')) {
-                            notes = row.innerText.replace('Notes:', '').trim();
-                        }
-                    });
-
-                    // Summary rows
-                    invoiceHtml += '<tr class="total-row">';
-                    invoiceHtml += '<td colspan="5"></td>';
-                    invoiceHtml += '<td class="text-right"><strong>Sub-Total:</strong></td>';
-                    invoiceHtml += '<td><strong>' + (subtotal || '0.00') + '</strong></td>';
-                    invoiceHtml += '</tr>';
-
-                    invoiceHtml += '<tr class="total-row">';
-                    invoiceHtml += '<td colspan="5"></td>';
-                    invoiceHtml += '<td class="text-right"><strong>E-Discount:</strong></td>';
-                    invoiceHtml += '<td><strong>' + (discount || '0.00') + '</strong></td>';
-                    invoiceHtml += '</tr>';
-
-                    invoiceHtml += '<tr class="total-row">';
-                    invoiceHtml += '<td colspan="5" class="notes"><strong>Notes:</strong> ' + (notes || '') + '</td>';
-                    invoiceHtml += '<td class="text-right"><strong>Total Amount:</strong></td>';
-                    invoiceHtml += '<td><strong>' + (total || '0.00') + '</strong></td>';
-                    invoiceHtml += '</tr>';
-
-                    invoiceHtml += '</tbody></table>';
-
-                    // Footer
-                    invoiceHtml += '<div class="footer-info">';
-                    invoiceHtml += '<p># Goods once sold won\'t be returned</p>';
-                    invoiceHtml += '<p>Bill Created by: System</p>';
-                    invoiceHtml += '</div>';
-
-                    invoiceHtml += '</div>';
-                    body.innerHTML = invoiceHtml;
-                } else {
-                    body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">';
-                    body.innerHTML += '<i class="fas fa-exclamation-circle fa-2x"></i>';
-                    body.innerHTML += '<p>Could not load invoice details. Please try the Print PDF button.</p>';
-                    body.innerHTML += '</div>';
+        // Fetch invoice data via JSON API
+        fetch('{{ route("api.invoice.data") }}?invoiceid=' + invoiceId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
                 }
+
+                // Build invoice display with real data
+                let invoiceHtml = '<div class="invoice-display">';
+
+                // Header
+                invoiceHtml += '<div class="inv-header">';
+                invoiceHtml += '<h2>OM HARI TRADELINK</h2>';
+                invoiceHtml += '<p style="margin:5px 0;font-size:0.875rem;">Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>';
+                invoiceHtml += '<p style="margin:0;font-size:0.8rem;">Mobile No: 9860378262, 9848448624, 9812566284</p>';
+                invoiceHtml += '</div>';
+
+                // Invoice meta section with customer data
+                invoiceHtml += '<div class="inv-meta">';
+                invoiceHtml += '<div class="inv-meta-left">';
+                invoiceHtml += '<strong>INVOICE NO: ' + data.invoice_id + '</strong><br>';
+                if (data.customer.pan_no) invoiceHtml += 'PAN No. ' + data.customer.pan_no + '<br>';
+                if (data.customer.contact_no) invoiceHtml += 'Contact: ' + data.customer.contact_no + '<br>';
+                invoiceHtml += '<br>';
+                invoiceHtml += '<strong>Name:</strong> ' + (data.customer.name || 'N/A') + '<br>';
+                invoiceHtml += '<strong>Address:</strong> ' + (data.customer.address || 'N/A') + '<br>';
+                if (data.customer.email) invoiceHtml += '<strong>Email:</strong> ' + data.customer.email + '<br>';
+                invoiceHtml += '<strong>Customer Id:</strong> ' + (data.customer.id || 'N/A') + '<br>';
+                invoiceHtml += '</div>';
+                invoiceHtml += '<div class="inv-meta-right">';
+                invoiceHtml += '<span class="inv-badge">Invoice Type: ' + (data.type || 'credit') + '</span><br><br>';
+                invoiceHtml += '<strong>Date:</strong> ' + data.date + '<br>';
+                invoiceHtml += '<strong>Miti:</strong> ' + (data.nepali_date || '') + '<br>';
+                invoiceHtml += '</div>';
+                invoiceHtml += '</div>';
+
+                // Items table
+                invoiceHtml += '<table>';
+                invoiceHtml += '<thead><tr>';
+                invoiceHtml += '<th>#</th>';
+                invoiceHtml += '<th>ITEM ID</th>';
+                invoiceHtml += '<th>ITEM Name</th>';
+                invoiceHtml += '<th>Quantity</th>';
+                invoiceHtml += '<th>Unit</th>';
+                invoiceHtml += '<th>Sold Price</th>';
+                invoiceHtml += '<th>Amount</th>';
+                invoiceHtml += '</tr></thead>';
+                invoiceHtml += '<tbody>';
+
+                // Process items
+                let sn = 1;
+                data.items.forEach(item => {
+                    invoiceHtml += '<tr>';
+                    invoiceHtml += '<td>' + sn + '</td>';
+                    invoiceHtml += '<td>' + (item.item_id || '') + '</td>';
+                    invoiceHtml += '<td>' + (item.item_name || '') + '</td>';
+                    invoiceHtml += '<td>' + (item.quantity || '') + '</td>';
+                    invoiceHtml += '<td>' + (item.unit || '') + '</td>';
+                    invoiceHtml += '<td>' + (item.price || '') + '</td>';
+                    invoiceHtml += '<td>' + (item.subtotal || '') + '</td>';
+                    invoiceHtml += '</tr>';
+                    sn++;
+                });
+
+                // Summary rows
+                invoiceHtml += '<tr class="total-row">';
+                invoiceHtml += '<td colspan="5"></td>';
+                invoiceHtml += '<td class="text-right"><strong>Sub-Total:</strong></td>';
+                invoiceHtml += '<td><strong>' + parseFloat(data.subtotal || 0).toFixed(2) + '</strong></td>';
+                invoiceHtml += '</tr>';
+
+                invoiceHtml += '<tr class="total-row">';
+                invoiceHtml += '<td colspan="5"></td>';
+                invoiceHtml += '<td class="text-right"><strong>E-Discount:</strong></td>';
+                invoiceHtml += '<td><strong>' + parseFloat(data.discount || 0).toFixed(2) + '</strong></td>';
+                invoiceHtml += '</tr>';
+
+                invoiceHtml += '<tr class="total-row">';
+                invoiceHtml += '<td colspan="5" class="notes"><strong>Notes:</strong> ' + (data.notes || '') + '</td>';
+                invoiceHtml += '<td class="text-right"><strong>Total Amount:</strong></td>';
+                invoiceHtml += '<td><strong>' + parseFloat(data.total || 0).toFixed(2) + '</strong></td>';
+                invoiceHtml += '</tr>';
+
+                invoiceHtml += '</tbody></table>';
+
+                // Footer
+                invoiceHtml += '<div class="footer-info">';
+                invoiceHtml += '<p># Goods once sold won\'t be returned</p>';
+                invoiceHtml += '<p>Bill Created by: ' + (data.added_by || 'System') + '</p>';
+                invoiceHtml += '<p>Printed Time: ' + new Date().toLocaleString() + '</p>';
+                invoiceHtml += '</div>';
+
+                invoiceHtml += '</div>';
+                body.innerHTML = invoiceHtml;
             })
             .catch(error => {
                 body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">';

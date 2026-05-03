@@ -337,6 +337,7 @@ Route::get('/deletedbillno',[CustomerLedgerHistroy::class,'returndeletedBillsDEt
 Route::get('/deletedinvoice',[CustomerLedgerHistroy::class,'returndeletedinvoice'])->name('deleted.invoice');
 
 Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])->name('customer.billno');
+Route::get('/api/invoice-data',[ModernDashboardController::class,'getInvoiceData'])->name('api.invoice.data');
 Route::delete('/billno', [CustomerLedgerHistroy::class, 'deletebillfromdatabase'])->name('customer.deletebillno');
 
 Route::put('/billno', [CustomerLedgerHistroy::class, 'updateinvoiicetype'])->name('customer.updatebillinvoicetype');
