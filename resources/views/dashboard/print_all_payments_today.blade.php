@@ -13,7 +13,7 @@
 
         @page {
             size: A5 portrait;
-            margin: 10mm;
+            margin: 0;
         }
 
         body {
@@ -23,12 +23,14 @@
             line-height: 1.6;
             margin: 0;
             padding: 0;
+            border: 15px solid red;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
 
         .page {
             padding: 30px;
             background: #fff;
-            border: 5px solid red;
         }
 
         .header {
