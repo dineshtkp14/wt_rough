@@ -651,10 +651,10 @@
                 invoiceHtml += '<div class="inv-meta-left">';
                 invoiceHtml += '<strong>INVOICE NO: ' + data.invoice_id + '</strong><br>';
                 if (data.customer.pan_no) invoiceHtml += 'PAN No. ' + data.customer.pan_no + '<br>';
-                if (data.customer.phoneno) invoiceHtml += 'Contact: ' + data.customer.phoneno + '<br>';
                 invoiceHtml += '<br>';
                 invoiceHtml += '<strong>Name:</strong> ' + (data.customer.name || 'N/A') + '<br>';
                 invoiceHtml += '<strong>Address:</strong> ' + (data.customer.address || 'N/A') + '<br>';
+                if (data.customer.phoneno) invoiceHtml += '<strong>Contact:</strong> ' + data.customer.phoneno + '<br>';
                 if (data.customer.email) invoiceHtml += '<strong>Email:</strong> ' + data.customer.email + '<br>';
                 invoiceHtml += '<strong>Customer Id:</strong> ' + (data.customer.id || 'N/A') + '<br>';
                 invoiceHtml += '</div>';
