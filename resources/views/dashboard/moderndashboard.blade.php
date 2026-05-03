@@ -639,13 +639,6 @@
                 // Build invoice display with real data
                 let invoiceHtml = '<div class="invoice-display">';
 
-                // Header
-                invoiceHtml += '<div class="inv-header">';
-                invoiceHtml += '<h2>OM HARI TRADELINK</h2>';
-                invoiceHtml += '<p style="margin:5px 0;font-size:0.875rem;">Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>';
-                invoiceHtml += '<p style="margin:0;font-size:0.8rem;">Mobile No: 9860378262, 9848448624, 9812566284</p>';
-                invoiceHtml += '</div>';
-
                 // Invoice meta section with customer data
                 invoiceHtml += '<div class="inv-meta">';
                 invoiceHtml += '<div class="inv-meta-left">';
