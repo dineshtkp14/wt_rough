@@ -1,5 +1,4 @@
 @extends('layouts.master')
-@section('content')
 
 @section('page-css')
     <style>
@@ -379,8 +378,415 @@
             }
         }
     </style>
-@endsection
+</div>
 
+<!-- Invoice Modal -->
+<div id="invoiceModal" class="invoice-modal">
+    <div class="invoice-modal-content">
+        <div class="invoice-modal-header">
+            <h3>Invoice Details</h3>
+            <button class="invoice-modal-close" onclick="closeInvoiceModal()">&times;</button>
+        </div>
+        <div class="invoice-modal-body" id="invoiceModalBody">
+            <!-- Invoice content loaded via AJAX -->
+        </div>
+        <div class="invoice-modal-footer">
+            <a id="invoicePrintLink" href="#" target="_blank" class="btn-print">
+                <i class="fa-solid fa-print"></i> Print PDF
+            </a>
+            <button class="btn-close-modal" onclick="closeInvoiceModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Invoice Modal Styles */
+    .invoice-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        overflow: auto;
+    }
+
+    .invoice-modal-content {
+        background-color: #fff;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 900px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .invoice-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .invoice-modal-header h3 {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .invoice-modal-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    .invoice-modal-close:hover {
+        color: #ffdddd;
+    }
+
+    .invoice-modal-body {
+        padding: 20px;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .invoice-modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 15px 20px;
+        border-top: 1px solid #e5e7eb;
+        background: #f9fafb;
+        border-radius: 0 0 8px 8px;
+    }
+
+    .btn-print, .btn-close-modal {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-print {
+        background: #4f46e5;
+        color: white;
+        border: none;
+    }
+
+    .btn-print:hover {
+        background: #4338ca;
+    }
+
+    .btn-close-modal {
+        background: #e5e7eb;
+        color: #374151;
+        border: 1px solid #d1d5db;
+    }
+
+    .btn-close-modal:hover {
+        background: #d1d5db;
+    }
+
+    /* Invoice display styles inside modal */
+    .invoice-display {
+        font-family: 'Noto Sans', Arial, sans-serif;
+        color: #1f2937;
+    }
+
+    .invoice-display .inv-header {
+        text-align: center;
+        border-bottom: 2px solid #1f2937;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .invoice-display .inv-header h2 {
+        font-size: 1.5rem;
+        margin: 0 0 10px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .invoice-display .inv-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+        font-size: 0.875rem;
+    }
+
+    .invoice-display .inv-meta-left,
+    .invoice-display .inv-meta-right {
+        line-height: 1.6;
+    }
+
+    .invoice-display .inv-meta-right {
+        text-align: right;
+    }
+
+    .invoice-display .inv-badge {
+        display: inline-block;
+        background: #1f2937;
+        color: white;
+        padding: 4px 12px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+
+    .invoice-display table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 0.875rem;
+    }
+
+    .invoice-display th,
+    .invoice-display td {
+        border: 1px solid #1f2937;
+        padding: 8px 10px;
+        text-align: left;
+    }
+
+    .invoice-display th {
+        background: #f3f4f6;
+        font-weight: 600;
+    }
+
+    .invoice-display .text-right {
+        text-align: right;
+    }
+
+    .invoice-display .total-row {
+        font-weight: 700;
+        background: #f9fafb;
+    }
+
+    .invoice-display .notes {
+        font-style: italic;
+        color: #6b7280;
+    }
+
+    .invoice-display .footer-info {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+
+    @media print {
+        .invoice-modal-header,
+        .invoice-modal-footer {
+            display: none;
+        }
+        .invoice-modal-content {
+            box-shadow: none;
+            margin: 0;
+        }
+    }
+</style>
+
+<script>
+    function openInvoiceModal(invoiceId) {
+        const modal = document.getElementById('invoiceModal');
+        const body = document.getElementById('invoiceModalBody');
+        const printLink = document.getElementById('invoicePrintLink');
+
+        // Set print link
+        printLink.href = '{{ url("billno/pdf/convert") }}?invoiceid=' + invoiceId;
+
+        // Show modal with loading state
+        body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading invoice...</p></div>';
+        modal.style.display = 'block';
+
+        // Fetch invoice data
+        fetch('{{ route("customer.billno") }}?invoiceid=' + invoiceId)
+            .then(response => response.text())
+            .then(html => {
+                // Extract invoice content from the returned HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Try to find the invoice table and details
+                const table = doc.querySelector('table');
+                const invoiceInfo = doc.querySelector('.thisisforhideandshow');
+
+                if (table) {
+                    // Build clean invoice display
+                    let invoiceHtml = '<div class="invoice-display">';
+
+                    // Header
+                    invoiceHtml += '<div class="inv-header">';
+                    invoiceHtml += '<h2>OM HARI TRADELINK</h2>';
+                    invoiceHtml += '<p style="margin:5px 0;font-size:0.875rem;">Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>';
+                    invoiceHtml += '<p style="margin:0;font-size:0.8rem;">Mobile No: 9860378262, 9848448624, 9812566284</p>';
+                    invoiceHtml += '</div>';
+
+                    // Get invoice details from the page
+                    const allInvoices = doc.querySelectorAll('[class*="invoice"], [class*="bg-dark"]');
+                    let invType = 'credit';
+                    let invDate = '';
+                    let customerName = '';
+                    let customerAddress = '';
+                    let customerPan = '';
+
+                    // Try to extract data from the HTML
+                    const rows = table.querySelectorAll('tr');
+                    const metaText = doc.body.innerText;
+
+                    // Parse customer info from meta text
+                    const customerMatch = metaText.match(/Name:\s*([^\n]+)/);
+                    if (customerMatch) customerName = customerMatch[1];
+
+                    const addressMatch = metaText.match(/Address:\s*([^\n]+)/);
+                    if (addressMatch) customerAddress = addressMatch[1];
+
+                    const panMatch = metaText.match(/PAN No\.?\s*:?\s*(\d+)/);
+                    if (panMatch) customerPan = panMatch[1];
+
+                    // Invoice meta section
+                    invoiceHtml += '<div class="inv-meta">';
+                    invoiceHtml += '<div class="inv-meta-left">';
+                    invoiceHtml += '<strong>INVOICE NO: ' + invoiceId + '</strong><br>';
+                    if (customerPan) invoiceHtml += 'PAN No. ' + customerPan + '<br>';
+                    invoiceHtml += '<br>';
+                    invoiceHtml += '<strong>Name:</strong> ' + (customerName || 'N/A') + '<br>';
+                    invoiceHtml += '<strong>Address:</strong> ' + (customerAddress || 'N/A') + '<br>';
+                    invoiceHtml += '</div>';
+                    invoiceHtml += '<div class="inv-meta-right">';
+                    invoiceHtml += '<span class="inv-badge">Invoice Type: ' + invType + '</span><br><br>';
+                    invoiceHtml += '<strong>Date:</strong> ' + new Date().toISOString().split('T')[0] + '<br>';
+                    invoiceHtml += '</div>';
+                    invoiceHtml += '</div>';
+
+                    // Items table
+                    invoiceHtml += '<table>';
+                    invoiceHtml += '<thead><tr>';
+                    invoiceHtml += '<th>#</th>';
+                    invoiceHtml += '<th>ITEM ID</th>';
+                    invoiceHtml += '<th>ITEM Name</th>';
+                    invoiceHtml += '<th>Quantity</th>';
+                    invoiceHtml += '<th>Unit</th>';
+                    invoiceHtml += '<th>Sold Price</th>';
+                    invoiceHtml += '<th>Amount</th>';
+                    invoiceHtml += '</tr></thead>';
+                    invoiceHtml += '<tbody>';
+
+                    // Process rows
+                    let sn = 1;
+                    let subtotal = 0;
+                    let discount = 0;
+                    let total = 0;
+                    let notes = '';
+
+                    rows.forEach(row => {
+                        const cells = row.querySelectorAll('td');
+                        if (cells.length >= 7 && !row.innerText.includes('Sub-Total') && !row.innerText.includes('Discount') && !row.innerText.includes('Total')) {
+                            invoiceHtml += '<tr>';
+                            invoiceHtml += '<td>' + sn + '</td>';
+                            invoiceHtml += '<td>' + (cells[1]?.innerText || '') + '</td>';
+                            invoiceHtml += '<td>' + (cells[2]?.innerText || '') + '</td>';
+                            invoiceHtml += '<td>' + (cells[4]?.innerText || '') + '</td>';
+                            invoiceHtml += '<td>' + (cells[5]?.innerText || '') + '</td>';
+                            invoiceHtml += '<td>' + (cells[6]?.innerText || '') + '</td>';
+                            invoiceHtml += '<td>' + (cells[7]?.innerText || cells[cells.length-1]?.innerText || '') + '</td>';
+                            invoiceHtml += '</tr>';
+                            sn++;
+                        }
+                        // Look for totals
+                        if (row.innerText.includes('Sub-Total')) {
+                            const val = row.innerText.match(/[\d,.]+/);
+                            if (val) subtotal = val[0];
+                        }
+                        if (row.innerText.includes('Discount')) {
+                            const val = row.innerText.match(/[\d,.]+/);
+                            if (val) discount = val[0];
+                        }
+                        if (row.innerText.includes('Total Amount')) {
+                            const val = row.innerText.match(/[\d,.]+/);
+                            if (val) total = val[0];
+                        }
+                        if (row.innerText.includes('Notes:')) {
+                            notes = row.innerText.replace('Notes:', '').trim();
+                        }
+                    });
+
+                    // Summary rows
+                    invoiceHtml += '<tr class="total-row">';
+                    invoiceHtml += '<td colspan="5"></td>';
+                    invoiceHtml += '<td class="text-right"><strong>Sub-Total:</strong></td>';
+                    invoiceHtml += '<td><strong>' + (subtotal || '0.00') + '</strong></td>';
+                    invoiceHtml += '</tr>';
+
+                    invoiceHtml += '<tr class="total-row">';
+                    invoiceHtml += '<td colspan="5"></td>';
+                    invoiceHtml += '<td class="text-right"><strong>E-Discount:</strong></td>';
+                    invoiceHtml += '<td><strong>' + (discount || '0.00') + '</strong></td>';
+                    invoiceHtml += '</tr>';
+
+                    invoiceHtml += '<tr class="total-row">';
+                    invoiceHtml += '<td colspan="5" class="notes"><strong>Notes:</strong> ' + (notes || '') + '</td>';
+                    invoiceHtml += '<td class="text-right"><strong>Total Amount:</strong></td>';
+                    invoiceHtml += '<td><strong>' + (total || '0.00') + '</strong></td>';
+                    invoiceHtml += '</tr>';
+
+                    invoiceHtml += '</tbody></table>';
+
+                    // Footer
+                    invoiceHtml += '<div class="footer-info">';
+                    invoiceHtml += '<p># Goods once sold won\'t be returned</p>';
+                    invoiceHtml += '<p>Bill Created by: System</p>';
+                    invoiceHtml += '</div>';
+
+                    invoiceHtml += '</div>';
+                    body.innerHTML = invoiceHtml;
+                } else {
+                    body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">';
+                    body.innerHTML += '<i class="fas fa-exclamation-circle fa-2x"></i>';
+                    body.innerHTML += '<p>Could not load invoice details. Please try the Print PDF button.</p>';
+                    body.innerHTML += '</div>';
+                }
+            })
+            .catch(error => {
+                body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">';
+                body.innerHTML += '<i class="fas fa-exclamation-circle fa-2x"></i>';
+                body.innerHTML += '<p>Error loading invoice: ' + error.message + '</p>';
+                body.innerHTML += '</div>';
+            });
+    }
+
+    function closeInvoiceModal() {
+        document.getElementById('invoiceModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('invoiceModal');
+        if (event.target === modal) {
+            closeInvoiceModal();
+        }
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeInvoiceModal();
+        }
+    });
+</script>
+
+@section('content')
 <div class="modern-dash">
     <!-- Header -->
     <div class="dash-hd">
@@ -520,7 +926,7 @@
                         @foreach ($recentInvoices as $inv)
                             <tr>
                                 <td>
-                                    <a href="{{ route('invoicebillno.convert', ['invoiceid' => $inv['invoice_id']]) }}" class="invoice-link" target="_blank">
+                                    <a href="#" class="invoice-link" onclick="openInvoiceModal({{ $inv['invoice_id'] }}); return false;">
                                         <strong>{{ $inv['id'] }}</strong>
                                     </a><br>
                                     <small style="color:#9ca3af">{{ $inv['date'] }}</small>
@@ -853,4 +1259,4 @@
     });
 </script>
 
-@stop
+@endsection
