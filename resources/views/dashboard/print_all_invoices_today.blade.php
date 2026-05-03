@@ -123,18 +123,20 @@
 
         .invoice-meta {
             padding: 15px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            justify-content: space-between;
             gap: 15px;
         }
 
         .customer-info {
             line-height: 1.8;
+            align-self: flex-start;
         }
 
         .invoice-details {
             text-align: right;
             line-height: 1.8;
+            align-self: flex-start;
         }
 
         table {
