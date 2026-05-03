@@ -12,7 +12,7 @@
         }
 
         @page {
-            margin: 15mm;
+            margin: 20mm;
         }
 
         body {
