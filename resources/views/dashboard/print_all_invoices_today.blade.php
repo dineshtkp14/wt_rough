@@ -125,18 +125,17 @@
             padding: 15px;
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
             gap: 15px;
         }
 
         .customer-info {
             line-height: 1.8;
-            vertical-align: top;
         }
 
         .invoice-details {
             text-align: right;
             line-height: 1.8;
-            vertical-align: top;
         }
 
         table {
