@@ -257,7 +257,11 @@
                     <strong>Customer ID:</strong> {{ $inv['customer']['id'] }}
                 </td>
                 <td class="invoice-details">
+                    @if(strtolower($inv['type']) == 'credit')
                     <span class="label-highlight"><strong>Invoice Type:</strong> {{ ucfirst($inv['type']) }}</span><br>
+                    @else
+                    <span><strong>Invoice Type:</strong> {{ ucfirst($inv['type']) }}</span><br>
+                    @endif
                     <strong>Date:</strong> {{ $inv['date'] }}<br>
                     <strong>Miti:</strong> {{ $inv['nepali_date'] }}<br>
                     <strong>Created By:</strong> {{ $inv['added_by'] ?? 'System' }}
