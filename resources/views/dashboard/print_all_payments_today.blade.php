@@ -20,7 +20,7 @@
             font-size: 18px;
             color: #1f2937;
             line-height: 1.8;
-            margin: 0;
+            margin: 15mm;
             padding: 0;
         }
 
