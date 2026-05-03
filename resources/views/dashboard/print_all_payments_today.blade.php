@@ -13,9 +13,9 @@
 
         body {
             font-family: 'Noto Sans', Arial, sans-serif;
-            font-size: 14px;
+            font-size: 16px;
             color: #1f2937;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         .header {
@@ -26,7 +26,7 @@
         }
 
         .header h1 {
-            font-size: 26px;
+            font-size: 28px;
             color: #1f2937;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -34,7 +34,7 @@
         }
 
         .header p {
-            font-size: 14px;
+            font-size: 16px;
             color: #6b7280;
         }
 
@@ -53,14 +53,14 @@
         }
 
         .summary-label {
-            font-size: 12px;
+            font-size: 14px;
             color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .summary-value {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             color: #1f2937;
         }
@@ -72,7 +72,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 15px;
         }
 
         th, td {
@@ -86,7 +86,7 @@
             color: white;
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 12px;
+            font-size: 14px;
         }
 
         tr:nth-child(even) {
@@ -103,9 +103,9 @@
 
         .mode-badge {
             display: inline-block;
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -143,7 +143,7 @@
         .footer {
             text-align: center;
             padding: 20px;
-            font-size: 12px;
+            font-size: 14px;
             color: #9ca3af;
             border-top: 1px solid #e5e7eb;
             margin-top: 30px;
