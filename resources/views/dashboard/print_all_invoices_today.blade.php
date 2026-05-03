@@ -98,8 +98,13 @@
         }
 
         .invoice-header h3 {
-            font-size: 14px;
+            font-size: 16px;
             color: #374151;
+            font-weight: 700;
+            background: #fef3c7;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
         }
 
         .invoice-status {
@@ -140,6 +145,13 @@
         .invoice-details {
             text-align: right;
             line-height: 1.8;
+        }
+
+        .label-highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 700;
         }
 
         table {
@@ -243,7 +255,7 @@
                     <strong>Customer ID:</strong> {{ $inv['customer']['id'] }}
                 </td>
                 <td class="invoice-details">
-                    <strong>Invoice Type:</strong> {{ ucfirst($inv['type']) }}<br>
+                    <span class="label-highlight"><strong>Invoice Type:</strong> {{ ucfirst($inv['type']) }}</span><br>
                     <strong>Date:</strong> {{ $inv['date'] }}<br>
                     <strong>Miti:</strong> {{ $inv['nepali_date'] }}<br>
                     <strong>Created By:</strong> {{ $inv['added_by'] ?? 'System' }}
