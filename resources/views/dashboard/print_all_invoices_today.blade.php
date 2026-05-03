@@ -12,7 +12,7 @@
         }
 
         @page {
-            margin: 20mm;
+            margin: 25mm;
         }
 
         body {
@@ -20,7 +20,7 @@
             font-size: 18px;
             color: #1f2937;
             line-height: 1.8;
-            margin: 15mm;
+            margin: 0;
             padding: 0;
         }
 
