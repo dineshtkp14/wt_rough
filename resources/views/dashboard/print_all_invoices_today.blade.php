@@ -121,12 +121,16 @@
             color: #92400e;
         }
 
-        .invoice-meta {
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 15px;
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .meta-table td {
+            vertical-align: top;
+            padding: 0;
+            border: none;
         }
 
         .customer-info {
