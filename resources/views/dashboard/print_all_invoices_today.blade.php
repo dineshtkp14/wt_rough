@@ -130,13 +130,13 @@
 
         .customer-info {
             line-height: 1.8;
-            align-self: flex-start;
+            vertical-align: top;
         }
 
         .invoice-details {
             text-align: right;
             line-height: 1.8;
-            align-self: flex-start;
+            vertical-align: top;
         }
 
         table {
