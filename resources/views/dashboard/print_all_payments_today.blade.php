@@ -193,7 +193,6 @@
                 <th class="text-center">#</th>
                 <th>Receipt No</th>
                 <th>Customer</th>
-                <th>Contact</th>
                 <th>Mode</th>
                 <th>Date (Miti)</th>
                 <th class="text-right">Amount</th>
@@ -216,9 +215,8 @@
                 <td><strong>{{ $pay['receipt_no'] }}</strong></td>
                 <td>
                     {{ $pay['customer']['name'] }}<br>
-                    <small style="color: #6b7280;">ID: {{ $pay['customer']['id'] }}</small>
+                    <small style="color: #6b7280;">ID: {{ $pay['customer']['id'] }} | {{ $pay['customer']['phoneno'] ?? 'N/A' }}</small>
                 </td>
-                <td>{{ $pay['customer']['phoneno'] ?? 'N/A' }}</td>
                 <td>
                     <span class="mode-badge {{ $modeClass }}">{{ $pay['mode'] }}</span>
                 </td>
@@ -229,7 +227,7 @@
         </tbody>
         <tfoot>
             <tr style="background: #ecfdf5; font-weight: 700;">
-                <td colspan="6" class="text-right" style="font-size: 12px;">TOTAL AMOUNT RECEIVED:</td>
+                <td colspan="5" class="text-right" style="font-size: 12px;">TOTAL AMOUNT RECEIVED:</td>
                 <td class="text-right" style="color: #10b981; font-size: 14px;">Rs {{ number_format($totalAmount, 2) }}</td>
             </tr>
         </tfoot>
