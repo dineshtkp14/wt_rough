@@ -174,9 +174,14 @@
         .page-break {
             page-break-after: always;
         }
+
+        .container {
+            padding: 20mm;
+        }
     </style>
 </head>
 <body>
+    <div class="container">
     <div class="header">
         <h1>OM HARI TRADELINK</h1>
         <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
@@ -287,6 +292,7 @@
     <div class="footer">
         <p>Total {{ $totalInvoices }} invoices generated on {{ $today }}</p>
         <p>Goods once sold won't be returned. Thank you for your business!</p>
+    </div>
     </div>
 </body>
 </html>

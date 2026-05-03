@@ -154,9 +154,14 @@
             border-top: 1px solid #e5e7eb;
             margin-top: 30px;
         }
+
+        .container {
+            padding: 20mm;
+        }
     </style>
 </head>
 <body>
+    <div class="container">
     <div class="header">
         <h1>OM HARI TRADELINK</h1>
         <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
@@ -228,6 +233,7 @@
     <div class="footer">
         <p>Total {{ $totalPayments }} payments received on {{ $today }}</p>
         <p>Thank you for your business!</p>
+    </div>
     </div>
 </body>
 </html>
