@@ -28,6 +28,7 @@
         .page {
             padding: 30px;
             background: #fff;
+            border: 5px solid red;
         }
 
         .header {
