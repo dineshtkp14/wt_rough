@@ -559,7 +559,8 @@
     }
 
     .invoice-display th {
-        background: #f3f4f6;
+        background: #f97316;
+        color: white;
         font-weight: 600;
     }
 
