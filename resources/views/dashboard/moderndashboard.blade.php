@@ -337,6 +337,21 @@
             text-decoration: underline;
         }
 
+        /* Clickable Invoice / Receipt Links */
+        .invoice-link,
+        .receipt-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.15s;
+        }
+
+        .invoice-link:hover,
+        .receipt-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
         /* Chart Containers */
         .chart-container {
             position: relative;
@@ -488,7 +503,7 @@
     <div class="tables-row">
         <div class="card">
             <div class="card-hd">
-                <h5>Recent Invoices</h5>
+                <h5>Today's Invoices</h5>
                 <a href="{{ route('itemsales.index') }}" class="view-all">View all</a>
             </div>
             <div class="card-bd">
@@ -505,7 +520,9 @@
                         @foreach ($recentInvoices as $inv)
                             <tr>
                                 <td>
-                                    <strong>{{ $inv['id'] }}</strong><br>
+                                    <a href="{{ route('customer.billno', ['invoiceid' => $inv['invoice_id']]) }}" class="invoice-link">
+                                        <strong>{{ $inv['id'] }}</strong>
+                                    </a><br>
                                     <small style="color:#9ca3af">{{ $inv['date'] }}</small>
                                 </td>
                                 <td>{{ $inv['customer'] }}</td>
@@ -525,7 +542,7 @@
         </div>
         <div class="card">
             <div class="card-hd">
-                <h5>Recent Payments</h5>
+                <h5>Today's Payments</h5>
                 <a href="{{ route('cpayments.index') }}" class="view-all">View all</a>
             </div>
             <div class="card-bd">
@@ -542,7 +559,9 @@
                         @foreach ($recentPayments as $pay)
                             <tr>
                                 <td>
-                                    <strong>{{ $pay['receipt'] }}</strong><br>
+                                    <a href="{{ route('cashreceipt.search', ['receiptno' => $pay['payment_id']]) }}" class="receipt-link">
+                                        <strong>{{ $pay['receipt'] }}</strong>
+                                    </a><br>
                                     <small style="color:#9ca3af">{{ $pay['date'] }}</small>
                                 </td>
                                 <td>{{ $pay['customer'] }}</td>

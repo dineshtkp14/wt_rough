@@ -111,15 +111,16 @@ class ModernDashboardController extends Controller
 
         $recentInvoicesRaw = invoice::join('customerinfos', 'invoices.customerid', '=', 'customerinfos.id')
             ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'customerinfos.name as customer')
+            ->whereDate('invoices.inv_date', $today)
             ->orderByDesc('invoices.inv_date')
             ->orderByDesc('invoices.id')
-            ->limit(5)
             ->get();
 
         $recentInvoices = [];
         foreach ($recentInvoicesRaw as $inv) {
             $isPaid = ($inv->type === 'cash') || customerledgerdetails::where('invoiceid', $inv->id)->where('credit', '>', 0)->exists();
             $recentInvoices[] = [
+                'invoice_id' => $inv->id,
                 'id'       => 'INV-' . $inv->id,
                 'customer' => $inv->customer,
                 'amount'   => (float) $inv->amount,
@@ -132,9 +133,9 @@ class ModernDashboardController extends Controller
         $recentPaymentsRaw = customerledgerdetails::join('customerinfos', 'customerledgerdetails.customerid', '=', 'customerinfos.id')
             ->select('customerinfos.name as customer', 'customerledgerdetails.credit as amount', 'customerledgerdetails.date', 'customerledgerdetails.id', 'customerledgerdetails.bank_deposit', 'customerledgerdetails.counter_deposit', 'customerledgerdetails.particulars', 'customerledgerdetails.voucher_type')
             ->where('customerledgerdetails.invoicetype', 'payment')
+            ->whereDate('customerledgerdetails.date', $today)
             ->orderByDesc('customerledgerdetails.date')
             ->orderByDesc('customerledgerdetails.id')
-            ->limit(5)
             ->get();
 
         $recentPayments = [];
@@ -148,6 +149,7 @@ class ModernDashboardController extends Controller
             }
 
             $recentPayments[] = [
+                'payment_id' => $pay->id,
                 'customer' => $pay->customer,
                 'amount'   => (float) $pay->amount,
                 'mode'     => $mode,
