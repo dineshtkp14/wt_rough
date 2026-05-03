@@ -951,7 +951,7 @@
         const printLink = document.getElementById('paymentPrintLink');
 
         // Set print link
-        printLink.href = '{{ route("cashreceipt.search") }}?receiptno=' + paymentId;
+        printLink.href = '{{ route("cashreceipt.convert") }}?receiptno=' + paymentId;
 
         // Show modal with loading state
         body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading payment...</p></div>';
