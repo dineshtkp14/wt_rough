@@ -422,4 +422,68 @@ class ModernDashboardController extends Controller
 
         return $pdf->stream('all_payments_' . $today . '.pdf');
     }
+
+    public function checkToday()
+    {
+        $breadcrumb = [
+            'subtitle' => 'Check Today',
+            'title' => 'Today\'s Transactions',
+            'link' => 'Check Today'
+        ];
+
+        $today = now()->toDateString();
+
+        // Get today's invoices
+        $recentInvoicesRaw = invoice::join('customerinfos', 'invoices.customerid', '=', 'customerinfos.id')
+            ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'customerinfos.name as customer')
+            ->whereDate('invoices.inv_date', $today)
+            ->orderByDesc('invoices.inv_date')
+            ->orderByDesc('invoices.id')
+            ->get();
+
+        $recentInvoices = [];
+        foreach ($recentInvoicesRaw as $inv) {
+            $isPaid = ($inv->type === 'cash') || customerledgerdetails::where('invoiceid', $inv->id)->where('credit', '>', 0)->exists();
+            $recentInvoices[] = [
+                'invoice_id' => $inv->id,
+                'id'       => 'INV-' . $inv->id,
+                'customer' => $inv->customer,
+                'amount'   => (float) $inv->amount,
+                'type'     => ucfirst($inv->type),
+                'date'     => NepaliDate::adToBsString($inv->date, 'en'),
+                'status'   => $isPaid ? 'paid' : 'pending',
+            ];
+        }
+
+        // Get today's payments
+        $recentPaymentsRaw = customerledgerdetails::join('customerinfos', 'customerledgerdetails.customerid', '=', 'customerinfos.id')
+            ->select('customerinfos.name as customer', 'customerledgerdetails.credit as amount', 'customerledgerdetails.date', 'customerledgerdetails.id', 'customerledgerdetails.bank_deposit', 'customerledgerdetails.counter_deposit', 'customerledgerdetails.particulars', 'customerledgerdetails.voucher_type')
+            ->where('customerledgerdetails.invoicetype', 'payment')
+            ->whereDate('customerledgerdetails.date', $today)
+            ->orderByDesc('customerledgerdetails.date')
+            ->orderByDesc('customerledgerdetails.id')
+            ->get();
+
+        $recentPayments = [];
+        foreach ($recentPaymentsRaw as $pay) {
+            $mode = trim($pay->voucher_type ?? '');
+            if (empty($mode)) {
+                $mode = trim($pay->particulars ?? '');
+            }
+            if (empty($mode)) {
+                $mode = 'Cash';
+            }
+
+            $recentPayments[] = [
+                'payment_id' => $pay->id,
+                'customer' => $pay->customer,
+                'amount'   => (float) $pay->amount,
+                'mode'     => $mode,
+                'date'     => NepaliDate::adToBsString($pay->date, 'en'),
+                'receipt'  => 'RCP-' . $pay->id,
+            ];
+        }
+
+        return view('dashboard.checktoday', compact('breadcrumb', 'recentInvoices', 'recentPayments'));
+    }
 }

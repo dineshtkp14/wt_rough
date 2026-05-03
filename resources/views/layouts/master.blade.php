@@ -145,6 +145,18 @@
                         </a>
                     </li>
 
+                    <!-- Check Today -->
+                    <li class="nav-item dashboard">
+                        <a href="{{ route('checktoday.index') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#checktoday-collapse"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-calendar-day"></i>
+                                <span>Check Today</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
                     <!-- Invoice -->
                     <li class="nav-item invoice">
                         <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#Invoice-collapse"
