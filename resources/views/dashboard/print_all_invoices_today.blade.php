@@ -149,9 +149,10 @@
 
         .label-highlight {
             background: #fef3c7;
-            padding: 2px 6px;
-            border-radius: 3px;
+            padding: 3px 8px;
+            border-radius: 4px;
             font-weight: 700;
+            display: inline-block;
         }
 
         table {
