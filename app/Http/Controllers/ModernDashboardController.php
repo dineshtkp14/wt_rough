@@ -234,7 +234,7 @@ class ModernDashboardController extends Controller
                 'name' => $invoice->customer ? $invoice->customer->name : 'N/A',
                 'address' => $invoice->customer ? $invoice->customer->address : 'N/A',
                 'pan_no' => $invoice->customer ? $invoice->customer->pan_no : null,
-                'contact_no' => $invoice->customer ? $invoice->customer->contact_no : null,
+                'phoneno' => $invoice->customer ? $invoice->customer->phoneno : null,
                 'email' => $invoice->customer ? $invoice->customer->email : null,
             ],
             'items' => $items,
