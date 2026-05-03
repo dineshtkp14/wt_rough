@@ -223,27 +223,29 @@
             <span class="invoice-status status-{{ $inv['status'] }}">{{ ucfirst($inv['status']) }}</span>
         </div>
 
-        <div class="invoice-meta">
-            <div class="customer-info">
-                <strong>Customer:</strong> {{ $inv['customer']['name'] }}<br>
-                @if($inv['customer']['address'])
-                <strong>Address:</strong> {{ $inv['customer']['address'] }}<br>
-                @endif
-                @if($inv['customer']['phoneno'])
-                <strong>Contact:</strong> {{ $inv['customer']['phoneno'] }}<br>
-                @endif
-                @if($inv['customer']['pan_no'])
-                <strong>PAN No:</strong> {{ $inv['customer']['pan_no'] }}<br>
-                @endif
-                <strong>Customer ID:</strong> {{ $inv['customer']['id'] }}
-            </div>
-            <div class="invoice-details">
-                <strong>Invoice Type:</strong> {{ ucfirst($inv['type']) }}<br>
-                <strong>Date:</strong> {{ $inv['date'] }}<br>
-                <strong>Miti:</strong> {{ $inv['nepali_date'] }}<br>
-                <strong>Created By:</strong> {{ $inv['added_by'] ?? 'System' }}
-            </div>
-        </div>
+        <table class="meta-table">
+            <tr>
+                <td class="customer-info">
+                    <strong>Customer:</strong> {{ $inv['customer']['name'] }}<br>
+                    @if($inv['customer']['address'])
+                    <strong>Address:</strong> {{ $inv['customer']['address'] }}<br>
+                    @endif
+                    @if($inv['customer']['phoneno'])
+                    <strong>Contact:</strong> {{ $inv['customer']['phoneno'] }}<br>
+                    @endif
+                    @if($inv['customer']['pan_no'])
+                    <strong>PAN No:</strong> {{ $inv['customer']['pan_no'] }}<br>
+                    @endif
+                    <strong>Customer ID:</strong> {{ $inv['customer']['id'] }}
+                </td>
+                <td class="invoice-details">
+                    <strong>Invoice Type:</strong> {{ ucfirst($inv['type']) }}<br>
+                    <strong>Date:</strong> {{ $inv['date'] }}<br>
+                    <strong>Miti:</strong> {{ $inv['nepali_date'] }}<br>
+                    <strong>Created By:</strong> {{ $inv['added_by'] ?? 'System' }}
+                </td>
+            </tr>
+        </table>
 
         <table>
             <thead>
