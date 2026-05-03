@@ -13,4 +13,9 @@ class salesitem extends Model
     {
         return $this->belongsTo(Item::class, 'itemid');
     }
+
+    public function item()
+    {
+        return $this->belongsTo(item::class, 'itemid');
+    }
 }
