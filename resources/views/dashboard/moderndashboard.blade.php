@@ -399,6 +399,25 @@
     </div>
 </div>
 
+<!-- Payment Modal -->
+<div id="paymentModal" class="payment-modal">
+    <div class="payment-modal-content">
+        <div class="payment-modal-header">
+            <h3>Payment Details</h3>
+            <button class="payment-modal-close" onclick="closePaymentModal()">&times;</button>
+        </div>
+        <div class="payment-modal-body" id="paymentModalBody">
+            <!-- Payment content loaded via AJAX -->
+        </div>
+        <div class="payment-modal-footer">
+            <a id="paymentPrintLink" href="#" target="_blank" class="btn-print">
+                <i class="fa-solid fa-print"></i> Print Receipt
+            </a>
+            <button class="btn-close-modal" onclick="closePaymentModal()">Close</button>
+        </div>
+    </div>
+</div>
+
 <style>
     /* Invoice Modal Styles */
     .invoice-modal {
@@ -596,6 +615,187 @@
             margin: 0;
         }
     }
+
+    /* Payment Modal Styles */
+    .payment-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        overflow: auto;
+    }
+
+    .payment-modal-content {
+        background-color: #fff;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 700px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .payment-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .payment-modal-header h3 {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .payment-modal-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    .payment-modal-close:hover {
+        color: #d1fae5;
+    }
+
+    .payment-modal-body {
+        padding: 20px;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .payment-modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 15px 20px;
+        border-top: 1px solid #e5e7eb;
+        background: #f9fafb;
+        border-radius: 0 0 8px 8px;
+    }
+
+    .payment-display {
+        font-family: 'Noto Sans', Arial, sans-serif;
+        color: #1f2937;
+    }
+
+    .payment-display .receipt-header {
+        text-align: center;
+        border-bottom: 2px solid #10b981;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .payment-display .receipt-header h2 {
+        font-size: 1.5rem;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #10b981;
+    }
+
+    .payment-display .receipt-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+        font-size: 0.875rem;
+    }
+
+    .payment-display .receipt-meta-left,
+    .payment-display .receipt-meta-right {
+        line-height: 1.6;
+    }
+
+    .payment-display .receipt-meta-right {
+        text-align: right;
+    }
+
+    .payment-display .receipt-badge {
+        display: inline-block;
+        background: #10b981;
+        color: white;
+        padding: 4px 12px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        border-radius: 4px;
+    }
+
+    .payment-display .amount-box {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .payment-display .amount-box .amount-label {
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+
+    .payment-display .amount-box .amount-value {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .payment-display .payment-details {
+        background: #f9fafb;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .payment-display .payment-details-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .payment-display .payment-details-row:last-child {
+        border-bottom: none;
+    }
+
+    .payment-display .payment-details-label {
+        font-weight: 600;
+        color: #4b5563;
+    }
+
+    .payment-display .payment-details-value {
+        color: #1f2937;
+    }
+
+    .payment-display .footer-info {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-align: center;
+    }
+
+    @media print {
+        .payment-modal-header,
+        .payment-modal-footer {
+            display: none;
+        }
+        .payment-modal-content {
+            box-shadow: none;
+            margin: 0;
+        }
+    }
 </style>
 
 <script>
@@ -741,6 +941,145 @@
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeInvoiceModal();
+            closePaymentModal();
+        }
+    });
+
+    function openPaymentModal(paymentId) {
+        const modal = document.getElementById('paymentModal');
+        const body = document.getElementById('paymentModalBody');
+        const printLink = document.getElementById('paymentPrintLink');
+
+        // Set print link
+        printLink.href = '{{ route("cashreceipt.search") }}?receiptno=' + paymentId;
+
+        // Show modal with loading state
+        body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading payment...</p></div>';
+        modal.style.display = 'block';
+
+        // Fetch payment data via JSON API
+        fetch('{{ route("api.payment.data") }}?paymentid=' + paymentId, {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    return response.text().then(text => {
+                        console.error('Non-JSON response:', text.substring(0, 200));
+                        throw new Error('Expected JSON but received HTML');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Build payment display
+                let paymentHtml = '<div class="payment-display">';
+
+                // Receipt header
+                paymentHtml += '<div class="receipt-header">';
+                paymentHtml += '<h2>PAYMENT RECEIPT</h2>';
+                paymentHtml += '</div>';
+
+                // Receipt meta
+                paymentHtml += '<div class="receipt-meta">';
+                paymentHtml += '<div class="receipt-meta-left">';
+                paymentHtml += '<strong>Receipt No:</strong> ' + data.receipt_no + '<br>';
+                paymentHtml += '<strong>Customer:</strong> ' + (data.customer.name || 'N/A') + '<br>';
+                paymentHtml += '<strong>Address:</strong> ' + (data.customer.address || 'N/A') + '<br>';
+                if (data.customer.phoneno) paymentHtml += '<strong>Contact:</strong> ' + data.customer.phoneno + '<br>';
+                paymentHtml += '</div>';
+                paymentHtml += '<div class="receipt-meta-right">';
+                paymentHtml += '<span class="receipt-badge">' + data.mode + '</span><br><br>';
+                paymentHtml += '<strong>Date:</strong> ' + data.date + '<br>';
+                paymentHtml += '<strong>Miti:</strong> ' + (data.nepali_date || '') + '<br>';
+                paymentHtml += '</div>';
+                paymentHtml += '</div>';
+
+                // Amount box
+                paymentHtml += '<div class="amount-box">';
+                paymentHtml += '<div class="amount-label">Amount Received</div>';
+                paymentHtml += '<div class="amount-value">Rs ' + parseFloat(data.amount || 0).toFixed(2) + '</div>';
+                paymentHtml += '</div>';
+
+                // Payment details
+                paymentHtml += '<div class="payment-details">';
+
+                paymentHtml += '<div class="payment-details-row">';
+                paymentHtml += '<span class="payment-details-label">Payment Mode:</span>';
+                paymentHtml += '<span class="payment-details-value">' + data.mode + '</span>';
+                paymentHtml += '</div>';
+
+                if (data.bank_deposit) {
+                    paymentHtml += '<div class="payment-details-row">';
+                    paymentHtml += '<span class="payment-details-label">Bank Deposit:</span>';
+                    paymentHtml += '<span class="payment-details-value">' + data.bank_deposit + '</span>';
+                    paymentHtml += '</div>';
+                }
+
+                if (data.counter_deposit) {
+                    paymentHtml += '<div class="payment-details-row">';
+                    paymentHtml += '<span class="payment-details-label">Counter Deposit:</span>';
+                    paymentHtml += '<span class="payment-details-value">' + data.counter_deposit + '</span>';
+                    paymentHtml += '</div>';
+                }
+
+                if (data.particulars && data.particulars !== data.mode) {
+                    paymentHtml += '<div class="payment-details-row">';
+                    paymentHtml += '<span class="payment-details-label">Particulars:</span>';
+                    paymentHtml += '<span class="payment-details-value">' + data.particulars + '</span>';
+                    paymentHtml += '</div>';
+                }
+
+                if (data.voucher_type && data.voucher_type !== data.mode) {
+                    paymentHtml += '<div class="payment-details-row">';
+                    paymentHtml += '<span class="payment-details-label">Voucher Type:</span>';
+                    paymentHtml += '<span class="payment-details-value">' + data.voucher_type + '</span>';
+                    paymentHtml += '</div>';
+                }
+
+                paymentHtml += '<div class="payment-details-row">';
+                paymentHtml += '<span class="payment-details-label">Customer ID:</span>';
+                paymentHtml += '<span class="payment-details-value">' + (data.customer.id || 'N/A') + '</span>';
+                paymentHtml += '</div>';
+
+                paymentHtml += '</div>';
+
+                // Footer
+                paymentHtml += '<div class="footer-info">';
+                paymentHtml += '<p>Thank you for your payment!</p>';
+                paymentHtml += '<p>Printed Time: ' + new Date().toLocaleString() + '</p>';
+                paymentHtml += '</div>';
+
+                paymentHtml += '</div>';
+                body.innerHTML = paymentHtml;
+            })
+            .catch(error => {
+                body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">';
+                body.innerHTML += '<i class="fas fa-exclamation-circle fa-2x"></i>';
+                body.innerHTML += '<p>Error loading payment: ' + error.message + '</p>';
+                body.innerHTML += '</div>';
+            });
+    }
+
+    function closePaymentModal() {
+        document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    // Close payment modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const paymentModal = document.getElementById('paymentModal');
+        if (event.target === paymentModal) {
+            closePaymentModal();
         }
     });
 </script>
@@ -924,7 +1263,7 @@
                         @foreach ($recentPayments as $pay)
                             <tr>
                                 <td>
-                                    <a href="{{ route('cashreceipt.search', ['receiptno' => $pay['payment_id']]) }}" class="receipt-link">
+                                    <a href="#" class="receipt-link" onclick="openPaymentModal({{ $pay['payment_id'] }}); return false;">
                                         <strong>{{ $pay['receipt'] }}</strong>
                                     </a><br>
                                     <small style="color:#9ca3af">{{ $pay['date'] }}</small>

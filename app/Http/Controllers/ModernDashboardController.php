@@ -240,4 +240,47 @@ class ModernDashboardController extends Controller
             'items' => $items,
         ]);
     }
+
+    public function getPaymentData(Request $req)
+    {
+        $paymentId = $req->query('paymentid');
+
+        $payment = customerledgerdetails::with('customer')
+            ->where('id', $paymentId)
+            ->where('invoicetype', 'payment')
+            ->first();
+
+        if (!$payment) {
+            return response()->json(['error' => 'Payment not found'], 404);
+        }
+
+        // Determine payment mode
+        $mode = trim($payment->voucher_type ?? '');
+        if (empty($mode)) {
+            $mode = trim($payment->particulars ?? '');
+        }
+        if (empty($mode)) {
+            $mode = 'Cash';
+        }
+
+        return response()->json([
+            'payment_id' => $payment->id,
+            'receipt_no' => 'RCP-' . $payment->id,
+            'amount' => $payment->credit,
+            'date' => $payment->date,
+            'nepali_date' => NepaliDate::adToBsString($payment->date, 'en'),
+            'mode' => $mode,
+            'bank_deposit' => $payment->bank_deposit,
+            'counter_deposit' => $payment->counter_deposit,
+            'particulars' => $payment->particulars,
+            'voucher_type' => $payment->voucher_type,
+            'customer' => [
+                'id' => $payment->customerid,
+                'name' => $payment->customer ? $payment->customer->name : 'N/A',
+                'address' => $payment->customer ? $payment->customer->address : 'N/A',
+                'phoneno' => $payment->customer ? $payment->customer->phoneno : null,
+                'email' => $payment->customer ? $payment->customer->email : null,
+            ],
+        ]);
+    }
 }
