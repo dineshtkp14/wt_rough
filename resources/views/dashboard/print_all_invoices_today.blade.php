@@ -148,7 +148,7 @@
         }
 
         .label-highlight {
-            background: #e40b0b;
+            background: black;
             padding: 3px 8px;
             color: #f4f2ee;
             border-radius: 4px;
