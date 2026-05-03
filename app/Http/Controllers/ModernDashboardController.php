@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Models\item;
 use App\Models\customerinfo;
 use App\Models\company;
@@ -282,5 +283,78 @@ class ModernDashboardController extends Controller
                 'email' => $payment->customer ? $payment->customer->email : null,
             ],
         ]);
+    }
+
+    public function printAllTodayInvoices(Request $req)
+    {
+        $today = now()->toDateString();
+        $nepaliToday = NepaliDate::adToBsString($today, 'en');
+
+        // Fetch all invoices for today with customer and items
+        $invoices = invoice::with(['customer', 'salesitems.item'])
+            ->whereDate('inv_date', $today)
+            ->orderBy('id', 'asc')
+            ->get()
+            ->map(function($inv) {
+                $isPaid = ($inv->inv_type === 'cash') || customerledgerdetails::where('invoiceid', $inv->id)->where('credit', '>', 0)->exists();
+                return [
+                    'id' => $inv->id,
+                    'invoice_no' => 'INV-' . $inv->id,
+                    'type' => $inv->inv_type,
+                    'date' => $inv->inv_date,
+                    'nepali_date' => NepaliDate::adToBsString($inv->inv_date, 'en'),
+                    'subtotal' => $inv->subtotal,
+                    'discount' => $inv->discount,
+                    'total' => $inv->total,
+                    'notes' => $inv->notes,
+                    'added_by' => $inv->added_by,
+                    'status' => $isPaid ? 'paid' : 'pending',
+                    'customer' => [
+                        'id' => $inv->customerid,
+                        'name' => $inv->customer ? $inv->customer->name : 'N/A',
+                        'address' => $inv->customer ? $inv->customer->address : 'N/A',
+                        'pan_no' => $inv->customer ? $inv->customer->pan_no : null,
+                        'phoneno' => $inv->customer ? $inv->customer->phoneno : null,
+                        'email' => $inv->customer ? $inv->customer->email : null,
+                    ],
+                    'items' => $inv->salesitems->map(function($si) {
+                        return [
+                            'item_id' => $si->itemid,
+                            'item_name' => $si->item ? $si->item->itemsname : $si->unstockedname,
+                            'quantity' => $si->quantity,
+                            'unit' => $si->unit,
+                            'price' => $si->price,
+                            'subtotal' => $si->subtotal,
+                        ];
+                    }),
+                ];
+            });
+
+        // Calculate totals
+        $totalInvoices = $invoices->count();
+        $totalAmount = $invoices->sum('total');
+        $totalPaid = $invoices->where('status', 'paid')->sum('total');
+        $totalPending = $invoices->where('status', 'pending')->sum('total');
+
+        $pdf = FacadePdf::setOptions([
+            'dpi' => 150,
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'defaultFont' => 'sans-serif',
+            'chroot' => public_path(),
+            'enable_font_subsetting' => false,
+        ])
+        ->loadView('dashboard.print_all_invoices_today', [
+            'invoices' => $invoices,
+            'today' => $today,
+            'nepaliToday' => $nepaliToday,
+            'totalInvoices' => $totalInvoices,
+            'totalAmount' => $totalAmount,
+            'totalPaid' => $totalPaid,
+            'totalPending' => $totalPending,
+        ])
+        ->setPaper('A4', 'portrait');
+
+        return $pdf->stream('all_invoices_' . $today . '.pdf');
     }
 }

@@ -517,6 +517,25 @@
         background: #d1d5db;
     }
 
+    .btn-print-all {
+        background: #f97316;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: background 0.2s;
+    }
+
+    .btn-print-all:hover {
+        background: #ea580c;
+    }
+
     /* Invoice display styles inside modal */
     .invoice-display {
         font-family: 'Noto Sans', Arial, sans-serif;
@@ -1206,9 +1225,14 @@
     <!-- Tables Row -->
     <div class="tables-row">
         <div class="card">
-            <div class="card-hd">
+            <div class="card-hd" style="flex-wrap: wrap; gap: 10px;">
                 <h5>Today's Invoices</h5>
-                <a href="{{ route('itemsales.index') }}" class="view-all">View all</a>
+                <div style="display: flex; gap: 10px;">
+                    <a href="{{ route('itemsales.index') }}" class="view-all">View all</a>
+                    <a href="{{ route('invoice.print.all.today') }}" target="_blank" class="btn-print-all">
+                        <i class="fas fa-print"></i> Print All Today
+                    </a>
+                </div>
             </div>
             <div class="card-bd">
                 <table class="table-modern">
