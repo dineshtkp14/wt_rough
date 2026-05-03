@@ -651,7 +651,7 @@
                 invoiceHtml += '<div class="inv-meta-left">';
                 invoiceHtml += '<strong>INVOICE NO: ' + data.invoice_id + '</strong><br>';
                 if (data.customer.pan_no) invoiceHtml += 'PAN No. ' + data.customer.pan_no + '<br>';
-                if (data.customer.contact_no) invoiceHtml += 'Contact: ' + data.customer.contact_no + '<br>';
+                if (data.customer.phoneno) invoiceHtml += 'Contact: ' + data.customer.phoneno + '<br>';
                 invoiceHtml += '<br>';
                 invoiceHtml += '<strong>Name:</strong> ' + (data.customer.name || 'N/A') + '<br>';
                 invoiceHtml += '<strong>Address:</strong> ' + (data.customer.address || 'N/A') + '<br>';
