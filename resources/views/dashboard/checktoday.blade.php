@@ -6,6 +6,7 @@
 <style>
     .checktoday-container {
         padding: 20px;
+        margin-left: 260px;
     }
 
     .section-title {
