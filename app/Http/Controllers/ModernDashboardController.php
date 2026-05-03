@@ -353,7 +353,7 @@ class ModernDashboardController extends Controller
             'totalPaid' => $totalPaid,
             'totalPending' => $totalPending,
         ])
-        ->setPaper('A4', 'portrait');
+        ->setPaper('A5', 'portrait');
 
         return $pdf->stream('all_invoices_' . $today . '.pdf');
     }
@@ -418,7 +418,7 @@ class ModernDashboardController extends Controller
             'totalPayments' => $totalPayments,
             'totalAmount' => $totalAmount,
         ])
-        ->setPaper('A4', 'portrait');
+        ->setPaper('A5', 'portrait');
 
         return $pdf->stream('all_payments_' . $today . '.pdf');
     }
