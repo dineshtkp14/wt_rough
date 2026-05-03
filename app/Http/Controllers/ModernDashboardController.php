@@ -193,10 +193,6 @@ class ModernDashboardController extends Controller
 
     public function getInvoiceData(Request $req)
     {
-        if (!Auth::check()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
         $invoiceId = $req->query('invoiceid');
 
         $invoice = invoice::with('customer')->find($invoiceId);

@@ -612,8 +612,25 @@
         modal.style.display = 'block';
 
         // Fetch invoice data via JSON API
-        fetch('{{ route("api.invoice.data") }}?invoiceid=' + invoiceId)
-            .then(response => response.json())
+        fetch('{{ route("api.invoice.data") }}?invoiceid=' + invoiceId, {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    return response.text().then(text => {
+                        console.error('Non-JSON response:', text.substring(0, 200));
+                        throw new Error('Expected JSON but received HTML');
+                    });
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.error) {
                     throw new Error(data.error);
