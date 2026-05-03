@@ -340,6 +340,7 @@ Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoicei
 Route::get('/api/invoice-data',[ModernDashboardController::class,'getInvoiceData'])->name('api.invoice.data');
 Route::get('/api/payment-data',[ModernDashboardController::class,'getPaymentData'])->name('api.payment.data');
 Route::get('/invoice/print-all-today',[ModernDashboardController::class,'printAllTodayInvoices'])->name('invoice.print.all.today');
+Route::get('/payment/print-all-today',[ModernDashboardController::class,'printAllTodayPayments'])->name('payment.print.all.today');
 Route::delete('/billno', [CustomerLedgerHistroy::class, 'deletebillfromdatabase'])->name('customer.deletebillno');
 
 Route::put('/billno', [CustomerLedgerHistroy::class, 'updateinvoiicetype'])->name('customer.updatebillinvoicetype');

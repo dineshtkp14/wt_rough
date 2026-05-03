@@ -357,4 +357,69 @@ class ModernDashboardController extends Controller
 
         return $pdf->stream('all_invoices_' . $today . '.pdf');
     }
+
+    public function printAllTodayPayments(Request $req)
+    {
+        $today = now()->toDateString();
+        $nepaliToday = NepaliDate::adToBsString($today, 'en');
+
+        // Fetch all payments for today with customer
+        $payments = customerledgerdetails::with('customer')
+            ->whereDate('date', $today)
+            ->where('invoicetype', 'payment')
+            ->orderBy('id', 'asc')
+            ->get()
+            ->map(function($pay) {
+                // Determine payment mode
+                $mode = trim($pay->voucher_type ?? '');
+                if (empty($mode)) {
+                    $mode = trim($pay->particulars ?? '');
+                }
+                if (empty($mode)) {
+                    $mode = 'Cash';
+                }
+
+                return [
+                    'id' => $pay->id,
+                    'receipt_no' => 'RCP-' . $pay->id,
+                    'amount' => $pay->credit,
+                    'date' => $pay->date,
+                    'nepali_date' => NepaliDate::adToBsString($pay->date, 'en'),
+                    'mode' => $mode,
+                    'bank_deposit' => $pay->bank_deposit,
+                    'counter_deposit' => $pay->counter_deposit,
+                    'particulars' => $pay->particulars,
+                    'customer' => [
+                        'id' => $pay->customerid,
+                        'name' => $pay->customer ? $pay->customer->name : 'N/A',
+                        'address' => $pay->customer ? $pay->customer->address : 'N/A',
+                        'phoneno' => $pay->customer ? $pay->customer->phoneno : null,
+                        'email' => $pay->customer ? $pay->customer->email : null,
+                    ],
+                ];
+            });
+
+        // Calculate totals
+        $totalPayments = $payments->count();
+        $totalAmount = $payments->sum('amount');
+
+        $pdf = FacadePdf::setOptions([
+            'dpi' => 150,
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'defaultFont' => 'sans-serif',
+            'chroot' => public_path(),
+            'enable_font_subsetting' => false,
+        ])
+        ->loadView('dashboard.print_all_payments_today', [
+            'payments' => $payments,
+            'today' => $today,
+            'nepaliToday' => $nepaliToday,
+            'totalPayments' => $totalPayments,
+            'totalAmount' => $totalAmount,
+        ])
+        ->setPaper('A4', 'portrait');
+
+        return $pdf->stream('all_payments_' . $today . '.pdf');
+    }
 }

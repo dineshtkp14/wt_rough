@@ -1269,9 +1269,14 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-hd">
+            <div class="card-hd" style="flex-wrap: wrap; gap: 10px;">
                 <h5>Today's Payments</h5>
-                <a href="{{ route('cpayments.index') }}" class="view-all">View all</a>
+                <div style="display: flex; gap: 10px;">
+                    <a href="{{ route('cpayments.index') }}" class="view-all">View all</a>
+                    <a href="{{ route('payment.print.all.today') }}" target="_blank" class="btn-print-all">
+                        <i class="fas fa-print"></i> Print All Today
+                    </a>
+                </div>
             </div>
             <div class="card-bd">
                 <table class="table-modern">
