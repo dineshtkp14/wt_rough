@@ -245,7 +245,7 @@
         <div class="card-hd" style="flex-wrap: wrap; gap: 10px;">
             <h5><i class="fas fa-file-invoice me-2"></i>Today's Invoices</h5>
             <div style="display: flex; gap: 10px;">
-                <a href="{{ route('cinvoice.index') }}" class="btn-print-all">
+                <a href="{{ route('invoice.index') }}" class="btn-print-all">
                     <i class="fas fa-eye"></i> View All
                 </a>
                 <a href="{{ route('invoice.print.all.today') }}" target="_blank" class="btn-print-all">
