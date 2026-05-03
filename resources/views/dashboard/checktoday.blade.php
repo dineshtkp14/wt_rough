@@ -361,12 +361,6 @@
     </div>
 </div>
 
-<!-- Invoice Modal -->
-@include('dashboard.partials.invoice_modal')
-
-<!-- Payment Modal -->
-@include('dashboard.partials.payment_modal')
-
 <script>
 function openInvoiceModal(invoiceId) {
     // This will be implemented if needed
