@@ -14,27 +14,10 @@
 
         .page {
             width: 100%;
-            min-height: 170mm;
             padding: 0;
             margin: 0;
             box-sizing: border-box;
-            page-break-after: always;
             position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .page-content {
-            flex: 1;
-        }
-
-        .page:last-child {
-            page-break-after: avoid;
-        }
-
-        .footer-section {
-            margin-top: auto;
-            padding-bottom: 10px;
         }
 
         .header {
@@ -136,15 +119,19 @@
         .signature-section {
             clear: both;
             margin-top: 40px;
-            display: flex;
-            justify-content: space-between;
+            overflow: hidden;
             font-size: 16px;
         }
 
-        .signature-section div {
-            flex: 1;
-            display: flex;
-            align-items: baseline;
+        .signature-section .left {
+            float: left;
+            width: 50%;
+        }
+
+        .signature-section .right {
+            float: right;
+            width: 50%;
+            text-align: right;
         }
 
         .signature-section p {
@@ -172,17 +159,13 @@
             border: 1px solid black;
             padding: 8px;
             font-size: 16px;
-            margin-top: 10px;
+            margin-top: 80px;
+            page-break-inside: avoid;
         }
 
         .total-due-amount {
             font-size: 40px;
             font-weight: bold;
-        }
-
-        .footer-section {
-            margin-top: auto;
-            padding-bottom: 10px;
         }
 
         .footer-printed {
@@ -202,7 +185,6 @@
     <div class="page">
         <div class="watermark">OHT</div>
 
-        <div class="page-content">
         <div class="header">
             <div class="letterhead">
                 <h1>OM HARI TRADELINK</h1>
@@ -293,29 +275,30 @@
         </div>
 
         <div class="signature-section">
-            <div>
+            <div class="left">
                 <p><strong>Payer's Signature:</strong> __________</p>
             </div>
-            <div class="receiver-signature">
+            <div class="right">
                 <p><strong>Receiver's Signature:</strong> ________________</p>
             </div>
         </div>
+
+        <p class="footer-printed">Printed Time and Date: <span style="color: #4b4b4b;">{{ now()->format('Y-m-d H:i:s') }}</span></p>
+
+        <p class="receipt-counter">Receipt {{ $index + 1 }} of {{ count($receipts) }}</p>
+
+        <div class="total-due-box">
+            Total Due Amount:
+            <span class="total-due-amount ps-2">
+                {{ number_format($receipt->totaldueamount ?? 0, 2) }}
+            </span> -/
+            <span style="font-size: 16px;"> (as of the date and time: {{ now()->format('Y-m-d H:i:s') }})</span>
         </div>
 
-        <div class="footer-section">
-            <p class="footer-printed">Printed Time and Date: <span style="color: #4b4b4b;">{{ now()->format('Y-m-d H:i:s') }}</span></p>
-
-            <p class="receipt-counter">Receipt {{ $index + 1 }} of {{ count($receipts) }}</p>
-
-            <div class="total-due-box">
-                Total Due Amount:
-                <span class="total-due-amount ps-2">
-                    {{ number_format($receipt->totaldueamount ?? 0, 2) }}
-                </span> -/
-                <span style="font-size: 16px;"> (as of the date and time: {{ now()->format('Y-m-d H:i:s') }})</span>
-            </div>
-        </div>
     </div>
+    @if(!$loop->last)
+    <div style="page-break-after: always;"></div>
+    @endif
     @endforeach
 </body>
 </html>
