@@ -832,7 +832,58 @@ class CustomerLedgerHistroy extends Controller
             }
     }
 
+    public function printAllCustomerInvoices(Request $req)
+    {
+        if (Auth::check()) {
+            $from = $req->date1;
+            $to = $req->date2;
+            $customerid = $req->customerid;
 
+            $customerinfo = customerinfo::where('id', $customerid)->first();
+            
+            $allInvoices = invoice::where('customerid', $customerid)
+                ->when($from && $to, function($query) use ($from, $to) {
+                    return $query->whereBetween('inv_date', [$from, $to]);
+                })
+                ->orderBy('id', 'DESC')
+                ->get();
+
+            $invoiceData = [];
+            foreach ($allInvoices as $inv) {
+                $items = salesitem::where('invoiceid', $inv->id)->get();
+                foreach ($items as $item) {
+                    $itemInfo = item::where('id', $item->itemid)->select('itemsname', 'mrp', 'unit')->first();
+                    if ($itemInfo) {
+                        $item->itemname = $itemInfo->itemsname;
+                        $item->mrp = $itemInfo->mrp;
+                        $item->unit = $itemInfo->unit;
+                    }
+                }
+                $invoiceData[] = [
+                    'invoice' => $inv,
+                    'items' => $items
+                ];
+            }
+
+            $pdf = FacadePdf::setOptions([
+                'dpi' => 150,
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'NotoSansDevanagari',
+                'chroot' => public_path(),
+            ])
+            ->loadView('customerledgerhistory.print_all_customer_invoices', [
+                'customer' => $customerinfo,
+                'invoiceData' => $invoiceData,
+                'from' => $from,
+                'to' => $to,
+            ])
+            ->setPaper('A4', 'portrait');
+        
+            return $pdf->stream('all_invoices.pdf');
+        }
+        return redirect('/login');
+    }
 
     public function returnchoosendatehistroycashandcredit(Request $req)
     {
