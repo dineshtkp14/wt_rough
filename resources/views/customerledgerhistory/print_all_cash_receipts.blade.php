@@ -14,20 +14,14 @@
 
         .page {
             width: 100%;
-            min-height: 180mm;
-            max-height: 190mm;
+            min-height: 170mm;
             padding: 0;
             margin: 0;
             box-sizing: border-box;
-            page-break-before: always;
-            page-break-after: avoid;
+            page-break-after: always;
             position: relative;
             display: flex;
             flex-direction: column;
-        }
-
-        .page:first-child {
-            page-break-before: avoid;
         }
 
         .page-content {
@@ -36,10 +30,6 @@
 
         .page:last-child {
             page-break-after: avoid;
-        }
-
-        .page-content {
-            flex: 1;
         }
 
         .footer-section {
