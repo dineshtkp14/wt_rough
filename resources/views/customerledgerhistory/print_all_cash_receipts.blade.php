@@ -157,9 +157,9 @@
             background-color: black;
             color: white;
             border: 1px solid black;
-            padding: 8px;
-            font-size: 16px;
-            margin-top: 80px;
+            padding: 14px;
+            font-size: 18px;
+            margin-top: 200px;
             page-break-inside: avoid;
         }
 
