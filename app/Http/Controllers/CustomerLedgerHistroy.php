@@ -858,6 +858,14 @@ class CustomerLedgerHistroy extends Controller
                         $item->mrp = $itemInfo->mrp;
                         $item->unit = $itemInfo->unit;
                     }
+                    // Calculate subtotal if not present
+                    if (!isset($item->subtotal)) {
+                        $item->subtotal = ($item->price ?? 0) * ($item->quantity ?? 1);
+                    }
+                    // Set nos field (quantity)
+                    $item->nos = $item->quantity ?? 1;
+                    // Set itemidorg (original item ID for display)
+                    $item->itemidorg = $item->itemid ?? '-';
                 }
                 $invoiceData[] = [
                     'invoice' => $inv,
@@ -878,9 +886,63 @@ class CustomerLedgerHistroy extends Controller
                 'from' => $from,
                 'to' => $to,
             ])
-            ->setPaper('A4', 'portrait');
+            ->setPaper('A5', 'portrait');
         
             return $pdf->stream('all_invoices.pdf');
+        }
+        return redirect('/login');
+    }
+
+    public function printAllCashReceipts(Request $req, $customerid)
+    {
+        if (Auth::check()) {
+            $customerinfo = customerinfo::where('id', $customerid)->first();
+            
+            $allReceipts = customerledgerdetails::where('customerid', $customerid)
+                ->where('invoicetype', 'payment')
+                ->orderBy('id', 'DESC')
+                ->get();
+
+            // Calculate running balance for each receipt
+            $runningBalance = 0;
+            $receiptData = [];
+            
+            // Get all ledger entries for this customer to calculate balances
+            $allLedgerEntries = customerledgerdetails::where('customerid', $customerid)
+                ->where(function($query) {
+                    $query->where('invoicetype', 'credit')
+                          ->orWhere('invoicetype', 'payment');
+                })
+                ->orderBy('id', 'ASC')
+                ->get();
+            
+            foreach ($allReceipts as $receipt) {
+                // Calculate balance up to this receipt
+                $balanceUpToReceipt = 0;
+                foreach ($allLedgerEntries as $entry) {
+                    if ($entry->id <= $receipt->id) {
+                        $balanceUpToReceipt += ($entry->debit ?? 0) - ($entry->credit ?? 0);
+                    }
+                }
+                
+                $receipt->totaldueamount = abs($balanceUpToReceipt);
+                $receiptData[] = $receipt;
+            }
+
+            $pdf = FacadePdf::setOptions([
+                'dpi' => 150,
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'NotoSansDevanagari',
+                'chroot' => public_path(),
+            ])
+            ->loadView('customerledgerhistory.print_all_cash_receipts', [
+                'customer' => $customerinfo,
+                'receipts' => $receiptData,
+            ])
+            ->setPaper('A5', 'landscape');
+        
+            return $pdf->stream('all_cash_receipts.pdf');
         }
         return redirect('/login');
     }

@@ -27,13 +27,20 @@
                     </div>
                 </form>
             </div>
-            <!-- Print Button -->
-            <div class="d-flex justify-content-end align-items-center pt-4 p-4">
+            <!-- Print Buttons -->
+            <div class="d-flex justify-content-end align-items-center pt-4 p-4 gap-4">
                 <a href="{{ route('cashreceipt.convert', ['receiptno' => $receiptno]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ isset($alldetails) && count($alldetails) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
                     <div class="icon-box d-flex justify-content-center align-items-center" style="font-size: 34px;">
                         <i class="fa-solid fa-print"></i>
                     </div>
                 </a>
+                @if(!empty($customerinfodetails) && isset($customerinfodetails[0]->id))
+                <a href="{{ route('customer.printallcashreceipts', ['customerid' => $customerinfodetails[0]->id]) }}" onclick="openPdfInNewTab(event, this.href); return false;" style="font-size: 18px; margin-left: 20px;">Print All Receipts
+                    <div class="icon-box d-flex justify-content-center align-items-center" style="font-size: 34px;">
+                        <i class="fa-solid fa-print"></i>
+                    </div>
+                </a>
+                @endif
             </div>
             <!-- CASH RECEIPT Heading -->
             <h3 class="text-center"><strong>CASH RECEIPT</strong></h3>

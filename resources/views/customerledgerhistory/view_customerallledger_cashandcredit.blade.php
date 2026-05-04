@@ -163,6 +163,7 @@
 	<span> 
 		
 
+		@if(isset($cid) && !empty($cid))
 		<div class="col-12 d-flex justify-content-end align-items-center pt-4 gap-3">
 			<a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
 				<div class="icon-box d-flex justify-content-center align-items-center">
@@ -172,7 +173,11 @@
 			<a href="{{ route('print.all.customer.invoices', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} btn btn-md btn-success" style="padding: 10px 20px; font-size: 18px;">
 				<i class="fa-solid fa-file-invoice"></i> Print All Invoices
 			</a>
+			<a href="{{ route('customer.printallcashreceipts', ['customerid' => $cid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} btn btn-md btn-info" style="padding: 10px 20px; font-size: 18px;">
+				<i class="fa-solid fa-receipt"></i> Print All Cash Receipts
+			</a>
 		</div>
+		@endif
 		
 		
 	</span>
