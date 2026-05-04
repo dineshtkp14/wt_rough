@@ -494,6 +494,18 @@
                         </a>
                     </li>
 
+                    <!-- Check Today -->
+                    <li class="nav-item dashboard">
+                        <a href="{{ route('checktoday.index') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-checktoday"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-calendar-day"></i>
+                                <span>Check Today</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
                     <li class="nav-item invoice">
                         <a href="{{ route('itemsales.create') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-invoice"
