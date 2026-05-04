@@ -2,16 +2,16 @@
 @include('layouts.breadcrumb')
 
 @section('content')
-<div class="main-content">
+<div class="main-content" style="width: 100% !important; max-width: 100% !important;">
     @yield('breadcrumb')
 
-    <div class="container">
+    <div style="width: 100% !important; max-width: 100% !important; padding: 0 15px;">
         @if (Session::has('success'))
             <div class="alert bg-success text-white w-50">
                 {{ Session::get('success') }}
             </div>
         @endif
-        <div class="card shadow p-4">
+        <div class="card shadow p-4" style="width: 100% !important; max-width: 100% !important;">
             <!-- Shop Name -->
           
             <!-- Cash Receipt -->
@@ -67,7 +67,7 @@
                         <!-- Customer Information -->
                         <div class="mb-4">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6" style="max-width: 50%;">
                                     <h6 class="text-decoration-underline"><strong>RECEIVED FROM</strong></h6>
 
                                     @if (!empty($customerinfodetails))
@@ -79,7 +79,7 @@
                                         @endforeach
                                     @endif
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6" style="max-width: 50%;">
                                     <div class="mb-4">
                                         @if (isset($data->date))
                                         @endif
@@ -159,7 +159,7 @@
                             <div class="col-md-6">
                                 {{-- <p><strong>Payer's Signature:</strong> _______________________</p> --}}
                             </div>
-                            <div class="col-md-6 text-right">
+                            <div class="col-md-6 text-right" style="max-width: 50%;">
                                 <p><strong>Receiver's Signature:</strong> _______________________</p>
                                     @if(auth()->check())
                                         <span class="ms-5" style="margin-top: -10px !important;">{{ auth()->user()->name }}</span>

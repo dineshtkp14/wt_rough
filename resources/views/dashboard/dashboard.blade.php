@@ -215,7 +215,8 @@
     }
 </style>
 
-<div class="checktoday-container">
+<div class="main-content">
+<div class="checktoday-container" style="padding: 20px;">
     <h2 class="section-title">Today's Transactions - {{ date('Y-m-d') }}</h2>
 
     <div class="summary-cards">
@@ -356,6 +357,7 @@
             </table>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Invoice Modal -->

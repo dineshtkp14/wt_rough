@@ -230,9 +230,7 @@
 						   <td data-label="Contact No."><b>{{ $i->invoiceid }}
 
 							@if(!empty($i->invoiceid))
-							<a href="{{ url('onlyviewbill?invoiceid=' . $i->invoiceid) }}" class="btn btn-sm bg-info text-white">View</a>
-
-							   {{-- <a class="btn btn-sm bg-info text-white"> view </a></b> --}}
+							<button onclick="openInvoiceModal({{ $i->invoiceid }})" class="btn btn-sm bg-info text-white">View</button>
 							@endif
 							</td>
 
@@ -241,8 +239,7 @@
 								<b>CR-({{ $i->id }}) </b>
 
 								@if(!empty($i->invoicetype == 'payment'))
-								<a href="{{ url('cashreceipt?receiptno=' . $i->id) }}" class="btn btn-sm bg-info text-white">View</a>
-	
+								<button onclick="openPaymentModal({{ $i->id }})" class="btn btn-sm bg-info text-white">View</button>
 								@endif
 
 
@@ -464,19 +461,170 @@ echo $words;
 
 
 
+<!-- Invoice Modal -->
+<div id="invoiceModal" class="invoice-modal">
+    <div class="invoice-modal-content">
+        <div class="invoice-modal-header">
+            <h3>Invoice Details</h3>
+            <button class="invoice-modal-close" onclick="closeInvoiceModal()">&times;</button>
+        </div>
+        <div class="invoice-modal-body" id="invoiceModalBody"></div>
+        <div class="invoice-modal-footer">
+            <a id="invoicePrintLink" href="#" target="_blank" class="btn-print"><i class="fas fa-print"></i> Print PDF</a>
+            <button class="btn-close-modal" onclick="closeInvoiceModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div id="paymentModal" class="payment-modal">
+    <div class="payment-modal-content">
+        <div class="payment-modal-header">
+            <h3>Payment Details</h3>
+            <button class="payment-modal-close" onclick="closePaymentModal()">&times;</button>
+        </div>
+        <div class="payment-modal-body" id="paymentModalBody"></div>
+        <div class="payment-modal-footer">
+            <a id="paymentPrintLink" href="#" target="_blank" class="btn-print"><i class="fas fa-print"></i> Print Receipt</a>
+            <button class="btn-close-modal" onclick="closePaymentModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.invoice-modal, .payment-modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); overflow: auto; }
+.invoice-modal-content, .payment-modal-content { background-color: #fff; margin: 20px auto; width: 90%; max-width: 900px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+.invoice-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; border-radius: 8px 8px 0 0; }
+.payment-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 8px 8px 0 0; }
+.invoice-modal-header h3, .payment-modal-header h3 { margin: 0; font-size: 1.25rem; }
+.invoice-modal-close, .payment-modal-close { background: none; border: none; color: white; font-size: 28px; cursor: pointer; line-height: 1; }
+.invoice-modal-body, .payment-modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
+.invoice-modal-footer, .payment-modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 15px 20px; border-top: 1px solid #e5e7eb; background: #f9fafb; border-radius: 0 0 8px 8px; }
+.btn-print, .btn-close-modal { padding: 8px 16px; border-radius: 6px; font-size: 0.875rem; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.btn-print { background: #f97316; color: white; border: none; }
+.btn-print:hover { background: #ea580c; }
+.btn-close-modal { background: #e5e7eb; color: #374151; border: 1px solid #d1d5db; }
+.invoice-display { font-family: 'Noto Sans', Arial, sans-serif; color: #1f2937; }
+.invoice-display .inv-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; font-size: 0.875rem; }
+.invoice-display .inv-meta-right { text-align: right; }
+.invoice-display .inv-badge { display: inline-block; background: #1f2937; color: white; padding: 4px 12px; font-size: 0.75rem; text-transform: uppercase; }
+.invoice-display table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.875rem; }
+.invoice-display th, .invoice-display td { border: 1px solid #1f2937; padding: 8px 10px; text-align: left; }
+.invoice-display th { background: #f97316; color: white; font-weight: 600; }
+.invoice-display .text-right { text-align: right; }
+.invoice-display .total-row { font-weight: 700; background: #f9fafb; }
+.payment-display { font-family: 'Noto Sans', Arial, sans-serif; color: #1f2937; }
+.payment-display .receipt-header { text-align: center; border-bottom: 2px solid #10b981; padding-bottom: 15px; margin-bottom: 20px; }
+.payment-display .receipt-header h2 { font-size: 1.5rem; margin: 0; text-transform: uppercase; letter-spacing: 1px; color: #10b981; }
+.payment-display .receipt-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; font-size: 0.875rem; }
+.payment-display .receipt-meta-right { text-align: right; }
+.payment-display .receipt-badge { display: inline-block; background: #10b981; color: white; padding: 4px 12px; font-size: 0.75rem; text-transform: uppercase; border-radius: 4px; }
+.payment-display .amount-box { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
+.payment-display .amount-value { font-size: 2rem; font-weight: 700; }
+.payment-display .payment-details { background: #f9fafb; padding: 15px; border-radius: 8px; margin-top: 20px; }
+.payment-display .payment-details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+.payment-display .payment-details-label { font-weight: 600; color: #4b5563; }
+</style>
+
 <script>
-
-	
 function openPdfInNewTab(event, url) {
-        event.preventDefault();
-        var newTab = window.open(url, '_blank');
-        newTab.focus();
-    }
+    event.preventDefault();
+    var newTab = window.open(url, '_blank');
+    newTab.focus();
+}
 
+function openInvoiceModal(invoiceId) {
+    const modal = document.getElementById('invoiceModal');
+    const body = document.getElementById('invoiceModalBody');
+    const printLink = document.getElementById('invoicePrintLink');
+    printLink.href = '{{ url("billno/pdf/convert") }}?invoiceid=' + invoiceId;
+    body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading invoice...</p></div>';
+    modal.style.display = 'block';
+    fetch('{{ route("api.invoice.data") }}?invoiceid=' + invoiceId, {
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
+    .then(data => {
+        if (data.error) throw new Error(data.error);
+        let html = '<div class="invoice-display">';
+        html += '<div class="inv-meta">';
+        html += '<div>';
+        html += '<div style="margin-bottom: 8px;"><strong>INVOICE NO: ' + data.invoice_id + '</strong></div>';
+        html += '<div style="margin-bottom: 4px;"><strong>Name:</strong> ' + (data.customer.name || 'N/A') + '</div>';
+        html += '<div style="margin-bottom: 4px;"><strong>Address:</strong> ' + (data.customer.address || 'N/A') + '</div>';
+        if (data.customer.phoneno) html += '<div style="margin-bottom: 4px;"><strong>Contact:</strong> ' + data.customer.phoneno + '</div>';
+        html += '<div><strong>Customer Id:</strong> ' + (data.customer.id || 'N/A') + '</div>';
+        html += '</div>';
+        html += '<div class="inv-meta-right">';
+        html += '<span class="inv-badge">INVOICE TYPE: ' + (data.type || 'credit').toUpperCase() + '</span>';
+        html += '<div style="margin-top: 15px;">';
+        html += '<div style="margin-bottom: 4px;"><strong>Date:</strong> ' + data.date + '</div>';
+        html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '<table><thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Price</th><th>Amount</th></tr></thead><tbody>';
+        data.items.forEach((item, i) => {
+            html += '<tr><td>' + (i+1) + '</td><td>' + (item.item_name || '') + '</td><td>' + (item.quantity || '') + '</td><td>' + (item.price || '') + '</td><td>' + (item.subtotal || '') + '</td></tr>';
+        });
+        html += '<tr class="total-row"><td colspan="3"></td><td class="text-right"><strong>Total:</strong></td><td><strong>Rs ' + parseFloat(data.total || 0).toFixed(2) + '</strong></td></tr>';
+        html += '</tbody></table>';
+        html += '<div class="footer-info" style="margin-top: 15px; font-size: 0.875rem; color: #6b7280;"><p>Bill Created by: ' + (data.added_by || 'System') + '</p></div>';
+        html += '</div>';
+        body.innerHTML = html;
+    })
+    .catch(error => {
+        body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;"><i class="fas fa-exclamation-circle fa-2x"></i><p>Error: ' + error.message + '</p></div>';
+    });
+}
+function closeInvoiceModal() { document.getElementById('invoiceModal').style.display = 'none'; }
 
+function openPaymentModal(paymentId) {
+    const modal = document.getElementById('paymentModal');
+    const body = document.getElementById('paymentModalBody');
+    const printLink = document.getElementById('paymentPrintLink');
+    printLink.href = '{{ route("cashreceipt.convert") }}?receiptno=' + paymentId;
+    body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading payment...</p></div>';
+    modal.style.display = 'block';
+    fetch('{{ route("api.payment.data") }}?paymentid=' + paymentId, {
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
+    .then(data => {
+        if (data.error) throw new Error(data.error);
+        let html = '<div class="payment-display">';
+        html += '<div class="receipt-header"><h2>Payment Receipt</h2></div>';
+        html += '<div class="receipt-meta">';
+        html += '<div>';
+        html += '<div style="margin-bottom: 4px;"><strong>Receipt No:</strong> ' + data.receipt_no + '</div>';
+        html += '<div style="margin-bottom: 4px;"><strong>Customer:</strong> ' + (data.customer.name || 'N/A') + '</div>';
+        html += '<div><strong>Address:</strong> ' + (data.customer.address || 'N/A') + '</div>';
+        html += '</div>';
+        html += '<div class="receipt-meta-right">';
+        html += '<span class="receipt-badge">' + data.mode.toUpperCase() + '</span>';
+        html += '<div style="margin-top: 15px;">';
+        html += '<div style="margin-bottom: 4px;"><strong>Date:</strong> ' + data.date + '</div>';
+        html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '<div class="amount-box"><div>Amount Received</div><div class="amount-value">Rs ' + parseFloat(data.amount || 0).toFixed(2) + '</div></div>';
+        html += '<div class="payment-details">';
+        html += '<div class="payment-details-row"><span class="payment-details-label">Payment Mode:</span><span>' + data.mode + '</span></div>';
+        html += '<div class="payment-details-row"><span class="payment-details-label">Customer ID:</span><span>' + (data.customer.id || 'N/A') + '</span></div>';
+        html += '</div></div>';
+        body.innerHTML = html;
+    })
+    .catch(error => {
+        body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;"><i class="fas fa-exclamation-circle fa-2x"></i><p>Error: ' + error.message + '</p></div>';
+    });
+}
+function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
+
+window.onclick = function(event) { if (event.target === document.getElementById('invoiceModal')) closeInvoiceModal(); if (event.target === document.getElementById('paymentModal')) closePaymentModal(); }
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeInvoiceModal(); closePaymentModal(); } });
 </script>
 
 </div>
-
 
 @stop
