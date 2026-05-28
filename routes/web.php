@@ -73,6 +73,7 @@ use App\Http\Controllers\TrackcustomerinfoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\trackCreditnotesController;
 use App\Http\Controllers\ModernDashboardController;
+use App\Http\Controllers\TemporaryInvoiceController;
 
 
 
@@ -99,6 +100,7 @@ Route::get('/convertdate',[DateConversionController::class,'convertdate'])->name
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
+Route::get('/itemsales/old-price-search',[ItemsalesController::class,'oldPriceSearch'])->name('itemsales.old-price-search');
 Route::get('/itemsales/{itemsales}/edit',[ItemsalesController::class,'edit'])->name('itemsales.edit');
 Route::put('/itemsales/{itemsales}',[ItemsalesController::class,'update'])->name('itemsales.update');
 Route::post('/itemsales',[ItemsalesController::class,'store'])->name('itemsales.store');
@@ -444,3 +446,16 @@ Route::get('/onetable_showsalesperda', [showperday_controller::class, 'showonlys
  Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout');
 
  Route::get('/modern-dashboard', [ModernDashboardController::class, 'index'])->name('modern.dashboard');
+
+ Route::get('temporaryinvoice/{temporaryinvoice}/print', [TemporaryInvoiceController::class, 'printInvoice'])
+    ->name('temporaryinvoice.print');
+ Route::get('temporaryinvoice-live-search', [TemporaryInvoiceController::class, 'liveSearch'])
+    ->name('temporaryinvoice.live-search');
+
+ Route::resource('temporaryinvoice', TemporaryInvoiceController::class)->only([
+    'index',
+    'create',
+    'store',
+    'show',
+    'destroy',
+ ]);

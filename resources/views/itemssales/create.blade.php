@@ -43,7 +43,6 @@
 
 
         <div class="container-fluid">
-           <span class="h4"> Invoice N0: <span class="h3">{{ $nextgenid }}</span> </span>
 
         <span class="float-end" style="margin-top: -100px; margin-right:500px;">
             <a href="{{ route('customerinfos.create') }}" class="btn btn-primary m"> <i class="fa-solid fa-plus"></i> Add New Customer</a>
@@ -59,7 +58,7 @@
 
 
                 @csrf
-                <div class="py-4 d-flex justify-content-between align-items-start">
+                <div class="pt-0 pb-4 d-flex justify-content-between align-items-start" style="margin-top: 2px;">
                     
                     <div style="width: 400px">
                         <div class="search-box">
@@ -107,6 +106,9 @@
                             <input type="date" class="form-control" placeholder="" id="salesDate"
                                 class="form-control foritemsaledatecss" value="{{ now()->format('Y-m-d') }}" name="date">
                         </div>
+                        <small class="text-muted">
+                            Nepali Date: {{ \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en') }}
+                        </small>
                         
                     </div>
                   
@@ -279,313 +281,52 @@ $(document).ready(function () {
             background-color: rgb(216, 18, 141) !important;
             color: white;
         }
+
+        .old-price-wrapper {
+            position: relative;
+        }
+
+        .old-price-result-box {
+            background: #ffffff;
+            border: 1px solid #ced4da;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+            max-height: 260px;
+            min-width: 320px;
+            overflow-y: auto;
+            position: fixed;
+            z-index: 9999;
+        }
+
+        .invoicetable td {
+            overflow: visible !important;
+        }
+
+        .old-price-result-item {
+            background: #ffffff;
+            border: 0;
+            border-bottom: 1px solid #e9ecef;
+            color: #111827;
+            display: grid;
+            gap: 2px;
+            padding: 8px 10px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .old-price-result-item:hover {
+            background: #fff3cd;
+        }
+
+        .old-price-result-item small {
+            color: #6c757d;
+        }
+
+        .old-price-empty {
+            color: #dc3545;
+            font-size: 14px;
+            padding: 8px 10px;
+        }
         
     </style>
-
-   
-    {{-- Voice-to-Text for Invoice Items --}}
-    <script>
-    (function() {
-        var activeRecognition = null;
-        var voiceModeActive = false;
-        var recognitionLang = 'en-US'; // default English
-
-        function supportsSpeech() {
-            return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
-        }
-
-        function startSpeech(targetInput, lang, autoMoveNext) {
-            if (activeRecognition) {
-                try { activeRecognition.stop(); } catch(e) {}
-            }
-            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            var recognition = new SpeechRecognition();
-            recognition.lang = lang || 'en-US';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            var micBtn = targetInput.parentElement.querySelector('.mic-btn');
-            if (micBtn) {
-                micBtn.style.background = '#dc3545';
-                micBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
-            }
-
-            recognition.onresult = function(event) {
-                var transcript = event.results[0][0].transcript;
-                targetInput.value = transcript;
-                targetInput.dispatchEvent(new Event('input', { bubbles: true }));
-                targetInput.dispatchEvent(new Event('change', { bubbles: true }));
-                targetInput.focus();
-
-                // Auto-move to next input if in voice mode
-                if (autoMoveNext) {
-                    setTimeout(function() {
-                        moveToNextInput(targetInput);
-                    }, 300);
-                }
-            };
-
-            recognition.onerror = function(event) {
-                console.error('Speech error:', event.error);
-                if (micBtn) {
-                    micBtn.style.background = '#007bff';
-                    micBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
-                }
-            };
-
-            recognition.onend = function() {
-                activeRecognition = null;
-                if (micBtn) {
-                    micBtn.style.background = '#007bff';
-                    micBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
-                }
-            };
-
-            activeRecognition = recognition;
-            recognition.start();
-        }
-
-        function moveToNextInput(currentInput) {
-            var row = currentInput.closest('tr');
-            var inputs = row.querySelectorAll('input[type="text"]:not([disabled])');
-            var currentIndex = Array.prototype.indexOf.call(inputs, currentInput);
-            if (currentIndex >= 0 && currentIndex < inputs.length - 1) {
-                inputs[currentIndex + 1].focus();
-                if (voiceModeActive) {
-                    startSpeech(inputs[currentIndex + 1], recognitionLang, true);
-                }
-            } else {
-                // Last field - add new row
-                var addBtn = document.getElementById('addRowBtn');
-                if (addBtn) addBtn.click();
-                setTimeout(function() {
-                    var newRow = document.querySelector('#invoiceTableBody tr:last-child');
-                    if (newRow) {
-                        var firstInput = newRow.querySelector('input[type="text"]:not([disabled])');
-                        if (firstInput && voiceModeActive) {
-                            firstInput.focus();
-                            startSpeech(firstInput, recognitionLang, true);
-                        }
-                    }
-                }, 200);
-            }
-        }
-
-        function addMicButton(input) {
-            if (input.closest('td').querySelector('.mic-btn')) return;
-            var btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'mic-btn';
-            btn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
-            btn.title = 'Click & speak';
-            btn.style.cssText = 'margin-left:4px;padding:2px 6px;background:#007bff;color:white;border:none;border-radius:4px;cursor:pointer;font-size:12px;';
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                startSpeech(input, recognitionLang, voiceModeActive);
-            });
-            input.parentElement.appendChild(btn);
-        }
-
-        function scanInputs() {
-            if (!supportsSpeech()) return;
-            document.querySelectorAll('#invoiceTableBody tr').forEach(function(row) {
-                var cells = row.querySelectorAll('td');
-                var lastIndex = cells.length - 1;
-                cells.forEach(function(td, index) {
-                    // Skip last column (subtotal) and readonly/disabled inputs
-                    if (index === lastIndex) return;
-                    var input = td.querySelector('input[type="text"]');
-                    if (input && !input.readOnly && !input.disabled) {
-                        addMicButton(input);
-                    }
-                });
-            });
-        }
-
-        // Add Voice Mode toggle button
-        function addVoiceModeToggle() {
-            var table = document.querySelector('.invoicetable');
-            if (!table || document.getElementById('voiceModeToggle')) return;
-
-            var toggleDiv = document.createElement('div');
-            toggleDiv.style.cssText = 'margin-bottom:10px;text-align:right;';
-            toggleDiv.innerHTML = `
-                <select id="voiceLangSelect" class="form-control form-control-sm" style="display:inline-block;width:auto;margin-right:8px;">
-                    <option value="en-US">English</option>
-                    <option value="ne-NP">Nepali</option>
-                </select>
-                <button id="voiceModeToggle" type="button" class="btn btn-sm" style="background:#6c757d;color:white;">
-                    <i class="fa-solid fa-microphone-slash"></i> Voice Mode: OFF
-                </button>
-                <small style="margin-left:8px;color:#666;">
-                    When ON: speech auto-moves to next field & adds new rows
-                </small>
-            `;
-            table.parentElement.insertBefore(toggleDiv, table);
-
-            document.getElementById('voiceLangSelect').addEventListener('change', function() {
-                recognitionLang = this.value;
-            });
-
-            document.getElementById('voiceModeToggle').addEventListener('click', function() {
-                voiceModeActive = !voiceModeActive;
-                var btn = document.getElementById('voiceModeToggle');
-                if (voiceModeActive) {
-                    btn.innerHTML = '<i class="fa-solid fa-microphone"></i> Voice Mode: ON';
-                    btn.style.background = '#28a745';
-                    alert('Voice Mode ON: Click any mic button to start. Speech will auto-fill fields continuously.');
-                } else {
-                    btn.innerHTML = '<i class="fa-solid fa-microphone-slash"></i> Voice Mode: OFF';
-                    btn.style.background = '#6c757d';
-                }
-            });
-        }
-
-        // Add "Fill Row by Voice" button
-        function addFillRowByVoiceButton() {
-            var table = document.querySelector('.invoicetable');
-            if (!table || document.getElementById('fillRowVoiceBtn')) return;
-
-            var btnDiv = document.createElement('div');
-            btnDiv.style.cssText = 'margin-bottom:8px;text-align:right;';
-            btnDiv.innerHTML = `
-                <button id="fillRowVoiceBtn" type="button" class="btn btn-sm btn-primary">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Fill Full Row by Voice
-                </button>
-                <small style="margin-left:8px;color:#666;">
-                    Say: "Item Name ... Quantity ... Price"
-                </small>
-            `;
-            var toggleDiv = document.getElementById('voiceModeToggle');
-            if (toggleDiv) {
-                toggleDiv.parentElement.insertBefore(btnDiv, toggleDiv);
-            } else {
-                table.parentElement.insertBefore(btnDiv, table);
-            }
-
-            document.getElementById('fillRowVoiceBtn').addEventListener('click', function() {
-                if (!supportsSpeech()) {
-                    alert('Speech recognition not supported. Use Chrome browser.');
-                    return;
-                }
-
-                var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                var recognition = new SpeechRecognition();
-                recognition.lang = recognitionLang;
-                recognition.interimResults = false;
-                recognition.maxAlternatives = 1;
-
-                var btn = document.getElementById('fillRowVoiceBtn');
-                btn.style.background = '#dc3545';
-                btn.innerHTML = '<i class="fa-solid fa-stop"></i> Listening... Speak now';
-
-                recognition.onresult = function(event) {
-                    var transcript = event.results[0][0].transcript;
-                    parseAndFillRow(transcript);
-                    btn.style.background = '';
-                    btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Fill Full Row by Voice';
-                };
-
-                recognition.onerror = function(event) {
-                    console.error('Speech error:', event.error);
-                    btn.style.background = '';
-                    btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Fill Full Row by Voice';
-                };
-
-                recognition.onend = function() {
-                    btn.style.background = '';
-                    btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Fill Full Row by Voice';
-                };
-
-                recognition.start();
-            });
-        }
-
-        function parseAndFillRow(transcript) {
-            // Parse something like "Cement 5 bags 500" or "Cement quantity 5 unit bags price 500"
-            var words = transcript.toLowerCase().split(/\s+/);
-            var itemName = '';
-            var quantity = '';
-            var price = '';
-
-            // Simple parsing: look for numbers
-            var numbers = transcript.match(/\d+/g);
-            if (numbers && numbers.length >= 2) {
-                quantity = numbers[0];
-                price = numbers[numbers.length - 1];
-                // Everything before first number is item name
-                var firstNumIndex = transcript.search(/\d/);
-                if (firstNumIndex > 0) {
-                    itemName = transcript.substring(0, firstNumIndex).trim();
-                }
-            } else if (numbers && numbers.length === 1) {
-                quantity = numbers[0];
-                price = numbers[0];
-                var firstNumIndex = transcript.search(/\d/);
-                if (firstNumIndex > 0) {
-                    itemName = transcript.substring(0, firstNumIndex).trim();
-                }
-            } else {
-                itemName = transcript;
-            }
-
-            // Get last row
-            var rows = document.querySelectorAll('#invoiceTableBody tr');
-            var lastRow = rows[rows.length - 1];
-            if (!lastRow) return;
-
-            var unstockedInput = lastRow.querySelector('input[data-name="unstocked"]');
-            var qtyInput = lastRow.querySelector('input[data-name="quantity"]');
-            var priceInput = lastRow.querySelector('input[data-name="price"]');
-
-            if (unstockedInput && itemName) {
-                unstockedInput.value = itemName.charAt(0).toUpperCase() + itemName.slice(1);
-                unstockedInput.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-            if (qtyInput && quantity) {
-                qtyInput.value = quantity;
-                qtyInput.dispatchEvent(new Event('input', { bubbles: true }));
-                qtyInput.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            if (priceInput && price) {
-                priceInput.value = price;
-                priceInput.dispatchEvent(new Event('input', { bubbles: true }));
-                priceInput.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-
-            // Auto-add new row after a delay
-            setTimeout(function() {
-                var addBtn = document.getElementById('addRowBtn');
-                if (addBtn) addBtn.click();
-            }, 500);
-        }
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Ctrl+Shift+V = toggle voice mode
-            if (e.ctrlKey && e.shiftKey && e.key === 'V') {
-                e.preventDefault();
-                var toggle = document.getElementById('voiceModeToggle');
-                if (toggle) toggle.click();
-            }
-        });
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            addVoiceModeToggle();
-            addFillRowByVoiceButton();
-            scanInputs();
-        });
-
-        // Watch for new rows
-        var tableBody = document.getElementById('invoiceTableBody');
-        if (tableBody) {
-            var observer = new MutationObserver(function() {
-                scanInputs();
-            });
-            observer.observe(tableBody, { childList: true, subtree: true });
-        }
-    })();
-    </script>
 
 @stop

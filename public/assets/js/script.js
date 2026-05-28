@@ -12,6 +12,7 @@ const CUSTOMER_SEARCH_API_URL =
     window.location.origin + "/api/customer_search/";
 
 const PRODUCT_SEARCH_API_URL = window.location.origin + "/api/items_search/";
+const OLD_PRICE_SEARCH_URL = window.location.origin + "/itemsales/old-price-search";
 
 let customerSearchQuery = "";
 let productSearchQuery = "";
@@ -183,7 +184,10 @@ function inputHTML(counter) {
                     </a>
                 </td>
                 <td>
-                    <input autocomplete="off" type="text" placeholder="Unstocked Name" class="form-control sales-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
+                    <div class="old-price-wrapper position-relative">
+                        <input autocomplete="off" type="text" placeholder="Unstocked Name" class="form-control sales-input old-price-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
+                        <div class="old-price-result-box" data-id="${counter}" style="display:none;"></div>
+                    </div>
                 </td>
                 <td>
 
@@ -250,6 +254,7 @@ function appendInputRow() {
     });
     triggerRemoveEvent();
     handleInputChange();
+    handleOldPriceSearch();
     selectProduct();
     getFinalCalculations();
 }
@@ -429,6 +434,131 @@ function handleInputChange() {
             addInputValue(index, inputId, dataId, dataName, value);
         }
     });
+}
+
+let oldPriceTimers = {};
+
+function oldPriceResultHTML(value) {
+    return `
+        <button type="button" class="old-price-result-item" data-value='${JSON.stringify(
+            value
+        )}'>
+            <span><b>${value.item_name || ""}</b></span>
+            <span>Rs. ${value.price || "0"}</span>
+            <small>${value.date || ""} | Bill: ${value.invoiceid || ""}</small>
+        </button>`;
+}
+
+function handleOldPriceSearch() {
+    $(".old-price-input")
+        .off("input.oldprice")
+        .off("focus.oldprice")
+        .off("blur.oldprice")
+        .on("input.oldprice", function () {
+            const input = this;
+            const dataId = $(input).data("id");
+            const search = input.value.trim();
+            const customerId = finalData[0]["customer"];
+            const customerName = $("#searchCustomerInput").val().trim();
+            const resultBox = $(`.old-price-result-box[data-id="${dataId}"]`);
+
+            clearTimeout(oldPriceTimers[dataId]);
+
+            if ((!customerId && !customerName) || search.length < 2) {
+                resultBox.hide().empty();
+                return;
+            }
+
+            oldPriceTimers[dataId] = setTimeout(function () {
+                $.ajax({
+                    url: OLD_PRICE_SEARCH_URL,
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        customerid: customerId,
+                        customer_name: customerName,
+                        search: search,
+                    },
+                    success: function (response) {
+                        resultBox.empty();
+
+                        if (!response || response.length === 0) {
+                            resultBox
+                                .append(
+                                    '<div class="old-price-empty">No old price found for this customer.</div>'
+                                )
+                                .show();
+                            return;
+                        }
+
+                        $.each(response, function (index, value) {
+                            resultBox.append(oldPriceResultHTML(value));
+                        });
+
+                        positionOldPriceBox(input, resultBox);
+                        resultBox.show();
+                        triggerOldPriceClick();
+                    },
+                });
+            }, 250);
+        })
+        .on("focus.oldprice", function () {
+            const resultBox = $(`.old-price-result-box[data-id="${$(this).data("id")}"]`);
+            if (resultBox.children().length > 0) {
+                positionOldPriceBox(this, resultBox);
+                resultBox.show();
+            }
+        })
+        .on("blur.oldprice", function () {
+            const dataId = $(this).data("id");
+            setTimeout(function () {
+                $(`.old-price-result-box[data-id="${dataId}"]`).hide();
+            }, 180);
+        });
+}
+
+function positionOldPriceBox(input, resultBox) {
+    const rect = input.getBoundingClientRect();
+    resultBox.css({
+        position: "fixed",
+        left: rect.left + "px",
+        top: rect.bottom + 4 + "px",
+        width: Math.max(rect.width, 340) + "px",
+        right: "auto",
+        zIndex: 99999,
+    });
+}
+
+function triggerOldPriceClick() {
+    $(".old-price-result-item")
+        .off("click.oldprice")
+        .on("click.oldprice", function () {
+            const data = JSON.parse($(this).attr("data-value"));
+            const row = $(this).closest("tr");
+            const dataId = row.attr("id").replace("inputRow", "");
+            const numericDataId = parseInt(dataId);
+            const index = salesData.findIndex((obj) => obj.id === numericDataId);
+
+            if (index === -1) return;
+
+            const itemName = data.item_name || "";
+            const price = data.price ? String(data.price) : "";
+            const unit = data.unit || "";
+
+            row.find("#unstockedInput").val(itemName);
+            row.find("#priceInput").val(price);
+
+            addInputValue(index, "unstockedInput", numericDataId, "unstocked", itemName);
+            addInputValue(index, "priceInput", numericDataId, "price", price);
+
+            if (unit) {
+                row.find("#unitInput").val(unit);
+                salesData[index]["unit"] = unit;
+                $("#errorText").text("");
+            }
+
+            row.find(".old-price-result-box").hide().empty();
+        });
 }
 
 function selectProduct() {

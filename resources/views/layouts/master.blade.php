@@ -626,7 +626,7 @@
         var ITEMS_DATA = @json($items_data);
     </script>
 
-    <script src="{{ asset('assets/js/script.js') }}"></script>
+    <script src="{{ asset('assets/js/script.js') }}?v={{ filemtime(public_path('assets/js/script.js')) }}"></script>
     {{-- <script src="{{ asset('assets/js/game.js') }}"></script> --}}
 
 </body>

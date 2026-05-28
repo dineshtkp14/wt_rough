@@ -38,15 +38,16 @@ class ItemsalesController extends Controller
     {
         if(Auth::check()){
         $breadcrumb= [
-            'subtitle'=>'Create',
+            'subtitle'=>'',
             'title'=>'Invoice',
-            'link'=>'Invoice'
+            'link'=>''
         ];
 
      
         $cus = customerinfo::all();
         $statement  = DB::select("SHOW TABLE STATUS LIKE 'invoices'");
         $nextUserId = $statement[0]->Auto_increment;
+        $breadcrumb['title'] = 'Invoice No: ' . $nextUserId;
 
         $itemsdata = item::all();
         return view('itemssales.create', ['page' => 'isc', 'all' => $cus, 'data' => $itemsdata,'nextgenid' => $nextUserId,'breadcrumb'=>$breadcrumb]);
@@ -131,6 +132,70 @@ class ItemsalesController extends Controller
     }
 
     return redirect('/login');
+ }
+
+ public function oldPriceSearch(Request $req)
+ {
+     if (!Auth::check()) {
+         return response()->json([], 401);
+     }
+
+     $customerId = $req->query('customerid');
+     $customerName = trim($req->query('customer_name', ''));
+     $search = trim($req->query('search', ''));
+
+     if (empty($customerId) && $customerName !== '') {
+         $customerId = customerinfo::where('name', 'like', '%' . $customerName . '%')->value('id');
+     }
+
+     if (empty($customerId) || $search === '') {
+         return response()->json([]);
+     }
+
+     $terms = collect(preg_split('/\s+/', $search))
+         ->filter()
+         ->values();
+
+     $results = salesitem::query()
+         ->from('salesitems as s')
+         ->leftJoin('items as it', 'it.id', '=', 's.itemid')
+         ->leftJoin('invoices as inv', 'inv.id', '=', 's.invoiceid')
+         ->where('inv.customerid', $customerId)
+         ->where(function ($query) use ($terms) {
+             foreach ($terms as $term) {
+                 $like = '%' . $term . '%';
+                 $query->where(function ($subQuery) use ($like) {
+                     $subQuery->where('s.unstockedname', 'like', $like)
+                         ->orWhere('it.itemsname', 'like', $like);
+                 });
+             }
+         })
+         ->orderByDesc('s.date')
+         ->orderByDesc('s.id')
+         ->limit(8)
+         ->get([
+             's.invoiceid',
+             's.date',
+             's.unstockedname',
+             's.quantity',
+             's.unit',
+             's.price',
+             's.subtotal',
+             'it.itemsname',
+         ])
+         ->map(function ($row) {
+             return [
+                 'invoiceid' => $row->invoiceid,
+                 'date' => $row->date,
+                 'item_name' => $row->itemsname ?: $row->unstockedname,
+                 'quantity' => $row->quantity,
+                 'unit' => $row->unit,
+                 'price' => $row->price,
+                 'subtotal' => $row->subtotal,
+             ];
+         });
+
+     return response()->json($results);
  }
 
 
