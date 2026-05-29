@@ -437,6 +437,52 @@ tr:nth-child(even) {
     width: 210px;
 }
 
+.invoicetable th:nth-child(1),
+.invoicetable td:nth-child(1) {
+    width: 2%;
+}
+
+.invoicetable th:nth-child(2),
+.invoicetable td:nth-child(2) {
+    width: 5%;
+}
+
+.invoicetable th:nth-child(3),
+.invoicetable td:nth-child(3) {
+    width: 8%;
+}
+
+.invoicetable th:nth-child(4),
+.invoicetable td:nth-child(4) {
+    width: 26%;
+}
+
+.invoicetable th:nth-child(5),
+.invoicetable td:nth-child(5) {
+    width: 12%;
+}
+
+.invoicetable th:nth-child(6),
+.invoicetable td:nth-child(6) {
+    width: 11%;
+}
+
+.invoicetable th:nth-child(7),
+.invoicetable td:nth-child(7) {
+    width: 14%;
+}
+
+.invoicetable th:nth-child(8),
+.invoicetable td:nth-child(8) {
+    width: 22%;
+}
+
+.invoicetable .form-control,
+.invoicetable .form-select,
+.invoicetable .input-group {
+    width: 100%;
+}
+
 .customer-card {
     padding: 6px !important;
     border: none !important;
