@@ -439,10 +439,10 @@ function handleInputChange() {
 let oldPriceTimers = {};
 
 function oldPriceResultHTML(value) {
+    const encodedValue = encodeURIComponent(JSON.stringify(value));
+
     return `
-        <button type="button" class="old-price-result-item" data-value='${JSON.stringify(
-            value
-        )}'>
+        <button type="button" class="old-price-result-item" data-value="${encodedValue}">
             <span><b>${value.item_name || ""}</b></span>
             <span>Rs. ${value.price || "0"}</span>
             <small>${value.date || ""} | Bill: ${value.invoiceid || ""}</small>
@@ -535,7 +535,7 @@ function triggerOldPriceClick() {
         .on("mousedown.oldprice touchstart.oldprice", function (e) {
             e.preventDefault();
 
-            const data = JSON.parse($(this).attr("data-value"));
+            const data = JSON.parse(decodeURIComponent($(this).attr("data-value")));
             const row = $(this).closest("tr");
             const dataId = row.attr("id").replace("inputRow", "");
             const numericDataId = parseInt(dataId);
