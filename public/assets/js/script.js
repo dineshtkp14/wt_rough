@@ -531,8 +531,10 @@ function positionOldPriceBox(input, resultBox) {
 
 function triggerOldPriceClick() {
     $(".old-price-result-item")
-        .off("click.oldprice")
-        .on("click.oldprice", function () {
+        .off("mousedown.oldprice touchstart.oldprice")
+        .on("mousedown.oldprice touchstart.oldprice", function (e) {
+            e.preventDefault();
+
             const data = JSON.parse($(this).attr("data-value"));
             const row = $(this).closest("tr");
             const dataId = row.attr("id").replace("inputRow", "");
