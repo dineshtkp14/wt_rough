@@ -41,7 +41,9 @@ class CustomerLedgerHistroy extends Controller
             $query->whereBetween('date', [$from, $to]);
         }
 
-        return $query->get()->map(function ($row) {
+        return $query->get()->filter(function ($row) use ($customerid) {
+            return !$this->hasExistingCreditNoteLedgerRow($customerid, $row);
+        })->map(function ($row) {
             return (object) [
                 'id' => 'cn-' . $row->id,
                 'customerid' => $row->customerid,
@@ -56,6 +58,31 @@ class CustomerLedgerHistroy extends Controller
                 'is_credit_note' => true,
             ];
         });
+    }
+
+    private function hasExistingCreditNoteLedgerRow($customerid, $creditNoteRow)
+    {
+        $creditNoteAmount = (float) ($creditNoteRow->debit ?? $creditNoteRow->credit ?? 0);
+
+        return customerledgerdetails::where('customerid', $customerid)
+            ->where(function ($query) use ($creditNoteRow, $creditNoteAmount) {
+                $query->where('cninvoiceid', $creditNoteRow->invoiceid)
+                    ->orWhere('returnidforcreditnotes', $creditNoteRow->invoiceid)
+                    ->orWhere(function ($returnQuery) use ($creditNoteRow, $creditNoteAmount) {
+                        $returnQuery->where('date', $creditNoteRow->date)
+                            ->where(function ($typeQuery) {
+                                $typeQuery->where('particulars', 'salesreturn')
+                                    ->orWhere('particulars', 'Goods_Return')
+                                    ->orWhere('voucher_type', 'return')
+                                    ->orWhere('voucher_type', 'Return');
+                            })
+                            ->whereBetween('credit', [
+                                $creditNoteAmount - 0.01,
+                                $creditNoteAmount + 0.01,
+                            ]);
+                    });
+            })
+            ->exists();
     }
 
     private function sortLedgerRows($rows)
