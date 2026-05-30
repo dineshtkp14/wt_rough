@@ -1,4 +1,43 @@
 <!DOCTYPE html>
+@php
+    $tempAmountToWords = function ($num) use (&$tempAmountToWords) {
+        $num = (int) floor($num);
+        $ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+            'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        $tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+        if ($num === 0) {
+            return 'Zero';
+        }
+
+        $words = '';
+        if ($num >= 10000000) {
+            $words .= $tempAmountToWords(floor($num / 10000000)) . ' Crore ';
+            $num %= 10000000;
+        }
+        if ($num >= 100000) {
+            $words .= $tempAmountToWords(floor($num / 100000)) . ' Lakh ';
+            $num %= 100000;
+        }
+        if ($num >= 1000) {
+            $words .= $tempAmountToWords(floor($num / 1000)) . ' Thousand ';
+            $num %= 1000;
+        }
+        if ($num >= 100) {
+            $words .= $tempAmountToWords(floor($num / 100)) . ' Hundred ';
+            $num %= 100;
+        }
+        if ($num >= 20) {
+            $words .= $tens[floor($num / 10)] . ' ';
+            $num %= 10;
+        }
+        if ($num > 0) {
+            $words .= $ones[$num] . ' ';
+        }
+
+        return trim($words);
+    };
+@endphp
 <html lang="en">
 
 <head>
@@ -9,12 +48,13 @@
         body {
             color: #111;
             font-family: Arial, sans-serif;
-            font-size: 14px;
-            margin: 24px;
+            font-size: 12px;
+            line-height: 1.15;
+            margin: 10px;
         }
 
         .invoice {
-            max-width: 850px;
+            max-width: 560px;
             margin: 0 auto;
         }
 
@@ -22,38 +62,41 @@
             border-bottom: 2px solid #111;
             display: flex;
             justify-content: space-between;
-            margin-bottom: 18px;
-            padding-bottom: 12px;
+            margin-bottom: 10px;
+            padding-bottom: 7px;
         }
 
         h1 {
-            font-size: 24px;
-            margin: 0 0 6px;
+            font-size: 21px;
+            margin: 0 0 4px;
         }
 
         .muted {
             color: #555;
-            font-size: 13px;
+            font-size: 11px;
         }
 
         .grid {
             display: grid;
-            gap: 8px 24px;
+            gap: 5px 18px;
             grid-template-columns: 1fr 1fr;
-            margin-bottom: 18px;
+            margin-bottom: 10px;
         }
 
         table {
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 6px;
+            table-layout: fixed;
             width: 100%;
         }
 
         th,
         td {
             border: 1px solid #333;
-            padding: 8px;
+            padding: 4px 6px;
             text-align: left;
+            vertical-align: middle;
+            word-break: break-word;
         }
 
         th {
@@ -65,15 +108,23 @@
         }
 
         .total-row {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
         }
 
         .notes {
             border: 1px solid #ccc;
-            margin-top: 18px;
-            min-height: 60px;
-            padding: 10px;
+            margin-top: 10px;
+            min-height: 36px;
+            padding: 6px;
+        }
+
+        .amount-words {
+            border: 1px solid #333;
+            font-size: 12px;
+            margin-top: 6px;
+            padding: 5px 6px;
+            text-transform: capitalize;
         }
 
         .actions {
@@ -92,12 +143,37 @@
         }
 
         @media print {
+            @page {
+                size: A5 portrait;
+                margin: 6mm;
+            }
+
             body {
+                font-size: 11px;
                 margin: 0;
             }
 
             .actions {
                 display: none;
+            }
+
+            .invoice {
+                max-width: none;
+                width: 100%;
+            }
+
+            th,
+            td {
+                padding: 3px 5px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .amount-words {
+                font-size: 11px;
+                padding: 4px 5px;
             }
         }
     </style>
@@ -129,12 +205,12 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 45px;">#</th>
+                    <th style="width: 7%;">#</th>
                     <th>Item</th>
-                    <th style="width: 110px;">Quantity</th>
-                    <th style="width: 90px;">Unit</th>
-                    <th style="width: 110px;">Rate</th>
-                    <th style="width: 130px;">Amount</th>
+                    <th style="width: 15%;">Quantity</th>
+                    <th style="width: 12%;">Unit</th>
+                    <th style="width: 16%;">Rate</th>
+                    <th style="width: 17%;">Amount</th>
                 </tr>
             </thead>
             <tbody>
@@ -164,6 +240,10 @@
                 </tr>
             </tfoot>
         </table>
+
+        <div class="amount-words">
+            <b>Amount in words:</b> {{ $tempAmountToWords($temporaryinvoice->total) }} only /-
+        </div>
 
         @if ($temporaryinvoice->notes)
             <div class="notes">

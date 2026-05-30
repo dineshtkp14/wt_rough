@@ -57,6 +57,49 @@
                 </div>
 
                 <div class="card mb-4">
+                    <div class="card-header fw-bold">Fixed Item Set</div>
+                    <div class="card-body">
+                        <div class="row g-2 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label">Search Fixed Set</label>
+                                <div class="temporary-fixed-search">
+                                    <input type="text" class="form-control" id="fixedSetSearch"
+                                        placeholder="Search code like bcm300c" autocomplete="off">
+                                    <div class="temporary-fixed-results" id="fixedSetResults" style="display: none;"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Code</label>
+                                <input type="text" class="form-control" id="fixedSetCode" placeholder="bcm300c"
+                                    autocomplete="off">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" id="fixedSetName" placeholder="0.5hp bharu bcm300c"
+                                    autocomplete="off">
+                            </div>
+                            <div class="col-md-3 d-flex gap-2">
+                                <button type="button" class="btn btn-success" id="saveFixedSetBtn">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary" id="updateFixedSetBtn" disabled>
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger" id="deleteFixedSetBtn" disabled>
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <small class="text-muted">
+                            Choose a saved code to fill rows. Edit rows below, then update or save as a new fixed set.
+                        </small>
+                        <div class="mt-2">
+                            <small class="fw-bold" id="fixedSetMessage"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center py-2">
                         <span></span>
                     </div>
@@ -104,6 +147,10 @@
                                     <span class="input-group-text">Total</span>
                                     <input type="text" class="form-control fw-bold" id="tempTotal" readonly>
                                 </div>
+                                <div class="temporary-amount-words mt-2">
+                                    <b>Amount in words:</b>
+                                    <span id="tempAmountWords">Zero only /-</span>
+                                </div>
                             </div>
                         </div>
 
@@ -124,9 +171,48 @@
             var tbody = document.getElementById('temporaryInvoiceRows');
             var addBtn = document.getElementById('addTempRowBtn');
             var discountInput = document.getElementById('tempDiscount');
+            var fixedSetSearch = document.getElementById('fixedSetSearch');
+            var fixedSetResults = document.getElementById('fixedSetResults');
+            var fixedSetCode = document.getElementById('fixedSetCode');
+            var fixedSetName = document.getElementById('fixedSetName');
+            var fixedSetMessage = document.getElementById('fixedSetMessage');
+            var saveFixedSetBtn = document.getElementById('saveFixedSetBtn');
+            var updateFixedSetBtn = document.getElementById('updateFixedSetBtn');
+            var deleteFixedSetBtn = document.getElementById('deleteFixedSetBtn');
+            var fixedSetSearchTimer = null;
+            var selectedFixedSetId = null;
+            var fixedSetUrl = "{{ route('temporaryinvoice.fixed-item-sets.index') }}";
+            var fixedSetStoreUrl = "{{ route('temporaryinvoice.fixed-item-sets.store') }}";
+            var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             function money(value) {
                 return Number(value || 0).toFixed(2);
+            }
+
+            function amountWords(value) {
+                var words = convertNumberToWords(Math.floor(value || 0));
+                return words.toLowerCase().indexOf('only') === -1 ? words + ' only /-' : words;
+            }
+
+            function setFixedSetMessage(message, isError) {
+                fixedSetMessage.textContent = message || '';
+                fixedSetMessage.className = isError ? 'fw-bold text-danger' : 'fw-bold text-success';
+            }
+
+            function fixedSetEndpoint(id) {
+                return fixedSetUrl + '/' + id;
+            }
+
+            function escapeHtml(value) {
+                return String(value || '').replace(/[&<>"']/g, function (char) {
+                    return {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#039;'
+                    }[char];
+                });
             }
 
             function renumberRows() {
@@ -152,8 +238,10 @@
                 });
 
                 var discount = parseFloat(discountInput.value) || 0;
+                var total = Math.max(0, subtotal - discount);
                 document.getElementById('tempSubtotal').value = money(subtotal);
-                document.getElementById('tempTotal').value = money(Math.max(0, subtotal - discount));
+                document.getElementById('tempTotal').value = money(total);
+                document.getElementById('tempAmountWords').textContent = amountWords(total);
             }
 
             function addRow(values) {
@@ -180,6 +268,136 @@
                 calculateTotals();
             }
 
+            function clearRows() {
+                tbody.innerHTML = '';
+            }
+
+            function fillRows(items) {
+                clearRows();
+                items.forEach(function (item) {
+                    addRow({
+                        item_name: item.item_name,
+                        quantity: item.quantity,
+                        unit: item.unit || '',
+                        price: item.price
+                    });
+                });
+
+                if (items.length === 0) {
+                    addRow();
+                }
+
+                renumberRows();
+                calculateTotals();
+            }
+
+            function collectRows() {
+                return Array.from(tbody.querySelectorAll('tr')).map(function (row) {
+                    return {
+                        item_name: row.querySelector('[data-field="item_name"]').value.trim(),
+                        quantity: row.querySelector('[data-field="quantity"]').value || 0,
+                        unit: row.querySelector('[data-field="unit"]').value.trim(),
+                        price: row.querySelector('[data-field="price"]').value || 0
+                    };
+                }).filter(function (item) {
+                    return item.item_name !== '';
+                });
+            }
+
+            function fixedSetPayload() {
+                return {
+                    code: fixedSetCode.value.trim().toLowerCase(),
+                    name: fixedSetName.value.trim(),
+                    items: collectRows()
+                };
+            }
+
+            function renderFixedSetResults(sets) {
+                fixedSetResults.innerHTML = '';
+
+                if (!sets.length) {
+                    fixedSetResults.innerHTML = '<div class="temporary-fixed-empty">No fixed set found.</div>';
+                    fixedSetResults.style.display = 'block';
+                    return;
+                }
+
+                sets.forEach(function (set) {
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'temporary-fixed-result';
+                    btn.innerHTML = '<b>' + escapeHtml(set.code) + '</b><span>' +
+                        escapeHtml(set.name) + '</span><small>' + set.items.length + ' items</small>';
+                    btn.addEventListener('mousedown', function (event) {
+                        event.preventDefault();
+                        selectedFixedSetId = set.id;
+                        fixedSetSearch.value = set.code;
+                        fixedSetCode.value = set.code;
+                        fixedSetName.value = set.name;
+                        updateFixedSetBtn.disabled = false;
+                        deleteFixedSetBtn.disabled = false;
+                        fixedSetResults.style.display = 'none';
+                        fillRows(set.items);
+                        setFixedSetMessage('Fixed set loaded: ' + set.code);
+                    });
+                    fixedSetResults.appendChild(btn);
+                });
+
+                fixedSetResults.style.display = 'block';
+            }
+
+            function searchFixedSets(query) {
+                fetch(fixedSetUrl + '?q=' + encodeURIComponent(query || ''), {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(function (response) { return response.json(); })
+                    .then(renderFixedSetResults)
+                    .catch(function () {
+                        setFixedSetMessage('Could not search fixed sets.', true);
+                    });
+            }
+
+            function saveFixedSet(url, method) {
+                var payload = fixedSetPayload();
+                if (!payload.code || !payload.name || payload.items.length === 0) {
+                    setFixedSetMessage('Enter code, name, and at least one item row.', true);
+                    return;
+                }
+
+                fetch(url, {
+                    method: method,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                    .then(function (response) {
+                        if (!response.ok) {
+                            return response.json().then(function (data) {
+                                throw new Error(data.message || 'Could not save fixed set.');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(function (set) {
+                        selectedFixedSetId = set.id;
+                        fixedSetCode.value = set.code;
+                        fixedSetName.value = set.name;
+                        fixedSetSearch.value = set.code;
+                        updateFixedSetBtn.disabled = false;
+                        deleteFixedSetBtn.disabled = false;
+                        setFixedSetMessage('Fixed set saved: ' + set.code);
+                    })
+                    .catch(function (error) {
+                        setFixedSetMessage(error.message, true);
+                    });
+            }
+
             addBtn.addEventListener('click', function () {
                 addRow();
             });
@@ -200,6 +418,54 @@
             });
 
             discountInput.addEventListener('input', calculateTotals);
+            fixedSetSearch.addEventListener('input', function () {
+                clearTimeout(fixedSetSearchTimer);
+                fixedSetSearchTimer = setTimeout(function () {
+                    searchFixedSets(fixedSetSearch.value.trim());
+                }, 250);
+            });
+            fixedSetSearch.addEventListener('focus', function () {
+                searchFixedSets(fixedSetSearch.value.trim());
+            });
+            fixedSetSearch.addEventListener('blur', function () {
+                setTimeout(function () {
+                    fixedSetResults.style.display = 'none';
+                }, 180);
+            });
+            saveFixedSetBtn.addEventListener('click', function () {
+                selectedFixedSetId = null;
+                saveFixedSet(fixedSetStoreUrl, 'POST');
+            });
+            updateFixedSetBtn.addEventListener('click', function () {
+                if (!selectedFixedSetId) return;
+                saveFixedSet(fixedSetEndpoint(selectedFixedSetId), 'PUT');
+            });
+            deleteFixedSetBtn.addEventListener('click', function () {
+                if (!selectedFixedSetId) return;
+                if (!confirm('Delete this fixed item set?')) return;
+
+                fetch(fixedSetEndpoint(selectedFixedSetId), {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(function (response) {
+                        if (!response.ok) throw new Error('Could not delete fixed set.');
+                        selectedFixedSetId = null;
+                        fixedSetCode.value = '';
+                        fixedSetName.value = '';
+                        fixedSetSearch.value = '';
+                        updateFixedSetBtn.disabled = true;
+                        deleteFixedSetBtn.disabled = true;
+                        setFixedSetMessage('Fixed set deleted.');
+                    })
+                    .catch(function (error) {
+                        setFixedSetMessage(error.message, true);
+                    });
+            });
             addRow();
         })();
     </script>
@@ -240,6 +506,59 @@
         .temporary-invoice-table .row-number {
             text-align: center;
             font-weight: 700;
+        }
+
+        #addTempRowBtn i {
+            font-size: 32px;
+        }
+
+        .temporary-amount-words {
+            color: #111827;
+            font-size: 16px;
+            line-height: 1.35;
+            text-transform: capitalize;
+        }
+
+        .temporary-fixed-search {
+            position: relative;
+        }
+
+        .temporary-fixed-results {
+            background: #ffffff;
+            border: 1px solid #ced4da;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+            left: 0;
+            max-height: 260px;
+            overflow-y: auto;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 4px);
+            z-index: 9999;
+        }
+
+        .temporary-fixed-result {
+            background: #ffffff;
+            border: 0;
+            border-bottom: 1px solid #e5e7eb;
+            display: grid;
+            gap: 2px;
+            padding: 8px 10px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .temporary-fixed-result:hover {
+            background: #ecfeff;
+        }
+
+        .temporary-fixed-result small,
+        .temporary-fixed-result span {
+            color: #64748b;
+        }
+
+        .temporary-fixed-empty {
+            color: #dc3545;
+            padding: 8px 10px;
         }
     </style>
 @stop

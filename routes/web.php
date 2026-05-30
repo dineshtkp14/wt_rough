@@ -451,6 +451,14 @@ Route::get('/onetable_showsalesperda', [showperday_controller::class, 'showonlys
     ->name('temporaryinvoice.print');
  Route::get('temporaryinvoice-live-search', [TemporaryInvoiceController::class, 'liveSearch'])
     ->name('temporaryinvoice.live-search');
+ Route::get('temporaryinvoice-fixed-item-sets', [TemporaryInvoiceController::class, 'fixedItemSets'])
+    ->name('temporaryinvoice.fixed-item-sets.index');
+ Route::post('temporaryinvoice-fixed-item-sets', [TemporaryInvoiceController::class, 'storeFixedItemSet'])
+    ->name('temporaryinvoice.fixed-item-sets.store');
+ Route::put('temporaryinvoice-fixed-item-sets/{fixedItemSet}', [TemporaryInvoiceController::class, 'updateFixedItemSet'])
+    ->name('temporaryinvoice.fixed-item-sets.update');
+ Route::delete('temporaryinvoice-fixed-item-sets/{fixedItemSet}', [TemporaryInvoiceController::class, 'destroyFixedItemSet'])
+    ->name('temporaryinvoice.fixed-item-sets.destroy');
 
  Route::resource('temporaryinvoice', TemporaryInvoiceController::class)->only([
     'index',

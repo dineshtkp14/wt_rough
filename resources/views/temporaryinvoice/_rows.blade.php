@@ -8,10 +8,14 @@
         <td>{{ $invoice->items_count }}</td>
         <td><b>{{ number_format($invoice->total, 2) }}</b></td>
         <td>
-            <a href="{{ route('temporaryinvoice.show', $invoice) }}" class="btn btn-outline-primary btn-sm">
+            <a href="{{ route('temporaryinvoice.show', $invoice) }}"
+                class="btn btn-outline-primary btn-sm temporary-invoice-view-btn"
+                data-url="{{ route('temporaryinvoice.show', $invoice) }}">
                 <i class="fa-solid fa-eye"></i>
             </a>
-            <a href="{{ route('temporaryinvoice.print', $invoice) }}" class="btn btn-outline-success btn-sm" target="_blank">
+            <a href="{{ route('temporaryinvoice.print', $invoice) }}"
+                class="btn btn-outline-success btn-sm temporary-invoice-print-direct"
+                data-url="{{ route('temporaryinvoice.print', $invoice) }}">
                 <i class="fa-solid fa-print"></i>
             </a>
             <form action="{{ route('temporaryinvoice.destroy', $invoice) }}" method="post"
