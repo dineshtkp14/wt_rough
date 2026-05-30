@@ -111,33 +111,43 @@ public function store(Request $req)
         }
     }
 
-    // Save the record in the customerledgerdetails table
     $nextUserId = DB::select("SHOW TABLE STATUS LIKE 'customerledgerdetails'")[0]->Auto_increment;
-    
-    $cl = new customerledgerdetails();
-    $cl->customerid = $req->customerid;
-    $cl->date = $req->date;
-    $cl->particulars = $req->has('disableFields') ? "salesreturn" : ($req->particulars ?? '');
-    $cl->voucher_type = $req->has('disableFields') ? "return" : ($req->vt ?? '');
-    $cl->cninvoiceid = $req->cninvoiceid ?? null;
-    $cl->invoicetype = "payment";
-    $cl->credit = $req->amount;
-    $cl->notes = $req->notes;
-    $cl->added_by = session('user_email');
-    $cl->save();
 
+    DB::transaction(function () use ($req) {
+        $cl = new customerledgerdetails();
+        $cl->customerid = $req->customerid;
+        $cl->date = $req->date;
+        $cl->particulars = $req->has('disableFields') ? "salesreturn" : ($req->particulars ?? '');
+        $cl->voucher_type = $req->has('disableFields') ? "return" : ($req->vt ?? '');
+        $cl->cninvoiceid = $req->cninvoiceid ?? null;
+        $cl->invoicetype = "payment";
+        $cl->credit = $req->amount;
+        $cl->notes = $req->notes;
+        $cl->added_by = session('user_email');
+        $cl->save();
 
-    $notes = 'Customer ID ' . $req->customerid . ' inserted with particulars: ' . $cl->particulars . ', voucher type: ' . $cl->voucher_type . ', credit: ' . $cl->credit .', date: ' . $cl->date . ', by ' . session('user_email');;
+        if ($req->has('nilaccount') && !$req->has('disableFields')) {
+            $settlement = new customerledgerdetails();
+            $settlement->customerid = $req->customerid;
+            $settlement->date = $req->date;
+            $settlement->particulars = 'NIL ACCOUNT / ACCOUNT SETTLED';
+            $settlement->voucher_type = 'SETTLEMENT';
+            $settlement->invoicetype = 'settlement';
+            $settlement->debit = 0;
+            $settlement->credit = 0;
+            $settlement->notes = trim(($req->notes ?? '') . ' Settlement marker after payment receipt CR-(' . $cl->id . ') for amount ' . $req->amount . '.');
+            $settlement->added_by = session('user_email');
+            $settlement->save();
+        }
 
-   // Insert into track table
-     // Insert into track table
-     TrackCustomerLedger::create([
-    // 'customerid' => $req->customerid,
-    'title' => "Inserted_Payment",
-    'updated_by' => session('user_email'),
-    'notes' => $notes
+        $notes = 'Customer ID ' . $req->customerid . ' inserted with particulars: ' . $cl->particulars . ', voucher type: ' . $cl->voucher_type . ', credit: ' . $cl->credit . ', date: ' . $cl->date . ', by ' . session('user_email');
 
-]);
+        TrackCustomerLedger::create([
+            'title' => $req->has('nilaccount') && !$req->has('disableFields') ? 'Inserted_Payment_With_Nil_Account' : 'Inserted_Payment',
+            'updated_by' => session('user_email'),
+            'notes' => $notes
+        ]);
+    });
 
 
 
@@ -240,15 +250,21 @@ public function destroy($id, Request $req)
     ', Deleted by: ' . $updated_by;
     // Check if the invoice type is "payment"
     if ($cusiddelete->invoicetype === 'payment') {
-        // Delete the record
-        $cusiddelete->delete();
+        DB::transaction(function () use ($cusiddelete, $title, $updated_by, $notes) {
+            customerledgerdetails::where('customerid', $cusiddelete->customerid)
+                ->where('date', $cusiddelete->date)
+                ->where('invoicetype', 'settlement')
+                ->where('notes', 'like', '%CR-(' . $cusiddelete->id . ')%')
+                ->delete();
 
-        // Insert into track table
-        TrackCustomerLedger::create([
-            'title' => $title,
-            'updated_by' => $updated_by,
-            'notes' => $notes
-        ]);
+            $cusiddelete->delete();
+
+            TrackCustomerLedger::create([
+                'title' => $title,
+                'updated_by' => $updated_by,
+                'notes' => $notes
+            ]);
+        });
 
         return redirect()->route('cpayments.index')->with('success', 'Customer Payment Receipt Deleted successfully.');
     } else {

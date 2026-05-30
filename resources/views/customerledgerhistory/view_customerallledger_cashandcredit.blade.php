@@ -1,474 +1,297 @@
 @extends('layouts.master')
 @include('layouts.breadcrumb')
 @section('content')
+    @php
+        $customer = $cusinfoforpdfok->first();
+        $dueAmount = (float) $allnotcash - (float) $cts;
+        $hasRows = $all && count($all) > 0;
+        $hasCreditNotes = $creditnoteledger && count($creditnoteledger) > 0;
+        $amountToWords = function ($num) use (&$amountToWords) {
+            $num = (int) floor($num);
+            $ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+                'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            $tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
 
-<div class="main-content"> 
-	@yield('breadcrumb')
-<div class="container">
+            if ($num < 0) return 'Minus ' . $amountToWords(abs($num));
+            if ($num === 0) return 'Zero';
 
-    <div class="card customer-card mb-4" id="customerCard" style="display: none;" style="">
-        <div class="card-body">
-            <h5 class="card-title">Customer Information</h5>
-            <p>
-                <span>ID: </span><span id="customerId">...</span>
-            </p>
-            <p class="card-text">
-                <span>Name: </span><span id="customerName">...</span>
-            </p>
-            <p>
-                <span>Addres: </span><span id="customerAddress">...</span>
-            </p>
-            <p>
-                <span>E-mail: </span><span id="customerEmail">...</span>
-            </p>
-            <p>
-                <span>PhoneNo: </span><span id="customerPhone">...</span>
-            </p>
+            $words = '';
+            if ($num >= 10000000) { $words .= $amountToWords(floor($num / 10000000)) . ' Crore '; $num %= 10000000; }
+            if ($num >= 100000) { $words .= $amountToWords(floor($num / 100000)) . ' Lakh '; $num %= 100000; }
+            if ($num >= 1000) { $words .= $amountToWords(floor($num / 1000)) . ' Thousand '; $num %= 1000; }
+            if ($num >= 100) { $words .= $amountToWords(floor($num / 100)) . ' Hundred '; $num %= 100; }
+            if ($num >= 20) { $words .= $tens[floor($num / 10)] . ' '; $num %= 10; }
+            if ($num > 0) { $words .= $ones[$num] . ' '; }
+
+            return trim($words);
+        };
+    @endphp
+
+    <div class="main-content clhs-page">
+        @yield('breadcrumb')
+
+        <div class="container-fluid px-3 px-xl-4">
+            <div class="card customer-card mb-4" id="customerCard" style="display: none;">
+                <div class="card-body">
+                    <h5 class="card-title">Customer Info</h5>
+                    <p><span>ID: </span><span id="customerId">...</span></p>
+                    <p class="card-text"><span>Name: </span><span id="customerName">...</span></p>
+                    <p><span>Address: </span><span id="customerAddress">...</span></p>
+                    <p><span>E-mail: </span><span id="customerEmail">...</span></p>
+                    <p><span>PhoneNo: </span><span id="customerPhone">...</span></p>
+                </div>
+
+                <div class="toogle-box p-3 d-flex justify-content-center align-items-center" id="toggleBox" data-toggle="close">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+
+            <div class="clhs-top-grid">
+                <section class="clhs-panel clhs-search-panel">
+                    <div class="clhs-section-title">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Find Customer Ledger
+                    </div>
+
+                    <form action="{{ route('returnchoosendatehistroycashandcredit') }}" method="get" id="chosendatepdfform">
+                        <div class="search-box clhs-customer-search">
+                            <input id="customerIdInput" name="customerid" hidden>
+                            <input type="text"
+                                class="search-input @error('customerid') is-invalid @enderror"
+                                placeholder="Search Customer"
+                                id="searchCustomerInput"
+                                data-api="customer_search"
+                                autocomplete="off">
+                            @error('customerid')
+                                <p class="invalid-feedback m-0">{{ $message }}</p>
+                            @enderror
+                            <i class="fas fa-search search-icon"></i>
+
+                            <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
+                                <div class="result-box d-flex justify-content-start align-items-center" id="customerLoadingResultBox">
+                                    <i class="fas fa-spinner" id="spinnerIcon"></i>
+                                    <h1 class="m-0 px-2">Loading</h1>
+                                </div>
+                                <div class="result-box d-flex justify-content-start align-items-center d-none" id="customerNotFoundResultBox">
+                                    <i class="fas fa-triangle-exclamation"></i>
+                                    <h1 class="m-0 px-2">Record Not Found</h1>
+                                </div>
+                                <div id="customerResultList"></div>
+                            </div>
+                        </div>
+
+                        <div class="clhs-date-grid">
+                            <div class="input-group">
+                                <span class="input-group-text">Start Date</span>
+                                <input type="date" name="date1" value="{{ request('date1', $from ?? '') }}" class="form-control">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text">End Date</span>
+                                <input type="date" name="date2" value="{{ request('date2', $to ?? '') }}" class="form-control">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="clhs-search-btn">
+                            <i class="fas fa-search"></i>
+                            Search Ledger
+                        </button>
+                    </form>
+                </section>
+
+                <section class="clhs-panel clhs-summary-panel">
+                    <div class="clhs-summary-head">
+                        <div>
+                            <div class="clhs-section-title">
+                                <i class="fa-solid fa-user"></i>
+                                Customer Summary
+                            </div>
+                            <h3>{{ $customer->name ?? 'Select a customer' }}</h3>
+                            <p>{{ $customer->address ?? 'No address selected' }}</p>
+                        </div>
+                        <a href="{{ route('chequedeposit.create') }}" class="clhs-cheque-btn">
+                            <i class="fas fa-money-bill-wave"></i>
+                            Cheque Deposit
+                        </a>
+                    </div>
+
+                    <div class="clhs-customer-meta">
+                        <div><span>Phone</span><b>{{ $customer->phoneno ?? '-' }}</b></div>
+                        <div><span>Alternate Phone</span><b>{{ $customer->alternate_phoneno ?? $customer->phoneno ?? '-' }}</b></div>
+                        <div><span>Email</span><b>{{ $customer->email ?? '-' }}</b></div>
+                    </div>
+
+                    <div class="clhs-due-card {{ $dueAmount < 0 ? 'is-negative' : '' }}">
+                        <span>Total Due Amount</span>
+                        <strong>{{ number_format($dueAmount, 2) }} -/</strong>
+                        <small>{{ $amountToWords($dueAmount) }} only -/</small>
+                    </div>
+
+                    <div class="clhs-actions">
+                        <a href="{{ route('cpayments.create', [
+                            'customerid' => $cid,
+                            'amount' => $dueAmount,
+                            'totaldueamountfornotclear' => $dueAmount,
+                            'cname' => $customer
+                                ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? ''))
+                                : null,
+                        ]) }}"
+                            class="customer-ledger-payment-btn {{ !$cid ? 'disabled' : '' }}">
+                            <i class="fa-solid fa-money-bill-wave"></i>
+                            Customer Ledger Payment
+                        </a>
+                    </div>
+                </section>
+            </div>
+
+            <div class="clhs-toolbar">
+                <div>
+                    <h4>Ledger Entries</h4>
+                    <span>{{ $hasRows ? count($all) . ' records found' : 'No records found' }}</span>
+                </div>
+                <div class="clhs-toolbar-actions">
+                    <a href="{{ route('print.all.customer.invoices', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
+                        onclick="openPdfInNewTab(event, this.href); return false;"
+                        class="clhs-print-all-btn invoices {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
+                        <i class="fa-regular fa-file-lines"></i>
+                        <span>Print All Invoices</span>
+                    </a>
+                    <a href="{{ $cid ? route('customer.printallcashreceipts', ['customerid' => $cid]) : '#' }}"
+                        @if($cid) onclick="openPdfInNewTab(event, this.href); return false;" @endif
+                        class="clhs-print-all-btn receipts {{ !$cid ? 'pdf-link-disabled' : '' }}">
+                        <i class="fa-solid fa-receipt"></i>
+                        <span>Print All Cash Receipts</span>
+                    </a>
+                    <a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
+                        onclick="openPdfInNewTab(event, this.href); return false;"
+                        class="clhs-print-btn {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
+                        <span>Print</span>
+                        <i class="fa-solid fa-print"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="clhs-table-wrap">
+                <table class="clhs-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Nepali Date</th>
+                            <th>Created At</th>
+                            <th>Particulars</th>
+                            <th>Voucher Type</th>
+                            <th>Invoice Type</th>
+                            <th>Invoice No</th>
+                            <th class="text-end">Debit</th>
+                            <th class="text-end">Credit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($hasRows)
+                            @foreach ($all as $i)
+                                @php
+                                    $isPayment = $i->invoicetype == 'payment';
+                                    $isSettlement = $i->invoicetype == 'settlement';
+                                    $isCash = $i->invoicetype == 'cash';
+                                @endphp
+                                <tr class="{{ $isPayment ? 'is-payment-row' : '' }} {{ $isSettlement ? 'is-settlement-row' : '' }} {{ \Carbon\Carbon::parse($i->date)->isToday() ? 'clhs-today-row' : '' }}">
+                                    <td>{{ method_exists($all, 'firstItem') ? $all->firstItem() + $loop->index : $loop->iteration }}</td>
+                                    <td>{{ $i->date }}</td>
+                                    <td>{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}</td>
+                                    <td>{{ $i->created_at }}</td>
+                                    <td>{{ $i->particulars }}</td>
+                                    <td>{{ $i->voucher_type }}</td>
+                                    <td>
+                                        <span class="clhs-type-badge {{ $isPayment ? 'payment' : ($isSettlement ? 'settlement' : ($isCash ? 'cash' : 'credit')) }}">
+                                            {{ $isSettlement ? 'Nil Account' : $i->invoicetype }}
+                                            @if($isPayment)
+                                                CR-({{ $i->id }})
+                                            @endif
+                                        </span>
+                                        @if($isPayment)
+                                            <button type="button" onclick="openPaymentModal({{ $i->id }})" class="clhs-view-payment-btn">View</button>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if(!empty($i->invoiceid))
+                                            <span class="clhs-invoice-number">{{ $i->invoiceid }}</span>
+                                            <button type="button" onclick="openInvoiceModal({{ $i->invoiceid }})" class="clhs-view-invoice-btn">View</button>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td class="text-end">{{ number_format((float) $i->debit, 2) }}</td>
+                                    <td class="text-end">{{ number_format((float) $i->credit, 2) }}</td>
+                                </tr>
+                            @endforeach
+                            <tr class="clhs-total-row">
+                                <td colspan="8" class="text-end">Total</td>
+                                <td class="text-end">{{ number_format((float) $allnotcash, 2) }}</td>
+                                <td class="text-end">{{ number_format((float) $cts, 2) }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td colspan="10" class="clhs-empty-state">
+                                    <i class="fa-solid fa-file-circle-question"></i>
+                                    Select a customer and search to view ledger records.
+                                </td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-3">
+                {{ $all ? $all->links() : '' }}
+            </div>
+
+            <div class="clhs-toolbar credit-note-toolbar">
+                <div>
+                    <h4>Credit Notes Details</h4>
+                    <span>{{ $hasCreditNotes ? count($creditnoteledger) . ' records found' : 'No credit notes found' }}</span>
+                </div>
+            </div>
+
+            <div class="clhs-table-wrap mb-4">
+                <table class="clhs-table clhs-credit-note-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Particulars</th>
+                            <th>Voucher Type</th>
+                            <th>CN Invoice No</th>
+                            <th class="text-end">Credit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($hasCreditNotes)
+                            @foreach ($creditnoteledger as $i)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $i->date }}</td>
+                                    <td>{{ $i->particulars }}</td>
+                                    <td>{{ $i->voucher_type }}</td>
+                                    <td>{{ $i->invoiceid }}</td>
+                                    <td class="text-end">{{ number_format((float) $i->debit, 2) }}</td>
+                                </tr>
+                            @endforeach
+                            <tr class="clhs-total-row">
+                                <td colspan="5" class="text-end">Total</td>
+                                <td class="text-end">{{ number_format((float) $debittotalcrnotes, 2) }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td colspan="6" class="clhs-empty-state">
+                                    <i class="fa-solid fa-file-circle-question"></i>
+                                    No credit notes found.
+                                </td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <div class="toogle-box p-3 d-flex justify-content-center align-items-center" id="toggleBox" data-toggle="close">
-            <i class="fas fa-user"></i>
-        </div>
-    </div>
-	
-	<div class="row">
-	  <form action="{{ route('returnchoosendatehistroycashandcredit') }}" method="get" id="chosendatepdfform">
-
-		<div class="row">
-			<div class="mb-4" style="width: 300px;">
-				<div class="search-box">
-					<input id="customerIdInput" name="customerid" hidden>
-
-					<input type="text" class="search-input @error('customerid') is-invalid @enderror" placeholder="Search Customer"
-					id="searchCustomerInput" data-api="customer_search" autocomplete="off">
-						@error('customerid')
-							<p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
-						@enderror  
-						
-					<i class="fas fa-search search-icon"> </i>
-					<div class="result-wrapper" id="customerResultWrapper" style="display: none;">
-						<div class="result-box d-flex justify-content-start align-items-center"
-							id="customerLoadingResultBox">
-							<i class="fas fa-spinner" id="spinnerIcon"> </i>
-							<h1 class="m-0 px-2"> Loading</h1>
-						</div>
-
-						<div class="result-box d-flex justify-content-start align-items-center d-none"
-							id="customerNotFoundResultBox">
-							<i class="fas fa-triangle-exclamation"> </i>
-							<h1 class="m-0 px-2"> Record Not Found</h1>
-						</div>
-
-						<div id="customerResultList">
-						</div>
-					</div>
-				</div>	
-			</div>
-			<div class="col-md-3">
-				
-			</div>
-			
-			<div class="col-md-6">
-				@if (!empty($cid))
-				<a href="{{ route('cpayments.create', [
-					'customerid' => $cid,
-					'amount' => $allnotcash - $cts,
-					'totaldueamountfornotclear' => $allnotcash - $cts,
-					'cname' => 
-						($cusinfoforpdfok[0]->name ?? '') . ' | ' . 
-						($cusinfoforpdfok[0]->address ?? '') . ' | ' . 
-						($cusinfoforpdfok[0]->phoneno ?? '')
-				]) }}" class="float-end btn btn-md btn-danger border border-5 border-warning">
-					<i class="fas fa-money-bill-wave"></i>
-					<b class="h5">CUSTOMER LEDGER PAYMENT</b>
-				</a>
-			@endif
-				<a href="{{ route('chequedeposit.create') }}" class=" me-5 float-end btn btn-md btn-primary border border-5 border-danger" target="" rel="noopener noreferrer">
-					<i class="fas fa-money-bill-wave"></i> <!-- Icon for money or payment -->
-					Cheque Deposit
-				</a>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-md-3 mb-3">
-				<label class="visually-hidden" for="specificSizeInputGroupUsername">Username</label>
-				<div class="input-group">
-				  <div class="input-group-text">Choose Start Date</div>
-					<input type="date" name="date1" value="" class="form-control" id="inputs">
-				</div>
-			</div>
-
-			<div class="col-md-3 mb-3">
-				<label class="visually-hidden" for="specificSizeInputGroupUsername">Username</label>
-				<div class="input-group">
-			  		<div class="input-group-text">Choose End Date</div>
-						<input type="date" name="date2" value=""class="form-control">
-				</div>
-			</div>
-			<div class="col-md-2">
-				<button type="submit" class="btn btn-dark mx-2 w-100" name="">
-					<i class="fas fa-search"></i> Search 
-				</button>
-								 </form>
-			</div>
-			<div class="col-md-3 mt-3 mt-md-0">
-				<div class="float-lg-end">
-					<input class="form-control  border-warning border-2" id="filterInput" type="text" placeholder="Search Here">
-				</div>
-			</div>
-
-		</div>
-
-	  </form>
-	</div>
-
-<div class="row">
-  <div class="col-md-5">
-	@foreach ($cusinfoforpdfok as $i)
-		<div>
-			CUSTOMER ID: <span style="font-size: 1.25rem; font-weight: 500;">{{$i->id}}</span><br>
-			NAME: <span style="font-size: 1.25rem; font-weight: 500;">{{$i->name}}</span><br>
-			ADDRESS: <span style="font-size: 1.25rem; font-weight: 500;">{{$i->address}}</span><br>
-			PHONE NO: <span style="font-size: 1.25rem; font-weight: 500;">{{$i->phoneno}}, {{$i->alternate_phoneno}}</span><br>
-			EMAIL: <span style="font-size: 1.25rem; font-weight: 500;">{{$i->email}}</span><br>
-			NOTES: <span style="font-size: 1.25rem; font-weight: 500;">{{$i->remarks}}</span><br>
-			
-			
-		</div>
-	@endforeach
-  </div>
-
-
-  <div class="col-md-3 mt-5">
-	<br> <br> <br> 
-	<h1 class="floatleft btn {{ $allnotcash - $cts < 0 ? 'btn-danger' : 'btn-success' }}" style="padding-right: 10px;">
-		Total Due Amount: 
-		<span class="forunderline fw-bold ps-2">
-			{{-- {{ $allnotcash - $cts }} -/ --}}
-
-
-			{{ number_format($allnotcash - $cts, 2) }} -/
-
-		</span>
-	</h1>
-	
-	
-  </div>
-
-
-
-  <div class="col-md-3">
-	
-	<span> 
-		
-
-		@if(isset($cid) && !empty($cid))
-		<div class="col-12 d-flex justify-content-end align-items-center pt-4 gap-3">
-			<a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} border border-1 border-primary" id="pdfLink" style="padding: 10px 20px; font-size: 18px;">Print
-				<div class="icon-box d-flex justify-content-center align-items-center">
-					<i class="fa-solid fa-print"></i>
-				</div>
-			</a>
-			<a href="{{ route('print.all.customer.invoices', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} btn btn-md btn-success" style="padding: 10px 20px; font-size: 18px;">
-				<i class="fa-solid fa-file-invoice"></i> Print All Invoices
-			</a>
-			<a href="{{ route('customer.printallcashreceipts', ['customerid' => $cid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($all) <= 0 ? 'pdf-link-disabled' : '' }} btn btn-md btn-info" style="padding: 10px 20px; font-size: 18px;">
-				<i class="fa-solid fa-receipt"></i> Print All Cash Receipts
-			</a>
-		</div>
-		@endif
-		
-		
-	</span>
-	
-  </div>
-
-</div>
-	
-
-
-
-
-
-
-<table>
-	<thead>
-		<tr>
-			<th>ID</th>
-
-    		<th>DATE</th>
-
-			<th>Miti</th>
-			<th>PARTICULARS</th>
-			<th>VOUCHER TYPE</th>
-			<th>INVOICE NO</th>
-            <th>INVOICE TYPE</th>
-            <th>SALES RETURN </th>
-            <th>CREDIT NOTES INVOICE NO</th>
-			<th>DEBIT</th>  
-            <th>CREDIT</th>
-            <th>CN INVOICE NO</th>
-
-		</tr>
-	</thead>
-	<tbody>
-        
-  
-                    @if($all!=null)
-					   @foreach ($all as $i)
-					   <tr @if($i->date == now()->toDateString()) style="background:red; color:white;" @endif>
-
-						   <td data-label="Id">{{ $i->id }}</td>
-
-						   {{-- <td class="ad-date"
-						   data-ad="{{ \Carbon\Carbon::parse($i->date)->format('Y-m-d') }}"
-						   data-lang="np"></td> --}}
-
-						   {{-- <td data-label="Name">{{ $i->date }}</td> --}}
-						   
-						   	<td data-label="Name">{{ $i->date }}</td>
-							
-
-						  {{-- type en for englisg date np for nepali date --}}
-						  <td data-label="date" class="label-nep">{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }} </td>  
-
-						   <td data-label="Address">{{ $i->particulars}}</td>
-						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-						   <td data-label="Contact No."><b>{{ $i->invoiceid }}
-
-							@if(!empty($i->invoiceid))
-							<button onclick="openInvoiceModal({{ $i->invoiceid }})" class="btn btn-sm bg-info text-white">View</button>
-							@endif
-							</td>
-
-                           <td data-label="Remarks"> {{ $i->invoicetype }}
-							@if($i->invoicetype == 'payment')
-								<b>CR-({{ $i->id }}) </b>
-
-								@if(!empty($i->invoicetype == 'payment'))
-								<button onclick="openPaymentModal({{ $i->id }})" class="btn btn-sm bg-info text-white">View</button>
-								@endif
-
-
-							@endif
-						</td>
-						
-	                       <td data-label="Remarks">{{ $i->salesreturn }}</td>
-                           <td data-label="Remarks">{{ $i->returnidforcreditnotes }}</td>
-						   <td data-label="Amount">{{ $i->debit }}</td>
-						   <td data-label="Remarks">{{ $i->credit }}</td> 
-						   <td data-label="Remarks">{{ $i->cninvoiceid }}</td> 
-					   </tr>
-					   
-					   @endforeach
-					   <tr>
-						   <td>-</td>
-						   <td>-</td>
-						   <td>-</td>
-
-
-						   <td>-</td>
-						   <td>-</td>
-			   
-						   <td>-</td>
-			   
-						   <td>-</td>
-						   <td>-</td>
-						   <td>-</td>
-
-
-			   
-						   <td>
-							   @if($dts!=null)
-								   Total(Only Credit): <h2>{{$allnotcash }}</h2></td>
-							   @endif
-						   </td>
-			   
-						   <td>
-							   @if($cts!=null)
-								   Total: <h2>{{$cts }}</h2></td>
-							   @endif
-						   </td>
-
-						   <td>-</td>
-
-			   
-					   </tr>
-					   
-					  
-					   @else
-                       <h2>Record Not Found </h2>
-					   @endif
-    
-	</tbody>
-</table>
-
-
-</div>
-
-<BR>
-
-@if(auth()->check() && auth()->user()->email == 'dineshtkp14@gmail.com')
-    <h6 class="floatleft">Total Transaction Amount: <span class="forunderline">{{ $dts }} /-</span></h6>
-@endif
-
-<h1 class="floatleft btn btn-lg {{ $allnotcash - $cts < 0 ? 'btn-danger' : 'btn-success' }}">
-    Total Due Amounttt: 
-    <span class="forunderline">
-        {{-- {{ $allnotcash - $cts }} -/ --}}
-		{{ number_format($allnotcash - $cts, 2) }}
-
-		
-    </span>
-	
-</h1>
-
-(
-@php
-              function convertNumberToWords($num) {
-    $ones = array(
-        "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-    );
-    $tens = array(
-        "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-    );
-
-    // Handle negative numbers
-    if ($num < 0) {
-        return "Minus " . convertNumberToWords(abs($num));
-    }
-
-    if ($num == 0) {
-        return "Zero";
-    }
-
-    $words = "";
-
-    if ($num >= 10000000) {
-        $words .= convertNumberToWords(floor($num / 10000000)) . " Crore ";
-        $num %= 10000000;
-    }
-
-    if ($num >= 100000) {
-        $words .= convertNumberToWords(floor($num / 100000)) . " Lakh ";
-        $num %= 100000;
-    }
-
-    if ($num >= 1000) {
-        $words .= convertNumberToWords(floor($num / 1000)) . " Thousand ";
-        $num %= 1000;
-    }
-
-    if ($num >= 100) {
-        $words .= convertNumberToWords(floor($num / 100)) . " Hundred ";
-        $num %= 100;
-    }
-
-    if ($num >= 20) {
-        $words .= $tens[floor($num / 10)] . " ";
-        $num %= 10;
-    }
-
-    if ($num > 0) {
-        $words .= $ones[$num] . " ";
-    }
-
-    return $words;
-}
-
-// Retrieve the numerical value from your data
-$number = $allnotcash - $cts;
-// Convert the numerical value to words
-$words = convertNumberToWords($number);
-
-echo $words;
-
-            @endphp
-			only -/ 
-			
-			)
-
-			{{$all->links()}}
-
-
-<h2> --------------------------------Credit Notes Details---------------------------------------- </h2>
-
-
-<table>
-	<thead>
-		<tr>
-			<th>Id</th>
-			<th>Date</th>
-			<th>Particulars</th>
-			<th>Voucher Type</th>
-			<th>CN Invoice NO</th>
-			<th>Credit</th> 
-		</tr>
-	</thead>
-	<tbody>
-        
-  
-                    @if($creditnoteledger!=null)
-					   @foreach ($creditnoteledger as $i)
-					   <tr>
-						   <td data-label="Id">{{ $i->id }}</td>
-						   <td data-label="Name">{{ $i->date }}</td>
-						   <td data-label="Address">{{ $i->particulars}}</td>
-						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-						   <td data-label="Contact No.">{{ $i->invoiceid }}</td>
-						   <td data-label="Amount">{{ $i->debit }}</td>	   
-					   </tr>
-					   
-					   @endforeach
-					   <tr>
-						  
-
-
-						  
-			   
-						   
-						 
-						   <td>-</td>	
-						   <td>-</td>
-
-			   
-						   <td>-</td>
-						   <td>-</td>
-						   <td>-</td>
-					
-
-
-			   
-						   <td>
-							   @if($debittotalcrnotes!=null)
-								   Total: <h2>{{$debittotalcrnotes }}</h2></td>
-							   @endif
-						   </td>
-			   
-						
-			   
-					   </tr>
-					   
-					  
-					   @else
-                       <h2>Record Not Found </h2>
-					   @endif
-    
-	</tbody>
-</table>
-
-
-
-
-
-</div>
-
-
-
-
-
 <!-- Invoice Modal -->
 <div id="invoiceModal" class="invoice-modal">
     <div class="invoice-modal-content">
@@ -500,6 +323,458 @@ echo $words;
 </div>
 
 <style>
+.clhs-page {
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+.clhs-top-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: minmax(360px, 1.1fr) minmax(420px, 1fr);
+    margin-bottom: 18px;
+}
+
+.clhs-panel {
+    background: #ffffff;
+    border: 1px solid #dbe3ef;
+    border-radius: 8px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
+    padding: 18px;
+}
+
+.clhs-search-panel {
+    border-top: 5px solid #0f8f5f;
+}
+
+.clhs-summary-panel {
+    border-top: 5px solid #5d5ced;
+}
+
+.clhs-section-title {
+    align-items: center;
+    color: #64748b;
+    display: flex;
+    font-size: 13px;
+    font-weight: 800;
+    gap: 8px;
+    letter-spacing: .02em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.clhs-customer-search .search-input {
+    border-color: #cbd5e1;
+    font-size: 20px;
+    min-height: 54px;
+}
+
+.clhs-date-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 16px 0;
+}
+
+.clhs-date-grid .input-group-text {
+    background: #f1f5f9;
+    font-weight: 700;
+}
+
+.clhs-search-btn {
+    align-items: center;
+    background: #1f2933;
+    border: 0;
+    border-radius: 6px;
+    color: #ffffff;
+    display: inline-flex;
+    font-size: 24px;
+    font-weight: 800;
+    gap: 12px;
+    justify-content: center;
+    min-height: 62px;
+    width: 100%;
+}
+
+.clhs-search-btn:hover {
+    background: #111827;
+}
+
+.clhs-summary-head {
+    align-items: flex-start;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.clhs-summary-head h3 {
+    color: #111827;
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1.05;
+    margin: 0 0 4px;
+}
+
+.clhs-summary-head p {
+    color: #475569;
+    font-size: 18px;
+    margin: 0;
+}
+
+.clhs-cheque-btn {
+    background: #2563eb;
+    border: 4px solid #dc3545;
+    border-radius: 6px;
+    color: #ffffff !important;
+    display: inline-flex;
+    font-weight: 800;
+    gap: 8px;
+    padding: 8px 12px;
+    text-decoration: none !important;
+    white-space: nowrap;
+}
+
+.clhs-cheque-btn:hover {
+    background: #1d4ed8;
+    color: #ffffff !important;
+}
+
+.clhs-customer-meta {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 14px 0;
+}
+
+.clhs-customer-meta div {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.clhs-customer-meta span,
+.clhs-due-card span {
+    color: #64748b;
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.clhs-customer-meta b {
+    color: #111827;
+    display: block;
+    font-size: 16px;
+    margin-top: 3px;
+    word-break: break-word;
+}
+
+.clhs-due-card {
+    background: #138c55;
+    border-radius: 8px;
+    color: #ffffff;
+    padding: 14px 18px;
+}
+
+.clhs-due-card.is-negative {
+    background: #dc2626;
+}
+
+.clhs-due-card span {
+    color: rgba(255, 255, 255, .86);
+}
+
+.clhs-due-card strong {
+    display: block;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-top: 4px;
+}
+
+.clhs-due-card small {
+    display: block;
+    font-size: 14px;
+    margin-top: 6px;
+    text-transform: capitalize;
+}
+
+.customer-ledger-payment-btn {
+    align-items: center;
+    background: #dc3545 !important;
+    border: 5px solid #ffc107 !important;
+    border-radius: 6px;
+    color: #ffffff !important;
+    display: inline-flex;
+    font-size: 24px;
+    font-weight: 500;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 8px 14px;
+    text-decoration: none !important;
+    white-space: nowrap;
+}
+
+.customer-ledger-payment-btn:hover {
+    background: #c82333 !important;
+    color: #ffffff !important;
+}
+
+.customer-ledger-payment-btn.disabled,
+.pdf-link-disabled {
+    opacity: .55;
+    pointer-events: none;
+}
+
+.clhs-toolbar {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin: 18px 0 10px;
+}
+
+.clhs-toolbar h4 {
+    color: #111827;
+    font-size: 22px;
+    font-weight: 900;
+    margin: 0;
+}
+
+.clhs-toolbar span {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.clhs-toolbar-actions {
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.clhs-print-btn {
+    align-items: stretch;
+    border: 1px solid #2563eb;
+    border-radius: 8px;
+    color: #3730a3;
+    display: inline-flex;
+    font-size: 19px;
+    font-weight: 900;
+    overflow: hidden;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.clhs-print-btn span {
+    padding: 13px 24px;
+}
+
+.clhs-print-btn i {
+    align-items: center;
+    background: #6366f1;
+    color: #ffffff;
+    display: inline-flex;
+    padding: 0 16px;
+}
+
+.clhs-print-all-btn {
+    align-items: center;
+    border-radius: 6px;
+    display: inline-flex;
+    font-size: 16px;
+    font-weight: 700;
+    gap: 8px;
+    justify-content: center;
+    line-height: 1.25;
+    min-height: 50px;
+    padding: 9px 14px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.clhs-print-all-btn span,
+.clhs-print-all-btn i {
+    color: #ffffff !important;
+}
+
+.clhs-print-all-btn.invoices {
+    background: #198754;
+}
+
+.clhs-print-all-btn.invoices:hover {
+    background: #146c43;
+}
+
+.clhs-print-all-btn.receipts {
+    background: #17c5df;
+}
+
+.clhs-print-all-btn.receipts:hover {
+    background: #0fb5ce;
+}
+
+.clhs-table-wrap {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.clhs-table {
+    border-collapse: collapse;
+    margin: 0;
+    min-width: 1120px;
+    width: 100%;
+}
+
+.clhs-credit-note-table {
+    min-width: 760px;
+}
+
+.clhs-table thead {
+    display: table-header-group !important;
+}
+
+.clhs-table tbody {
+    display: table-row-group !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+.clhs-table tr {
+    display: table-row !important;
+    width: auto !important;
+}
+
+.clhs-table th,
+.clhs-table td {
+    border: 1px solid #cbd5e1 !important;
+    display: table-cell !important;
+    font-size: 16px;
+    padding: 12px 10px;
+    vertical-align: middle;
+}
+
+.clhs-table th {
+    background: #5d5ced;
+    color: #ffffff;
+    font-weight: 900;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.clhs-table tbody tr:nth-child(even) td {
+    background: #f8fafc;
+}
+
+.clhs-table tbody tr:hover td {
+    background: #ecfeff;
+}
+
+.clhs-table tbody tr.is-settlement-row td {
+    background: #f7fffb !important;
+    border-bottom: 4px solid #00ff88;
+    border-top: 4px solid #00ff88;
+    box-shadow: inset 0 2px 0 #39ff14, inset 0 -2px 0 #39ff14;
+    color: #064e3b;
+    font-weight: 900;
+}
+
+.clhs-table tbody tr.clhs-today-row td {
+    background: red !important;
+    color: #ffffff !important;
+}
+
+.clhs-table tbody tr.clhs-today-row .clhs-type-badge {
+    background: transparent;
+    color: #ffffff;
+    padding-left: 0;
+}
+
+.clhs-type-badge {
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 13px;
+    font-weight: 900;
+    padding: 5px 10px;
+    text-transform: uppercase;
+}
+
+.clhs-type-badge.credit {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.clhs-type-badge.cash {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.clhs-type-badge.payment {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.clhs-type-badge.settlement {
+    background: #00ff88;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.75);
+    color: #052e16;
+}
+
+.clhs-invoice-number {
+    display: inline-block;
+    font-weight: 800;
+    margin-right: 8px;
+}
+
+.clhs-view-invoice-btn,
+.clhs-view-payment-btn {
+    background: #06b6d4;
+    border: 0;
+    border-radius: 5px;
+    color: #ffffff;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 800;
+    margin-left: 6px;
+    padding: 6px 10px;
+}
+
+.clhs-view-invoice-btn:hover,
+.clhs-view-payment-btn:hover {
+    background: #0891b2;
+}
+
+.clhs-total-row td {
+    background: #111827 !important;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.clhs-empty-state {
+    color: #64748b;
+    font-size: 18px !important;
+    font-weight: 800;
+    padding: 34px !important;
+    text-align: center;
+}
+
+.clhs-empty-state i {
+    display: block;
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.credit-note-toolbar {
+    margin-top: 26px;
+}
+
 .invoice-modal, .payment-modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); overflow: auto; }
 .invoice-modal-content, .payment-modal-content { background-color: #fff; margin: 20px auto; width: 90%; max-width: 900px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
 .invoice-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; border-radius: 8px 8px 0 0; }
@@ -532,6 +807,46 @@ echo $words;
 .payment-display .payment-details { background: #f9fafb; padding: 15px; border-radius: 8px; margin-top: 20px; }
 .payment-display .payment-details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
 .payment-display .payment-details-label { font-weight: 600; color: #4b5563; }
+
+@media (max-width: 1100px) {
+    .clhs-top-grid,
+    .clhs-customer-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .clhs-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .clhs-toolbar-actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 700px) {
+    .clhs-date-grid,
+    .clhs-summary-head {
+        grid-template-columns: 1fr;
+    }
+
+    .clhs-summary-head {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .clhs-print-btn,
+    .clhs-print-all-btn,
+    .customer-ledger-payment-btn,
+    .clhs-cheque-btn {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .clhs-toolbar-actions {
+        flex-direction: column;
+    }
+}
 </style>
 
 <script>
@@ -572,9 +887,12 @@ function openInvoiceModal(invoiceId) {
         html += '</div>';
         html += '</div>';
         html += '<table><thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Price</th><th>Amount</th></tr></thead><tbody>';
+        let totalQuantity = 0;
         data.items.forEach((item, i) => {
+            totalQuantity += parseFloat(item.quantity || 0);
             html += '<tr><td>' + (i+1) + '</td><td>' + (item.item_name || '') + '</td><td>' + (item.quantity || '') + '</td><td>' + (item.price || '') + '</td><td>' + (item.subtotal || '') + '</td></tr>';
         });
+        html += '<tr class="total-row"><td colspan="2" class="text-right"><strong>Total Quantity:</strong></td><td><strong>' + (Number.isInteger(totalQuantity) ? totalQuantity : totalQuantity.toFixed(2)) + '</strong></td><td></td><td></td></tr>';
         html += '<tr class="total-row"><td colspan="3"></td><td class="text-right"><strong>Total:</strong></td><td><strong>Rs ' + parseFloat(data.total || 0).toFixed(2) + '</strong></td></tr>';
         html += '</tbody></table>';
         html += '<div class="footer-info" style="margin-top: 15px; font-size: 0.875rem; color: #6b7280;"><p>Bill Created by: ' + (data.added_by || 'System') + '</p></div>';
@@ -619,7 +937,7 @@ function openPaymentModal(paymentId) {
         html += '<div class="amount-box"><div>Amount Received</div><div class="amount-value">Rs ' + parseFloat(data.amount || 0).toFixed(2) + '</div></div>';
         html += '<div class="payment-details">';
         html += '<div class="payment-details-row"><span class="payment-details-label">Payment Mode:</span><span>' + data.mode + '</span></div>';
-        html += '<div class="payment-details-row"><span class="payment-details-label">Customer ID:</span><span>' + (data.customer.id || 'N/A') + '</span></div>';
+        html += '<div class="payment-details-row"><span class="payment-details-label">Particulars:</span><span>' + (data.particulars || 'N/A') + '</span></div>';
         html += '</div></div>';
         body.innerHTML = html;
     })

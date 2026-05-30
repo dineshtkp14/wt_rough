@@ -683,9 +683,12 @@ function openInvoiceModal(invoiceId) {
         html += '</div>';
 
         html += '<table><thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Price</th><th>Amount</th></tr></thead><tbody>';
+        let totalQuantity = 0;
         data.items.forEach((item, i) => {
+            totalQuantity += parseFloat(item.quantity || 0);
             html += '<tr><td>' + (i+1) + '</td><td>' + (item.item_name || '') + '</td><td>' + (item.quantity || '') + '</td><td>' + (item.price || '') + '</td><td>' + (item.subtotal || '') + '</td></tr>';
         });
+        html += '<tr class="total-row"><td colspan="2" class="text-right"><strong>Total Quantity:</strong></td><td><strong>' + (Number.isInteger(totalQuantity) ? totalQuantity : totalQuantity.toFixed(2)) + '</strong></td><td></td><td></td></tr>';
         html += '<tr class="total-row"><td colspan="3"></td><td class="text-right"><strong>Total:</strong></td><td><strong>Rs ' + parseFloat(data.total || 0).toFixed(2) + '</strong></td></tr>';
         html += '</tbody></table>';
         html += '<div class="footer-info"><p>Bill Created by: ' + (data.added_by || 'System') + '</p></div>';
@@ -737,7 +740,7 @@ function openPaymentModal(paymentId) {
         html += '<div class="amount-box"><div>Amount Received</div><div class="amount-value">Rs ' + parseFloat(data.amount || 0).toFixed(2) + '</div></div>';
         html += '<div class="payment-details">';
         html += '<div class="payment-details-row"><span class="payment-details-label">Payment Mode:</span><span>' + data.mode + '</span></div>';
-        html += '<div class="payment-details-row"><span class="payment-details-label">Customer ID:</span><span>' + (data.customer.id || 'N/A') + '</span></div>';
+        html += '<div class="payment-details-row"><span class="payment-details-label">Particulars:</span><span>' + (data.particulars || 'N/A') + '</span></div>';
         html += '</div></div>';
         body.innerHTML = html;
     })

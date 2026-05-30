@@ -892,7 +892,9 @@
 
                 // Process items
                 let sn = 1;
+                let totalQuantity = 0;
                 data.items.forEach(item => {
+                    totalQuantity += parseFloat(item.quantity || 0);
                     invoiceHtml += '<tr>';
                     invoiceHtml += '<td>' + sn + '</td>';
                     invoiceHtml += '<td>' + (item.item_id || '') + '</td>';
@@ -906,6 +908,12 @@
                 });
 
                 // Summary rows
+                invoiceHtml += '<tr class="total-row">';
+                invoiceHtml += '<td colspan="3" class="text-right"><strong>Total Quantity:</strong></td>';
+                invoiceHtml += '<td><strong>' + (Number.isInteger(totalQuantity) ? totalQuantity : totalQuantity.toFixed(2)) + '</strong></td>';
+                invoiceHtml += '<td colspan="3"></td>';
+                invoiceHtml += '</tr>';
+
                 invoiceHtml += '<tr class="total-row">';
                 invoiceHtml += '<td colspan="5"></td>';
                 invoiceHtml += '<td class="text-right"><strong>Sub-Total:</strong></td>';

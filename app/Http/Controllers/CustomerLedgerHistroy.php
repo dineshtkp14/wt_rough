@@ -71,14 +71,18 @@ class CustomerLedgerHistroy extends Controller
              $cusledgertails = Customerledgerdetails::where('customerid', $req->customerid)
                  ->where(function($query) {
                      $query->where('invoicetype', 'credit')
-                           ->orWhere('invoicetype', 'payment');
+                           ->orWhere('invoicetype', 'payment')
+                           ->orWhere('invoicetype', 'settlement');
                  })
+                 ->orderBy('date', 'desc')
+                 ->orderBy('id', 'desc')
                  ->get();
  
              $querycheck = customerledgerdetails::where('customerid', $req->customerid)
                  ->where(function($query) {
                      $query->where('invoicetype', 'credit')
-                           ->orWhere('invoicetype', 'payment');
+                           ->orWhere('invoicetype', 'payment')
+                           ->orWhere('invoicetype', 'settlement');
                  })
                  ->get();
  
@@ -93,7 +97,8 @@ class CustomerLedgerHistroy extends Controller
             $betweendate = customerledgerdetails::where('customerid', $req->customerid)
             ->where(function ($query) use ($from, $to) {
                 $query->where('invoicetype', 'credit')
-                      ->orWhere('invoicetype', 'payment');
+                      ->orWhere('invoicetype', 'payment')
+                      ->orWhere('invoicetype', 'settlement');
             })
             ->whereBetween('date', [$from, $to])
             ->get();
@@ -106,8 +111,11 @@ class CustomerLedgerHistroy extends Controller
     ->where('customerid', $req->customerid)
     ->where(function ($query) {
         $query->where('invoicetype', 'credit')
-            ->orWhere('invoicetype', 'payment');
+            ->orWhere('invoicetype', 'payment')
+            ->orWhere('invoicetype', 'settlement');
     })
+    ->orderBy('date', 'desc')
+    ->orderBy('id', 'desc')
     ->get();
     $xd = customerinfo::where('id', $req->customerid)->get();
     $afn = $xd;
@@ -151,14 +159,16 @@ class CustomerLedgerHistroy extends Controller
             $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)
                 ->where(function($query) {
                     $query->where('invoicetype', 'credit')
-                          ->orWhere('invoicetype', 'payment');
+                          ->orWhere('invoicetype', 'payment')
+                          ->orWhere('invoicetype', 'settlement');
                 })
                 ->get();
 
             $querycheck = customerledgerdetails::where('customerid', $req->customerid)
                 ->where(function($query) {
                     $query->where('invoicetype', 'credit')
-                          ->orWhere('invoicetype', 'payment');
+                          ->orWhere('invoicetype', 'payment')
+                          ->orWhere('invoicetype', 'settlement');
                 })
                 ->get();
 
@@ -173,7 +183,8 @@ class CustomerLedgerHistroy extends Controller
            $betweendate = customerledgerdetails::where('customerid', $req->customerid)
            ->where(function ($query) use ($from, $to) {
                $query->where('invoicetype', 'credit')
-                     ->orWhere('invoicetype', 'payment');
+                     ->orWhere('invoicetype', 'payment')
+                     ->orWhere('invoicetype', 'settlement');
            })
            ->whereBetween('date', [$from, $to])
            ->get();
@@ -186,7 +197,8 @@ class CustomerLedgerHistroy extends Controller
    ->where('customerid', $req->customerid)
    ->where(function ($query) {
        $query->where('invoicetype', 'credit')
-           ->orWhere('invoicetype', 'payment');
+           ->orWhere('invoicetype', 'payment')
+           ->orWhere('invoicetype', 'settlement');
    })
    ->get();
 
@@ -973,7 +985,9 @@ class CustomerLedgerHistroy extends Controller
     
             $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();
     
-            $querycheck = customerledgerdetails::where('customerid', $req->customerid)->orderBy('date', 'DESC');;
+            $querycheck = customerledgerdetails::where('customerid', $req->customerid)
+                ->orderBy('date', 'DESC')
+                ->orderBy('id', 'DESC');
             if ($from && $to) {
                 $querycheck->whereBetween('date', [$from, $to]);
             }
@@ -1300,5 +1314,3 @@ public function oldpricecheck(Request $req)
         }
     }
     }
-
-

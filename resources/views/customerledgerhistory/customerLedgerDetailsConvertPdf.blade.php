@@ -159,7 +159,7 @@
   
         @if($all!=null)
         @foreach ($all as $i)
-        <tr>
+        <tr @if($i->invoicetype == 'settlement') style="background:#fff7ed;color:#7c2d12;font-weight:bold;" @endif>
          <td>{{ $serial++ }}</td> <!-- Increment and display serial number -->
 
 					 
@@ -170,7 +170,7 @@
 
 						   <td data-label="Address">{{ $i->particulars}}</td>
 						   <td data-label="Contact No.">{{ $i->voucher_type }}</td>
-                           <td data-label="Remarks"> {{ $i->invoicetype }}
+                           <td data-label="Remarks"> {{ $i->invoicetype == 'settlement' ? 'Nil Account' : $i->invoicetype }}
                             @if($i->invoicetype == 'payment')
                                 <b>CR-({{ $i->id }}) </b>
                             

@@ -108,12 +108,6 @@
                             <p>{{ $customer->address ?? 'No address selected' }}</p>
                         </div>
 
-                        <a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
-                            onclick="openPdfInNewTab(event, this.href); return false;"
-                            class="clhs-print-btn {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
-                            <span>Print</span>
-                            <i class="fa-solid fa-print"></i>
-                        </a>
                     </div>
 
                     <div class="clhs-customer-meta">
@@ -131,7 +125,11 @@
                     <div class="clhs-actions">
                         <a href="{{ route('cpayments.create', [
                             'customerid' => $customeridonly,
-                            'cname' => $customer->name ?? null,
+                            'amount' => $dueAmount,
+                            'totaldueamountfornotclear' => $dueAmount,
+                            'cname' => $customer
+                                ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? ''))
+                                : null,
                         ]) }}"
                             class="customer-ledger-payment-btn {{ !$customeridonly ? 'disabled' : '' }}">
                             <i class="fa-solid fa-money-bill-wave"></i>
@@ -146,9 +144,25 @@
                     <h4>Ledger Entries</h4>
                     <span>{{ $hasRows ? count($all) . ' records found' : 'No records found' }}</span>
                 </div>
-                <div class="clhs-table-search">
-                    <i class="fa-solid fa-filter"></i>
-                    <input class="form-control" id="filterInput" type="text" placeholder="Filter visible table rows">
+                <div class="clhs-toolbar-actions">
+                    <a href="{{ route('print.all.customer.invoices', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
+                        onclick="openPdfInNewTab(event, this.href); return false;"
+                        class="clhs-print-all-btn invoices {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
+                        <i class="fa-regular fa-file-lines"></i>
+                        <span>Print All Invoices</span>
+                    </a>
+                    <a href="{{ $customeridonly ? route('customer.printallcashreceipts', ['customerid' => $customeridonly]) : '#' }}"
+                        @if($customeridonly) onclick="openPdfInNewTab(event, this.href); return false;" @endif
+                        class="clhs-print-all-btn receipts {{ !$customeridonly ? 'pdf-link-disabled' : '' }}">
+                        <i class="fa-solid fa-receipt"></i>
+                        <span>Print All Cash Receipts</span>
+                    </a>
+                    <a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
+                        onclick="openPdfInNewTab(event, this.href); return false;"
+                        class="clhs-print-btn {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
+                        <span>Print</span>
+                        <i class="fa-solid fa-print"></i>
+                    </a>
                 </div>
             </div>
 
@@ -157,8 +171,8 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>ID</th>
                             <th>Date</th>
+                            <th>Nepali Date</th>
                             <th>Created At</th>
                             <th>Particulars</th>
                             <th>Voucher Type</th>
@@ -171,22 +185,44 @@
                     <tbody>
                         @if($hasRows)
                             @foreach ($all as $i)
-                                <tr class="{{ $i->invoicetype == 'payment' ? 'is-payment-row' : '' }}">
+                                @php
+                                    $isPayment = $i->invoicetype == 'payment';
+                                    $isSettlement = $i->invoicetype == 'settlement';
+                                @endphp
+                                <tr class="{{ $isPayment ? 'is-payment-row' : '' }} {{ $isSettlement ? 'is-settlement-row' : '' }} {{ \Carbon\Carbon::parse($i->date)->isToday() ? 'clhs-today-row' : '' }}">
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $i->id }}</td>
                                     <td>{{ $i->date }}</td>
+                                    <td>{{ \App\Support\NepaliDate::adToBsString($i->date, 'en') }}</td>
                                     <td>{{ $i->created_at }}</td>
                                     <td>{{ $i->particulars }}</td>
                                     <td>{{ $i->voucher_type }}</td>
                                     <td>
-                                        <span class="clhs-type-badge {{ $i->invoicetype == 'payment' ? 'payment' : 'credit' }}">
-                                            {{ $i->invoicetype }}
-                                            @if($i->invoicetype == 'payment')
+                                        <span class="clhs-type-badge {{ $isPayment ? 'payment' : ($isSettlement ? 'settlement' : 'credit') }}">
+                                            {{ $isSettlement ? 'Nil Account' : $i->invoicetype }}
+                                            @if($isPayment)
                                                 CR-({{ $i->id }})
                                             @endif
                                         </span>
+                                        @if($isPayment)
+                                            <button type="button"
+                                                onclick="openPaymentModal({{ $i->id }})"
+                                                class="clhs-view-payment-btn">
+                                                View
+                                            </button>
+                                        @endif
                                     </td>
-                                    <td>{{ $i->invoiceid ?: '-' }}</td>
+                                    <td>
+                                        @if(!empty($i->invoiceid))
+                                            <span class="clhs-invoice-number">{{ $i->invoiceid }}</span>
+                                            <button type="button"
+                                                onclick="openInvoiceModal({{ $i->invoiceid }})"
+                                                class="clhs-view-invoice-btn">
+                                                View
+                                            </button>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td class="text-end">{{ number_format((float) $i->debit, 2) }}</td>
                                     <td class="text-end">{{ number_format((float) $i->credit, 2) }}</td>
                                 </tr>
@@ -208,6 +244,38 @@
                 </table>
             </div>
         </div>
+
+        <div id="invoiceModal" class="invoice-modal">
+            <div class="invoice-modal-content">
+                <div class="invoice-modal-header">
+                    <h3>Invoice Details</h3>
+                    <button class="invoice-modal-close" onclick="closeInvoiceModal()">&times;</button>
+                </div>
+                <div class="invoice-modal-body" id="invoiceModalBody"></div>
+                <div class="invoice-modal-footer">
+                    <a id="invoicePrintLink" href="#" target="_blank" class="btn-print">
+                        <i class="fas fa-print"></i> Print PDF
+                    </a>
+                    <button class="btn-close-modal" onclick="closeInvoiceModal()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="paymentModal" class="payment-modal">
+            <div class="payment-modal-content">
+                <div class="payment-modal-header">
+                    <h3>Payment Details</h3>
+                    <button class="payment-modal-close" onclick="closePaymentModal()">&times;</button>
+                </div>
+                <div class="payment-modal-body" id="paymentModalBody"></div>
+                <div class="payment-modal-footer">
+                    <a id="paymentPrintLink" href="#" target="_blank" class="btn-print payment-print-btn">
+                        <i class="fas fa-print"></i> Print Receipt
+                    </a>
+                    <button class="btn-close-modal" onclick="closePaymentModal()">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -216,6 +284,131 @@
             var newTab = window.open(url, '_blank');
             if (newTab) newTab.focus();
         }
+
+        function openInvoiceModal(invoiceId) {
+            const modal = document.getElementById('invoiceModal');
+            const body = document.getElementById('invoiceModalBody');
+            const printLink = document.getElementById('invoicePrintLink');
+
+            printLink.href = '{{ url("billno/pdf/convert") }}?invoiceid=' + invoiceId;
+            body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading invoice...</p></div>';
+            modal.style.display = 'block';
+
+            fetch('{{ route("api.invoice.data") }}?invoiceid=' + invoiceId, {
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) throw new Error(data.error);
+
+                    let html = '<div class="invoice-display">';
+                    html += '<div class="inv-meta">';
+                    html += '<div>';
+                    html += '<div style="margin-bottom: 8px;"><strong>INVOICE NO: ' + data.invoice_id + '</strong></div>';
+                    html += '<div style="margin-bottom: 4px;"><strong>Name:</strong> ' + (data.customer.name || 'N/A') + '</div>';
+                    html += '<div style="margin-bottom: 4px;"><strong>Address:</strong> ' + (data.customer.address || 'N/A') + '</div>';
+                    if (data.customer.phoneno) html += '<div style="margin-bottom: 4px;"><strong>Contact:</strong> ' + data.customer.phoneno + '</div>';
+                    html += '<div><strong>Customer Id:</strong> ' + (data.customer.id || 'N/A') + '</div>';
+                    html += '</div>';
+                    html += '<div class="inv-meta-right">';
+                    html += '<span class="inv-badge">INVOICE TYPE: ' + (data.type || 'credit').toUpperCase() + '</span>';
+                    html += '<div style="margin-top: 15px;">';
+                    html += '<div style="margin-bottom: 4px;"><strong>Date:</strong> ' + data.date + '</div>';
+                    html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '<table><thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Price</th><th>Amount</th></tr></thead><tbody>';
+
+                    let totalQuantity = 0;
+                    data.items.forEach((item, i) => {
+                        totalQuantity += parseFloat(item.quantity || 0);
+                        html += '<tr><td>' + (i + 1) + '</td><td>' + (item.item_name || '') + '</td><td>' + (item.quantity || '') + '</td><td>' + (item.price || '') + '</td><td>' + (item.subtotal || '') + '</td></tr>';
+                    });
+
+                    html += '<tr class="total-row"><td colspan="2" class="text-right"><strong>Total Quantity:</strong></td><td><strong>' + (Number.isInteger(totalQuantity) ? totalQuantity : totalQuantity.toFixed(2)) + '</strong></td><td></td><td></td></tr>';
+                    html += '<tr class="total-row"><td colspan="3"></td><td class="text-right"><strong>Total:</strong></td><td><strong>Rs ' + parseFloat(data.total || 0).toFixed(2) + '</strong></td></tr>';
+                    html += '</tbody></table>';
+                    html += '<div class="footer-info" style="margin-top: 15px; font-size: 0.875rem; color: #6b7280;"><p>Bill Created by: ' + (data.added_by || 'System') + '</p></div>';
+                    html += '</div>';
+
+                    body.innerHTML = html;
+                })
+                .catch(error => {
+                    body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;"><i class="fas fa-exclamation-circle fa-2x"></i><p>Error: ' + error.message + '</p></div>';
+                });
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoiceModal').style.display = 'none';
+        }
+
+        function openPaymentModal(paymentId) {
+            const modal = document.getElementById('paymentModal');
+            const body = document.getElementById('paymentModalBody');
+            const printLink = document.getElementById('paymentPrintLink');
+
+            printLink.href = '{{ route("cashreceipt.convert") }}?receiptno=' + paymentId;
+            body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading payment...</p></div>';
+            modal.style.display = 'block';
+
+            fetch('{{ route("api.payment.data") }}?paymentid=' + paymentId, {
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) throw new Error(data.error);
+
+                    let html = '<div class="payment-display">';
+                    html += '<div class="receipt-header"><h2>Payment Receipt</h2></div>';
+                    html += '<div class="receipt-meta">';
+                    html += '<div>';
+                    html += '<div style="margin-bottom: 4px;"><strong>Receipt No:</strong> ' + data.receipt_no + '</div>';
+                    html += '<div style="margin-bottom: 4px;"><strong>Customer:</strong> ' + (data.customer.name || 'N/A') + '</div>';
+                    html += '<div><strong>Address:</strong> ' + (data.customer.address || 'N/A') + '</div>';
+                    html += '</div>';
+                    html += '<div class="receipt-meta-right">';
+                    html += '<span class="receipt-badge">' + data.mode.toUpperCase() + '</span>';
+                    html += '<div style="margin-top: 15px;">';
+                    html += '<div style="margin-bottom: 4px;"><strong>Date:</strong> ' + data.date + '</div>';
+                    html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '<div class="amount-box"><div>Amount Received</div><div class="amount-value">Rs ' + parseFloat(data.amount || 0).toFixed(2) + '</div></div>';
+                    html += '<div class="payment-details">';
+                    html += '<div class="payment-details-row"><span class="payment-details-label">Payment Mode:</span><span>' + data.mode + '</span></div>';
+                    html += '<div class="payment-details-row"><span class="payment-details-label">Particulars:</span><span>' + (data.particulars || 'N/A') + '</span></div>';
+                    html += '</div></div>';
+
+                    body.innerHTML = html;
+                })
+                .catch(error => {
+                    body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;"><i class="fas fa-exclamation-circle fa-2x"></i><p>Error: ' + error.message + '</p></div>';
+                });
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('invoiceModal')) closeInvoiceModal();
+            if (event.target === document.getElementById('paymentModal')) closePaymentModal();
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeInvoiceModal();
+                closePaymentModal();
+            }
+        });
     </script>
 
     <style>
@@ -405,28 +598,89 @@
 
         .customer-ledger-payment-btn {
             align-items: center;
-            background: #16a34a !important;
-            border: 2px solid #0f7a37 !important;
+            background: #dc3545 !important;
+            border: 5px solid #ffc107 !important;
             border-radius: 6px;
             color: #ffffff !important;
             display: inline-flex;
-            font-size: 18px;
-            font-weight: 800;
+            font-size: 24px;
+            font-weight: 500;
             gap: 8px;
             margin-top: 12px;
-            padding: 10px 18px;
+            padding: 8px 14px;
             text-decoration: none !important;
             white-space: nowrap;
         }
 
         .customer-ledger-payment-btn:hover {
-            background: #0f7a37 !important;
+            background: #c82333 !important;
             color: #ffffff !important;
         }
 
         .customer-ledger-payment-btn.disabled {
             opacity: .55;
             pointer-events: none;
+        }
+
+        .clhs-toolbar-actions,
+        .clhs-print-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .clhs-print-stack {
+            margin-top: 14px;
+        }
+
+        .clhs-toolbar-actions {
+            align-items: stretch;
+        }
+
+        .clhs-print-all-btn {
+            align-items: center;
+            border-radius: 6px;
+            display: inline-flex;
+            font-size: 16px;
+            font-weight: 700;
+            gap: 8px;
+            justify-content: center;
+            line-height: 1.25;
+            min-height: 50px;
+            padding: 9px 14px;
+            text-align: center;
+            text-decoration: none;
+            width: auto;
+        }
+
+        .clhs-print-all-btn i {
+            font-size: 18px;
+        }
+
+        .clhs-print-all-btn span,
+        .clhs-print-all-btn i {
+            color: #ffffff !important;
+        }
+
+        .clhs-print-all-btn.invoices {
+            background: #198754;
+            color: #ffffff !important;
+        }
+
+        .clhs-print-all-btn.invoices:hover {
+            background: #146c43;
+            color: #ffffff !important;
+        }
+
+        .clhs-print-all-btn.receipts {
+            background: #17c5df;
+            color: #ffffff !important;
+        }
+
+        .clhs-print-all-btn.receipts:hover {
+            background: #0fb5ce;
+            color: #ffffff !important;
         }
 
         .clhs-toolbar {
@@ -448,24 +702,6 @@
             color: #64748b;
             font-size: 14px;
             font-weight: 700;
-        }
-
-        .clhs-table-search {
-            align-items: center;
-            display: flex;
-            min-width: 340px;
-            position: relative;
-        }
-
-        .clhs-table-search i {
-            color: #f59e0b;
-            left: 14px;
-            position: absolute;
-        }
-
-        .clhs-table-search input {
-            border: 2px solid #f59e0b;
-            padding-left: 40px;
         }
 
         .clhs-table-wrap {
@@ -523,6 +759,39 @@
             background: #ecfeff;
         }
 
+        .clhs-table tbody tr.is-settlement-row td {
+            background: #f7fffb !important;
+            border-bottom: 4px solid #00ff88;
+            border-top: 4px solid #00ff88;
+            box-shadow: inset 0 2px 0 #39ff14, inset 0 -2px 0 #39ff14;
+            color: #064e3b;
+            font-weight: 900;
+        }
+
+        .clhs-table tbody tr.is-settlement-row:hover td {
+            background: #ecfff5 !important;
+        }
+
+        .clhs-table tbody tr.clhs-today-row td {
+            background: red !important;
+            color: #ffffff !important;
+        }
+
+        .clhs-table tbody tr.clhs-today-row:hover td {
+            background: red !important;
+        }
+
+        .clhs-table tbody tr.clhs-today-row .clhs-type-badge {
+            background: transparent;
+            color: #ffffff;
+            padding-left: 0;
+        }
+
+        .clhs-table tbody tr.clhs-today-row .clhs-view-invoice-btn {
+            background: #06b6d4;
+            color: #ffffff;
+        }
+
         .clhs-type-badge {
             border-radius: 999px;
             display: inline-flex;
@@ -540,6 +809,48 @@
         .clhs-type-badge.payment {
             background: #dcfce7;
             color: #166534;
+        }
+
+        .clhs-type-badge.settlement {
+            background: #00ff88;
+            box-shadow: 0 0 12px rgba(0, 255, 136, 0.75);
+            color: #052e16;
+        }
+
+        .clhs-invoice-number {
+            display: inline-block;
+            font-weight: 800;
+            margin-right: 8px;
+        }
+
+        .clhs-view-invoice-btn {
+            background: #06b6d4;
+            border: 0;
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 6px 10px;
+        }
+
+        .clhs-view-invoice-btn:hover {
+            background: #0891b2;
+        }
+
+        .clhs-view-payment-btn {
+            background: #06b6d4;
+            border: 0;
+            border-radius: 5px;
+            color: #ffffff;
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 800;
+            margin-left: 6px;
+            padding: 6px 10px;
+        }
+
+        .clhs-view-payment-btn:hover {
+            background: #0891b2;
         }
 
         .clhs-total-row td {
@@ -563,6 +874,287 @@
             margin-bottom: 8px;
         }
 
+        .invoice-modal {
+            background-color: rgba(15, 23, 42, 0.62);
+            display: none;
+            height: 100%;
+            left: 0;
+            overflow: auto;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 99999;
+        }
+
+        .payment-modal {
+            background-color: rgba(15, 23, 42, 0.62);
+            display: none;
+            height: 100%;
+            left: 0;
+            overflow: auto;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 99999;
+        }
+
+        .invoice-modal-content {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+            margin: 22px auto;
+            max-width: 900px;
+            overflow: hidden;
+            width: 90%;
+        }
+
+        .payment-modal-content {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+            margin: 22px auto;
+            max-width: 760px;
+            overflow: hidden;
+            width: 90%;
+        }
+
+        .invoice-modal-header {
+            align-items: center;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+        }
+
+        .payment-modal-header {
+            align-items: center;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+        }
+
+        .invoice-modal-header h3,
+        .payment-modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .invoice-modal-close,
+        .payment-modal-close {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        .invoice-modal-body,
+        .payment-modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .invoice-modal-footer,
+        .payment-modal-footer {
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            padding: 15px 20px;
+        }
+
+        .btn-print,
+        .btn-close-modal {
+            align-items: center;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            font-size: 0.875rem;
+            font-weight: 700;
+            gap: 6px;
+            padding: 8px 16px;
+            text-decoration: none;
+        }
+
+        .btn-print {
+            background: #f97316;
+            border: 0;
+            color: #ffffff;
+        }
+
+        .btn-print:hover {
+            background: #ea580c;
+            color: #ffffff;
+        }
+
+        .payment-print-btn {
+            background: #10b981;
+        }
+
+        .payment-print-btn:hover {
+            background: #059669;
+        }
+
+        .btn-close-modal {
+            background: #e5e7eb;
+            border: 1px solid #d1d5db;
+            color: #374151;
+        }
+
+        .invoice-display {
+            color: #1f2937;
+            font-family: 'Noto Sans', Arial, sans-serif;
+        }
+
+        .invoice-display .inv-meta {
+            display: grid;
+            font-size: 0.875rem;
+            gap: 15px;
+            grid-template-columns: 1fr 1fr;
+            margin-bottom: 20px;
+        }
+
+        .invoice-display .inv-meta-right {
+            text-align: right;
+        }
+
+        .invoice-display .inv-badge {
+            background: #1f2937;
+            color: #ffffff;
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            text-transform: uppercase;
+        }
+
+        .invoice-display table {
+            border-collapse: collapse;
+            display: table !important;
+            font-size: 0.875rem;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .invoice-display thead {
+            display: table-header-group !important;
+        }
+
+        .invoice-display tbody {
+            display: table-row-group !important;
+            height: auto !important;
+            overflow: visible !important;
+        }
+
+        .invoice-display tr {
+            display: table-row !important;
+            width: auto !important;
+        }
+
+        .invoice-display th,
+        .invoice-display td {
+            border: 1px solid #1f2937 !important;
+            display: table-cell !important;
+            padding: 8px 10px;
+            text-align: left;
+        }
+
+        .invoice-display th {
+            background: #f97316;
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .invoice-display .text-right {
+            text-align: right;
+        }
+
+        .invoice-display .total-row {
+            background: #f9fafb;
+            font-weight: 800;
+        }
+
+        .payment-display {
+            color: #1f2937;
+            font-family: 'Noto Sans', Arial, sans-serif;
+        }
+
+        .payment-display .receipt-header {
+            border-bottom: 2px solid #10b981;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            text-align: center;
+        }
+
+        .payment-display .receipt-header h2 {
+            color: #10b981;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .payment-display .receipt-meta {
+            display: grid;
+            font-size: 0.875rem;
+            gap: 15px;
+            grid-template-columns: 1fr 1fr;
+            margin-bottom: 20px;
+        }
+
+        .payment-display .receipt-meta-right {
+            text-align: right;
+        }
+
+        .payment-display .receipt-badge {
+            background: #10b981;
+            border-radius: 4px;
+            color: #ffffff;
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            text-transform: uppercase;
+        }
+
+        .payment-display .amount-box {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 8px;
+            color: #ffffff;
+            margin: 20px 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .payment-display .amount-value {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .payment-display .payment-details {
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-top: 20px;
+            padding: 15px;
+        }
+
+        .payment-display .payment-details-row {
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+
+        .payment-display .payment-details-label {
+            color: #4b5563;
+            font-weight: 800;
+        }
+
         @media (max-width: 1100px) {
             .clhs-top-grid,
             .clhs-customer-meta {
@@ -574,10 +1166,10 @@
                 flex-direction: column;
             }
 
-            .clhs-table-search {
-                min-width: 0;
-                width: 100%;
+            .clhs-toolbar-actions {
+                justify-content: flex-start;
             }
+
         }
 
         @media (max-width: 700px) {
@@ -592,9 +1184,14 @@
             }
 
             .clhs-print-btn,
+            .clhs-print-all-btn,
             .customer-ledger-payment-btn {
                 justify-content: center;
                 width: 100%;
+            }
+
+            .clhs-toolbar-actions {
+                flex-direction: column;
             }
         }
     </style>
