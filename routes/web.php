@@ -314,6 +314,19 @@ Route::delete('/cpayments/{cpayments}',[CustomerLedgerDetailsController::class,'
 //Route::get('/clhs',[CustomerLedgerHistroy::class,'index'])->name('clhs.index');
 Route::get('/clhs',[CustomerLedgerHistroy::class,'returnchoosendatehistroy'])->name('clhs.returnchoosendatehistroy');
 Route::get('/allcashandcredit',[CustomerLedgerHistroy::class,'returnchoosendatehistroycashandcredit'])->name('returnchoosendatehistroycashandcredit');
+Route::get('/all-customer-credit-list', function () {
+    if (!auth()->check()) {
+        return redirect('/login');
+    }
+
+    $breadcrumb = [
+        'subtitle' => 'View',
+        'title' => 'Credit List Of All Customer',
+        'link' => 'Credit List Of All Customer',
+    ];
+
+    return view('customerledgerhistory.all_customer_credit_list', compact('breadcrumb'));
+})->name('customer.creditlist.all');
 
 Route::get('clhs/pdf/convert/',[CustomerLedgerHistroy::class,'PdfGenerateCustomerDetails'])->name('clhspdf.convert');
 Route::get('allcashandcredit/pdf/convert/',[CustomerLedgerHistroy::class,'pdfreturnchoosendatehistroycashandcredit'])->name('pdfreturnchoosendatehistroycashandcredit.convert');

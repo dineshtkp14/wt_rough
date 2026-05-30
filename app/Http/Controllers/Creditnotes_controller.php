@@ -470,12 +470,16 @@ return redirect('/login');
 
 public function deletebillfromdatabaseforcreditnotes(Request $req)
 {
+    $redirectRoute = $req->input('redirect_to') === 'creditnotes.index'
+        ? 'creditnotes.index'
+        : 'creditnotescustomer.billno';
+
     $validator = Validator::make($req->all(), [
         'invoiceid' => 'required',
     ]);
 
     if ($validator->fails()) {
-        return redirect()->route('creditnotescustomer.billno')->withErrors($validator)->withInput();
+        return redirect()->route($redirectRoute)->withErrors($validator)->withInput();
     }
 
     // Check if the user's email is the admin's email
@@ -495,7 +499,7 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
     }
 
     if (!$deletePermission) {
-        return redirect()->route('creditnotescustomer.billno')->with('error', 'Regular users can only delete invoices on the current date.');
+        return redirect()->route($redirectRoute)->with('error', 'Regular users can only delete invoices on the current date.');
     }
 
     // Proceed with the deletion process
@@ -531,7 +535,7 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
         $backupInvoice->added_by = session('user_email');
         $backupInvoice->save();
     } else {
-        return redirect()->route('creditnotescustomer.billno')->with('error', 'Invalid invoiceid provided');
+        return redirect()->route($redirectRoute)->with('error', 'Invalid invoiceid provided');
     }
 
     // Backup customer ledger details
@@ -578,9 +582,9 @@ public function deletebillfromdatabaseforcreditnotes(Request $req)
             'updated_by' => session('user_email'),
             'notes' => ' Credit Notes Invoice No : ' . $req->invoiceid . ' is deleted  by ' . session('user_email')
         ]);
-        return redirect()->route('creditnotescustomer.billno')->with('deletesuccess', 'Deleted Successfully !!');
+        return redirect()->route($redirectRoute)->with('deletesuccess', 'Deleted Successfully !!');
     } else {
-        return redirect()->route('creditnotescustomer.billno')->with('error', 'No records found for the provided invoiceid');
+        return redirect()->route($redirectRoute)->with('error', 'No records found for the provided invoiceid');
     }
 }
 

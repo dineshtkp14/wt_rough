@@ -53,7 +53,16 @@
                                     {{-- <td data-label="Discount">{{ $item->discount }}</td> --}}
                                     <td data-label="Sub-Total">{{ $item->subtotal }}</td>
                                     <td data-label="profit">{{ ($item->price-$item->itemdlp)*$item->quantity }}</td>
-                                    <td><a href="{{ route('creditnotes.edit', $item->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a> </td>
+                                    <td>
+                                        <a href="{{ route('creditnotes.edit', $item->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a>
+                                        <form action="{{ route('creditnotescustomers.deletebillno') }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Delete credit note invoice CN-{{ $item->invoiceid }}?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="invoiceid" value="{{ $item->invoiceid }}">
+                                            <input type="hidden" name="redirect_to" value="creditnotes.index">
+                                            <button type="submit" class="btn btn-danger">DELETE</button>
+                                        </form>
+                                    </td>
                                    
 
                                 </tr>

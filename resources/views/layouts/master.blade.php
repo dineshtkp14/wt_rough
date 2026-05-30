@@ -363,6 +363,8 @@
                                         Receipt</a></li>
                                 <li><a href="{{ route('allsalesdetails.showallcuscreditdetails') }}"><i
                                             class="fa-solid fa-list-check"></i>Due List</a></li>
+                                <li><a href="{{ route('customer.creditlist.all') }}"><i
+                                            class="fa-solid fa-address-book"></i>Credit List All Customers</a></li>
                                 <li><a href="{{ route('cpayments.create') }}"><i
                                             class="fa-solid fa-money-bill-wave"></i>Payment Entry</a></li>
                                 <li><a href="{{ route('openingbalances.create') }}"><i
