@@ -15,6 +15,8 @@ use App\Models\salesitem;
 use App\Models\BackupSalesItem;
 use App\Models\BackupInvoice;
 use App\Models\CreditnotesCustomerledgerdetail;
+use App\Models\CreditnotesInvoice;
+use App\Models\CreditnotesSalesitem;
 
 use App\Models\BackupCustomerLedgerDetails;
 
@@ -31,6 +33,42 @@ use Illuminate\Support\Carbon;
 
 class CustomerLedgerHistroy extends Controller
 {
+    private function creditNoteRowsForLedger($customerid, $from = null, $to = null)
+    {
+        $query = CreditnotesCustomerledgerdetail::where('customerid', $customerid);
+
+        if ($from && $to) {
+            $query->whereBetween('date', [$from, $to]);
+        }
+
+        return $query->get()->map(function ($row) {
+            return (object) [
+                'id' => 'cn-' . $row->id,
+                'customerid' => $row->customerid,
+                'invoiceid' => $row->invoiceid,
+                'date' => $row->date,
+                'created_at' => $row->created_at,
+                'particulars' => $row->particulars,
+                'voucher_type' => $row->voucher_type,
+                'invoicetype' => 'credit_note',
+                'debit' => 0,
+                'credit' => (float) ($row->debit ?? $row->credit ?? 0),
+                'is_credit_note' => true,
+            ];
+        });
+    }
+
+    private function sortLedgerRows($rows)
+    {
+        return $rows->sortByDesc(function ($row) {
+            return sprintf(
+                '%s %s %s',
+                $row->date ?? '',
+                $row->created_at ?? '',
+                is_numeric($row->id ?? null) ? str_pad($row->id, 12, '0', STR_PAD_LEFT) : $row->id
+            );
+        })->values();
+    }
     
 
     public function returncusbills(Request $req){
@@ -88,6 +126,7 @@ class CustomerLedgerHistroy extends Controller
  
              $debittotalsumwithdate = $querycheck->sum('debit');
              $credittotalsumwithdate = $querycheck->sum('credit');
+             $creditNoteRows = $this->creditNoteRowsForLedger($req->customerid);
 
              $xd = customerinfo::where('id', $req->customerid)->get();
              $afn = $xd;
@@ -119,8 +158,12 @@ class CustomerLedgerHistroy extends Controller
     ->get();
     $xd = customerinfo::where('id', $req->customerid)->get();
     $afn = $xd;
+    $creditNoteRows = $this->creditNoteRowsForLedger($req->customerid, $from, $to);
         
          }
+
+         $cusledgertails = $this->sortLedgerRows($cusledgertails->concat($creditNoteRows ?? collect()));
+         $credittotalsumwithdate += ($creditNoteRows ?? collect())->sum('credit');
  
          return view('customerledgerhistory.list', [
              'all' => $cusledgertails,
@@ -174,6 +217,7 @@ class CustomerLedgerHistroy extends Controller
 
             $debittotalsumwithdate = $querycheck->sum('debit');
             $credittotalsumwithdate = $querycheck->sum('credit');
+            $creditNoteRows = $this->creditNoteRowsForLedger($req->customerid);
 
             $xd = customerinfo::where('id', $req->customerid)->get();
             $afn = $xd;
@@ -204,8 +248,12 @@ class CustomerLedgerHistroy extends Controller
 
    $xd = customerinfo::where('id', $req->customerid)->get();
    $afn = $xd;
+   $creditNoteRows = $this->creditNoteRowsForLedger($req->customerid, $from, $to);
        
         }
+
+         $cusledgertails = $this->sortLedgerRows($cusledgertails->concat($creditNoteRows ?? collect()));
+         $credittotalsumwithdate += ($creditNoteRows ?? collect())->sum('credit');
  
          $pdfview = view('customerledgerhistory.customerLedgerDetailsConvertPdf', [
              'all' => $cusledgertails,
@@ -219,7 +267,9 @@ class CustomerLedgerHistroy extends Controller
          ]);
  
          // Generate PDF using FacadePdf
-         $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfview);
+         $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])
+             ->loadHtml($pdfview)
+             ->setPaper('a4', 'landscape');
  
          // Save the PDF to a temporary file
          $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
@@ -791,6 +841,54 @@ class CustomerLedgerHistroy extends Controller
 
         return redirect('/login');
     }
+
+    public function showDeletedInvoicePDF(Request $req)
+    {
+        if (Auth::check()) {
+            $invoiceid = $req->invoiceid;
+            $allInvoices = BackupInvoice::where('invoice_id', $invoiceid)->get();
+            $allcusbyid = BackupSalesItem::where('invoiceid', $invoiceid)->get();
+            $customerinfodetails = null;
+
+            foreach ($allcusbyid as $data) {
+                $item = item::where('id', $data->itemid)->select('id', 'itemsname', 'mrp', 'unit')->first();
+                if ($item) {
+                    $data->itemidorg = $item->id;
+                    $data->itemid = $item->itemsname;
+                    $data->mrp = $item->mrp;
+                    $data->unit = $item->unit;
+                } else {
+                    $data->itemidorg = $data->itemid ?? '-';
+                    $data->itemid = $data->unstockedname;
+                }
+            }
+
+            foreach ($allInvoices as $data) {
+                if ($data->customerid) {
+                    $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
+                }
+            }
+
+            $pdf = FacadePdf::setOptions([
+                'dpi' => 150,
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'NotoSansDevanagari',
+                'chroot' => public_path(),
+            ])
+                ->loadView('deletedbill.deletedinvoicepdf', [
+                    'allinvoices' => $allInvoices,
+                    'allcusbyid' => $allcusbyid,
+                    'invoiceid' => $invoiceid,
+                    'cinfodetails' => $customerinfodetails,
+                ])
+                ->setPaper('A5', 'portrait');
+
+            return $pdf->stream('deleted_invoice_' . $invoiceid . '.pdf');
+        }
+
+        return redirect('/login');
+    }
     
 
 
@@ -850,10 +948,14 @@ class CustomerLedgerHistroy extends Controller
             $from = $req->date1;
             $to = $req->date2;
             $customerid = $req->customerid;
+            $invoiceType = $req->invoice_type;
 
             $customerinfo = customerinfo::where('id', $customerid)->first();
             
             $allInvoices = invoice::where('customerid', $customerid)
+                ->when($invoiceType, function($query) use ($invoiceType) {
+                    return $query->where('inv_type', $invoiceType);
+                })
                 ->when($from && $to, function($query) use ($from, $to) {
                     return $query->whereBetween('inv_date', [$from, $to]);
                 })
@@ -902,6 +1004,65 @@ class CustomerLedgerHistroy extends Controller
         
             return $pdf->stream('all_invoices.pdf');
         }
+        return redirect('/login');
+    }
+
+    public function printAllCustomerCreditNotes(Request $req)
+    {
+        if (Auth::check()) {
+            $from = $req->date1;
+            $to = $req->date2;
+            $customerid = $req->customerid;
+
+            $customerinfo = customerinfo::where('id', $customerid)->first();
+
+            $allCreditNotes = CreditnotesInvoice::where('customerid', $customerid)
+                ->when($from && $to, function ($query) use ($from, $to) {
+                    return $query->whereBetween('inv_date', [$from, $to]);
+                })
+                ->orderBy('id', 'DESC')
+                ->get();
+
+            $creditNoteData = [];
+            foreach ($allCreditNotes as $creditNote) {
+                $items = CreditnotesSalesitem::where('invoiceid', $creditNote->id)->get();
+
+                foreach ($items as $creditNoteItem) {
+                    $itemInfo = item::where('id', $creditNoteItem->itemid)
+                        ->select('id', 'itemsname', 'mrp', 'unit')
+                        ->first();
+
+                    $creditNoteItem->itemidorg = $itemInfo ? $itemInfo->id : ($creditNoteItem->itemid ?? '-');
+                    $creditNoteItem->itemname = $itemInfo ? $itemInfo->itemsname : ($creditNoteItem->unstockedname ?? 'N/A');
+                    $creditNoteItem->mrp = $itemInfo ? $itemInfo->mrp : null;
+                    $creditNoteItem->unit = $itemInfo ? $itemInfo->unit : ($creditNoteItem->unit ?? 'pcs');
+                    $creditNoteItem->nos = $creditNoteItem->quantity ?? 1;
+                }
+
+                $creditNoteData[] = [
+                    'invoice' => $creditNote,
+                    'items' => $items,
+                ];
+            }
+
+            $pdf = FacadePdf::setOptions([
+                'dpi' => 150,
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'NotoSansDevanagari',
+                'chroot' => public_path(),
+            ])
+                ->loadView('customerledgerhistory.print_all_customer_creditnotes', [
+                    'customer' => $customerinfo,
+                    'creditNoteData' => $creditNoteData,
+                    'from' => $from,
+                    'to' => $to,
+                ])
+                ->setPaper('A5', 'portrait');
+
+            return $pdf->stream('all_credit_notes.pdf');
+        }
+
         return redirect('/login');
     }
 
@@ -975,7 +1136,11 @@ class CustomerLedgerHistroy extends Controller
                 ->pluck('id')
                 ->first();
     
-            $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
+            $creditNoteQuery = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid);
+            if ($req->date1 && $req->date2) {
+                $creditNoteQuery->whereBetween('date', [$req->date1, $req->date2]);
+            }
+            $creditnoteledger = $creditNoteQuery->get();
             $debittotalcrnotes = $creditnoteledger->sum('debit');
     
             $from = $req->date1;
@@ -992,14 +1157,24 @@ class CustomerLedgerHistroy extends Controller
                 $querycheck->whereBetween('date', [$from, $to]);
             }
     
+            // Calculate sum values for debit, credit, and debit not cash
+            $ledgerRows = $querycheck->get();
+            $creditNoteRows = $this->creditNoteRowsForLedger($req->customerid, $from, $to);
+            $mergedLedgerRows = $this->sortLedgerRows($ledgerRows->concat($creditNoteRows));
+            $debittotalsumwithdate = $ledgerRows->sum('debit');
+            $credittotalsumwithdate = $ledgerRows->sum('credit') + $creditNoteRows->sum('credit');
+            $debitnotcash = $ledgerRows->where('invoicetype', '!=', 'cash')->sum('debit');
+    
             // Pagination settings
             $perPage = 200; // Adjust according to your needs
-            $cusledgertails = $querycheck->paginate($perPage)->appends($req->all());
-    
-            // Calculate sum values for debit, credit, and debit not cash
-            $debittotalsumwithdate = $querycheck->sum('debit');
-            $credittotalsumwithdate = $querycheck->sum('credit');
-            $debitnotcash = $querycheck->where('invoicetype', '!=', 'cash')->sum('debit');
+            $page = LengthAwarePaginator::resolveCurrentPage();
+            $cusledgertails = new LengthAwarePaginator(
+                $mergedLedgerRows->forPage($page, $perPage)->values(),
+                $mergedLedgerRows->count(),
+                $perPage,
+                $page,
+                ['path' => $req->url(), 'query' => $req->query()]
+            );
     
             // Calculate allnotcash and cts before storing them in the session
             $allnotcash = $debitnotcash;
@@ -1046,13 +1221,17 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
         ];
 
         $customeridfor=$req->customerid;
-        // Fetch credit note ledger details
-        $creditnoteledger = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid)->get();
-        $debittotalcrnotes = $creditnoteledger->sum('debit');
-
         // Get date range from request
-        $from = date($req->date1);
-        $to = date($req->date2);
+        $from = $req->date1;
+        $to = $req->date2;
+
+        // Fetch credit note ledger details
+        $creditNoteQuery = CreditnotesCustomerledgerdetail::where('customerid', $req->customerid);
+        if ($from && $to) {
+            $creditNoteQuery->whereBetween('date', [$from, $to]);
+        }
+        $creditnoteledger = $creditNoteQuery->get();
+        $debittotalcrnotes = $creditnoteledger->sum('debit');
 
         $cusinfoforpdf= customerinfo::where('id',$req->customerid)->get();
         // Initialize variables
@@ -1070,6 +1249,7 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
             $cusledgertails = customerledgerdetails::where('customerid', $req->customerid)->get();
 
             $querycheck = customerledgerdetails::where('customerid', $req->customerid)->get();
+            $creditNoteRows = $this->creditNoteRowsForLedger($req->customerid);
 
             // Calculate sums for debit and credit without date filtering
             $debittotalsumwithdate = $querycheck->sum('debit');
@@ -1078,7 +1258,10 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
         } else {
             // Date range specified, fetch data within the date range
 
-            $betweendate = customerledgerdetails::where('customerid', $req->customerid)->get();
+            $betweendate = customerledgerdetails::where('customerid', $req->customerid)
+                ->whereBetween('date', [$from, $to])
+                ->get();
+            $creditNoteRows = $this->creditNoteRowsForLedger($req->customerid, $from, $to);
 
             // Calculate sums for debit and credit within the specified date range
             $debittotalsumwithdate = $betweendate->sum('debit');
@@ -1089,6 +1272,9 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
             // Fetch customer ledger details within the specified date range
             $cusledgertails = customerledgerdetails::whereBetween('date', [$from, $to])->where('customerid', $req->customerid)->get();
         }
+
+        $cusledgertails = $this->sortLedgerRows($cusledgertails->concat($creditNoteRows ?? collect()));
+        $credittotalsumwithdate += ($creditNoteRows ?? collect())->sum('credit');
 
         // Generate PDF view
         $pdfview = view('customerledgerhistory.view_customerallledger_cashandcredit_PDF', [
@@ -1101,11 +1287,15 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
             'cts' => $credittotalsumwithdate,
             'cusinfoforpdfok' => $cusinfoforpdf,
             'breadcrumb' => $breadcrumb,
-            'cid' => $customeridfor
+            'cid' => $customeridfor,
+            'from' => $from,
+            'to' => $to,
         ]);
 
         // Generate PDF using FacadePdf
-        $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])->loadHtml($pdfview);
+        $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])
+            ->loadHtml($pdfview)
+            ->setPaper('a4', 'landscape');
     
         // Save the PDF to a temporary file
         $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');

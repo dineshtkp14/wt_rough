@@ -5,6 +5,7 @@
         $customer = $cusinfobyid->first();
         $dueAmount = (float) $dts - (float) $cts;
         $hasRows = $all && count($all) > 0;
+        $hasCreditNotes = $all && collect($all)->contains('invoicetype', 'credit_note');
         $amountToWords = function ($num) use (&$amountToWords) {
             $num = (int) floor($num);
             $ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
@@ -97,46 +98,52 @@
                     </form>
                 </section>
 
-                <section class="clhs-panel clhs-summary-panel">
-                    <div class="clhs-summary-head">
-                        <div>
-                            <div class="clhs-section-title">
-                                <i class="fa-solid fa-user"></i>
-                                Customer Summary
+                @if($customeridonly)
+                    <section class="clhs-panel clhs-summary-panel">
+                        <div class="clhs-summary-head">
+                            <div>
+                                <div class="clhs-section-title">
+                                    <i class="fa-solid fa-user"></i>
+                                    Customer Summary
+                                </div>
+                                <h3>{{ $customer->name ?? 'Select a customer' }}</h3>
+                                <p>{{ $customer->address ?? 'No address selected' }}</p>
                             </div>
-                            <h3>{{ $customer->name ?? 'Select a customer' }}</h3>
-                            <p>{{ $customer->address ?? 'No address selected' }}</p>
+
+                            <a href="{{ route('chequedeposit.create') }}" class="clhs-cheque-btn">
+                                <i class="fas fa-money-bill-wave"></i>
+                                Cheque Deposit
+                            </a>
                         </div>
 
-                    </div>
+                        <div class="clhs-customer-meta">
+                            <div><span>Phone</span><b>{{ $customer->phoneno ?? '-' }}</b></div>
+                            <div><span>Alternate Phone</span><b>{{ $customer->alternate_phoneno ?? $customer->phoneno ?? '-' }}</b></div>
+                            <div><span>Email</span><b>{{ $customer->email ?? '-' }}</b></div>
+                        </div>
 
-                    <div class="clhs-customer-meta">
-                        <div><span>Phone</span><b>{{ $customer->phoneno ?? '-' }}</b></div>
-                        <div><span>Alternate Phone</span><b>{{ $customer->alternate_phoneno ?? $customer->phoneno ?? '-' }}</b></div>
-                        <div><span>Email</span><b>{{ $customer->email ?? '-' }}</b></div>
-                    </div>
+                        <div class="clhs-due-card {{ $dueAmount < 0 ? 'is-negative' : '' }}">
+                            <span>Total Due Amount</span>
+                            <strong>{{ number_format($dueAmount, 2) }} -/</strong>
+                            <small>{{ $amountToWords($dueAmount) }} only -/</small>
+                        </div>
 
-                    <div class="clhs-due-card {{ $dueAmount < 0 ? 'is-negative' : '' }}">
-                        <span>Total Due Amount</span>
-                        <strong>{{ number_format($dueAmount, 2) }} -/</strong>
-                        <small>{{ $amountToWords($dueAmount) }} only -/</small>
-                    </div>
-
-                    <div class="clhs-actions">
-                        <a href="{{ route('cpayments.create', [
-                            'customerid' => $customeridonly,
-                            'amount' => $dueAmount,
-                            'totaldueamountfornotclear' => $dueAmount,
-                            'cname' => $customer
-                                ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? ''))
-                                : null,
-                        ]) }}"
-                            class="customer-ledger-payment-btn {{ !$customeridonly ? 'disabled' : '' }}">
-                            <i class="fa-solid fa-money-bill-wave"></i>
-                            Customer Ledger Payment
-                        </a>
-                    </div>
-                </section>
+                        <div class="clhs-actions">
+                            <a href="{{ route('cpayments.create', [
+                                'customerid' => $customeridonly,
+                                'amount' => $dueAmount,
+                                'totaldueamountfornotclear' => $dueAmount,
+                                'cname' => $customer
+                                    ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? ''))
+                                    : null,
+                            ]) }}"
+                                class="customer-ledger-payment-btn">
+                                <i class="fa-solid fa-money-bill-wave"></i>
+                                Customer Ledger Payment
+                            </a>
+                        </div>
+                    </section>
+                @endif
             </div>
 
             <div class="clhs-toolbar">
@@ -144,26 +151,34 @@
                     <h4>Ledger Entries</h4>
                     <span>{{ $hasRows ? count($all) . ' records found' : 'No records found' }}</span>
                 </div>
-                <div class="clhs-toolbar-actions">
-                    <a href="{{ route('print.all.customer.invoices', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
-                        onclick="openPdfInNewTab(event, this.href); return false;"
-                        class="clhs-print-all-btn invoices {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
-                        <i class="fa-regular fa-file-lines"></i>
-                        <span>Print All Invoices</span>
-                    </a>
-                    <a href="{{ $customeridonly ? route('customer.printallcashreceipts', ['customerid' => $customeridonly]) : '#' }}"
-                        @if($customeridonly) onclick="openPdfInNewTab(event, this.href); return false;" @endif
-                        class="clhs-print-all-btn receipts {{ !$customeridonly ? 'pdf-link-disabled' : '' }}">
-                        <i class="fa-solid fa-receipt"></i>
-                        <span>Print All Cash Receipts</span>
-                    </a>
-                    <a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
-                        onclick="openPdfInNewTab(event, this.href); return false;"
-                        class="clhs-print-btn {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
-                        <span>Print</span>
-                        <i class="fa-solid fa-print"></i>
-                    </a>
-                </div>
+                @if($customeridonly)
+                    <div class="clhs-toolbar-actions">
+                        <a href="{{ route('print.all.customer.invoices', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate, 'invoice_type' => 'credit']) }}"
+                            onclick="openPdfInNewTab(event, this.href); return false;"
+                            class="clhs-print-all-btn invoices {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
+                            <i class="fa-regular fa-file-lines"></i>
+                            <span>Print All Invoices</span>
+                        </a>
+                        <a href="{{ route('print.all.customer.creditnotes', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
+                            onclick="openPdfInNewTab(event, this.href); return false;"
+                            class="clhs-print-all-btn creditnotes {{ !$hasCreditNotes ? 'pdf-link-disabled' : '' }}">
+                            <i class="fa-solid fa-file-invoice"></i>
+                            <span>Print All Credit Notes</span>
+                        </a>
+                        <a href="{{ route('customer.printallcashreceipts', ['customerid' => $customeridonly]) }}"
+                            onclick="openPdfInNewTab(event, this.href); return false;"
+                            class="clhs-print-all-btn receipts">
+                            <i class="fa-solid fa-receipt"></i>
+                            <span>Print All Cash Receipts</span>
+                        </a>
+                        <a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
+                            onclick="openPdfInNewTab(event, this.href); return false;"
+                            class="clhs-print-btn {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
+                            <span>Print</span>
+                            <i class="fa-solid fa-print"></i>
+                        </a>
+                    </div>
+                @endif
             </div>
 
             <div class="clhs-table-wrap">
@@ -188,6 +203,7 @@
                                 @php
                                     $isPayment = $i->invoicetype == 'payment';
                                     $isSettlement = $i->invoicetype == 'settlement';
+                                    $isCreditNote = $i->invoicetype == 'credit_note';
                                 @endphp
                                 <tr class="{{ $isPayment ? 'is-payment-row' : '' }} {{ $isSettlement ? 'is-settlement-row' : '' }} {{ \Carbon\Carbon::parse($i->date)->isToday() ? 'clhs-today-row' : '' }}">
                                     <td>{{ $loop->iteration }}</td>
@@ -197,8 +213,8 @@
                                     <td>{{ $i->particulars }}</td>
                                     <td>{{ $i->voucher_type }}</td>
                                     <td>
-                                        <span class="clhs-type-badge {{ $isPayment ? 'payment' : ($isSettlement ? 'settlement' : 'credit') }}">
-                                            {{ $isSettlement ? 'Nil Account' : $i->invoicetype }}
+                                        <span class="clhs-type-badge {{ $isPayment ? 'payment' : ($isSettlement ? 'settlement' : ($isCreditNote ? 'credit-note' : 'credit')) }}">
+                                            {{ $isSettlement ? 'Nil Account' : ($isCreditNote ? 'Credit Note' : $i->invoicetype) }}
                                             @if($isPayment)
                                                 CR-({{ $i->id }})
                                             @endif
@@ -213,12 +229,20 @@
                                     </td>
                                     <td>
                                         @if(!empty($i->invoiceid))
-                                            <span class="clhs-invoice-number">{{ $i->invoiceid }}</span>
-                                            <button type="button"
-                                                onclick="openInvoiceModal({{ $i->invoiceid }})"
-                                                class="clhs-view-invoice-btn">
-                                                View
-                                            </button>
+                                            <span class="clhs-invoice-number">{{ $isCreditNote ? 'CN-' : '' }}{{ $i->invoiceid }}</span>
+                                            @if($isCreditNote)
+                                                <button type="button"
+                                                    onclick="openCreditNoteModal({{ $i->invoiceid }})"
+                                                    class="clhs-view-invoice-btn">
+                                                    View
+                                                </button>
+                                            @else
+                                                <button type="button"
+                                                    onclick="openInvoiceModal({{ $i->invoiceid }})"
+                                                    class="clhs-view-invoice-btn">
+                                                    View
+                                                </button>
+                                            @endif
                                         @else
                                             -
                                         @endif
@@ -273,6 +297,22 @@
                         <i class="fas fa-print"></i> Print Receipt
                     </a>
                     <button class="btn-close-modal" onclick="closePaymentModal()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="creditNoteModal" class="credit-note-modal">
+            <div class="credit-note-modal-content">
+                <div class="credit-note-modal-header">
+                    <h3>Credit Note Details</h3>
+                    <button class="credit-note-modal-close" onclick="closeCreditNoteModal()">&times;</button>
+                </div>
+                <div class="credit-note-modal-body" id="creditNoteModalBody"></div>
+                <div class="credit-note-modal-footer">
+                    <a id="creditNotePrintLink" href="#" target="_blank" class="btn-print credit-note-print-btn">
+                        <i class="fas fa-print"></i> Print PDF
+                    </a>
+                    <button class="btn-close-modal" onclick="closeCreditNoteModal()">Close</button>
                 </div>
             </div>
         </div>
@@ -398,15 +438,74 @@
             document.getElementById('paymentModal').style.display = 'none';
         }
 
+        function renderCreditNoteHtml(data) {
+            let html = '<div class="invoice-display">';
+            html += '<div class="inv-meta">';
+            html += '<div>';
+            html += '<div style="margin-bottom: 8px;"><strong>CREDIT NOTE NO: ' + data.invoice_no + '</strong></div>';
+            html += '<div style="margin-bottom: 4px;"><strong>Name:</strong> ' + (data.customer.name || 'N/A') + '</div>';
+            html += '<div style="margin-bottom: 4px;"><strong>Address:</strong> ' + (data.customer.address || 'N/A') + '</div>';
+            if (data.customer.phoneno) html += '<div style="margin-bottom: 4px;"><strong>Contact:</strong> ' + data.customer.phoneno + '</div>';
+            html += '<div><strong>Customer Id:</strong> ' + (data.customer.id || 'N/A') + '</div>';
+            html += '</div>';
+            html += '<div class="inv-meta-right">';
+            html += '<span class="inv-badge">CREDIT NOTE / SALES RETURN</span>';
+            html += '<div style="margin-top: 15px;">';
+            html += '<div style="margin-bottom: 4px;"><strong>Date:</strong> ' + (data.date || '') + '</div>';
+            html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+            html += '</div></div></div>';
+            html += '<table><thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Unit</th><th>Price</th><th>Amount</th></tr></thead><tbody>';
+            data.items.forEach((item, i) => {
+                html += '<tr><td>' + (i + 1) + '</td><td>' + (item.item_name || '') + '</td><td>' + (item.quantity || '') + '</td><td>' + (item.unit || '') + '</td><td>' + (item.price || '') + '</td><td>' + (item.subtotal || '') + '</td></tr>';
+            });
+            html += '<tr class="total-row"><td colspan="5" class="text-right"><strong>Sub-Total:</strong></td><td><strong>Rs ' + parseFloat(data.subtotal || 0).toFixed(2) + '</strong></td></tr>';
+            html += '<tr class="total-row"><td colspan="5" class="text-right"><strong>Extra Discount:</strong></td><td><strong>Rs ' + parseFloat(data.discount || 0).toFixed(2) + '</strong></td></tr>';
+            html += '<tr class="total-row"><td colspan="5" class="text-right"><strong>Total Amount:</strong></td><td><strong>Rs ' + parseFloat(data.total || 0).toFixed(2) + '</strong></td></tr>';
+            if (data.notes) html += '<tr><td colspan="6"><strong>Notes:</strong> ' + data.notes + '</td></tr>';
+            html += '</tbody></table>';
+            html += '<div class="footer-info" style="margin-top: 15px; font-size: 0.875rem; color: #6b7280;"><p>Created by: ' + (data.added_by || 'System') + '</p></div>';
+            html += '</div>';
+            return html;
+        }
+
+        function openCreditNoteModal(invoiceId) {
+            const modal = document.getElementById('creditNoteModal');
+            const body = document.getElementById('creditNoteModalBody');
+            const printLink = document.getElementById('creditNotePrintLink');
+            printLink.href = '{{ route("creditnotesbillno.convert") }}?invoiceid=' + invoiceId;
+            body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading credit note...</p></div>';
+            modal.style.display = 'block';
+            fetch('{{ route("api.creditnote.data") }}?invoiceid=' + invoiceId, {
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+            })
+                .then(response => { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
+                .then(data => {
+                    if (data.error) throw new Error(data.error);
+                    body.innerHTML = renderCreditNoteHtml(data);
+                })
+                .catch(error => {
+                    body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;"><i class="fas fa-exclamation-circle fa-2x"></i><p>Error: ' + error.message + '</p></div>';
+                });
+        }
+
+        function closeCreditNoteModal() {
+            const modal = document.getElementById('creditNoteModal');
+            const body = document.getElementById('creditNoteModalBody');
+            modal.style.display = 'none';
+            body.innerHTML = '';
+        }
+
         window.addEventListener('click', function(event) {
             if (event.target === document.getElementById('invoiceModal')) closeInvoiceModal();
             if (event.target === document.getElementById('paymentModal')) closePaymentModal();
+            if (event.target === document.getElementById('creditNoteModal')) closeCreditNoteModal();
         });
 
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeInvoiceModal();
                 closePaymentModal();
+                closeCreditNoteModal();
             }
         });
     </script>
@@ -596,6 +695,24 @@
             text-transform: capitalize;
         }
 
+        .clhs-cheque-btn {
+            background: #2563eb;
+            border: 4px solid #dc3545;
+            border-radius: 6px;
+            color: #ffffff !important;
+            display: inline-flex;
+            font-weight: 800;
+            gap: 8px;
+            padding: 8px 12px;
+            text-decoration: none !important;
+            white-space: nowrap;
+        }
+
+        .clhs-cheque-btn:hover {
+            background: #1d4ed8;
+            color: #ffffff !important;
+        }
+
         .customer-ledger-payment-btn {
             align-items: center;
             background: #dc3545 !important;
@@ -618,6 +735,11 @@
         }
 
         .customer-ledger-payment-btn.disabled {
+            opacity: .55;
+            pointer-events: none;
+        }
+
+        .pdf-link-disabled {
             opacity: .55;
             pointer-events: none;
         }
@@ -680,6 +802,16 @@
 
         .clhs-print-all-btn.receipts:hover {
             background: #0fb5ce;
+            color: #ffffff !important;
+        }
+
+        .clhs-print-all-btn.creditnotes {
+            background: #d97706;
+            color: #ffffff !important;
+        }
+
+        .clhs-print-all-btn.creditnotes:hover {
+            background: #b45309;
             color: #ffffff !important;
         }
 
@@ -811,6 +943,11 @@
             color: #166534;
         }
 
+        .clhs-type-badge.credit-note {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
         .clhs-type-badge.settlement {
             background: #00ff88;
             box-shadow: 0 0 12px rgba(0, 255, 136, 0.75);
@@ -886,7 +1023,8 @@
             z-index: 99999;
         }
 
-        .payment-modal {
+        .payment-modal,
+        .credit-note-modal {
             background-color: rgba(15, 23, 42, 0.62);
             display: none;
             height: 100%;
@@ -908,12 +1046,13 @@
             width: 90%;
         }
 
-        .payment-modal-content {
+        .payment-modal-content,
+        .credit-note-modal-content {
             background-color: #ffffff;
             border-radius: 8px;
             box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
             margin: 22px auto;
-            max-width: 760px;
+            max-width: 980px;
             overflow: hidden;
             width: 90%;
         }
@@ -936,15 +1075,26 @@
             padding: 15px 20px;
         }
 
+        .credit-note-modal-header {
+            align-items: center;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+        }
+
         .invoice-modal-header h3,
-        .payment-modal-header h3 {
+        .payment-modal-header h3,
+        .credit-note-modal-header h3 {
             font-size: 1.25rem;
             font-weight: 800;
             margin: 0;
         }
 
         .invoice-modal-close,
-        .payment-modal-close {
+        .payment-modal-close,
+        .credit-note-modal-close {
             background: none;
             border: none;
             color: #ffffff;
@@ -954,14 +1104,16 @@
         }
 
         .invoice-modal-body,
-        .payment-modal-body {
+        .payment-modal-body,
+        .credit-note-modal-body {
             max-height: 70vh;
             overflow-y: auto;
             padding: 20px;
         }
 
         .invoice-modal-footer,
-        .payment-modal-footer {
+        .payment-modal-footer,
+        .credit-note-modal-footer {
             background: #f9fafb;
             border-top: 1px solid #e5e7eb;
             display: flex;
@@ -1000,6 +1152,14 @@
 
         .payment-print-btn:hover {
             background: #059669;
+        }
+
+        .credit-note-print-btn {
+            background: #d97706;
+        }
+
+        .credit-note-print-btn:hover {
+            background: #b45309;
         }
 
         .btn-close-modal {
@@ -1185,7 +1345,8 @@
 
             .clhs-print-btn,
             .clhs-print-all-btn,
-            .customer-ledger-payment-btn {
+            .customer-ledger-payment-btn,
+            .clhs-cheque-btn {
                 justify-content: center;
                 width: 100%;
             }

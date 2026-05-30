@@ -318,6 +318,7 @@ Route::get('/allcashandcredit',[CustomerLedgerHistroy::class,'returnchoosendateh
 Route::get('clhs/pdf/convert/',[CustomerLedgerHistroy::class,'PdfGenerateCustomerDetails'])->name('clhspdf.convert');
 Route::get('allcashandcredit/pdf/convert/',[CustomerLedgerHistroy::class,'pdfreturnchoosendatehistroycashandcredit'])->name('pdfreturnchoosendatehistroycashandcredit.convert');
 Route::get('allcashandcredit/invoices/pdf/convert/',[CustomerLedgerHistroy::class,'printAllCustomerInvoices'])->name('print.all.customer.invoices');
+Route::get('customer/creditnotes/pdf/convert/',[CustomerLedgerHistroy::class,'printAllCustomerCreditNotes'])->name('print.all.customer.creditnotes');
 Route::get('customer/{customerid}/cashreceipts/pdf/convert',[CustomerLedgerHistroy::class,'printAllCashReceipts'])->name('customer.printallcashreceipts');
 
 Route::get('/oldpricecheck',[CustomerLedgerHistroy::class,'oldpricecheck'])->name('oldpricecheck');
@@ -338,11 +339,14 @@ Route::get('companyledgerdetails/pdf/convert/',[CompanyLedgerBillEntryController
 
 
 Route::get('/deletedbillno',[CustomerLedgerHistroy::class,'returndeletedBillsDEtailsByInvoiceid'])->name('deletedcustomer.deletebillno');
+Route::get('/deletedbillno/pdf/convert/',[CustomerLedgerHistroy::class,'showDeletedInvoicePDF'])->name('deletedinvoice.convert');
 Route::get('/deletedinvoice',[CustomerLedgerHistroy::class,'returndeletedinvoice'])->name('deleted.invoice');
 
 Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])->name('customer.billno');
 Route::get('/api/invoice-data',[ModernDashboardController::class,'getInvoiceData'])->name('api.invoice.data');
 Route::get('/api/payment-data',[ModernDashboardController::class,'getPaymentData'])->name('api.payment.data');
+Route::get('/api/credit-note-data',[ModernDashboardController::class,'getCreditNoteData'])->name('api.creditnote.data');
+Route::get('/api/deleted-invoice-data',[ModernDashboardController::class,'getDeletedInvoiceData'])->name('api.deletedinvoice.data');
 Route::get('/invoice/print-all-today',[ModernDashboardController::class,'printAllTodayInvoices'])->name('invoice.print.all.today');
 Route::get('/payment/print-all-today',[ModernDashboardController::class,'printAllTodayPayments'])->name('payment.print.all.today');
 Route::get('/checktoday',[ModernDashboardController::class,'checkToday'])->name('checktoday.index');

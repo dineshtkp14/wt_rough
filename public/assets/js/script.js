@@ -413,6 +413,10 @@ function handleInputChange() {
 
         const index = salesData.findIndex((obj) => obj.id === dataId);
 
+        if (inputId !== "unstockedInput") {
+            hideOldPriceBoxes();
+        }
+
         if (inputId === "unitInput") {
             // Check if a unit is selected
             if (value === "select") {
@@ -437,6 +441,10 @@ function handleInputChange() {
 }
 
 let oldPriceTimers = {};
+
+function hideOldPriceBoxes() {
+    $(".old-price-result-box").hide().empty();
+}
 
 function oldPriceResultHTML(value) {
     const encodedValue = encodeURIComponent(JSON.stringify(value));
@@ -483,6 +491,7 @@ function handleOldPriceSearch() {
                         resultBox.empty();
 
                         if (!response || response.length === 0) {
+                            positionOldPriceBox(input, resultBox);
                             resultBox
                                 .append(
                                     '<div class="old-price-empty">No old price found for this customer.</div>'
@@ -512,7 +521,7 @@ function handleOldPriceSearch() {
         .on("blur.oldprice", function () {
             const dataId = $(this).data("id");
             setTimeout(function () {
-                $(`.old-price-result-box[data-id="${dataId}"]`).hide();
+                $(`.old-price-result-box[data-id="${dataId}"]`).hide().empty();
             }, 180);
         });
 }
@@ -686,6 +695,8 @@ $("#modalContainer").on("click", function (e) {
 
 // final total input change
 $(".sales-input-final").on("input", function () {
+    hideOldPriceBoxes();
+
     const value = $(this).val().trim();
     const dataName = $(this).data("name");
     finalData[0][dataName] = value;
@@ -721,6 +732,7 @@ $(window).on("load", function () {
 
     $("#verifyBtn").on("click", function (e) {
         e.preventDefault();
+        hideOldPriceBoxes();
 
         let hasError = false; // Flag to track if any error occurs
 
@@ -782,12 +794,27 @@ $(window).on("load", function () {
                 $("#errorText").attr("class", "text-success fw-bold");
                 $("#errorText").text("Success, Now you can submit !");
                 $("#submitBtn").removeAttr("disabled");
+
+                if (
+                    currentUrl.indexOf("creditnotes/create") !== -1 ||
+                    currentUrl.indexOf("itemsales/create") !== -1
+                ) {
+                    $("#verifyBtn").hide();
+                    $("#submitBtn").text("Save").show();
+                }
             }
         }
 
         // If there are any errors, disable the submit button
         if (hasError) {
             $("#submitBtn").attr("disabled", "disabled");
+            if (
+                currentUrl.indexOf("creditnotes/create") !== -1 ||
+                currentUrl.indexOf("itemsales/create") !== -1
+            ) {
+                $("#submitBtn").hide();
+                $("#verifyBtn").show();
+            }
         }
     });
 });

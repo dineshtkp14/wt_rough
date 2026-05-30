@@ -107,6 +107,11 @@
                 <i class="fa fa-file-text"></i> CASH/CREDIT LEDGER
             </a>
         </div>
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('chequedeposit.create') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
+                <i class="fa fa-money"></i> CHEQUE DEPOSIT
+            </a>
+        </div>
     </div>
 
 </div>

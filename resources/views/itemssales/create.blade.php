@@ -192,8 +192,8 @@
                             <div class="error-message mb-2">
                                 <small class="text-danger fw-bold" id="errorText"></small>
                             </div>
-                            <button class="btn btn-primary btn-md" id="verifyBtn">Verify</button>
-                            <button class="btn btn-success btn-md" type="submit" id="submitBtn" disabled>Submit</button>
+                            <button class="btn btn-primary btn-md invoice-action-btn" id="verifyBtn">Verify</button>
+                            <button class="btn btn-success btn-md invoice-action-btn" type="submit" id="submitBtn" style="display: none;" disabled>Save</button>
                         </div>
                     </div>
                 </div>
@@ -325,6 +325,12 @@ $(document).ready(function () {
             color: #dc3545;
             font-size: 14px;
             padding: 8px 10px;
+        }
+
+        .invoice-action-btn {
+            min-width: 300px;
+            padding-left: 24px;
+            padding-right: 24px;
         }
         
     </style>

@@ -11,10 +11,13 @@ use App\Models\customerinfo;
 use App\Models\company;
 use App\Models\invoice;
 use App\Models\CreditnotesInvoice;
+use App\Models\CreditnotesSalesitem;
 use App\Models\Bank;
 use App\Models\Expense;
 use App\Models\customerledgerdetails;
 use App\Models\salesitem;
+use App\Models\BackupInvoice;
+use App\Models\BackupSalesItem;
 use App\Support\NepaliDate;
 
 class ModernDashboardController extends Controller
@@ -113,9 +116,9 @@ class ModernDashboardController extends Controller
 
         $recentInvoicesRaw = invoice::join('customerinfos', 'invoices.customerid', '=', 'customerinfos.id')
             ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'customerinfos.name as customer')
-            ->whereDate('invoices.inv_date', $today)
             ->orderByDesc('invoices.inv_date')
             ->orderByDesc('invoices.id')
+            ->limit(8)
             ->get();
 
         $recentInvoices = [];
@@ -135,9 +138,9 @@ class ModernDashboardController extends Controller
         $recentPaymentsRaw = customerledgerdetails::join('customerinfos', 'customerledgerdetails.customerid', '=', 'customerinfos.id')
             ->select('customerinfos.name as customer', 'customerledgerdetails.credit as amount', 'customerledgerdetails.date', 'customerledgerdetails.id', 'customerledgerdetails.bank_deposit', 'customerledgerdetails.counter_deposit', 'customerledgerdetails.particulars', 'customerledgerdetails.voucher_type')
             ->where('customerledgerdetails.invoicetype', 'payment')
-            ->whereDate('customerledgerdetails.date', $today)
             ->orderByDesc('customerledgerdetails.date')
             ->orderByDesc('customerledgerdetails.id')
+            ->limit(8)
             ->get();
 
         $recentPayments = [];
@@ -157,6 +160,45 @@ class ModernDashboardController extends Controller
                 'mode'     => $mode,
                 'date'     => NepaliDate::adToBsString($pay->date, 'en'),
                 'receipt'  => 'RCP-' . $pay->id,
+            ];
+        }
+
+        $recentCreditNotesRaw = CreditnotesInvoice::leftJoin('customerinfos', 'creditnotes_invoices.customerid', '=', 'customerinfos.id')
+            ->select('creditnotes_invoices.id', 'creditnotes_invoices.total as amount', 'creditnotes_invoices.inv_date as date', 'customerinfos.name as customer')
+            ->orderByDesc('creditnotes_invoices.inv_date')
+            ->orderByDesc('creditnotes_invoices.id')
+            ->limit(8)
+            ->get();
+
+        $recentCreditNotes = [];
+        foreach ($recentCreditNotesRaw as $note) {
+            $recentCreditNotes[] = [
+                'credit_note_id' => $note->id,
+                'id' => 'CN-' . $note->id,
+                'customer' => $note->customer ?? 'N/A',
+                'amount' => (float) $note->amount,
+                'date' => $note->date ? NepaliDate::adToBsString($note->date, 'en') : '-',
+            ];
+        }
+
+        $recentDeletedInvoicesRaw = BackupInvoice::leftJoin('customerinfos', 'backup_invoices.customerid', '=', 'customerinfos.id')
+            ->select('backup_invoices.id', 'backup_invoices.invoice_id', 'backup_invoices.total as amount', 'backup_invoices.inv_type as type', 'backup_invoices.inv_date as date', 'backup_invoices.created_at', 'customerinfos.name as customer')
+            ->orderByDesc('backup_invoices.created_at')
+            ->orderByDesc('backup_invoices.id')
+            ->limit(8)
+            ->get();
+
+        $recentDeletedInvoices = [];
+        foreach ($recentDeletedInvoicesRaw as $deleted) {
+            $recentDeletedInvoices[] = [
+                'backup_id' => $deleted->id,
+                'invoice_id' => $deleted->invoice_id,
+                'id' => 'INV-' . $deleted->invoice_id,
+                'customer' => $deleted->customer ?? 'N/A',
+                'amount' => (float) $deleted->amount,
+                'type' => ucfirst($deleted->type ?? '-'),
+                'date' => $deleted->date ? NepaliDate::adToBsString($deleted->date, 'en') : '-',
+                'deleted_at' => $deleted->created_at ? \Carbon\Carbon::parse($deleted->created_at)->format('Y-m-d H:i') : '-',
             ];
         }
 
@@ -188,6 +230,8 @@ class ModernDashboardController extends Controller
             'stockStatus',
             'recentInvoices',
             'recentPayments',
+            'recentCreditNotes',
+            'recentDeletedInvoices',
             'lowStockAlerts'
         ));
     }
@@ -237,6 +281,105 @@ class ModernDashboardController extends Controller
                 'pan_no' => $invoice->customer ? $invoice->customer->pan_no : null,
                 'phoneno' => $invoice->customer ? $invoice->customer->phoneno : null,
                 'email' => $invoice->customer ? $invoice->customer->email : null,
+            ],
+            'items' => $items,
+        ]);
+    }
+
+    public function getCreditNoteData(Request $req)
+    {
+        $invoiceId = $req->query('invoiceid');
+
+        $invoice = CreditnotesInvoice::find($invoiceId);
+        if (!$invoice) {
+            return response()->json(['error' => 'Credit note not found'], 404);
+        }
+
+        $customer = customerinfo::find($invoice->customerid);
+        $items = CreditnotesSalesitem::where('invoiceid', $invoiceId)
+            ->get()
+            ->map(function ($si) {
+                $itemInfo = item::where('id', $si->itemid)->select('id', 'itemsname', 'mrp', 'unit')->first();
+
+                return [
+                    'item_id' => $itemInfo ? $itemInfo->id : ($si->itemid ?? '-'),
+                    'item_name' => $itemInfo ? $itemInfo->itemsname : ($si->unstockedname ?? ''),
+                    'mrp' => $itemInfo ? $itemInfo->mrp : ($si->mrp ?? null),
+                    'quantity' => $si->quantity,
+                    'unit' => $itemInfo ? $itemInfo->unit : ($si->unit ?? null),
+                    'price' => $si->price,
+                    'subtotal' => $si->subtotal,
+                ];
+            });
+
+        return response()->json([
+            'invoice_id' => $invoice->id,
+            'invoice_no' => 'CN-' . $invoice->id,
+            'type' => 'Credit Note',
+            'date' => $invoice->inv_date,
+            'nepali_date' => $invoice->inv_date ? NepaliDate::adToBsString($invoice->inv_date, 'en') : null,
+            'subtotal' => $invoice->subtotal,
+            'discount' => $invoice->discount,
+            'total' => $invoice->total,
+            'notes' => $invoice->notes,
+            'added_by' => $invoice->added_by,
+            'customer' => [
+                'id' => $invoice->customerid,
+                'name' => $customer ? $customer->name : 'N/A',
+                'address' => $customer ? $customer->address : 'N/A',
+                'pan_no' => $customer ? $customer->pan_no : null,
+                'phoneno' => $customer ? $customer->phoneno : null,
+                'email' => $customer ? $customer->email : null,
+            ],
+            'items' => $items,
+        ]);
+    }
+
+    public function getDeletedInvoiceData(Request $req)
+    {
+        $invoiceId = $req->query('invoiceid');
+
+        $invoice = BackupInvoice::where('invoice_id', $invoiceId)->latest('id')->first();
+        if (!$invoice) {
+            return response()->json(['error' => 'Deleted invoice not found'], 404);
+        }
+
+        $customer = customerinfo::find($invoice->customerid);
+        $items = BackupSalesItem::where('invoiceid', $invoiceId)
+            ->get()
+            ->map(function ($si) {
+                $itemInfo = item::where('id', $si->itemid)->select('id', 'itemsname', 'mrp', 'unit')->first();
+
+                return [
+                    'item_id' => $itemInfo ? $itemInfo->id : ($si->itemid ?? '-'),
+                    'item_name' => $itemInfo ? $itemInfo->itemsname : ($si->unstockedname ?? ''),
+                    'mrp' => $itemInfo ? $itemInfo->mrp : null,
+                    'quantity' => $si->quantity,
+                    'unit' => $itemInfo ? $itemInfo->unit : ($si->unit ?? null),
+                    'price' => $si->price,
+                    'subtotal' => $si->subtotal,
+                ];
+            });
+
+        return response()->json([
+            'invoice_id' => $invoice->invoice_id,
+            'invoice_no' => 'INV-' . $invoice->invoice_id,
+            'type' => $invoice->inv_type,
+            'date' => $invoice->inv_date,
+            'nepali_date' => $invoice->inv_date ? NepaliDate::adToBsString($invoice->inv_date, 'en') : null,
+            'deleted_at' => $invoice->created_at ? \Carbon\Carbon::parse($invoice->created_at)->format('Y-m-d H:i') : null,
+            'subtotal' => $invoice->subtotal,
+            'discount' => $invoice->discount,
+            'total' => $invoice->total,
+            'notes' => $invoice->notes,
+            'added_by' => $invoice->added_by,
+            'customer' => [
+                'id' => $invoice->customerid,
+                'name' => $customer ? $customer->name : 'N/A',
+                'address' => $customer ? $customer->address : 'N/A',
+                'pan_no' => $customer ? $customer->pan_no : null,
+                'phoneno' => $customer ? $customer->phoneno : null,
+                'email' => $customer ? $customer->email : null,
             ],
             'items' => $items,
         ]);

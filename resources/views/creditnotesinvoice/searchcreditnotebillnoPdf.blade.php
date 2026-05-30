@@ -1,265 +1,304 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Print</title>
-    <script src="{{ asset('assets/js/common.js') }}"></script>
-
+    <meta charset="utf-8">
+    <title>Credit Note - {{ $invoiceid }}</title>
     <style>
-   
-   body {
-            font-family: Arial, sans-serif;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        * {
-            margin-top: 0 !important; /* Set top margin to 0 for all elements */
-        }
-        .container {
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-        }
-        p{
-            font-size: 16px !important;;
-        }
-        .letterhead {
-            /* background-color: black; */
-            color: black;
-            padding: 20px;
-            text-align: center;
-        }
-        .letterhead h1 {
-            margin: 0;
-            font-size: 30px;
-            text-decoration: underline;
-        }
-        .address-info {
-            text-align: center;
-            margin-top: 20px;
+        @page {
+            size: A5 portrait;
+            margin: 7mm;
         }
 
-        .firstdiv{
-            float: right;
+        * {
+            box-sizing: border-box;
         }
-        .address-info p {
-            margin: 5px 0;
-            font-size: 14px;
+
+        body {
+            color: #111827;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
         }
-        .invoice-info {
-            margin-top: 20px;
-        }
-        .invoice-info p {
-            margin: 5px 0;
-            font-size: 16px;
-        }
-        table {
+
+        .page {
+            min-height: 196mm;
+            position: relative;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        }
+
+        .watermark {
+            color: #111827;
+            font-size: 92px;
+            font-weight: 800;
+            left: 30%;
+            opacity: .055;
+            position: fixed;
+            top: 42%;
+            transform: rotate(-35deg);
+        }
+
+        .header {
+            border-bottom: 2px solid #111827;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            letter-spacing: .5px;
+            margin: 0;
+        }
+
+        .header p {
+            color: #374151;
+            font-size: 12px;
+            margin: 1px 0;
+        }
+
+        .doc-bar {
+            background: #111827;
+            color: #ffffff;
             font-size: 14px;
+            font-weight: 800;
+            letter-spacing: .4px;
+            margin-top: 7px;
+            padding: 5px 8px;
+            text-align: center;
+            text-transform: uppercase;
         }
-        th, td {
-            border: 1px solid #000; /* Set border color to black */
-            padding: 6px;
+
+        .meta {
+            margin-top: 8px;
         }
+
+        .meta-left {
+            float: left;
+            width: 52%;
+        }
+
+        .meta-right {
+            float: right;
+            text-align: right;
+            width: 45%;
+        }
+
+        .clearfix::after {
+            clear: both;
+            content: "";
+            display: block;
+        }
+
+        .cn-number {
+            color: #111827;
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .field {
+            margin: 2px 0;
+        }
+
+        .label {
+            color: #4b5563;
+            font-weight: 700;
+        }
+
+        .customer-box {
+            border: 1px solid #9ca3af;
+            margin-top: 8px;
+            padding: 6px 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: 9px;
+            width: 100%;
+        }
+
         th {
-            background-color: white; /* Set background color to white */
+            background: #f97316;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 5px 4px;
+            text-transform: uppercase;
         }
+
+        td {
+            border: 1px solid #9ca3af;
+            font-size: 12px;
+            padding: 5px 4px;
+            vertical-align: middle;
+        }
+
+        th,
+        td {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
         .text-right {
             text-align: right;
         }
-        .notes {
-            margin-top: 20px;
-            max-height: 100px;
-            overflow: hidden;
-            font-size: 14px;
+
+        .totals td {
+            background: #f3f4f6;
+            font-size: 13px;
+            font-weight: 800;
         }
-        
-        .watermark {
-            position: fixed;
-            top: 45%; /* Adjust the vertical position */
-            left: 35%; /* Adjust the horizontal position */
-            transform: rotate(-45deg); /* Rotate the text */
-            font-size: 148px;
-            opacity: 0.1; /* Adjust the opacity */
-            color: gray; /* Adjust the color */
+
+        .grand-total td {
+            background: #111827;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .words {
+            border: 1px solid #d1d5db;
+            border-top: 0;
+            padding: 5px 7px;
+        }
+
+        .notes {
+            border: 1px solid #d1d5db;
+            margin-top: 8px;
+            min-height: 24px;
+            padding: 6px 8px;
+        }
+
+        .footer {
+            border-top: 1px solid #9ca3af;
+            bottom: 0;
+            color: #4b5563;
+            font-size: 11px;
+            left: 0;
+            padding-top: 4px;
+            position: absolute;
+            right: 0;
         }
     </style>
 </head>
 <body>
+@php
+    $invoice = $allinvoices && count($allinvoices) > 0 ? $allinvoices->first() : null;
+    $customer = $cinfodetails && count($cinfodetails) > 0 ? $cinfodetails->first() : null;
 
-<div class="container">
-    <div class="watermark">OHT</div> <!-- Watermark text -->
+    if (!function_exists('convertCreditNoteNumberToWords')) {
+        function convertCreditNoteNumberToWords($num) {
+            $num = (int) floor($num);
+            $ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+            $tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
 
-    <div class="letterhead">
-        <h1>OM HARI TRADELINK</h1> (sales Return/credit note)
+            if ($num == 0) return "Zero";
+
+            $words = "";
+            if ($num >= 10000000) { $words .= convertCreditNoteNumberToWords(floor($num / 10000000)) . " Crore "; $num %= 10000000; }
+            if ($num >= 100000) { $words .= convertCreditNoteNumberToWords(floor($num / 100000)) . " Lakh "; $num %= 100000; }
+            if ($num >= 1000) { $words .= convertCreditNoteNumberToWords(floor($num / 1000)) . " Thousand "; $num %= 1000; }
+            if ($num >= 100) { $words .= convertCreditNoteNumberToWords(floor($num / 100)) . " Hundred "; $num %= 100; }
+            if ($num >= 20) { $words .= $tens[floor($num / 10)] . " "; $num %= 10; }
+            if ($num > 0) { $words .= $ones[(int) $num] . " "; }
+
+            return trim($words);
+        }
+    }
+@endphp
+
+<div class="page">
+    <div class="watermark">CN</div>
+
+    <div class="header">
+        <h1>OM HARI TRADELINK</h1>
+        <p>Tikapur, Kailali (in front of Tikapur Police Station)</p>
+        <p>Mobile: 9860378262, 9848448624, 9812656284</p>
     </div>
 
-    <div class="address-info">
-        <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
-        <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
-    </div>
+    <div class="doc-bar">Credit Note / Sales Return</div>
 
-    <div class="invoice-info">
-
-        <div class="row">
-            <div class="firstdiv"> 
-                       
-                        <p>Invoice Type:Credit Notes/Sales Return</p>
-                        <p>Date: {{ $forinvoicetype->date }}</p>
-                        
-            </div>
-       
-       
-            <div class="seconddiv"> 
-                        @if ($cinfodetails !=null)
-                            @foreach($cinfodetails as $i)
-                                <p>Name: {{$i->name}}</p>
-                                <p>Address: {{$i->address}}</p>
-                                <p>Email: {{$i->email}}</p>
-                                <p>Contact No: {{$i->phoneno}}</p>
-                            @endforeach
-                        @endif
-
-                        <p>Invoice Id: {{$invoiceid}}</p>
-
-                        @if ($allinvoices !=null)
-                            @foreach($allinvoices as $i)
-                                <p>Customer Id: {{$i->customerid}}</p>
-                            @endforeach
-                        @endif
-            </div>
+    <div class="meta clearfix">
+        <div class="meta-left">
+            <div class="cn-number">CN NO: {{ $invoiceid }}</div>
+            <div class="field"><span class="label">Customer:</span> {{ $customer->name ?? 'N/A' }}</div>
+            <div class="field"><span class="label">Address:</span> {{ $customer->address ?? 'N/A' }}</div>
+            <div class="field"><span class="label">Contact:</span> {{ $customer->phoneno ?? 'N/A' }}</div>
         </div>
+
+        <div class="meta-right">
+            <div class="field"><span class="label">Date:</span> {{ $forinvoicetype->date ?? $invoice->inv_date ?? '' }}</div>
+            <div class="field"><span class="label">Miti:</span> {{ \App\Support\NepaliDate::adToBsString(($forinvoicetype->date ?? $invoice->inv_date) ?? now()->toDateString(), 'en') }}</div>
+            <div class="field"><span class="label">Customer Id:</span> {{ $invoice->customerid ?? $customer->id ?? 'N/A' }}</div>
+            <div class="field"><span class="label">Created By:</span> {{ $invoice->added_by ?? 'System' }}</div>
+        </div>
+    </div>
+
+    <div class="customer-box">
+        <span class="label">Email:</span> {{ $customer->email ?? '-' }}
     </div>
 
     <table>
         <thead>
-            <tr> 
-                <th>S.N</th>
-                <th>Item Id</th>
-                <th>ITEM Name</th>
-                <th>Quantity</th>
-                <th>Unit</th>
-                <th>Sold Price</th>
-                <th>Amount</th>
+            <tr>
+                <th style="width: 8%;">#</th>
+                <th style="width: 13%;">Item ID</th>
+                <th style="width: 31%;">Item</th>
+                <th style="width: 10%;">Qty</th>
+                <th style="width: 11%;">Unit</th>
+                <th style="width: 13%;">Price</th>
+                <th style="width: 14%;">Amount</th>
             </tr>
         </thead>
         <tbody>
-            @php
-        $serialNo = 1;
-    @endphp
             @if ($allcusbyid != null)
                 @foreach($allcusbyid as $i)
                     <tr>
-                        <td>{{ $serialNo++ }}</td>
-
-                        <td>{{$i->itemidorg}}</td>
-                        <td>{{$i->itemid}}</td>
-                        <td>{{$i->quantity}}</td>
-                        <td>{{$i->unit}}</td>
-                        <td>{{$i->price}}</td>
-                        <td>{{$i->subtotal}}</td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $i->itemidorg ?? '-' }}</td>
+                        <td class="text-left">{{ $i->itemid ?? $i->unstockedname ?? 'N/A' }}</td>
+                        <td>{{ $i->quantity }}</td>
+                        <td>{{ $i->unit ?? 'pcs' }}</td>
+                        <td class="text-right">{{ number_format((float) ($i->price ?? 0), 2) }}</td>
+                        <td class="text-right">{{ number_format((float) ($i->subtotal ?? 0), 2) }}</td>
                     </tr>
                 @endforeach
             @endif
 
-            @if ($allinvoices != null)
-                @foreach($allinvoices as $i)
-                    <tr>
-                        <td colspan="5"></td>
-                        <td class="text-right"><b>Sub-Total:</b></td>
-                        <td><b>{{$i->subtotal}}</b></td>
-                    </tr>
-                    <tr>
-                        <td colspan="5"></td>
-                        <td class="text-right"><b>Extra Discount:</b></td>
-                        <td><b>{{$i->discount}}</b></td>
-                    </tr>
-                    <tr>
-                        
-                        <td colspan="5" class="">Amount in Words: 
-                            @php
-                            function convertNumberToWords($num) {
-                                $ones = array(
-                                    "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-                                    "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
-                                );
-                                $tens = array(
-                                    "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
-                                );
-
-                                if ($num == 0) {
-                                    return "Zero";
-                                }
-
-                                $words = "";
-
-                                if ($num >= 10000000) {
-                                    $words .= convertNumberToWords(floor($num / 10000000)) . " Crore ";
-                                    $num %= 10000000;
-                                }
-
-                                if ($num >= 100000) {
-                                    $words .= convertNumberToWords(floor($num / 100000)) . " Lakh ";
-                                    $num %= 100000;
-                                }
-
-                                if ($num >= 1000) {
-                                    $words .= convertNumberToWords(floor($num / 1000)) . " Thousand ";
-                                    $num %= 1000;
-                                }
-
-                                if ($num >= 100) {
-                                    $words .= convertNumberToWords(floor($num / 100)) . " Hundred ";
-                                    $num %= 100;
-                                }
-
-                                if ($num >= 20) {
-                                    $words .= $tens[floor($num / 10)] . " ";
-                                    $num %= 10;
-                                }
-
-                                if ($num > 0) {
-                                            $words .= $ones[(int)$num] . " ";
-                                        }
-
-                                return $words;
-                            }
-
-                            // Retrieve the numerical value from your data
-                            $number = $i->total;
-
-                            // Convert the numerical value to words
-                            $words = convertNumberToWords($number);
-
-                            echo $words;
-                        @endphp
-                        only/-
-
-                        </td>
-                        <td class="text-right"><b>Total Amount:</b></td>
-                        <td><b>{{$i->total}}</b></td>
-                    </tr>
-                    
-                    <tr>
-                        
-                        <td colspan="7" class="notes"><b>Notes:</b> {{$i->notes}}</td>
-                    </tr>
-                @endforeach
-            @endif
+            <tr class="totals">
+                <td colspan="5"></td>
+                <td class="text-right">Sub-Total</td>
+                <td class="text-right">Rs {{ number_format((float) ($invoice->subtotal ?? 0), 2) }}</td>
+            </tr>
+            <tr class="totals">
+                <td colspan="5"></td>
+                <td class="text-right">Extra Discount</td>
+                <td class="text-right">Rs {{ number_format((float) ($invoice->discount ?? 0), 2) }}</td>
+            </tr>
+            <tr class="grand-total">
+                <td colspan="5"></td>
+                <td class="text-right">Total Credit</td>
+                <td class="text-right">Rs {{ number_format((float) ($invoice->total ?? 0), 2) }}</td>
+            </tr>
         </tbody>
     </table>
 
-    <br>@if ($allinvoices !=null)
-    @foreach($allinvoices as $i)
-      
-     <p> Bill Created_by: {{$i->added_by}} </p>
-    @endforeach
-@endif
+    <div class="words">
+        <span class="label">Amount in Words:</span>
+        {{ convertCreditNoteNumberToWords($invoice->total ?? 0) }} only/-
+    </div>
 
-    <p style="margin-top: 20px; font-size: 14px; text-align: center;">Notes:  Goods once sold won't be returned</p>
+    <div class="notes">
+        <span class="label">Notes:</span> {{ $invoice->notes ?? '-' }}
+    </div>
+
+    <div class="footer">
+        This document records goods returned / credit note adjustment for the selected customer.
+    </div>
 </div>
-
-
 </body>
 </html>

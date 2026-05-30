@@ -822,9 +822,11 @@
         const modal = document.getElementById('invoiceModal');
         const body = document.getElementById('invoiceModalBody');
         const printLink = document.getElementById('invoicePrintLink');
+        document.querySelector('#invoiceModal .invoice-modal-header h3').textContent = 'Invoice Details';
 
         // Set print link
         printLink.href = '{{ url("billno/pdf/convert") }}?invoiceid=' + invoiceId;
+        printLink.style.display = 'inline-flex';
 
         // Show modal with loading state
         body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading invoice...</p></div>';
@@ -954,6 +956,103 @@
 
     function closeInvoiceModal() {
         document.getElementById('invoiceModal').style.display = 'none';
+    }
+
+    function renderDocumentModal(data, options = {}) {
+        const title = options.title || 'Invoice Details';
+        const badge = options.badge || (data.type || 'invoice').toUpperCase();
+        const emptyText = options.emptyText || 'No items found.';
+        const deletedLine = data.deleted_at ? '<div><strong>Deleted At:</strong> ' + data.deleted_at + '</div>' : '';
+
+        let html = '<div class="invoice-display">';
+        html += '<div class="inv-meta">';
+        html += '<div class="inv-meta-left">';
+        html += '<div style="margin-bottom: 8px;"><strong>' + title.toUpperCase() + ': ' + (data.invoice_no || data.invoice_id || '-') + '</strong></div>';
+        html += '<div><strong>Name:</strong> ' + (data.customer.name || 'N/A') + '</div>';
+        html += '<div><strong>Address:</strong> ' + (data.customer.address || 'N/A') + '</div>';
+        if (data.customer.phoneno) html += '<div><strong>Contact:</strong> ' + data.customer.phoneno + '</div>';
+        html += '<div><strong>Customer Id:</strong> ' + (data.customer.id || 'N/A') + '</div>';
+        html += '</div>';
+        html += '<div class="inv-meta-right">';
+        html += '<span class="inv-badge">' + badge + '</span>';
+        html += '<div style="margin-top: 15px;">';
+        html += '<div><strong>Date:</strong> ' + (data.date || '') + '</div>';
+        html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+        html += deletedLine;
+        html += '</div></div></div>';
+        html += '<table><thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Unit</th><th>Price</th><th>Amount</th></tr></thead><tbody>';
+
+        if (data.items && data.items.length) {
+            data.items.forEach((item, i) => {
+                html += '<tr><td>' + (i + 1) + '</td><td>' + (item.item_name || '') + '</td><td>' + (item.quantity || '') + '</td><td>' + (item.unit || '') + '</td><td>' + (item.price || '') + '</td><td>' + (item.subtotal || '') + '</td></tr>';
+            });
+        } else {
+            html += '<tr><td colspan="6" style="text-align:center;">' + emptyText + '</td></tr>';
+        }
+
+        html += '<tr class="total-row"><td colspan="5" class="text-right"><strong>Sub-Total:</strong></td><td><strong>Rs ' + parseFloat(data.subtotal || 0).toFixed(2) + '</strong></td></tr>';
+        html += '<tr class="total-row"><td colspan="5" class="text-right"><strong>Discount:</strong></td><td><strong>Rs ' + parseFloat(data.discount || 0).toFixed(2) + '</strong></td></tr>';
+        html += '<tr class="total-row"><td colspan="5" class="text-right"><strong>Total:</strong></td><td><strong>Rs ' + parseFloat(data.total || 0).toFixed(2) + '</strong></td></tr>';
+        if (data.notes) html += '<tr><td colspan="6"><strong>Notes:</strong> ' + data.notes + '</td></tr>';
+        html += '</tbody></table>';
+        html += '<div class="footer-info"><p>Created by: ' + (data.added_by || 'System') + '</p></div>';
+        html += '</div>';
+
+        return html;
+    }
+
+    function openCreditNoteModal(invoiceId) {
+        const modal = document.getElementById('invoiceModal');
+        const body = document.getElementById('invoiceModalBody');
+        const printLink = document.getElementById('invoicePrintLink');
+        document.querySelector('#invoiceModal .invoice-modal-header h3').textContent = 'Credit Note Details';
+        printLink.href = '{{ route("creditnotesbillno.convert") }}?invoiceid=' + invoiceId;
+        printLink.style.display = 'inline-flex';
+        body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading credit note...</p></div>';
+        modal.style.display = 'block';
+
+        fetch('{{ route("api.creditnote.data") }}?invoiceid=' + invoiceId, {
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(response => { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
+            .then(data => {
+                if (data.error) throw new Error(data.error);
+                body.innerHTML = renderDocumentModal(data, {
+                    title: 'Credit Note',
+                    badge: 'CREDIT NOTE / SALES RETURN',
+                    emptyText: 'No credit note items found.'
+                });
+            })
+            .catch(error => {
+                body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;"><i class="fas fa-exclamation-circle fa-2x"></i><p>Error loading credit note: ' + error.message + '</p></div>';
+            });
+    }
+
+    function openDeletedInvoiceModal(invoiceId) {
+        const modal = document.getElementById('invoiceModal');
+        const body = document.getElementById('invoiceModalBody');
+        const printLink = document.getElementById('invoicePrintLink');
+        document.querySelector('#invoiceModal .invoice-modal-header h3').textContent = 'Deleted Invoice Details';
+        printLink.href = '{{ route("deletedinvoice.convert") }}?invoiceid=' + invoiceId;
+        printLink.style.display = 'inline-flex';
+        body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading deleted invoice...</p></div>';
+        modal.style.display = 'block';
+
+        fetch('{{ route("api.deletedinvoice.data") }}?invoiceid=' + invoiceId, {
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(response => { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
+            .then(data => {
+                if (data.error) throw new Error(data.error);
+                body.innerHTML = renderDocumentModal(data, {
+                    title: 'Deleted Invoice',
+                    badge: 'DELETED ' + (data.type || 'INVOICE').toUpperCase(),
+                    emptyText: 'No deleted invoice items found.'
+                });
+            })
+            .catch(error => {
+                body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;"><i class="fas fa-exclamation-circle fa-2x"></i><p>Error loading deleted invoice: ' + error.message + '</p></div>';
+            });
     }
 
     // Close modal when clicking outside
@@ -1234,11 +1333,11 @@
     <div class="tables-row">
         <div class="card">
             <div class="card-hd" style="flex-wrap: wrap; gap: 10px;">
-                <h5>Today's Invoices</h5>
+                <h5>Recent Invoices</h5>
                 <div style="display: flex; gap: 10px;">
                     <a href="{{ route('itemsales.index') }}" class="view-all">View all</a>
                     <a href="{{ route('invoice.print.all.today') }}" target="_blank" class="btn-print-all">
-                        <i class="fas fa-print"></i> Print All Today
+                        <i class="fas fa-print"></i> Print Today
                     </a>
                 </div>
             </div>
@@ -1278,11 +1377,11 @@
         </div>
         <div class="card">
             <div class="card-hd" style="flex-wrap: wrap; gap: 10px;">
-                <h5>Today's Payments</h5>
+                <h5>Recent Payments</h5>
                 <div style="display: flex; gap: 10px;">
                     <a href="{{ route('cpayments.index') }}" class="view-all">View all</a>
                     <a href="{{ route('payment.print.all.today') }}" target="_blank" class="btn-print-all">
-                        <i class="fas fa-print"></i> Print All Today
+                        <i class="fas fa-print"></i> Print Today
                     </a>
                 </div>
             </div>
@@ -1322,6 +1421,84 @@
                                 <td>Rs {{ number_format($pay['amount'], 2) }}</td>
                             </tr>
                         @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="tables-row">
+        <div class="card">
+            <div class="card-hd" style="flex-wrap: wrap; gap: 10px;">
+                <h5>Recent Credit Notes</h5>
+                <a href="{{ route('creditnotescustomeronlyview.billno') }}" class="view-all">Search credit note</a>
+            </div>
+            <div class="card-bd">
+                <table class="table-modern">
+                    <thead>
+                        <tr>
+                            <th>Credit Note</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($recentCreditNotes as $note)
+                            <tr>
+                                <td>
+                                    <a href="#" class="invoice-link" onclick="openCreditNoteModal({{ $note['credit_note_id'] }}); return false;">
+                                        <strong>{{ $note['id'] }}</strong>
+                                    </a><br>
+                                    <small style="color:#9ca3af">{{ $note['date'] }}</small>
+                                </td>
+                                <td>{{ $note['customer'] }}</td>
+                                <td>Rs {{ number_format($note['amount'], 2) }}</td>
+                                <td><span class="badge badge-primary">Credit Note</span></td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" style="text-align:center;color:#9ca3af;">No credit notes found</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-hd" style="flex-wrap: wrap; gap: 10px;">
+                <h5>Recent Deleted Invoices</h5>
+                <a href="{{ route('deleted.invoice') }}" class="view-all">View all</a>
+            </div>
+            <div class="card-bd">
+                <table class="table-modern">
+                    <thead>
+                        <tr>
+                            <th>Invoice</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Deleted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($recentDeletedInvoices as $deleted)
+                            <tr>
+                                <td>
+                                    <a href="#" class="invoice-link" onclick="openDeletedInvoiceModal({{ $deleted['invoice_id'] }}); return false;">
+                                        <strong>{{ $deleted['id'] }}</strong>
+                                    </a><br>
+                                    <small style="color:#9ca3af">{{ $deleted['date'] }} | {{ $deleted['type'] }}</small>
+                                </td>
+                                <td>{{ $deleted['customer'] }}</td>
+                                <td>Rs {{ number_format($deleted['amount'], 2) }}</td>
+                                <td><span class="badge badge-danger">{{ $deleted['deleted_at'] }}</span></td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" style="text-align:center;color:#9ca3af;">No deleted invoices found</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

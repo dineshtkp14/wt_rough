@@ -518,7 +518,7 @@
                     </li>
 
                     <li class="nav-item customer">
-                        <a href="{{ route('returnchoosendatehistroycashandcredit') }}" class="nav-link-single">
+                        <a href="{{ route('clhs.returnchoosendatehistroy') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-ledger"
                                 aria-expanded="false">
                                 <i class="fas fa-book"></i>
