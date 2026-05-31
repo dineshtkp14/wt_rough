@@ -93,7 +93,7 @@ class showperday_controller extends Controller
             $totalCount = count($totalSalesAndPayments);
             $totalSalesAndPaymentsPaginated = new LengthAwarePaginator($currentItems, $totalCount, $perPage, $currentPage);
 
-            return view('showperday.showperdayinonetable', [
+            return view('showperday.showsalesperday', [
                 'totalSalesAndPayments' => $totalSalesAndPaymentsPaginated,
                 'totalCashAndPaymentToday' => $totalCashAndPaymentToday,
                 'salesPerDayCash' => $salesPerDayCash,
@@ -301,4 +301,3 @@ class showperday_controller extends Controller
 
     
 }
-

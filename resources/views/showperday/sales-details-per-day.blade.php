@@ -59,7 +59,7 @@
                 <h4>Per Day Entries</h4>
                 <span>{{ $salesRows->total() }} records found</span>
             </div>
-            <input autocomplete="off" class="form-control" id="filterInput" type="text" placeholder="Search date or amount">
+            <input autocomplete="off" class="form-control" id="salesDayFilterInput" type="text" placeholder="Search date or amount">
         </div>
 
         <div class="sales-day-table-wrap">
@@ -101,6 +101,25 @@
             {{ $salesRows->links() }}
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.getElementById('salesDayFilterInput');
+            const rows = document.querySelectorAll('.sales-day-table tbody tr');
+
+            if (!input) return;
+
+            const normalize = (value) => value.toLowerCase().replace(/rs|\s|,/g, '');
+
+            input.addEventListener('input', function () {
+                const term = normalize(input.value);
+
+                rows.forEach((row) => {
+                    row.style.display = normalize(row.textContent).includes(term) ? '' : 'none';
+                });
+            });
+        });
+    </script>
 
     <style>
         .sales-day-page {
