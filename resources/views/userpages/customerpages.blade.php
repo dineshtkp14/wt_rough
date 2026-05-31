@@ -85,7 +85,7 @@
 
     <div class="row mt-4">
         <div class="col-md-4 mb-3">
-            <a href="{{ route('allsalesdetails.showallcuscreditdetails') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
+            <a href="{{ route('customer.creditlist.all') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
                 <i class="fa fa-file"></i> VIEW ALL CUSTOMER DUE LIST
             </a>
         </div>
@@ -110,6 +110,11 @@
         <div class="col-md-4 mb-3">
             <a href="{{ route('chequedeposit.create') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
                 <i class="fa fa-money"></i> CHEQUE DEPOSIT
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('allsalesdetails.showallcuscreditdetails') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
+                <i class="fa fa-file"></i> OLD DESIGN CREDIT LIST
             </a>
         </div>
     </div>

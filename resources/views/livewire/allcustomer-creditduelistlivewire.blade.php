@@ -17,10 +17,20 @@
     <div class="card">
         <div class="card-header">
             <a href="{{ route('companys.create') }}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
-            <span class="me-5 fw-bold">Total Credit: <span class="h2 text-success">{{$totalDebitCreditDifferencewhole}} </span> </span>
+            <span class="me-5 fw-bold">Total Credit: <span class="h2 text-success">{{ number_format((float) $totalDebitCreditDifferencewhole, 2) }} </span> </span>
 
-            Total Credit of This Page: <span class="h5"><b>{{ $totalDebitCreditDifference  }}</b></span><i class="fas fa-arrow-down"></i>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Advance Payment: <span class="h3"><b>{{ $totalNegativeDebitCreditDifference }}</b></span>
+            Total Credit of This Page: <span class="h5"><b>{{ number_format((float) $totalDebitCreditDifference, 2) }}</b></span><i class="fas fa-arrow-down"></i>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Advance Payment: <span class="h3"><b>{{ number_format((float) $totalNegativeDebitCreditDifference, 2) }}</b></span>
+
+            <div class="mt-3 mb-2">
+                <input
+                    type="text"
+                    class="form-control border-warning border border-3"
+                    style="max-width: 420px;"
+                    wire:model.debounce.350ms="searchTerm"
+                    placeholder="Search customer name, id or phone"
+                >
+            </div>
             
             <!-- Filter dropdown for sorting -->
             <select class="form-select float-end border-warning border border-5" style="width: 300px;" wire:model="sortBy">
@@ -86,7 +96,7 @@
                                     </td>
 
                                     <td data-label="Customer Name"><b>{{ $item->cname }}</b>  &nbsp; ({{ $item->cphoneno }})</td>
-                                    <td data-label="Total Due Amount"><b>{{ $item->debit_credit_difference }}
+                                    <td data-label="Total Due Amount"><b>{{ number_format((float) $item->debit_credit_difference, 2) }}
                                         @if ($item->debit_credit_difference >= -100 && $item->debit_credit_difference <= 100)
                                         <a 
                                         href="{{ route('cpayments.create', [

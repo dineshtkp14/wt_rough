@@ -443,6 +443,7 @@ Route::put('/CheckCounterDeposit/update', [BankDeposit_CounterCheckController::c
 
 Route::get('/showsalesperday', [showperday_controller::class, 'showonlysalesperday'])->name('showonlysalesperday.pp');
 Route::get('/onetable_showsalesperda', [showperday_controller::class, 'showonlysalesperdayinone_table'])->name('showonlysalesperdayinone_table.pp');
+Route::get('/sales-details-per-day', [showperday_controller::class, 'salesDetailsPerDay'])->name('sales.details.perday');
 
 
 

@@ -367,7 +367,10 @@ $cusledgertails = CompanyLedger::whereBetween('date', [$from, $to])
          
           if($from == "" || $to==""){
 
-              $cusledgertails=CompanyLedger::where('companyid', $req->companyid)->get();
+              $cusledgertails=CompanyLedger::where('companyid', $req->companyid)
+                  ->orderBy('date', 'DESC')
+                  ->orderBy('id', 'DESC')
+                  ->get();
               $betweendate=CompanyLedger::where('companyid',$req->companyid)->get();
 
               $debittotalsumwithdate = $betweendate->sum('debit');
@@ -389,7 +392,11 @@ $cusledgertails = CompanyLedger::whereBetween('date', [$from, $to])
 
               
 
-              $cusledgertails=CompanyLedger::whereBetween('date',  [$from,$to])->where('companyid', $req->companyid)->get();
+              $cusledgertails=CompanyLedger::whereBetween('date',  [$from,$to])
+                  ->where('companyid', $req->companyid)
+                  ->orderBy('date', 'DESC')
+                  ->orderBy('id', 'DESC')
+                  ->get();
               
               $xd= company::where('id',$req->companyid)->get();
               $afn=$xd;

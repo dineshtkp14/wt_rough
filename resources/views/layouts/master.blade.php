@@ -89,6 +89,151 @@
         }
 
         /* avoids matra clipping */
+
+        .main-content .card {
+            border: 0;
+            border-radius: 8px;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+            overflow: hidden;
+        }
+
+        .main-content .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+            padding: 16px 18px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            color: #172033;
+            font-weight: 800;
+        }
+
+        .main-content .card-header .form-control,
+        .main-content .card-header .form-select {
+            height: 46px;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px;
+            box-shadow: none;
+            font-size: 16px;
+        }
+
+        .main-content .card-header .form-control:focus,
+        .main-content .card-header .form-select:focus {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .14);
+        }
+
+        .main-content .card-body {
+            overflow-x: auto;
+            padding: 18px;
+            background: #ffffff;
+        }
+
+        .main-content table {
+            width: 100%;
+            min-width: 900px;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            color: #111827;
+            background: #ffffff;
+            table-layout: auto;
+        }
+
+        .main-content table thead th,
+        .main-content table.table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            padding: 14px 13px;
+            border: 1px solid #2637a3;
+            background: #3348d4;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 0;
+            line-height: 1.15;
+            text-align: left;
+            text-transform: uppercase;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .main-content table tbody td,
+        .main-content table.table tbody td {
+            padding: 13px;
+            border-right: 1px solid #d5deea;
+            border-bottom: 1px solid #d5deea;
+            color: #0f172a;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.2;
+            vertical-align: top;
+            overflow-wrap: anywhere;
+        }
+
+        .main-content table tbody td:first-child,
+        .main-content table.table tbody td:first-child {
+            border-left: 1px solid #d5deea;
+        }
+
+        .main-content table tbody tr:nth-child(even) td,
+        .main-content table.table tbody tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        .main-content table tbody tr:hover td,
+        .main-content table.table tbody tr:hover td {
+            background: #eef6ff;
+        }
+
+        .main-content table tbody tr[style*="background:red"] td {
+            background: #dc2626 !important;
+            color: #ffffff !important;
+        }
+
+        .main-content table .btn,
+        .main-content table.table .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            margin: 2px;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 900;
+            line-height: 1;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .main-content .card-footer {
+            padding: 12px 18px;
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-weight: 800;
+        }
+
+        @media (max-width: 768px) {
+            .main-content .card-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .main-content .card-header .form-control,
+            .main-content .card-header .form-select {
+                width: 100% !important;
+                max-width: none !important;
+            }
+
+            .main-content table {
+                min-width: 760px;
+            }
+        }
     </style>
 
 </head>
@@ -462,6 +607,8 @@
                                             class="fa-solid fa-money-bill-wave"></i>Show Sales</a></li>
                                 <li><a href="{{ route('showonlysalesperday.pp') }}"><i
                                             class="fa-solid fa-calendar-day"></i>Show Per Day</a></li>
+                                <li><a href="{{ url('/sales-details-per-day') }}"><i
+                                            class="fa-solid fa-table-list"></i>Sales Details Per Day</a></li>
                                 <li><a href="{{ route('CheckBankDeposit.index') }}"><i
                                             class="fa-solid fa-building-columns"></i>Check Bank Deposit</a></li>
                                 <li><a href="{{ route('CheckCounterDeposit.index') }}"><i
@@ -580,6 +727,17 @@
                                 aria-expanded="false">
                                 <i class="fas fa-calendar-day"></i>
                                 <span>Show Per Day</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ url('/sales-details-per-day') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-sales-details-perday"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-table-list"></i>
+                                <span>Sales Details Per Day</span>
                                 <i class="fa-solid fa-chevron-down"></i>
                             </button>
                         </a>

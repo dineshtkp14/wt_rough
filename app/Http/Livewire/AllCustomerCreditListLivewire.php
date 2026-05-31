@@ -12,6 +12,8 @@ class AllCustomerCreditListLivewire extends Component
 {
     use WithPagination;
 
+    private const MIN_VISIBLE_BALANCE = 1.00;
+
     protected $paginationTheme = 'bootstrap';
 
     public $searchTerm = '';
@@ -51,7 +53,7 @@ class AllCustomerCreditListLivewire extends Component
         [$ledgerTotalsForAdvance, $creditNoteTotalsForAdvance] = $this->creditSummarySubqueries();
         $advanceQuery = $this->buildCustomerCreditQuery($ledgerTotalsForAdvance, $creditNoteTotalsForAdvance);
         $this->applyCommonFilters($advanceQuery);
-        $advanceQuery->having('total_due', '<', 0);
+        $advanceQuery->having('total_due', '<', -self::MIN_VISIBLE_BALANCE);
         $advanceQuery->orderBy('total_due', 'asc');
 
         $advanceCustomers = $advanceQuery->get();
@@ -177,11 +179,11 @@ class AllCustomerCreditListLivewire extends Component
         $this->applyCommonFilters($query);
 
         if ($this->sortBy === 'advance_deposit') {
-            $query->having('total_due', '<', 0);
+            $query->having('total_due', '<', -self::MIN_VISIBLE_BALANCE);
             return;
         }
 
-        $query->having('total_due', '>', 0);
+        $query->having('total_due', '>', self::MIN_VISIBLE_BALANCE);
     }
 
     private function applyCommonFilters($query)

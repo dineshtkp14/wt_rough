@@ -3,7 +3,7 @@
 @include('layouts.breadcrumb')
 
 @section('content')
-<div class="main-content"> 
+<div class="main-content legacy-sales-page"> 
 
     @yield('breadcrumb')
 
@@ -225,4 +225,95 @@
     </div>
 
 </div>
+<style>
+    .legacy-sales-page .card {
+        border: 1px solid rgba(0, 0, 0, .125) !important;
+        border-radius: .375rem !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+    }
+
+    .legacy-sales-page .card-header {
+        display: block !important;
+        padding: .5rem 1rem !important;
+        background: rgba(0, 0, 0, .03) !important;
+        border-bottom: 1px solid rgba(0, 0, 0, .125) !important;
+        color: inherit !important;
+        font-weight: inherit !important;
+    }
+
+    .legacy-sales-page .card-body {
+        overflow: visible !important;
+        padding: 1rem !important;
+        background: #ffffff !important;
+    }
+
+    .legacy-sales-page table,
+    .legacy-sales-page table.table {
+        width: 200px !important;
+        min-width: 0 !important;
+        margin-bottom: 1rem !important;
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+        table-layout: auto !important;
+        color: inherit !important;
+        --bs-table-bg: transparent !important;
+        --bs-table-color: inherit !important;
+        --bs-table-striped-bg: transparent !important;
+        --bs-table-striped-color: inherit !important;
+        --bs-table-hover-bg: transparent !important;
+        --bs-table-hover-color: inherit !important;
+    }
+
+    .legacy-sales-page table thead,
+    .legacy-sales-page table tbody,
+    .legacy-sales-page table tr {
+        display: revert !important;
+        width: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .legacy-sales-page table th,
+    .legacy-sales-page table td,
+    .legacy-sales-page table.table th,
+    .legacy-sales-page table.table td {
+        display: table-cell !important;
+        padding: .5rem .5rem !important;
+        border-color: #dee2e6 !important;
+        background: transparent !important;
+        color: inherit !important;
+        font-size: inherit !important;
+        font-weight: inherit !important;
+        line-height: inherit !important;
+        text-align: inherit !important;
+        text-transform: none !important;
+        white-space: normal !important;
+        vertical-align: top !important;
+        letter-spacing: normal !important;
+    }
+
+    .legacy-sales-page table th,
+    .legacy-sales-page table.table th {
+        position: static !important;
+        top: auto !important;
+        z-index: auto !important;
+        background: transparent !important;
+        color: inherit !important;
+        font-weight: 700 !important;
+    }
+
+    .legacy-sales-page table tbody tr:nth-child(even) td,
+    .legacy-sales-page table.table tbody tr:nth-child(even) td,
+    .legacy-sales-page table tbody tr:hover td,
+    .legacy-sales-page table.table tbody tr:hover td {
+        background: transparent !important;
+    }
+
+    .legacy-sales-page table tbody tr[style*="background:red"] td {
+        background: red !important;
+        color: #ffffff !important;
+        font-weight: bold;
+    }
+</style>
 @endsection
