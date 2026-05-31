@@ -530,6 +530,17 @@
                         </a>
                     </li>
 
+                    <li class="nav-item customer">
+                        <a href="{{ route('customer.creditlist.all') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-credit-list"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-address-book"></i>
+                                <span>Credit List All Customers</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
                     <li class="nav-item">
                         <a href="{{ route('oldpricecheck') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-price"
