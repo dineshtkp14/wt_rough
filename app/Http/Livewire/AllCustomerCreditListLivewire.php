@@ -7,6 +7,7 @@ use App\Models\TrackCustomerLedger;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -160,9 +161,11 @@ class AllCustomerCreditListLivewire extends Component
             return redirect('/login');
         }
 
-        DB::table('customerinfos')
-            ->where('id', $customerId)
-            ->update(['last_credit_reminder_sent_at' => now()]);
+        if ($this->hasReminderColumn()) {
+            DB::table('customerinfos')
+                ->where('id', $customerId)
+                ->update(['last_credit_reminder_sent_at' => now()]);
+        }
 
         $this->dispatchBrowserEvent('open-whatsapp-reminder', ['url' => $whatsappUrl]);
     }
@@ -316,6 +319,27 @@ class AllCustomerCreditListLivewire extends Component
 
     private function buildCustomerCreditQuery($ledgerTotals, $creditNoteTotals)
     {
+        $selectColumns = [
+            'c.id',
+            'c.name',
+            'c.address',
+            'c.phoneno',
+            'c.alternate_phoneno',
+            'c.email',
+            'c.type',
+            'lt.latest_date',
+            'lt.latest_credit_date',
+            'lt.credit_limit_days',
+            DB::raw('COALESCE(lt.total_debit, 0) as total_debit'),
+            DB::raw('COALESCE(lt.total_credit, 0) as total_credit'),
+            DB::raw('COALESCE(cnt.credit_note_credit, 0) as credit_note_credit'),
+            DB::raw('(COALESCE(lt.total_debit, 0) - COALESCE(lt.total_credit, 0) - COALESCE(cnt.credit_note_credit, 0)) as total_due'),
+        ];
+
+        if ($this->hasReminderColumn()) {
+            $selectColumns[] = 'c.last_credit_reminder_sent_at';
+        }
+
         return DB::table('customerinfos as c')
             ->leftJoinSub($ledgerTotals, 'lt', function ($join) {
                 $join->on('lt.customerid', '=', 'c.id');
@@ -323,23 +347,7 @@ class AllCustomerCreditListLivewire extends Component
             ->leftJoinSub($creditNoteTotals, 'cnt', function ($join) {
                 $join->on('cnt.customerid', '=', 'c.id');
             })
-            ->select(
-                'c.id',
-                'c.name',
-                'c.address',
-                'c.phoneno',
-                'c.alternate_phoneno',
-                'c.email',
-                'c.type',
-                'c.last_credit_reminder_sent_at',
-                'lt.latest_date',
-                'lt.latest_credit_date',
-                'lt.credit_limit_days',
-                DB::raw('COALESCE(lt.total_debit, 0) as total_debit'),
-                DB::raw('COALESCE(lt.total_credit, 0) as total_credit'),
-                DB::raw('COALESCE(cnt.credit_note_credit, 0) as credit_note_credit'),
-                DB::raw('(COALESCE(lt.total_debit, 0) - COALESCE(lt.total_credit, 0) - COALESCE(cnt.credit_note_credit, 0)) as total_due')
-            );
+            ->select($selectColumns);
     }
 
     private function applyFilters($query)
@@ -436,5 +444,10 @@ class AllCustomerCreditListLivewire extends Component
             'BANK' => 'BANK',
             'OTHER' => 'PAYMENT',
         ][$this->quickPaymentMode] ?? 'CASH';
+    }
+
+    private function hasReminderColumn()
+    {
+        return Schema::hasColumn('customerinfos', 'last_credit_reminder_sent_at');
     }
 }
