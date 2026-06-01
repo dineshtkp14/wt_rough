@@ -340,11 +340,9 @@ $(document).ready(function () {
         }
 
         .invoice-quick-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 14px;
-            margin: -88px 0 42px;
-            padding-right: 28px;
+            float: right;
+            margin-top: -100px;
+            margin-right: 500px;
         }
 
         .invoice-quick-actions .btn {
@@ -370,13 +368,7 @@ $(document).ready(function () {
         }
 
         .invoice-table-shell {
-            background: #ffffff;
-            border: 1px solid #d5deea;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
-            overflow-x: auto;
-            overflow-y: visible;
-            -webkit-overflow-scrolling: touch;
+            overflow: visible;
         }
 
         .invoice-table-shell::after {
@@ -390,38 +382,21 @@ $(document).ready(function () {
         }
 
         .invoicetable {
-            border-collapse: collapse;
-            margin: 0;
-            min-width: 1040px;
             width: 100%;
         }
 
         .invoicetable th,
         .invoicetable td {
-            padding: 10px;
             vertical-align: middle;
         }
 
         .invoicetable th {
-            background: #3348d4;
-            color: #ffffff;
-            font-size: 14px;
             font-weight: 900;
             white-space: nowrap;
         }
 
-        .invoicetable .form-control,
-        .invoicetable .form-select {
-            min-height: 42px;
-            font-size: 16px;
-        }
-
         .invoice-total-box {
-            background: #ffffff;
-            border: 1px solid #d5deea;
-            border-radius: 8px;
-            box-shadow: 0 8px 22px rgba(15, 23, 42, .08);
-            padding: 14px;
+            background: transparent;
         }
 
         .invoice-total-box .input-group-text {
@@ -429,8 +404,6 @@ $(document).ready(function () {
         }
 
         .invoice-total-box .form-control {
-            min-height: 44px;
-            font-size: 17px;
             font-weight: 800;
             text-align: right;
         }
@@ -446,6 +419,10 @@ $(document).ready(function () {
 
         @media (max-width: 1200px) {
             .invoice-quick-actions {
+                display: flex;
+                float: none;
+                justify-content: flex-end;
+                gap: 14px;
                 margin: 0 0 18px;
                 padding-right: 0;
             }
@@ -507,6 +484,16 @@ $(document).ready(function () {
                 padding: 6px 0 0 !important;
             }
 
+            .invoice-table-shell {
+                background: #ffffff;
+                border: 1px solid #d5deea;
+                border-radius: 8px;
+                box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+                overflow-x: auto;
+                overflow-y: visible;
+                -webkit-overflow-scrolling: touch;
+            }
+
             .invoice-table-shell::after {
                 display: block;
             }
@@ -518,6 +505,18 @@ $(document).ready(function () {
             .invoicetable th,
             .invoicetable td {
                 padding: 8px;
+            }
+
+            .invoicetable th {
+                background: #3348d4;
+                color: #ffffff;
+                font-size: 14px;
+            }
+
+            .invoicetable .form-control,
+            .invoicetable .form-select {
+                min-height: 42px;
+                font-size: 16px;
             }
 
             .invoicetable .btn {
@@ -550,7 +549,17 @@ $(document).ready(function () {
             }
 
             .invoice-total-box {
+                background: #ffffff;
+                border: 1px solid #d5deea;
+                border-radius: 8px;
+                box-shadow: 0 8px 22px rgba(15, 23, 42, .08);
                 margin-top: 14px;
+                padding: 14px;
+            }
+
+            .invoice-total-box .form-control {
+                min-height: 44px;
+                font-size: 17px;
             }
 
             .invoice-action-btn {
