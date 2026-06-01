@@ -125,7 +125,28 @@ class ItemsalesController extends Controller
         $cus_data->save();
         
 
-        return redirect()->route('onlyviewbillafterbill', ['invoiceid' => $invoice_data->id])->with('success', 'Invoice Created Successfully !!');
+        $customer = customerinfo::find($invoice_data->customerid);
+        $phone = preg_replace('/\D+/', '', $customer->phoneno ?? '');
+
+        if (strlen($phone) === 10) {
+            $phone = '977' . $phone;
+        }
+
+        $invoiceMessage = 'Namaste ' . ($customer->name ?? 'Customer')
+            . ', your invoice no ' . $invoice_data->id
+            . ' has been created. Type: ' . strtoupper($req->invoice_type)
+            . '. Total amount Rs ' . number_format((float) $invoice_data->total, 2)
+            . '. Thank you.';
+
+        $redirect = redirect()->route('onlyviewbillafterbill', ['invoiceid' => $invoice_data->id])
+            ->with('success', 'Invoice Created Successfully !!')
+            ->with('invoice_whatsapp_message', $invoiceMessage);
+
+        if ($phone) {
+            $redirect->with('invoice_whatsapp_url', 'https://wa.me/' . $phone . '?text=' . rawurlencode($invoiceMessage));
+        }
+
+        return $redirect;
                                 
        
 

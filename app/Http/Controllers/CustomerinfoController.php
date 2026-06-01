@@ -42,7 +42,10 @@ class CustomerinfoController extends Controller
             'link'=>'Add New Customers'
         ]; 
      
-        return view('customerinfo.create',['breadcrumb'=>$breadcrumb]);   
+        return view('customerinfo.create',[
+            'breadcrumb'=>$breadcrumb,
+            'duplicateCustomers'=>$this->duplicateCustomerCandidates(),
+        ]);
     }
 
     return redirect('/login');
@@ -123,7 +126,11 @@ return redirect('/login');
    
         $customers=customerinfo::findOrfail($id);
 
-        return view('customerinfo.edit',['cus'=>$customers,'breadcrumb'=>$breadcrumb]);   
+        return view('customerinfo.edit',[
+            'cus'=>$customers,
+            'breadcrumb'=>$breadcrumb,
+            'duplicateCustomers'=>$this->duplicateCustomerCandidates($id),
+        ]);
         
     }
     return redirect('/login');
@@ -214,6 +221,19 @@ return redirect('/login');
   
         return redirect()->route('customerinfos.index')->with('success','Customer Deleted sucessfully'); 
         
+  }
+
+  private function duplicateCustomerCandidates($excludeId = null)
+  {
+      $query = customerinfo::select('id', 'name', 'address', 'phoneno', 'alternate_phoneno')
+          ->orderByDesc('id')
+          ->limit(500);
+
+      if ($excludeId) {
+          $query->where('id', '!=', $excludeId);
+      }
+
+      return $query->get();
   }
 
 }

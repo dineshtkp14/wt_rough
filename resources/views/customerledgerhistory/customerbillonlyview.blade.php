@@ -12,6 +12,19 @@
             </div>
         @endif
 
+        @if (Session::has('invoice_whatsapp_url'))
+            <div class="invoice-share-panel">
+                <div>
+                    <strong>Invoice message ready</strong>
+                    <span>{{ Session::get('invoice_whatsapp_message') }}</span>
+                </div>
+                <a href="{{ Session::get('invoice_whatsapp_url') }}" target="_blank" class="invoice-share-btn">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    Send WhatsApp
+                </a>
+            </div>
+        @endif
+
         @if (Session::has('deletesuccess'))
         <div class="alert alert-success bg-success text-white w-50">
             {{ Session::get('deletesuccess') }}
@@ -341,7 +354,71 @@
         </span>
     </div>
 
+    <style>
+        .invoice-share-panel {
+            align-items: center;
+            background: #ecfdf5;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            display: flex;
+            gap: 14px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding: 12px 14px;
+        }
+
+        .invoice-share-panel strong,
+        .invoice-share-panel span {
+            display: block;
+        }
+
+        .invoice-share-panel strong {
+            color: #14532d;
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .invoice-share-panel span {
+            color: #166534;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        .invoice-share-btn {
+            align-items: center;
+            background: #16a34a;
+            border-radius: 8px;
+            color: #ffffff !important;
+            display: inline-flex;
+            flex: 0 0 auto;
+            font-weight: 900;
+            gap: 7px;
+            min-height: 42px;
+            padding: 0 14px;
+            text-decoration: none !important;
+        }
+
+        @media (max-width: 700px) {
+            .invoice-share-panel {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .invoice-share-btn {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+    </style>
+
     <script>
+@if (Session::has('invoice_whatsapp_url'))
+window.addEventListener('load', function () {
+    window.open(@json(Session::get('invoice_whatsapp_url')), '_blank');
+});
+@endif
+
 // JavaScript for Delete Form
 document.getElementById('deleteForm').addEventListener('submit', function(e) {
     // Get the value entered by the user in the input field

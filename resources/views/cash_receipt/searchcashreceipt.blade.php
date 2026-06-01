@@ -11,6 +11,18 @@
                 {{ Session::get('success') }}
             </div>
         @endif
+        @if (Session::has('payment_whatsapp_url'))
+            <div class="payment-share-panel">
+                <div>
+                    <strong>Payment message ready</strong>
+                    <span>{{ Session::get('payment_whatsapp_message') }}</span>
+                </div>
+                <a href="{{ Session::get('payment_whatsapp_url') }}" target="_blank" class="payment-share-btn">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    Send WhatsApp
+                </a>
+            </div>
+        @endif
         <div class="card shadow p-4" style="width: 100% !important; max-width: 100% !important;">
             <!-- Shop Name -->
           
@@ -214,4 +226,62 @@
         xhr.send(JSON.stringify({ /* Any data you want to send to the server */ }));
     });
 </script>
+
+<style>
+    .payment-share-panel {
+        align-items: center;
+        background: #ecfdf5;
+        border: 1px solid #86efac;
+        border-radius: 8px;
+        display: flex;
+        gap: 14px;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding: 12px 14px;
+    }
+
+    .payment-share-panel strong,
+    .payment-share-panel span {
+        display: block;
+    }
+
+    .payment-share-panel strong {
+        color: #14532d;
+        font-size: 16px;
+        font-weight: 900;
+    }
+
+    .payment-share-panel span {
+        color: #166534;
+        font-size: 14px;
+        font-weight: 700;
+        margin-top: 3px;
+    }
+
+    .payment-share-btn {
+        align-items: center;
+        background: #16a34a;
+        border-radius: 8px;
+        color: #ffffff !important;
+        display: inline-flex;
+        flex: 0 0 auto;
+        font-weight: 900;
+        gap: 7px;
+        min-height: 42px;
+        padding: 0 14px;
+        text-decoration: none !important;
+    }
+
+    @media (max-width: 700px) {
+        .payment-share-panel {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .payment-share-btn {
+            justify-content: center;
+            width: 100%;
+        }
+    }
+</style>
 @stop

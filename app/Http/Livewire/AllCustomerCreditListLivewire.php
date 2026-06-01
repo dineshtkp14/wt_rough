@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\customerledgerdetails;
+use App\Models\TrackCustomerLedger;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +20,16 @@ class AllCustomerCreditListLivewire extends Component
 
     public $searchTerm = '';
     public $sortBy = 'high_to_low';
+    public $showQuickPaymentModal = false;
+    public $quickPaymentCustomerId;
+    public $quickPaymentCustomerName = '';
+    public $quickPaymentCustomerPhone = '';
+    public $quickPaymentDueAmount = 0;
+    public $quickPaymentAmount = '';
+    public $quickPaymentDate = '';
+    public $quickPaymentMode = 'CASH';
+    public $quickPaymentNotes = '';
+    public $quickPaymentNilAccount = false;
 
     public function updatingSearchTerm()
     {
@@ -27,6 +39,132 @@ class AllCustomerCreditListLivewire extends Component
     public function updatingSortBy()
     {
         $this->resetPage();
+    }
+
+    public function openQuickPayment($customerId)
+    {
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
+
+        [$ledgerTotals, $creditNoteTotals] = $this->creditSummarySubqueries();
+        $query = $this->buildCustomerCreditQuery($ledgerTotals, $creditNoteTotals);
+        $customer = $query->where('c.id', $customerId)->first();
+
+        if (!$customer) {
+            $this->addError('quickPaymentCustomerId', 'Customer not found.');
+            return;
+        }
+
+        $this->resetValidation();
+        $this->quickPaymentCustomerId = $customer->id;
+        $this->quickPaymentCustomerName = trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? ''));
+        $this->quickPaymentCustomerPhone = preg_replace('/\D+/', '', $customer->phoneno ?? '');
+        $this->quickPaymentDueAmount = max(0, (float) $customer->total_due);
+        $this->quickPaymentAmount = number_format($this->quickPaymentDueAmount, 2, '.', '');
+        $this->quickPaymentDate = now()->toDateString();
+        $this->quickPaymentMode = 'CASH';
+        $this->quickPaymentNotes = '';
+        $this->quickPaymentNilAccount = false;
+        $this->showQuickPaymentModal = true;
+    }
+
+    public function closeQuickPayment()
+    {
+        $this->showQuickPaymentModal = false;
+        $this->resetValidation();
+    }
+
+    public function saveQuickPayment()
+    {
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
+
+        $this->validate([
+            'quickPaymentCustomerId' => 'required|exists:customerinfos,id',
+            'quickPaymentAmount' => 'required|numeric|min:0.01',
+            'quickPaymentDate' => 'required|date',
+            'quickPaymentMode' => 'required|in:CASH,FONEPAY,BANK,OTHER',
+            'quickPaymentNotes' => 'nullable|string|max:1000',
+        ]);
+
+        $mode = $this->quickPaymentModeText();
+        $payment = null;
+
+        DB::transaction(function () use ($mode, &$payment) {
+            $payment = new customerledgerdetails();
+            $payment->customerid = $this->quickPaymentCustomerId;
+            $payment->date = $this->quickPaymentDate;
+            $payment->particulars = $mode;
+            $payment->voucher_type = $mode;
+            $payment->invoicetype = 'payment';
+            $payment->credit = $this->quickPaymentAmount;
+            $payment->notes = $this->quickPaymentNotes;
+            $payment->added_by = session('user_email');
+            $payment->save();
+
+            if ($this->quickPaymentNilAccount) {
+                $settlement = new customerledgerdetails();
+                $settlement->customerid = $this->quickPaymentCustomerId;
+                $settlement->date = $this->quickPaymentDate;
+                $settlement->particulars = 'NIL ACCOUNT / ACCOUNT SETTLED';
+                $settlement->voucher_type = 'SETTLEMENT';
+                $settlement->invoicetype = 'settlement';
+                $settlement->debit = 0;
+                $settlement->credit = 0;
+                $settlement->notes = trim(($this->quickPaymentNotes ?? '') . ' Settlement marker after payment receipt CR-(' . $payment->id . ') for amount ' . $this->quickPaymentAmount . '.');
+                $settlement->added_by = session('user_email');
+                $settlement->save();
+            }
+
+            TrackCustomerLedger::create([
+                'title' => $this->quickPaymentNilAccount ? 'Inserted_Quick_Payment_With_Nil_Account' : 'Inserted_Quick_Payment',
+                'updated_by' => session('user_email'),
+                'notes' => 'Customer ID ' . $this->quickPaymentCustomerId
+                    . ' inserted quick payment with particulars: ' . $mode
+                    . ', voucher type: ' . $mode
+                    . ', credit: ' . $this->quickPaymentAmount
+                    . ', date: ' . $this->quickPaymentDate
+                    . ', by ' . session('user_email'),
+            ]);
+        });
+
+        $remainingDue = $this->quickPaymentNilAccount
+            ? 0
+            : max(0, (float) $this->quickPaymentDueAmount - (float) $this->quickPaymentAmount);
+        $whatsappPhone = $this->quickPaymentCustomerPhone;
+
+        if (strlen($whatsappPhone) === 10) {
+            $whatsappPhone = '977' . $whatsappPhone;
+        }
+
+        $paymentMessage = 'Namaste, Rs ' . number_format((float) $this->quickPaymentAmount, 2)
+            . ' payment received. Remaining due Rs ' . number_format($remainingDue, 2)
+            . '. Thank you.';
+
+        $redirect = redirect()->route('cashreceipt.search', ['receiptno' => $payment->id])
+            ->with('success', 'Payment received successfully.')
+            ->with('payment_whatsapp_message', $paymentMessage);
+
+        if ($whatsappPhone) {
+            $redirect->with('payment_whatsapp_url', 'https://wa.me/' . $whatsappPhone . '?text=' . rawurlencode($paymentMessage));
+        }
+
+        return $redirect;
+    }
+
+    public function markReminderSent($customerId, $whatsappUrl)
+    {
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
+
+        DB::table('customerinfos')
+            ->where('id', $customerId)
+            ->update(['last_credit_reminder_sent_at' => now()]);
+
+        $this->dispatchBrowserEvent('open-whatsapp-reminder', ['url' => $whatsappUrl]);
     }
 
     public function render()
@@ -46,9 +184,27 @@ class AllCustomerCreditListLivewire extends Component
         $totalQuery = $this->buildCustomerCreditQuery($ledgerTotalsForTotal, $creditNoteTotalsForTotal);
         $this->applyFilters($totalQuery);
 
-        $totalDue = $totalQuery->get()->sum(function ($row) {
+        $summaryRows = $totalQuery->get();
+
+        $totalDue = $summaryRows->sum(function ($row) {
             return max(0, (float) $row->total_due);
         });
+
+        $creditCustomerCount = $summaryRows->count();
+        $expiredCustomerCount = $summaryRows->filter(function ($row) {
+            if (empty($row->latest_credit_date) || empty($row->credit_limit_days)) {
+                return false;
+            }
+
+            return now()->startOfDay()->gt(
+                \Carbon\Carbon::parse($row->latest_credit_date)->addDays((int) $row->credit_limit_days)->startOfDay()
+            );
+        })->count();
+        $oldDueCustomerCount = $summaryRows->filter(function ($row) {
+            return !empty($row->latest_date)
+                && \Carbon\Carbon::parse($row->latest_date)->lte(now()->subDays(45));
+        })->count();
+        $highestDueCustomer = $summaryRows->sortByDesc('total_due')->first();
 
         [$ledgerTotalsForAdvance, $creditNoteTotalsForAdvance] = $this->creditSummarySubqueries();
         $advanceQuery = $this->buildCustomerCreditQuery($ledgerTotalsForAdvance, $creditNoteTotalsForAdvance);
@@ -58,12 +214,23 @@ class AllCustomerCreditListLivewire extends Component
 
         $advanceCustomers = $advanceQuery->get();
         $totalAdvanceDeposit = abs($advanceCustomers->sum('total_due'));
+        $todayCollectionQuery = DB::table('customerledgerdetails')
+            ->where('invoicetype', 'payment')
+            ->whereDate('date', now()->toDateString());
+        $todayCollectionAmount = (clone $todayCollectionQuery)->sum('credit');
+        $todayCollectionCount = (clone $todayCollectionQuery)->count();
 
         return view('livewire.all-customer-credit-list-livewire', [
             'customers' => $customers,
             'totalDue' => $totalDue,
             'totalAdvanceDeposit' => $totalAdvanceDeposit,
             'advanceCustomers' => $advanceCustomers,
+            'creditCustomerCount' => $creditCustomerCount,
+            'expiredCustomerCount' => $expiredCustomerCount,
+            'oldDueCustomerCount' => $oldDueCustomerCount,
+            'highestDueCustomer' => $highestDueCustomer,
+            'todayCollectionAmount' => $todayCollectionAmount,
+            'todayCollectionCount' => $todayCollectionCount,
         ]);
     }
 
@@ -164,6 +331,7 @@ class AllCustomerCreditListLivewire extends Component
                 'c.alternate_phoneno',
                 'c.email',
                 'c.type',
+                'c.last_credit_reminder_sent_at',
                 'lt.latest_date',
                 'lt.latest_credit_date',
                 'lt.credit_limit_days',
@@ -258,5 +426,15 @@ class AllCustomerCreditListLivewire extends Component
             'newest' => 'Newest',
             'oldest' => 'Oldest',
         ][$this->sortBy] ?? 'High to Low';
+    }
+
+    private function quickPaymentModeText()
+    {
+        return [
+            'CASH' => 'CASH',
+            'FONEPAY' => 'FONEPAY',
+            'BANK' => 'BANK',
+            'OTHER' => 'PAYMENT',
+        ][$this->quickPaymentMode] ?? 'CASH';
     }
 }
