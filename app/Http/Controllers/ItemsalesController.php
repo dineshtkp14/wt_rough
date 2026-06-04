@@ -136,70 +136,73 @@ class ItemsalesController extends Controller
             $phone = '977' . $phone;
         }
 
-        // Calculate customer's total due amount from ledger
-        $totalDueAmount = customerledgerdetails::where('customerid', $invoice_data->customerid)
-            ->where('created_at', '<=', now())
-            ->sum(DB::raw('COALESCE(debit, 0) - COALESCE(credit, 0)'));
+        $redirect = redirect()->route('onlyviewbillafterbill', ['invoiceid' => $invoice_data->id])
+            ->with('success', 'Invoice Created Successfully !!');
 
-        // Create SMS message with invoice details and total due amount
-        $invoiceMessage = 'Namaste ' . ($customer->name ?? 'Customer')
-            . ', your invoice no ' . $invoice_data->id
-            . ' has been created. Invoice Amount: Rs ' . number_format((float) $invoice_data->total, 2)
-            . '. Your total due till today: Rs ' . number_format($totalDueAmount, 2)
-            . '. Thank you!';
+        if ($invoice_data->inv_type === 'credit') {
+            // Calculate customer's total due amount from ledger
+            $totalDueAmount = customerledgerdetails::where('customerid', $invoice_data->customerid)
+                ->where('created_at', '<=', now())
+                ->sum(DB::raw('COALESCE(debit, 0) - COALESCE(credit, 0)'));
 
-        // Truncate message to SMS character limit
-        $invoiceMessage = InvoiceSmsHelper::truncateMessage($invoiceMessage);
+            // Create SMS message with invoice details and total due amount
+            $invoiceMessage = 'Namaste ' . ($customer->name ?? 'Customer')
+                . ', your invoice no ' . $invoice_data->id
+                . ' has been created. Invoice Amount: Rs ' . number_format((float) $invoice_data->total, 2)
+                . '. Your total due till today: Rs ' . number_format($totalDueAmount, 2)
+                . '. Thank you!';
 
-        // Auto-send SMS if customer has phone number
-        if ($phone && $customer) {
-            try {
-                $smsService = new SmsService();
-                $smsResponse = $smsService->send($phone, $invoiceMessage);
+            // Truncate message to SMS character limit
+            $invoiceMessage = InvoiceSmsHelper::truncateMessage($invoiceMessage);
 
-                // Log SMS sent
-                $smsLog = SmsLog::create([
-                    'invoice_id' => $invoice_data->id,
-                    'customer_id' => $invoice_data->customerid,
-                    'phone_number' => $phone,
-                    'message' => $invoiceMessage,
-                    'sms_type' => 'invoice_created',
-                    'status' => $smsResponse['success'] ? 'sent' : 'failed',
-                    'api_response' => json_encode($smsResponse),
-                ]);
+            // Auto-send SMS if customer has phone number
+            if ($phone && $customer) {
+                try {
+                    $smsService = new SmsService();
+                    $smsResponse = $smsService->send($phone, $invoiceMessage);
 
-                if ($smsResponse['success']) {
-                    $smsLog->markAsSent(json_encode($smsResponse['data']));
-                    Log::info('Invoice SMS auto-sent', [
+                    // Log SMS sent
+                    $smsLog = SmsLog::create([
                         'invoice_id' => $invoice_data->id,
-                        'customer' => $customer->name,
-                        'phone' => $phone
+                        'customer_id' => $invoice_data->customerid,
+                        'phone_number' => $phone,
+                        'message' => $invoiceMessage,
+                        'sms_type' => 'invoice_created',
+                        'status' => $smsResponse['success'] ? 'sent' : 'failed',
+                        'api_response' => json_encode($smsResponse),
                     ]);
-                } else {
-                    Log::error('Invoice SMS auto-send failed', [
+
+                    if ($smsResponse['success']) {
+                        $smsLog->markAsSent(json_encode($smsResponse['data']));
+                        Log::info('Invoice SMS auto-sent', [
+                            'invoice_id' => $invoice_data->id,
+                            'customer' => $customer->name,
+                            'phone' => $phone
+                        ]);
+                    } else {
+                        Log::error('Invoice SMS auto-send failed', [
+                            'invoice_id' => $invoice_data->id,
+                            'customer' => $customer->name,
+                            'phone' => $phone,
+                            'status' => $smsResponse['status'] ?? null,
+                            'response' => $smsResponse['body'] ?? $smsResponse['error'] ?? $smsResponse['data'] ?? null,
+                        ]);
+                    }
+
+                } catch (\Exception $e) {
+                    Log::error('Failed to auto-send invoice SMS', [
                         'invoice_id' => $invoice_data->id,
                         'customer' => $customer->name,
-                        'phone' => $phone,
-                        'status' => $smsResponse['status'] ?? null,
-                        'response' => $smsResponse['body'] ?? $smsResponse['error'] ?? $smsResponse['data'] ?? null,
+                        'error' => $e->getMessage()
                     ]);
                 }
-
-            } catch (\Exception $e) {
-                Log::error('Failed to auto-send invoice SMS', [
-                    'invoice_id' => $invoice_data->id,
-                    'customer' => $customer->name,
-                    'error' => $e->getMessage()
-                ]);
             }
-        }
 
-        $redirect = redirect()->route('onlyviewbillafterbill', ['invoiceid' => $invoice_data->id])
-            ->with('success', 'Invoice Created Successfully !!')
-            ->with('invoice_whatsapp_message', $invoiceMessage);
+            $redirect->with('invoice_whatsapp_message', $invoiceMessage);
 
-        if ($phone) {
-            $redirect->with('invoice_whatsapp_url', 'https://wa.me/' . $phone . '?text=' . rawurlencode($invoiceMessage));
+            if ($phone) {
+                $redirect->with('invoice_whatsapp_url', 'https://wa.me/' . $phone . '?text=' . rawurlencode($invoiceMessage));
+            }
         }
 
         return $redirect;

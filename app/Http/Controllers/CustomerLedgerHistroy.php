@@ -1552,6 +1552,13 @@ public function oldpricecheck(Request $req)
                 return response()->json(['success' => false, 'message' => 'Invoice not found'], 404);
             }
 
+            if ($invoice->inv_type !== 'credit') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'SMS is only sent for credit invoices.',
+                ], 400);
+            }
+
             $customer = customerinfo::find($invoice->customerid);
             if (!$customer || !$customer->phoneno) {
                 return response()->json(['success' => false, 'message' => 'Customer or phone number not found'], 404);

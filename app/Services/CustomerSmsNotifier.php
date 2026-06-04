@@ -57,6 +57,10 @@ class CustomerSmsNotifier
 
     public function invoiceCreated(invoice $invoice, ?customerinfo $customer = null, ?string $message = null): ?array
     {
+        if ($invoice->inv_type !== 'credit') {
+            return null;
+        }
+
         $customer = $customer ?: customerinfo::find($invoice->customerid);
         $message = $message ?: 'Namaste ' . ($customer->name ?? 'Customer')
             . ', your invoice no ' . $invoice->id
