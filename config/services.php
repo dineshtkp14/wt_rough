@@ -31,4 +31,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'sms' => [
+        'username' => env('SMS_USERNAME'),
+        'api_key' => env('SMS_API_KEY'),
+        'campaign' => env('SMS_CAMPAIGN', 'Default'),
+        'route_id' => env('SMS_ROUTE_ID', 'SI_Alert'),
+    ],
+
 ];

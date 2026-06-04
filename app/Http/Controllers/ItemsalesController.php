@@ -7,6 +7,9 @@ use App\Models\customerinfo;
 use App\Models\customerledgerdetails;
 use App\Models\invoice;
 use App\Models\item;
+use App\Models\SmsLog;
+use App\Services\SmsService;
+use App\Helpers\InvoiceSmsHelper;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,6 +17,7 @@ use Session;
 use App\Models\salesitem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ItemsalesController extends Controller
 {
@@ -132,11 +136,56 @@ class ItemsalesController extends Controller
             $phone = '977' . $phone;
         }
 
+        // Calculate customer's total due amount till today
+        $totalDueAmount = invoice::where('customerid', $invoice_data->customerid)
+            ->where('inv_type', 'credit')
+            ->where('created_at', '<=', now())
+            ->sum('total');
+
+        // Create SMS message with invoice details and total due amount
         $invoiceMessage = 'Namaste ' . ($customer->name ?? 'Customer')
             . ', your invoice no ' . $invoice_data->id
-            . ' has been created. Type: ' . strtoupper($req->invoice_type)
-            . '. Total amount Rs ' . number_format((float) $invoice_data->total, 2)
-            . '. Thank you.';
+            . ' has been created. Invoice Amount: Rs ' . number_format((float) $invoice_data->total, 2)
+            . '. Your total due till today: Rs ' . number_format($totalDueAmount, 2)
+            . '. Thank you!';
+
+        // Truncate message to SMS character limit
+        $invoiceMessage = InvoiceSmsHelper::truncateMessage($invoiceMessage);
+
+        // Auto-send SMS if customer has phone number
+        if ($phone && $customer) {
+            try {
+                $smsService = new SmsService();
+                $smsResponse = $smsService->send($phone, $invoiceMessage);
+
+                // Log SMS sent
+                $smsLog = SmsLog::create([
+                    'invoice_id' => $invoice_data->id,
+                    'customer_id' => $invoice_data->customerid,
+                    'phone_number' => $phone,
+                    'message' => $invoiceMessage,
+                    'sms_type' => 'invoice_created',
+                    'status' => $smsResponse['success'] ? 'sent' : 'failed',
+                    'api_response' => json_encode($smsResponse),
+                ]);
+
+                if ($smsResponse['success']) {
+                    $smsLog->markAsSent(json_encode($smsResponse['data']));
+                    Log::channel('sms')->info('Invoice SMS auto-sent', [
+                        'invoice_id' => $invoice_data->id,
+                        'customer' => $customer->name,
+                        'phone' => $phone
+                    ]);
+                }
+
+            } catch (\Exception $e) {
+                Log::channel('sms')->error('Failed to auto-send invoice SMS', [
+                    'invoice_id' => $invoice_data->id,
+                    'customer' => $customer->name,
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
 
         $redirect = redirect()->route('onlyviewbillafterbill', ['invoiceid' => $invoice_data->id])
             ->with('success', 'Invoice Created Successfully !!')
