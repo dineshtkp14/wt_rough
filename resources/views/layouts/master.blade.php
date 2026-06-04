@@ -314,6 +314,8 @@
                             <ul class="submenu">
                                 <li><a href="{{ route('itemsales.create') }}"><i class="fa-solid fa-plus"></i>Add New
                                         Invoice</a></li>
+                                <li><a href="{{ route('temporaryinvoice.index') }}"><i
+                                            class="fa-solid fa-file-lines"></i>Temporary Invoice</a></li>
                                 <li><a href="{{ route('customer.billno') }}"><i
                                             class="fa-solid fa-magnifying-glass"></i>Search Invoice</a></li>
                                 <li><a href="{{ route('itemsales.index') }}"><i class="fa-solid fa-eye"></i>View Sales
@@ -661,6 +663,17 @@
                                 aria-expanded="false">
                                 <i class="fas fa-file-invoice"></i>
                                 <span>Invoice</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item invoice">
+                        <a href="{{ route('temporaryinvoice.index') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-temporary-invoice"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-file-lines"></i>
+                                <span>Temporary Invoice</span>
                                 <i class="fa-solid fa-chevron-down"></i>
                             </button>
                         </a>
