@@ -172,12 +172,6 @@
         </form>   
        </span>
 
-       <span class="me-5">
-        <button type="button" class="btn btn-success btn-lg" id="sendSmsBtn" onclick="sendInvoiceSms();">
-            <i class="fas fa-sms"></i> Send SMS
-        </button>
-       </span>
-       
       @endif
 
         <a href="{{ route('invoicebillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
