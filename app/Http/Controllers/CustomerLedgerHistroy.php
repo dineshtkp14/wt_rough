@@ -1605,9 +1605,11 @@ public function oldpricecheck(Request $req)
                     'phone' => $phone
                 ]);
             } else {
+                $smsError = $smsResponse['error'] ?? $smsResponse['body'] ?? json_encode($smsResponse['data'] ?? $smsResponse);
+
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to send SMS: ' . ($smsResponse['error'] ? $smsResponse['error'] : 'Unknown error'),
+                    'message' => 'Failed to send SMS: ' . ($smsError ?: 'Unknown error'),
                 ], 400);
             }
 
@@ -1621,4 +1623,3 @@ public function oldpricecheck(Request $req)
 
 
     }
-

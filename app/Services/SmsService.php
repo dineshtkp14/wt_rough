@@ -34,6 +34,14 @@ class SmsService
     public function send($phoneNumber, $message, $scheduledTime = null)
     {
         try {
+            if (empty($this->username) || (empty($this->apiKey) && empty($this->password))) {
+                return [
+                    'success' => false,
+                    'status' => null,
+                    'error' => 'SMS credentials are missing. Check SMS_USERNAME, SMS_API_KEY, and SMS_PASSWORD in .env.',
+                ];
+            }
+
             // Try with API Key first (recommended method)
             $payload = [
                 'username' => $this->username,
@@ -50,7 +58,10 @@ class SmsService
                 $payload['time'] = $scheduledTime;
             }
 
-            $response = Http::post($this->apiUrl, $payload);
+            $response = Http::asForm()
+                ->timeout(20)
+                ->retry(1, 500)
+                ->post($this->apiUrl, $payload);
 
             // If INVALID API KEY error, try with username + password
             if ($response->status() === 400 && strpos($response->body(), 'INVALID API KEY') !== false) {
@@ -62,19 +73,26 @@ class SmsService
                 $payload['password'] = $this->password;
                 unset($payload['key']);
 
-                $response = Http::post($this->apiUrl, $payload);
+                $response = Http::asForm()
+                    ->timeout(20)
+                    ->retry(1, 500)
+                    ->post($this->apiUrl, $payload);
             }
+
+            $data = $response->json();
+            $body = $response->body();
 
             Log::info('SMS sent', [
                 'phone' => $phoneNumber,
                 'status' => $response->status(),
-                'response' => $response->json()
+                'response' => $data ?? $body,
             ]);
 
             return [
                 'success' => $response->successful(),
                 'status' => $response->status(),
-                'data' => $response->json()
+                'data' => $data,
+                'body' => $body,
             ];
 
         } catch (\Exception $e) {
@@ -85,6 +103,7 @@ class SmsService
 
             return [
                 'success' => false,
+                'status' => null,
                 'error' => $e->getMessage()
             ];
         }
@@ -101,6 +120,14 @@ class SmsService
     public function sendBulk(array $phoneNumbers, $message, $scheduledTime = null)
     {
         try {
+            if (empty($this->username) || (empty($this->apiKey) && empty($this->password))) {
+                return [
+                    'success' => false,
+                    'status' => null,
+                    'error' => 'SMS credentials are missing. Check SMS_USERNAME, SMS_API_KEY, and SMS_PASSWORD in .env.',
+                ];
+            }
+
             $contacts = implode(',', $phoneNumbers);
 
             $payload = [
@@ -118,18 +145,35 @@ class SmsService
                 $payload['time'] = $scheduledTime;
             }
 
-            $response = Http::post($this->apiUrl, $payload);
+            $response = Http::asForm()
+                ->timeout(20)
+                ->retry(1, 500)
+                ->post($this->apiUrl, $payload);
+
+            if ($response->status() === 400 && strpos($response->body(), 'INVALID API KEY') !== false) {
+                $payload['password'] = $this->password;
+                unset($payload['key']);
+
+                $response = Http::asForm()
+                    ->timeout(20)
+                    ->retry(1, 500)
+                    ->post($this->apiUrl, $payload);
+            }
+
+            $data = $response->json();
+            $body = $response->body();
 
             Log::channel('sms')->info('Bulk SMS sent', [
                 'count' => count($phoneNumbers),
                 'status' => $response->status(),
-                'response' => $response->json()
+                'response' => $data ?? $body,
             ]);
 
             return [
                 'success' => $response->successful(),
                 'status' => $response->status(),
-                'data' => $response->json()
+                'data' => $data,
+                'body' => $body,
             ];
 
         } catch (\Exception $e) {
@@ -140,6 +184,7 @@ class SmsService
 
             return [
                 'success' => false,
+                'status' => null,
                 'error' => $e->getMessage()
             ];
         }

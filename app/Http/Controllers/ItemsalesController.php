@@ -175,6 +175,14 @@ class ItemsalesController extends Controller
                         'customer' => $customer->name,
                         'phone' => $phone
                     ]);
+                } else {
+                    Log::error('Invoice SMS auto-send failed', [
+                        'invoice_id' => $invoice_data->id,
+                        'customer' => $customer->name,
+                        'phone' => $phone,
+                        'status' => $smsResponse['status'] ?? null,
+                        'response' => $smsResponse['body'] ?? $smsResponse['error'] ?? $smsResponse['data'] ?? null,
+                    ]);
                 }
 
             } catch (\Exception $e) {
