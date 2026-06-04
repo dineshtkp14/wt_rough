@@ -335,8 +335,9 @@
         }
 
         .badge-danger {
-            background: #fee2e2;
-            color: #991b1b;
+            background: #b91c1c !important;
+            border: 1px solid #991b1b;
+            color: #ffffff !important;
         }
 
         .badge-info {
@@ -345,8 +346,9 @@
         }
 
         .badge-primary {
-            background: #ffedd5;
-            color: #9a3412;
+            background: #f97316 !important;
+            border: 1px solid #ea580c;
+            color: #ffffff !important;
         }
 
         .status-dot {
