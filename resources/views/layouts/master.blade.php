@@ -314,8 +314,6 @@
                             <ul class="submenu">
                                 <li><a href="{{ route('itemsales.create') }}"><i class="fa-solid fa-plus"></i>Add New
                                         Invoice</a></li>
-                                <li><a href="{{ route('temporaryinvoice.index') }}"><i
-                                            class="fa-solid fa-file-lines"></i>Temporary Invoice</a></li>
                                 <li><a href="{{ route('customer.billno') }}"><i
                                             class="fa-solid fa-magnifying-glass"></i>Search Invoice</a></li>
                                 <li><a href="{{ route('itemsales.index') }}"><i class="fa-solid fa-eye"></i>View Sales
@@ -609,6 +607,8 @@
                                             class="fa-solid fa-money-bill-wave"></i>Show Sales</a></li>
                                 <li><a href="{{ route('showonlysalesperday.pp') }}"><i
                                             class="fa-solid fa-calendar-day"></i>Show Per Day</a></li>
+                                <li><a href="{{ route('temporaryinvoice.index') }}"><i
+                                            class="fa-solid fa-file-lines"></i>Temporary Invoice</a></li>
                                 <li><a href="{{ url('/sales-details-per-day') }}"><i
                                             class="fa-solid fa-table-list"></i>Sales Details Per Day</a></li>
                                 <li><a href="{{ route('CheckBankDeposit.index') }}"><i
@@ -663,17 +663,6 @@
                                 aria-expanded="false">
                                 <i class="fas fa-file-invoice"></i>
                                 <span>Invoice</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </button>
-                        </a>
-                    </li>
-
-                    <li class="nav-item invoice">
-                        <a href="{{ route('temporaryinvoice.index') }}" class="nav-link-single">
-                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-temporary-invoice"
-                                aria-expanded="false">
-                                <i class="fa-solid fa-file-lines"></i>
-                                <span>Temporary Invoice</span>
                                 <i class="fa-solid fa-chevron-down"></i>
                             </button>
                         </a>
@@ -740,6 +729,17 @@
                                 aria-expanded="false">
                                 <i class="fas fa-calendar-day"></i>
                                 <span>Show Per Day</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item invoice">
+                        <a href="{{ route('temporaryinvoice.index') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-temporary-invoice"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-file-lines"></i>
+                                <span>Temporary Invoice</span>
                                 <i class="fa-solid fa-chevron-down"></i>
                             </button>
                         </a>
