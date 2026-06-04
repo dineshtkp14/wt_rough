@@ -255,6 +255,31 @@
             color: #991b1b;
         }
 
+        .table-modern tr.today-row .badge,
+        .table-modern tr.today-row .badge-mode {
+            background: #7f1d1d;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            color: #ffffff;
+            box-shadow: none;
+        }
+
+        .table-modern tr.today-row .badge-primary {
+            background: #ffffff;
+            border-color: #ffffff;
+            color: #b91c1c;
+        }
+
+        .table-modern tr.today-row .badge-danger {
+            background: #991b1b;
+            border-color: rgba(255, 255, 255, 0.65);
+            color: #ffffff;
+        }
+
+        .table-modern tr.today-row .status-dot.paid,
+        .table-modern tr.today-row .status-dot.pending {
+            background: #ffffff;
+        }
+
         .delete-invoice-form {
             margin: 0;
         }
