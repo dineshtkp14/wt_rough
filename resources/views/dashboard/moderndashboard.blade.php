@@ -210,14 +210,22 @@
 
         .table-modern th {
             text-align: left;
-            padding: 0.75rem;
-            color: #374151;
-            font-weight: 600;
+            padding: 0.85rem 0.75rem;
+            color: #ffffff;
+            font-weight: 800;
             font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            background: #f3f4f6;
-            border-bottom: 2px solid var(--border);
+            letter-spacing: 0.08em;
+            background: #111827;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .table-modern th:first-child {
+            border-top-left-radius: 6px;
+        }
+
+        .table-modern th:last-child {
+            border-top-right-radius: 6px;
         }
 
         .table-modern td {
