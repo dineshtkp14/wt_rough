@@ -1560,6 +1560,20 @@ public function oldpricecheck(Request $req)
                 $phone = '977' . $phone;
             }
 
+            $existingLog = SmsLog::where('invoice_id', $invoice->id)
+                ->where('sms_type', 'invoice_created')
+                ->latest()
+                ->first();
+
+            if ($req->boolean('auto_send') && $existingLog && $existingLog->status === 'sent') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'SMS already sent to ' . $phone,
+                    'phone' => $phone,
+                    'already_sent' => true,
+                ]);
+            }
+
             // Calculate customer's total due amount from ledger
             $totalDueAmount = customerledgerdetails::where('customerid', $invoice->customerid)
                 ->where('created_at', '<=', now())
@@ -1579,8 +1593,6 @@ public function oldpricecheck(Request $req)
             $smsResponse = $smsService->send($phone, $invoiceMessage);
 
             if ($smsResponse['success']) {
-                // Check if SMS log already exists for this invoice
-                $existingLog = SmsLog::where('invoice_id', $invoice->id)->first();
                 if (!$existingLog) {
                     SmsLog::create([
                         'invoice_id' => $invoice->id,
@@ -1590,12 +1602,13 @@ public function oldpricecheck(Request $req)
                         'sms_type' => 'invoice_created',
                         'status' => 'sent',
                         'api_response' => json_encode($smsResponse),
+                        'sent_at' => now(),
                     ]);
                 } else {
-                    // Update existing log
                     $existingLog->update([
                         'status' => 'sent',
                         'api_response' => json_encode($smsResponse),
+                        'sent_at' => now(),
                     ]);
                 }
 
@@ -1606,6 +1619,23 @@ public function oldpricecheck(Request $req)
                 ]);
             } else {
                 $smsError = $smsResponse['error'] ?? $smsResponse['body'] ?? json_encode($smsResponse['data'] ?? $smsResponse);
+
+                if ($existingLog) {
+                    $existingLog->update([
+                        'status' => 'failed',
+                        'api_response' => json_encode($smsResponse),
+                    ]);
+                } else {
+                    SmsLog::create([
+                        'invoice_id' => $invoice->id,
+                        'customer_id' => $invoice->customerid,
+                        'phone_number' => $phone,
+                        'message' => $invoiceMessage,
+                        'sms_type' => 'invoice_created',
+                        'status' => 'failed',
+                        'api_response' => json_encode($smsResponse),
+                    ]);
+                }
 
                 return response()->json([
                     'success' => false,

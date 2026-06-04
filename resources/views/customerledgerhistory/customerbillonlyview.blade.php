@@ -17,6 +17,7 @@
                 <div>
                     <strong>Invoice message ready</strong>
                     <span>{{ Session::get('invoice_whatsapp_message') }}</span>
+                    <small id="invoiceSmsStatus" class="invoice-sms-status">Preparing SMS...</small>
                 </div>
                 <a href="{{ Session::get('invoice_whatsapp_url') }}" target="_blank" class="invoice-share-btn">
                     <i class="fa-brands fa-whatsapp"></i>
@@ -391,6 +392,18 @@
             margin-top: 3px;
         }
 
+        .invoice-sms-status {
+            color: #0f5132;
+            display: block;
+            font-size: 13px;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+
+        .invoice-sms-status.is-error {
+            color: #b91c1c;
+        }
+
         .invoice-share-btn {
             align-items: center;
             background: #16a34a;
@@ -419,38 +432,86 @@
     </style>
 
     <script>
-@if (Session::has('invoice_whatsapp_url'))
+var invoiceSmsAlreadySending = false;
+
+function updateInvoiceSmsStatus(message, isError) {
+    var status = document.getElementById('invoiceSmsStatus');
+
+    if (!status) {
+        return;
+    }
+
+    status.textContent = message;
+    status.classList.toggle('is-error', !!isError);
+}
+
+function sendInvoiceSms(autoSend) {
+    if (invoiceSmsAlreadySending) {
+        return;
+    }
+
+    invoiceSmsAlreadySending = true;
+
+    var button = document.getElementById('sendSmsBtn');
+
+    if (button) {
+        button.disabled = true;
+        button.dataset.originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    }
+
+    updateInvoiceSmsStatus('Sending SMS to customer...', false);
+
+    fetch(@json(route('invoice.send-sms', ['invoiceid' => $invoiceid])), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': @json(csrf_token()),
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            auto_send: !!autoSend
+        })
+    })
+        .then(function (response) {
+            return response.json().then(function (data) {
+                return {
+                    ok: response.ok,
+                    data: data
+                };
+            });
+        })
+        .then(function (result) {
+            if (result.ok && result.data.success) {
+                updateInvoiceSmsStatus(result.data.message || 'SMS sent successfully.', false);
+
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-check"></i> SMS Sent';
+                }
+
+                return;
+            }
+
+            throw new Error(result.data.message || 'SMS failed.');
+        })
+        .catch(function (error) {
+            updateInvoiceSmsStatus(error.message || 'SMS failed. Please use WhatsApp.', true);
+
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = button.dataset.originalText || '<i class="fas fa-sms"></i> Send SMS';
+            }
+        })
+        .finally(function () {
+            invoiceSmsAlreadySending = false;
+        });
+}
+
+@if (Session::has('success') && Session::has('invoice_whatsapp_message'))
 window.addEventListener('load', function () {
-    window.open(@json(Session::get('invoice_whatsapp_url')), '_blank');
+    sendInvoiceSms(true);
 });
 @endif
-
-// JavaScript for Delete Form
-document.getElementById('deleteForm').addEventListener('submit', function(e) {
-    // Get the value entered by the user in the input field
-    var deleteId = document.getElementById('deleteInvoiceId').value;
-
-    // Prompt the user with a confirmation message including the entered ID
-    var confirmation = confirm('Are you sure you want to delete Invoice ID=' + deleteId + '?');
-
-    // If the user confirms, proceed with form submission; otherwise, prevent it
-    if (!confirmation) {
-        e.preventDefault(); // Prevent the form from submitting if the user clicks Cancel
-    }
-});
-// JavaScript for Update Form
-document.getElementById('updateForm').addEventListener('submit', function(e) {
-    // Get the value entered by the user in the input field
-    var updateId = document.getElementById('updateInvoiceId').value;
-
-    // Prompt the user with a confirmation message including the entered ID
-    var confirmation = confirm('Are you sure you want to update Invoice ID=' + updateId + '?');
-
-    // If the user confirms, proceed with form submission; otherwise, prevent it
-    if (!confirmation) {
-        e.preventDefault(); // Prevent the form from submitting if the user clicks Cancel
-    }
-});
 
 
 
@@ -461,6 +522,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Get the element by its ID
     var totalAmountElement = document.getElementById('totalAmountWords');
+
+    if (!totalAmountElement) {
+        return;
+    }
     
     // Get the numerical value from the element's content
     var numericalValue = parseFloat(totalAmountElement.textContent.trim());
