@@ -75,9 +75,22 @@ class InvoiceSmsHelper
      */
     public static function truncateMessage($message)
     {
+        $message = self::withTeamSignature($message);
+
         if (strlen($message) > 720) {
             return substr($message, 0, 717) . '...';
         }
         return $message;
+    }
+
+    public static function withTeamSignature($message)
+    {
+        $signature = 'Team Om Hari';
+
+        if (strpos($message, $signature) !== false) {
+            return $message;
+        }
+
+        return rtrim($message) . "\n" . $signature;
     }
 }

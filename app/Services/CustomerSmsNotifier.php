@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\InvoiceSmsHelper;
 use App\Models\CreditnotesInvoice;
 use App\Models\customerinfo;
 use App\Models\customerledgerdetails;
@@ -87,7 +88,7 @@ class CustomerSmsNotifier
 
         try {
             $phone = SmsService::formatPhoneNumber($customer->phoneno);
-            $message = mb_substr($message, 0, 720);
+            $message = InvoiceSmsHelper::truncateMessage($message);
             $response = (new SmsService())->send($phone, $message);
 
             SmsLog::create([
