@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @include('layouts.breadcrumb')
 @section('content')
-    <div class="main-content">
+    <div class="main-content temporary-invoice-create">
         @yield('breadcrumb')
 
         <div class="container-fluid">
@@ -16,8 +16,12 @@
                 </div>
             @endif
 
-            <div class="d-flex justify-content-end align-items-center mb-2" style="margin-top: -58px;">
-                <a href="{{ route('temporaryinvoice.index') }}" class="btn btn-outline-primary">
+            <div class="temporary-create-head">
+                <div>
+                    <span>Temporary Invoice</span>
+                    <h3>Create Temporary Invoice</h3>
+                </div>
+                <a href="{{ route('temporaryinvoice.index') }}" class="temporary-secondary-btn">
                     <i class="fa-solid fa-list"></i> View Temporary Invoices
                 </a>
             </div>
@@ -25,8 +29,13 @@
             <form action="{{ route('temporaryinvoice.store') }}" method="post" id="temporaryInvoiceForm">
                 @csrf
 
-                <div class="card mb-4">
-                    <div class="card-header fw-bold">Customer Details</div>
+                <div class="temporary-panel mb-4">
+                    <div class="temporary-panel-header">
+                        <div>
+                            <span>Step 1</span>
+                            <strong>Customer Details</strong>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-3">
@@ -56,8 +65,24 @@
                     </div>
                 </div>
 
-                <div class="card mb-4">
-                    <div class="card-header fw-bold">Fixed Item Set</div>
+                <div class="temporary-panel mb-4">
+                    <div class="temporary-panel-header">
+                        <div>
+                            <span>Step 2</span>
+                            <strong>Fixed Item Set</strong>
+                        </div>
+                        <div class="temporary-fixed-actions">
+                            <button type="button" class="temporary-tool-btn success" id="saveFixedSetBtn" title="Save fixed set">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                            </button>
+                            <button type="button" class="temporary-tool-btn primary" id="updateFixedSetBtn" disabled title="Update fixed set">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button type="button" class="temporary-tool-btn danger" id="deleteFixedSetBtn" disabled title="Delete fixed set">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div class="row g-2 align-items-end">
                             <div class="col-md-4">
@@ -78,30 +103,22 @@
                                 <input type="text" class="form-control" id="fixedSetName" placeholder="0.5hp bharu bcm300c"
                                     autocomplete="off">
                             </div>
-                            <div class="col-md-3 d-flex gap-2">
-                                <button type="button" class="btn btn-success" id="saveFixedSetBtn">
-                                    <i class="fa-solid fa-floppy-disk"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary" id="updateFixedSetBtn" disabled>
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-danger" id="deleteFixedSetBtn" disabled>
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
                         </div>
-                        <small class="text-muted">
-                            Choose a saved code to fill rows. Edit rows below, then update or save as a new fixed set.
-                        </small>
                         <div class="mt-2">
                             <small class="fw-bold" id="fixedSetMessage"></small>
                         </div>
                     </div>
                 </div>
 
-                <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center py-2">
-                        <span></span>
+                <div class="temporary-panel mb-4">
+                    <div class="temporary-panel-header">
+                        <div>
+                            <span>Step 3</span>
+                            <strong>Items And Total</strong>
+                        </div>
+                        <button class="temporary-tool-btn success" type="button" id="addTempRowBtn" title="Add row">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -117,9 +134,7 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <button class="btn btn-success btn-sm" type="button" id="addTempRowBtn">
-                                                <i class="fa-solid fa-plus"></i>
-                                            </button>
+                                            #
                                         </th>
                                         <th>Item Name</th>
                                         <th>Quantity</th>
@@ -132,8 +147,12 @@
                             </table>
                         </div>
 
-                        <div class="row justify-content-end">
-                            <div class="col-md-4">
+                        <div class="row g-3 justify-content-between">
+                            <div class="col-lg-6">
+                                <label class="form-label">Notes</label>
+                                <textarea name="notes" class="form-control temporary-notes" rows="4">{{ old('notes') }}</textarea>
+                            </div>
+                            <div class="col-lg-4">
                                 <div class="input-group mb-2">
                                     <span class="input-group-text">Subtotal</span>
                                     <input type="text" class="form-control" id="tempSubtotal" readonly>
@@ -157,8 +176,11 @@
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary">
+                <div class="temporary-savebar">
+                    <a href="{{ route('temporaryinvoice.index') }}" class="temporary-secondary-btn">
+                        <i class="fa-solid fa-arrow-left"></i> Back
+                    </a>
+                    <button type="submit" class="temporary-primary-btn">
                         <i class="fa-solid fa-floppy-disk"></i> Save Temporary Invoice
                     </button>
                 </div>
@@ -471,6 +493,132 @@
     </script>
 
     <style>
+        .temporary-invoice-create .container-fluid {
+            max-width: 1680px;
+        }
+
+        .temporary-create-head {
+            align-items: center;
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .temporary-create-head span,
+        .temporary-panel-header span {
+            color: #64748b;
+            display: block;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .temporary-create-head h3 {
+            color: #172033;
+            font-size: 28px;
+            font-weight: 900;
+            margin: 2px 0 0;
+        }
+
+        .temporary-panel {
+            background: #ffffff;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, .07);
+            overflow: visible;
+        }
+
+        .temporary-panel-header {
+            align-items: center;
+            background: #f8fafc;
+            border-bottom: 1px solid #dbe3ef;
+            display: flex;
+            gap: 14px;
+            justify-content: space-between;
+            padding: 14px 16px;
+        }
+
+        .temporary-panel-header strong {
+            color: #172033;
+            display: block;
+            font-size: 18px;
+            font-weight: 900;
+            margin-top: 2px;
+        }
+
+        .temporary-invoice-create .form-label {
+            color: #334155;
+            font-size: 13px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .temporary-invoice-create .form-control {
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            min-height: 46px;
+        }
+
+        .temporary-fixed-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .temporary-tool-btn {
+            align-items: center;
+            border: 0;
+            border-radius: 8px;
+            color: #ffffff;
+            display: inline-flex;
+            height: 42px;
+            justify-content: center;
+            width: 44px;
+        }
+
+        .temporary-tool-btn.success {
+            background: #0f766e;
+        }
+
+        .temporary-tool-btn.primary {
+            background: #2563eb;
+        }
+
+        .temporary-tool-btn.danger {
+            background: #dc2626;
+        }
+
+        .temporary-tool-btn:disabled {
+            background: #cbd5e1;
+            color: #64748b;
+        }
+
+        .temporary-primary-btn,
+        .temporary-secondary-btn {
+            align-items: center;
+            border-radius: 8px;
+            display: inline-flex;
+            font-weight: 900;
+            gap: 8px;
+            justify-content: center;
+            min-height: 46px;
+            padding: 0 16px;
+            text-decoration: none !important;
+        }
+
+        .temporary-primary-btn {
+            background: #0f766e;
+            border: 0;
+            color: #ffffff !important;
+        }
+
+        .temporary-secondary-btn {
+            background: #ffffff;
+            border: 1px solid #94a3b8;
+            color: #334155 !important;
+        }
+
         .temporary-invoice-table {
             table-layout: fixed;
             width: 100%;
@@ -504,12 +652,10 @@
         }
 
         .temporary-invoice-table .row-number {
+            display: inline-flex;
+            min-width: 22px;
             text-align: center;
-            font-weight: 700;
-        }
-
-        #addTempRowBtn i {
-            font-size: 32px;
+            font-weight: 900;
         }
 
         .temporary-amount-words {
@@ -559,6 +705,51 @@
         .temporary-fixed-empty {
             color: #dc3545;
             padding: 8px 10px;
+        }
+
+        .temporary-notes {
+            min-height: 132px;
+            resize: vertical;
+        }
+
+        .temporary-savebar {
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            bottom: 0;
+            box-shadow: 0 -8px 24px rgba(15, 23, 42, .08);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 14px;
+            padding: 12px;
+            position: sticky;
+            z-index: 20;
+        }
+
+        @media (max-width: 760px) {
+            .temporary-create-head,
+            .temporary-panel-header,
+            .temporary-savebar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .temporary-fixed-actions {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .temporary-tool-btn,
+            .temporary-primary-btn,
+            .temporary-secondary-btn {
+                width: 100%;
+            }
+
+            .temporary-invoice-table {
+                min-width: 900px;
+            }
         }
     </style>
 @stop

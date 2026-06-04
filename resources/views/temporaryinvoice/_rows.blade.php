@@ -8,13 +8,14 @@
         <td>{{ $invoice->items_count }}</td>
         <td><b>{{ number_format($invoice->total, 2) }}</b></td>
         <td>
+            <div class="temporary-row-actions">
             <a href="{{ route('temporaryinvoice.show', $invoice) }}"
-                class="btn btn-outline-primary btn-sm temporary-invoice-view-btn"
+                class="temporary-row-action view temporary-invoice-view-btn"
                 data-url="{{ route('temporaryinvoice.show', $invoice) }}">
                 <i class="fa-solid fa-eye"></i>
             </a>
             <a href="{{ route('temporaryinvoice.print', $invoice) }}"
-                class="btn btn-outline-success btn-sm temporary-invoice-print-direct"
+                class="temporary-row-action print temporary-invoice-print-direct"
                 data-url="{{ route('temporaryinvoice.print', $invoice) }}">
                 <i class="fa-solid fa-print"></i>
             </a>
@@ -23,10 +24,11 @@
                 onsubmit="return confirm('Delete this temporary invoice?');">
                 @csrf
                 @method('DELETE')
-                <button class="btn btn-outline-danger btn-sm" type="submit">
+                <button class="temporary-row-action delete" type="submit">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </form>
+            </div>
         </td>
     </tr>
 @empty

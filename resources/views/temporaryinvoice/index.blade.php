@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @include('layouts.breadcrumb')
 @section('content')
-    <div class="main-content">
+    <div class="main-content temporary-invoice-index">
         @yield('breadcrumb')
 
         <div class="container-fluid">
@@ -9,30 +9,35 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0">Temporary Invoices</h4>
-                <a href="{{ route('temporaryinvoice.create') }}" class="btn btn-primary">
+            <div class="temporary-page-head">
+                <div>
+                    <span>Temporary Invoice</span>
+                    <h3>Temporary Invoices</h3>
+                </div>
+                <a href="{{ route('temporaryinvoice.create') }}" class="temporary-primary-btn">
                     <i class="fa-solid fa-plus"></i> New Temporary Invoice
                 </a>
             </div>
 
-            <form class="card mb-3" method="get" action="{{ route('temporaryinvoice.index') }}">
+            <form class="temporary-filter-panel" method="get" action="{{ route('temporaryinvoice.index') }}">
                 <div class="card-body">
                     <div class="row g-2">
-                        <div class="col-md-4">
+                        <div class="col-lg-5 col-md-12">
+                            <label class="temporary-field-label">Search</label>
                             <input type="text" name="search" class="form-control" id="temporaryInvoiceLiveSearch"
                                 placeholder="Customer name, contact, address, or invoice no"
                                 value="{{ request('search') }}">
-                            <small class="text-muted">Searches all temporary invoices.</small>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-3 col-md-5">
+                            <label class="temporary-field-label">From</label>
                             <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-3 col-md-5">
+                            <label class="temporary-field-label">To</label>
                             <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
                         </div>
-                        <div class="col-md-2">
-                            <a href="{{ route('temporaryinvoice.index') }}" class="btn btn-outline-secondary">
+                        <div class="col-lg-1 col-md-2 temporary-filter-reset">
+                            <a href="{{ route('temporaryinvoice.index') }}" class="temporary-icon-btn" title="Reset filters">
                                 <i class="fa-solid fa-rotate-left"></i>
                             </a>
                         </div>
@@ -40,7 +45,7 @@
                 </div>
             </form>
 
-            <div class="card">
+            <div class="temporary-table-panel">
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover align-middle">
@@ -62,7 +67,7 @@
                         </table>
                     </div>
 
-                    <div id="temporaryInvoicePagination">
+                    <div class="temporary-pagination" id="temporaryInvoicePagination">
                         {{ $temporaryInvoices->links() }}
                     </div>
                 </div>
@@ -323,8 +328,8 @@
         }
 
         .temporary-invoice-modal-header {
-            background: #39ff14;
-            color: #07111f;
+            background: #0f766e;
+            color: #ffffff;
         }
 
         .temporary-invoice-modal-header h4 {
@@ -345,7 +350,7 @@
         .temporary-invoice-modal-close {
             background: transparent;
             border: 0;
-            color: #07111f;
+            color: #ffffff;
             font-size: 24px;
             line-height: 1;
         }
@@ -363,16 +368,16 @@
         }
 
         .temporary-invoice-print-btn {
-            background: #39ff14;
-            border-color: #39ff14;
-            color: #07111f;
+            background: #0f766e;
+            border-color: #0f766e;
+            color: #ffffff;
             font-weight: 700;
         }
 
         .temporary-invoice-print-btn:hover {
-            background: #12f7ff;
-            border-color: #12f7ff;
-            color: #07111f;
+            background: #115e59;
+            border-color: #115e59;
+            color: #ffffff;
         }
 
         .temporary-invoice-modal-loading {
@@ -449,9 +454,9 @@
         }
 
         .temporary-invoice-popup-table th {
-            background: #39ff14;
+            background: #3348d4;
             border: 1px solid #1f2937 !important;
-            color: #07111f;
+            color: #ffffff;
             padding: 9px 12px;
             white-space: nowrap;
         }
@@ -489,6 +494,134 @@
 
             .temporary-invoice-popup-meta-right {
                 text-align: left;
+                width: 100%;
+            }
+        }
+
+        .temporary-invoice-index .container-fluid {
+            max-width: 1680px;
+        }
+
+        .temporary-page-head {
+            align-items: center;
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .temporary-page-head span,
+        .temporary-field-label {
+            color: #64748b;
+            display: block;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .temporary-page-head h3 {
+            color: #172033;
+            font-size: 28px;
+            font-weight: 900;
+            margin: 2px 0 0;
+        }
+
+        .temporary-primary-btn,
+        .temporary-icon-btn {
+            align-items: center;
+            border-radius: 8px;
+            display: inline-flex;
+            font-weight: 900;
+            justify-content: center;
+            text-decoration: none !important;
+        }
+
+        .temporary-primary-btn {
+            background: #0f766e;
+            color: #ffffff !important;
+            gap: 8px;
+            min-height: 46px;
+            padding: 0 16px;
+        }
+
+        .temporary-icon-btn {
+            border: 1px solid #94a3b8;
+            color: #334155 !important;
+            height: 46px;
+            width: 46px;
+        }
+
+        .temporary-filter-panel,
+        .temporary-table-panel {
+            background: #ffffff;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, .07);
+            margin-bottom: 14px;
+        }
+
+        .temporary-filter-panel .form-control {
+            height: 46px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .temporary-filter-reset {
+            align-items: end;
+            display: flex;
+        }
+
+        .temporary-table-panel table {
+            min-width: 1120px;
+            table-layout: fixed;
+        }
+
+        .temporary-table-panel th {
+            background: #3348d4 !important;
+        }
+
+        .temporary-pagination {
+            margin-top: 12px;
+        }
+
+        .temporary-row-actions {
+            display: inline-grid;
+            gap: 6px;
+            grid-template-columns: repeat(3, 38px);
+        }
+
+        .temporary-row-action {
+            align-items: center;
+            border: 0;
+            border-radius: 7px;
+            color: #ffffff !important;
+            display: inline-flex;
+            height: 36px;
+            justify-content: center;
+            text-decoration: none !important;
+            width: 38px;
+        }
+
+        .temporary-row-action.view {
+            background: #2563eb;
+        }
+
+        .temporary-row-action.print {
+            background: #0f766e;
+        }
+
+        .temporary-row-action.delete {
+            background: #dc2626;
+        }
+
+        @media (max-width: 700px) {
+            .temporary-page-head {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .temporary-primary-btn {
                 width: 100%;
             }
         }
