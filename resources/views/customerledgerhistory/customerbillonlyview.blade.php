@@ -170,6 +170,12 @@
             </button>
         </form>   
        </span>
+
+       <span class="me-5">
+        <button type="button" class="btn btn-success btn-lg" id="sendSmsBtn" onclick="sendInvoiceSms();">
+            <i class="fas fa-sms"></i> Send SMS
+        </button>
+       </span>
        
       @endif
 

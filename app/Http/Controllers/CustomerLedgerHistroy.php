@@ -8,7 +8,9 @@ use App\Models\customerledgerdetails;
 use App\Models\invoice;
 use App\Models\item;
 use App\Models\Trackinvoice;
-
+use App\Models\SmsLog;
+use App\Services\SmsService;
+use App\Helpers\InvoiceSmsHelper;
 
 use App\Models\salesitem;
 
@@ -1530,4 +1532,93 @@ public function oldpricecheck(Request $req)
             ]);
         }
     }
+    
+
+    /**
+     * Send SMS for a specific invoice
+     */
+    public function sendInvoiceSms(Request $req, $invoiceid)
+    {
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        try {
+            $invoice = invoice::find($invoiceid);
+            if (!$invoice) {
+                return response()->json(['success' => false, 'message' => 'Invoice not found'], 404);
+            }
+
+            $customer = customerinfo::find($invoice->customerid);
+            if (!$customer || !$customer->phoneno) {
+                return response()->json(['success' => false, 'message' => 'Customer or phone number not found'], 404);
+            }
+
+            // Format phone number
+            $phone = preg_replace('/\D+/', '', ($customer->phoneno ? $customer->phoneno : ''));
+            if (strlen($phone) === 10) {
+                $phone = '977' . $phone;
+            }
+
+            // Calculate customer's total due amount from ledger
+            $totalDueAmount = customerledgerdetails::where('customerid', $invoice->customerid)
+                ->where('created_at', '<=', now())
+                ->sum(DB::raw('COALESCE(debit, 0) - COALESCE(credit, 0)'));
+
+            // Create SMS message
+            $invoiceMessage = 'Namaste ' . ($customer->name ? $customer->name : 'Customer')
+                . ', your invoice no ' . $invoice->id
+                . ' has been created. Invoice Amount: Rs ' . number_format((float) $invoice->total, 2)
+                . '. Your total due till today: Rs ' . number_format($totalDueAmount, 2)
+                . '. Thank you!';
+
+            $invoiceMessage = InvoiceSmsHelper::truncateMessage($invoiceMessage);
+
+            // Send SMS
+            $smsService = new SmsService();
+            $smsResponse = $smsService->send($phone, $invoiceMessage);
+
+            if ($smsResponse['success']) {
+                // Check if SMS log already exists for this invoice
+                $existingLog = SmsLog::where('invoice_id', $invoice->id)->first();
+                if (!$existingLog) {
+                    SmsLog::create([
+                        'invoice_id' => $invoice->id,
+                        'customer_id' => $invoice->customerid,
+                        'phone_number' => $phone,
+                        'message' => $invoiceMessage,
+                        'sms_type' => 'invoice_created',
+                        'status' => 'sent',
+                        'api_response' => json_encode($smsResponse),
+                    ]);
+                } else {
+                    // Update existing log
+                    $existingLog->update([
+                        'status' => 'sent',
+                        'api_response' => json_encode($smsResponse),
+                    ]);
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'SMS sent successfully to ' . $phone,
+                    'phone' => $phone
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to send SMS: ' . ($smsResponse['error'] ? $smsResponse['error'] : 'Unknown error'),
+                ], 400);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
+
+
+    }
+

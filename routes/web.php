@@ -370,6 +370,7 @@ Route::put('/billno/updatecusname', [CustomerLedgerHistroy::class, 'updatecustom
 
 Route::get('/onlyviewbill',[CustomerLedgerHistroy::class,'onlyviewbillafterbill'])->name('onlyviewbillafterbill');
 Route::delete('/onlyviewbill/{invoiceid}', [CustomerLedgerHistroy::class, 'deletebillfromdatabasefor_user'])->name('customer.deletebillnoforuser');
+Route::post('/invoice/{invoiceid}/send-sms', [CustomerLedgerHistroy::class, 'sendInvoiceSms'])->name('invoice.send-sms');
 
 Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_InvoiveBillByBillno'])->name('invoicebillno.convert');
 

@@ -54,7 +54,7 @@ class SmsService
 
             // If INVALID API KEY error, try with username + password
             if ($response->status() === 400 && strpos($response->body(), 'INVALID API KEY') !== false) {
-                Log::channel('sms')->warning('API Key method failed, trying username/password method', [
+                Log::warning('API Key method failed, trying username/password method', [
                     'phone' => $phoneNumber,
                 ]);
 
@@ -65,7 +65,7 @@ class SmsService
                 $response = Http::post($this->apiUrl, $payload);
             }
 
-            Log::channel('sms')->info('SMS sent', [
+            Log::info('SMS sent', [
                 'phone' => $phoneNumber,
                 'status' => $response->status(),
                 'response' => $response->json()
@@ -78,7 +78,7 @@ class SmsService
             ];
 
         } catch (\Exception $e) {
-            Log::channel('sms')->error('SMS failed', [
+            Log::error('SMS failed', [
                 'phone' => $phoneNumber,
                 'error' => $e->getMessage()
             ]);

@@ -136,11 +136,10 @@ class ItemsalesController extends Controller
             $phone = '977' . $phone;
         }
 
-        // Calculate customer's total due amount till today
-        $totalDueAmount = invoice::where('customerid', $invoice_data->customerid)
-            ->where('inv_type', 'credit')
+        // Calculate customer's total due amount from ledger
+        $totalDueAmount = customerledgerdetails::where('customerid', $invoice_data->customerid)
             ->where('created_at', '<=', now())
-            ->sum('total');
+            ->sum(DB::raw('COALESCE(debit, 0) - COALESCE(credit, 0)'));
 
         // Create SMS message with invoice details and total due amount
         $invoiceMessage = 'Namaste ' . ($customer->name ?? 'Customer')
@@ -171,7 +170,7 @@ class ItemsalesController extends Controller
 
                 if ($smsResponse['success']) {
                     $smsLog->markAsSent(json_encode($smsResponse['data']));
-                    Log::channel('sms')->info('Invoice SMS auto-sent', [
+                    Log::info('Invoice SMS auto-sent', [
                         'invoice_id' => $invoice_data->id,
                         'customer' => $customer->name,
                         'phone' => $phone
@@ -179,7 +178,7 @@ class ItemsalesController extends Controller
                 }
 
             } catch (\Exception $e) {
-                Log::channel('sms')->error('Failed to auto-send invoice SMS', [
+                Log::error('Failed to auto-send invoice SMS', [
                     'invoice_id' => $invoice_data->id,
                     'customer' => $customer->name,
                     'error' => $e->getMessage()
