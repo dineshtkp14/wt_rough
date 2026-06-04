@@ -24,6 +24,7 @@ use App\Models\CreditnotesCustomerledgerdetail;
 use App\Models\customerinfo;
 use Illuminate\Support\Facades\DB;
 use App\Models\item;
+use App\Services\CustomerSmsNotifier;
 
 use Illuminate\Support\Carbon;
 
@@ -161,6 +162,7 @@ class Creditnotes_controller extends Controller
             }
         } 
         
+        (new CustomerSmsNotifier())->salesReturnCreated($invoice_data);
 
         return redirect()->route('creditnotescustomeronlyview.billno', ['invoiceid' => $invoice_data->id])->with('success', 'Credit Notes Created Successfully !!');
                       

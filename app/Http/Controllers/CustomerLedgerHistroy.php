@@ -10,6 +10,7 @@ use App\Models\item;
 use App\Models\Trackinvoice;
 use App\Models\SmsLog;
 use App\Services\SmsService;
+use App\Services\CustomerSmsNotifier;
 use App\Helpers\InvoiceSmsHelper;
 
 use App\Models\salesitem;
@@ -432,6 +433,7 @@ class CustomerLedgerHistroy extends Controller
                 'updated_by' => $user_email,
                 'notes' => 'Invoice Id: ' . $billno . ' is deleted by ' . $user_email
             ]);
+            (new CustomerSmsNotifier())->invoiceDeleted($invoice);
             return redirect()->route('customer.billno')->with('deletesuccess', 'Deleted Successfully !!');
         } else {
             return redirect()->route('customer.billno')->with('error', 'No records found for the provided invoiceid');
@@ -553,6 +555,7 @@ class CustomerLedgerHistroy extends Controller
                 'updated_by' => $user_email,
                 'notes' => 'Invoice Id: ' . $req->invoiceid . ' is deleted by ' . $user_email
             ]);
+            (new CustomerSmsNotifier())->invoiceDeleted($invoice);
             
 
             return redirect()->route('onlyviewbillafterbill')->with('deletesuccess', 'Deleted Successfully !!');

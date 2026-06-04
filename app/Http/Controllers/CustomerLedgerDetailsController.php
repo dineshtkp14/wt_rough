@@ -15,6 +15,7 @@ use Session;
 use App\Models\customerinfo;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CreditnotesInvoice;
+use App\Services\CustomerSmsNotifier;
 
 
 
@@ -113,7 +114,9 @@ public function store(Request $req)
 
     $nextUserId = DB::select("SHOW TABLE STATUS LIKE 'customerledgerdetails'")[0]->Auto_increment;
 
-    DB::transaction(function () use ($req) {
+    $payment = null;
+
+    DB::transaction(function () use ($req, &$payment) {
         $cl = new customerledgerdetails();
         $cl->customerid = $req->customerid;
         $cl->date = $req->date;
@@ -125,6 +128,7 @@ public function store(Request $req)
         $cl->notes = $req->notes;
         $cl->added_by = session('user_email');
         $cl->save();
+        $payment = $cl;
 
         if ($req->has('nilaccount') && !$req->has('disableFields')) {
             $settlement = new customerledgerdetails();
@@ -148,6 +152,10 @@ public function store(Request $req)
             'notes' => $notes
         ]);
     });
+
+    if ($payment && !$req->has('disableFields')) {
+        (new CustomerSmsNotifier())->paymentCreated($payment);
+    }
 
 
 

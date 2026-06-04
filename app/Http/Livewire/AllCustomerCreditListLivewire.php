@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\customerledgerdetails;
 use App\Models\TrackCustomerLedger;
+use App\Services\CustomerSmsNotifier;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -135,6 +136,10 @@ class AllCustomerCreditListLivewire extends Component
             ? 0
             : max(0, (float) $this->quickPaymentDueAmount - (float) $this->quickPaymentAmount);
         $whatsappPhone = $this->quickPaymentCustomerPhone;
+
+        if ($payment) {
+            (new CustomerSmsNotifier())->paymentCreated($payment);
+        }
 
         if (strlen($whatsappPhone) === 10) {
             $whatsappPhone = '977' . $whatsappPhone;

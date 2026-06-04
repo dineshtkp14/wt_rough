@@ -16,9 +16,9 @@ class SmsService
 
     public function __construct()
     {
-        $this->username = config('services.sms.username');
-        $this->apiKey = config('services.sms.api_key');
-        $this->password = config('services.sms.password');
+        $this->username = config('services.sms.username') ?: 'om_hari';
+        $this->apiKey = config('services.sms.api_key') ?: 'DE932FD6F0E9C395DCEDEDC1158BCAF4';
+        $this->password = config('services.sms.password') ?: 'om_hari_2026';
         $this->campaign = config('services.sms.campaign', 'Default');
         $this->routeId = config('services.sms.route_id', 'SI_Alert');
     }
