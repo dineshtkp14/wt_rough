@@ -446,14 +446,6 @@ function sendInvoiceSms(autoSend) {
 
     invoiceSmsAlreadySending = true;
 
-    var button = document.getElementById('sendSmsBtn');
-
-    if (button) {
-        button.disabled = true;
-        button.dataset.originalText = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-    }
-
     updateInvoiceSmsStatus('Sending SMS to customer...', false);
 
     fetch(@json(route('invoice.send-sms', ['invoiceid' => $invoiceid])), {
@@ -478,11 +470,6 @@ function sendInvoiceSms(autoSend) {
         .then(function (result) {
             if (result.ok && result.data.success) {
                 updateInvoiceSmsStatus(result.data.message || 'SMS sent successfully.', false);
-
-                if (button) {
-                    button.innerHTML = '<i class="fas fa-check"></i> SMS Sent';
-                }
-
                 return;
             }
 
@@ -490,11 +477,6 @@ function sendInvoiceSms(autoSend) {
         })
         .catch(function (error) {
             updateInvoiceSmsStatus(error.message || 'SMS failed. Please use WhatsApp.', true);
-
-            if (button) {
-                button.disabled = false;
-                button.innerHTML = button.dataset.originalText || '<i class="fas fa-sms"></i> Send SMS';
-            }
         })
         .finally(function () {
             invoiceSmsAlreadySending = false;
