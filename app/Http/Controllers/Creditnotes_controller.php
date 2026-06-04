@@ -472,9 +472,11 @@ return redirect('/login');
 
 public function deletebillfromdatabaseforcreditnotes(Request $req)
 {
-    $redirectRoute = $req->input('redirect_to') === 'creditnotes.index'
-        ? 'creditnotes.index'
-        : 'creditnotescustomer.billno';
+    $redirectRoute = match ($req->input('redirect_to')) {
+        'creditnotes.index' => 'creditnotes.index',
+        'modern.dashboard' => 'modern.dashboard',
+        default => 'creditnotescustomer.billno',
+    };
 
     $validator = Validator::make($req->all(), [
         'invoiceid' => 'required',

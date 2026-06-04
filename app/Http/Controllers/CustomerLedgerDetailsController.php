@@ -242,6 +242,10 @@ public function update(Request $req, $id)
 
 public function destroy($id, Request $req)
 {
+    $redirectRoute = $req->input('redirect_to') === 'modern.dashboard'
+        ? 'modern.dashboard'
+        : 'cpayments.index';
+
     // Find the record to be deleted
     $cusiddelete = customerledgerdetails::findOrFail($id);
 
@@ -274,10 +278,10 @@ public function destroy($id, Request $req)
             ]);
         });
 
-        return redirect()->route('cpayments.index')->with('success', 'Customer Payment Receipt Deleted successfully.');
+        return redirect()->route($redirectRoute)->with('success', 'Customer Payment Receipt Deleted successfully.');
     } else {
         // If invoice type is not "payment", return with an error message
-        return redirect()->route('cpayments.index')->with('error', 'Cannot delete this record as invoice type is not "payment".');
+        return redirect()->route($redirectRoute)->with('error', 'Cannot delete this record as invoice type is not "payment".');
     }
 }
 

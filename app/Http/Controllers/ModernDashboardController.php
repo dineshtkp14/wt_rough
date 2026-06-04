@@ -131,6 +131,7 @@ class ModernDashboardController extends Controller
                 'amount'   => (float) $inv->amount,
                 'type'     => ucfirst($inv->type),
                 'date'     => NepaliDate::adToBsString($inv->date, 'en'),
+                'is_today' => $inv->date && date('Y-m-d', strtotime($inv->date)) === $today,
                 'status'   => $isPaid ? 'paid' : 'pending',
             ];
         }
@@ -159,6 +160,7 @@ class ModernDashboardController extends Controller
                 'amount'   => (float) $pay->amount,
                 'mode'     => $mode,
                 'date'     => NepaliDate::adToBsString($pay->date, 'en'),
+                'is_today' => $pay->date && date('Y-m-d', strtotime($pay->date)) === $today,
                 'receipt'  => 'RCP-' . $pay->id,
             ];
         }
@@ -178,6 +180,7 @@ class ModernDashboardController extends Controller
                 'customer' => $note->customer ?? 'N/A',
                 'amount' => (float) $note->amount,
                 'date' => $note->date ? NepaliDate::adToBsString($note->date, 'en') : '-',
+                'is_today' => $note->date && date('Y-m-d', strtotime($note->date)) === $today,
             ];
         }
 
@@ -199,6 +202,7 @@ class ModernDashboardController extends Controller
                 'type' => ucfirst($deleted->type ?? '-'),
                 'date' => $deleted->date ? NepaliDate::adToBsString($deleted->date, 'en') : '-',
                 'deleted_at' => $deleted->created_at ? \Carbon\Carbon::parse($deleted->created_at)->format('Y-m-d H:i') : '-',
+                'is_today' => $deleted->date && date('Y-m-d', strtotime($deleted->date)) === $today,
             ];
         }
 

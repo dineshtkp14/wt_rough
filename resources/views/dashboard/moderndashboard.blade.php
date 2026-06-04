@@ -230,6 +230,31 @@
             background: #f9fafb;
         }
 
+        .table-modern tr.today-row td {
+            background: #dc2626;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .table-modern tr.today-row:hover td {
+            background: #b91c1c;
+        }
+
+        .table-modern tr.today-row a,
+        .table-modern tr.today-row small {
+            color: #ffffff !important;
+        }
+
+        .table-modern tr.today-row .btn-delete-invoice {
+            background: #ffffff;
+            color: #b91c1c;
+        }
+
+        .table-modern tr.today-row .btn-delete-invoice:hover {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
         .delete-invoice-form {
             margin: 0;
         }
@@ -1384,7 +1409,7 @@
                     </thead>
                     <tbody>
                         @foreach ($recentInvoices as $inv)
-                            <tr>
+                            <tr class="{{ !empty($inv['is_today']) ? 'today-row' : '' }}">
                                 <td>
                                     <a href="#" class="invoice-link" onclick="openInvoiceModal({{ $inv['invoice_id'] }}); return false;">
                                         <strong>{{ $inv['id'] }}</strong>
@@ -1439,11 +1464,14 @@
                             <th>Customer</th>
                             <th>Mode</th>
                             <th>Amount</th>
+                            @if ($canDeleteRecentInvoices)
+                                <th>Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($recentPayments as $pay)
-                            <tr>
+                            <tr class="{{ !empty($pay['is_today']) ? 'today-row' : '' }}">
                                 <td>
                                     <a href="#" class="receipt-link" onclick="openPaymentModal({{ $pay['payment_id'] }}); return false;">
                                         <strong>{{ $pay['receipt'] }}</strong>
@@ -1465,6 +1493,20 @@
                                     <span class="badge-mode {{ $modeClass }}">{{ $pay['mode'] }}</span>
                                 </td>
                                 <td>Rs {{ number_format($pay['amount'], 2) }}</td>
+                                @if ($canDeleteRecentInvoices)
+                                    <td>
+                                        <form action="{{ route('cpayments.destroy', $pay['payment_id']) }}" method="POST" class="delete-invoice-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="redirect_to" value="modern.dashboard">
+                                            <button type="submit" class="btn-delete-invoice"
+                                                onclick="return confirm('Delete receipt {{ $pay['receipt'] }}? This cannot be undone.');">
+                                                <i class="fas fa-trash-alt"></i>
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>
@@ -1487,11 +1529,14 @@
                             <th>Customer</th>
                             <th>Amount</th>
                             <th>Type</th>
+                            @if ($canDeleteRecentInvoices)
+                                <th>Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($recentCreditNotes as $note)
-                            <tr>
+                            <tr class="{{ !empty($note['is_today']) ? 'today-row' : '' }}">
                                 <td>
                                     <a href="#" class="invoice-link" onclick="openCreditNoteModal({{ $note['credit_note_id'] }}); return false;">
                                         <strong>{{ $note['id'] }}</strong>
@@ -1501,10 +1546,25 @@
                                 <td>{{ $note['customer'] }}</td>
                                 <td>Rs {{ number_format($note['amount'], 2) }}</td>
                                 <td><span class="badge badge-primary">Credit Note</span></td>
+                                @if ($canDeleteRecentInvoices)
+                                    <td>
+                                        <form action="{{ route('creditnotescustomers.deletebillno') }}" method="POST" class="delete-invoice-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="invoiceid" value="{{ $note['credit_note_id'] }}">
+                                            <input type="hidden" name="redirect_to" value="modern.dashboard">
+                                            <button type="submit" class="btn-delete-invoice"
+                                                onclick="return confirm('Delete credit note {{ $note['id'] }}? This cannot be undone.');">
+                                                <i class="fas fa-trash-alt"></i>
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" style="text-align:center;color:#9ca3af;">No credit notes found</td>
+                                <td colspan="{{ $canDeleteRecentInvoices ? 5 : 4 }}" style="text-align:center;color:#9ca3af;">No credit notes found</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -1529,7 +1589,7 @@
                     </thead>
                     <tbody>
                         @forelse ($recentDeletedInvoices as $deleted)
-                            <tr>
+                            <tr class="{{ !empty($deleted['is_today']) ? 'today-row' : '' }}">
                                 <td>
                                     <a href="#" class="invoice-link" onclick="openDeletedInvoiceModal({{ $deleted['invoice_id'] }}); return false;">
                                         <strong>{{ $deleted['id'] }}</strong>
