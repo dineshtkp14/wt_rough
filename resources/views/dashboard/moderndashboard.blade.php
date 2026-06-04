@@ -230,6 +230,31 @@
             background: #f9fafb;
         }
 
+        .delete-invoice-form {
+            margin: 0;
+        }
+
+        .btn-delete-invoice {
+            border: 0;
+            border-radius: 6px;
+            background: #fee2e2;
+            color: #b91c1c;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.45rem 0.65rem;
+            white-space: nowrap;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+
+        .btn-delete-invoice:hover {
+            background: #ef4444;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
         /* Badges - IMPROVED CONTRAST */
         .badge {
             font-size: 0.75rem;
@@ -1330,6 +1355,9 @@
     </div>
 
     <!-- Tables Row -->
+    @php
+        $canDeleteRecentInvoices = Auth::check() && Auth::user()->email === 'dineshtkp14@gmail.com';
+    @endphp
     <div class="tables-row">
         <div class="card">
             <div class="card-hd" style="flex-wrap: wrap; gap: 10px;">
@@ -1349,6 +1377,9 @@
                             <th>Customer</th>
                             <th>Amount</th>
                             <th>Status</th>
+                            @if ($canDeleteRecentInvoices)
+                                <th>Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -1369,6 +1400,21 @@
                                         {{ ucfirst($inv['status']) }}
                                     </span>
                                 </td>
+                                @if ($canDeleteRecentInvoices)
+                                    <td>
+                                        <form action="{{ route('customer.deletebillno') }}" method="POST" class="delete-invoice-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="invoiceid" value="{{ $inv['invoice_id'] }}">
+                                            <input type="hidden" name="redirect_to" value="modern.dashboard">
+                                            <button type="submit" class="btn-delete-invoice"
+                                                onclick="return confirm('Delete invoice {{ $inv['id'] }}? This cannot be undone.');">
+                                                <i class="fas fa-trash-alt"></i>
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>

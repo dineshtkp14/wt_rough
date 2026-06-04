@@ -324,6 +324,9 @@ class CustomerLedgerHistroy extends Controller
     {
         // Check if the user's email is the admin's email
         $user_email = $req->session()->get('user_email');
+        $redirectRoute = $req->input('redirect_to') === 'modern.dashboard'
+            ? 'modern.dashboard'
+            : 'customer.billno';
     
         if ($user_email === 'dineshtkp14@gmail.com') {
             // Admin can delete without any date restrictions
@@ -343,13 +346,13 @@ class CustomerLedgerHistroy extends Controller
     
             if (!empty($invoiceDate) && !Carbon::parse($invoiceDate)->isToday()) {
                 // If the date doesn't match today's date, return an error message
-                return redirect()->route('customer.billno')->with('error', 'Regular users can only delete on the current date.');
+                return redirect()->route($redirectRoute)->with('error', 'Regular users can only delete on the current date.');
             }
         }
     
         // If validation fails, redirect with an error message
         if ($validator->fails()) {
-            return redirect()->route('customer.billno')->withErrors($validator)->withInput();
+            return redirect()->route($redirectRoute)->withErrors($validator)->withInput();
         }
     
         // Retrieve the items from the bill before deleting
@@ -384,7 +387,7 @@ class CustomerLedgerHistroy extends Controller
             $backupInvoice->save();
         } else {
             // Handle the case when the invoice does not exist
-            return redirect()->route('customer.billno')->with('error', 'Invalid invoiceid provided');
+            return redirect()->route($redirectRoute)->with('error', 'Invalid invoiceid provided');
         }
     
         // Backup customer ledger details
@@ -434,9 +437,9 @@ class CustomerLedgerHistroy extends Controller
                 'notes' => 'Invoice Id: ' . $billno . ' is deleted by ' . $user_email
             ]);
             (new CustomerSmsNotifier())->invoiceDeleted($invoice);
-            return redirect()->route('customer.billno')->with('deletesuccess', 'Deleted Successfully !!');
+            return redirect()->route($redirectRoute)->with('deletesuccess', 'Deleted Successfully !!');
         } else {
-            return redirect()->route('customer.billno')->with('error', 'No records found for the provided invoiceid');
+            return redirect()->route($redirectRoute)->with('error', 'No records found for the provided invoiceid');
         }
     }
     
