@@ -91,6 +91,28 @@
         background: #f9fafb;
     }
 
+    tr.today-row {
+        background: #dc2626;
+        color: #ffffff;
+        font-weight: 700;
+    }
+
+    tr.today-row:hover {
+        background: #b91c1c;
+    }
+
+    tr.today-row td,
+    tr.today-row a {
+        color: #ffffff !important;
+    }
+
+    tr.today-row .status-badge,
+    tr.today-row .mode-badge {
+        background: #ffffff;
+        color: #b91c1c;
+        border: 1px solid rgba(255, 255, 255, 0.65);
+    }
+
     .invoice-link, .receipt-link {
         color: #f97316;
         text-decoration: none;
@@ -268,7 +290,7 @@
                 </thead>
                 <tbody>
                     @forelse($recentInvoices as $inv)
-                    <tr>
+                    <tr class="today-row">
                         <td>
                             <a href="javascript:void(0)" onclick="openInvoiceModal({{ $inv['invoice_id'] }})" class="invoice-link">
                                 {{ $inv['id'] }}
@@ -333,7 +355,7 @@
                             default => 'mode-default',
                         };
                     @endphp
-                    <tr>
+                    <tr class="today-row">
                         <td>
                             <a href="javascript:void(0)" onclick="openPaymentModal({{ $pay['payment_id'] }})" class="receipt-link">
                                 {{ $pay['receipt'] }}

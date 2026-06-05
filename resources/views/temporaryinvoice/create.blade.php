@@ -65,7 +65,7 @@
                     </div>
                 </div>
 
-                <div class="temporary-panel mb-4">
+                <div class="temporary-panel temporary-fixed-panel mb-4">
                     <div class="temporary-panel-header">
                         <div>
                             <span>Step 2</span>
@@ -493,8 +493,15 @@
     </script>
 
     <style>
+        .temporary-invoice-create {
+            box-sizing: border-box;
+            flex: 1 1 auto;
+            width: 100%;
+        }
+
         .temporary-invoice-create .container-fluid {
             max-width: 1680px;
+            width: 100%;
         }
 
         .temporary-create-head {
@@ -527,6 +534,11 @@
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(15, 23, 42, .07);
             overflow: visible;
+            position: relative;
+        }
+
+        .temporary-fixed-panel {
+            z-index: 30;
         }
 
         .temporary-panel-header {
@@ -642,11 +654,14 @@
         .temporary-invoice-table th,
         .temporary-invoice-table td {
             display: table-cell !important;
+            padding: 6px 8px;
             vertical-align: middle;
             white-space: nowrap;
         }
 
         .temporary-invoice-table .form-control {
+            min-height: 38px;
+            padding: 6px 10px;
             width: 100%;
             min-width: 0;
         }
@@ -656,6 +671,15 @@
             min-width: 22px;
             text-align: center;
             font-weight: 900;
+        }
+
+        .temporary-invoice-table .remove-temp-row {
+            align-items: center;
+            display: inline-flex;
+            height: 34px;
+            justify-content: center;
+            padding: 0;
+            width: 34px;
         }
 
         .temporary-amount-words {
@@ -679,7 +703,7 @@
             position: absolute;
             right: 0;
             top: calc(100% + 4px);
-            z-index: 9999;
+            z-index: 10000;
         }
 
         .temporary-fixed-result {
@@ -688,7 +712,8 @@
             border-bottom: 1px solid #e5e7eb;
             display: grid;
             gap: 2px;
-            padding: 8px 10px;
+            min-height: 70px;
+            padding: 10px 14px;
             text-align: left;
             width: 100%;
         }
@@ -700,6 +725,15 @@
         .temporary-fixed-result small,
         .temporary-fixed-result span {
             color: #64748b;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .temporary-fixed-result b {
+            color: #111827;
+            font-size: 18px;
+            line-height: 1.15;
         }
 
         .temporary-fixed-empty {

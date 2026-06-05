@@ -88,6 +88,11 @@
 
   <div class="invoice-info clearfix">
     <div class="firstdiv">
+      @php
+        $invoiceTime = optional($allinvoices->first())->created_at
+          ? \Carbon\Carbon::parse($allinvoices->first()->created_at)->format('H:i:s')
+          : '';
+      @endphp
       @if(isset($forinvoicetype) && !empty($forinvoicetype))
         @if($forinvoicetype->invoicetype == 'credit')
           <p style="background:#000;color:#fff;padding:6px 10px;font-size:16px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
@@ -95,7 +100,7 @@
           <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
         @endif
 
-        <p class="date-line">Date: {{ $forinvoicetype->date }}</p>
+        <p class="date-line">Date: {{ $forinvoicetype->date }} {{ $invoiceTime }}</p>
 
         <p class="label-nep miti-line">
           Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}

@@ -605,8 +605,6 @@
                                         Sales</a></li>
                                 <li><a href="{{ route('allsalesdetails.showdetails') }}"><i
                                             class="fa-solid fa-money-bill-wave"></i>Show Sales</a></li>
-                                <li><a href="{{ route('showonlysalesperday.pp') }}"><i
-                                            class="fa-solid fa-calendar-day"></i>Show Per Day</a></li>
                                 <li><a href="{{ route('temporaryinvoice.index') }}"><i
                                             class="fa-solid fa-file-lines"></i>Temporary Invoice</a></li>
                                 <li><a href="{{ url('/sales-details-per-day') }}"><i
@@ -701,6 +699,17 @@
                         </a>
                     </li>
 
+                    <li class="nav-item">
+                        <a href="{{ route('pricelists.index') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-price-list"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-tags"></i>
+                                <span>Price List</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
                     <li class="nav-item stock">
                         <a href="{{ route('stocks.index') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-stock"
@@ -718,17 +727,6 @@
                                 aria-expanded="false">
                                 <i class="fas fa-building"></i>
                                 <span>Company Ledger</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </button>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="{{ route('showonlysalesperdayinone_table.pp') }}" class="nav-link-single">
-                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-perday"
-                                aria-expanded="false">
-                                <i class="fas fa-calendar-day"></i>
-                                <span>Show Per Day</span>
                                 <i class="fa-solid fa-chevron-down"></i>
                             </button>
                         </a>
