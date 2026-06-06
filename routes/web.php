@@ -472,6 +472,8 @@ Route::get('/sales-details-per-day', [showperday_controller::class, 'salesDetail
     ->name('temporaryinvoice.live-search');
  Route::get('temporaryinvoice-fixed-item-sets', [TemporaryInvoiceController::class, 'fixedItemSets'])
     ->name('temporaryinvoice.fixed-item-sets.index');
+ Route::get('temporaryinvoice-price-list-suggestions', [TemporaryInvoiceController::class, 'priceListSuggestions'])
+    ->name('temporaryinvoice.price-list-suggestions');
  Route::post('temporaryinvoice-fixed-item-sets', [TemporaryInvoiceController::class, 'storeFixedItemSet'])
     ->name('temporaryinvoice.fixed-item-sets.store');
  Route::put('temporaryinvoice-fixed-item-sets/{fixedItemSet}', [TemporaryInvoiceController::class, 'updateFixedItemSet'])

@@ -38,6 +38,14 @@
         return trim($words);
     };
 @endphp
+@php
+    $temporaryInvoiceNepaliDate = \App\Support\NepaliDate::adToBsString($temporaryinvoice->invoice_date, 'en');
+    $temporaryInvoiceTime = optional($temporaryinvoice->created_at)->format('h:i A');
+    $temporaryInvoiceItemDiscount = $temporaryinvoice->items->sum(function ($item) {
+        $gross = (float) $item->quantity * (float) $item->price;
+        return max(0, $gross - (float) $item->subtotal);
+    });
+@endphp
 <html lang="en">
 
 <head>
@@ -110,6 +118,12 @@
         .total-row {
             font-size: 14px;
             font-weight: bold;
+        }
+
+        .total-row th,
+        .total-row td {
+            background: #111827;
+            color: #ffffff;
         }
 
         .notes {
@@ -192,6 +206,8 @@
             </div>
             <div class="text-end">
                 <div><b>Date:</b> {{ $temporaryinvoice->invoice_date }}</div>
+                <div><b>Time:</b> {{ $temporaryInvoiceTime }}</div>
+                <div><b>Nepali Date:</b> {{ $temporaryInvoiceNepaliDate }}</div>
                 <div class="muted">Created by: {{ $temporaryinvoice->added_by }}</div>
             </div>
         </div>
@@ -209,8 +225,10 @@
                     <th>Item</th>
                     <th style="width: 15%;">Quantity</th>
                     <th style="width: 12%;">Unit</th>
-                    <th style="width: 16%;">Rate</th>
-                    <th style="width: 17%;">Amount</th>
+                    <th style="width: 14%;">Rate</th>
+                    <th style="width: 10%;">Disc %</th>
+                    <th style="width: 13%;">Disc Amt</th>
+                    <th style="width: 15%;">Amount</th>
                 </tr>
             </thead>
             <tbody>
@@ -221,21 +239,32 @@
                         <td>{{ $item->quantity }}</td>
                         <td>{{ $item->unit }}</td>
                         <td class="text-end">{{ number_format($item->price, 2) }}</td>
+                        @php
+                            $gross = (float) $item->quantity * (float) $item->price;
+                            $discountAmount = max(0, $gross - (float) $item->subtotal);
+                            $discountPercent = $gross > 0 ? max(0, ($discountAmount / $gross) * 100) : 0;
+                        @endphp
+                        <td class="text-end">{{ number_format($discountPercent, 2) }}%</td>
+                        <td class="text-end">{{ number_format($discountAmount, 2) }}</td>
                         <td class="text-end">{{ number_format($item->subtotal, 2) }}</td>
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="5" class="text-end">Subtotal</th>
+                    <th colspan="7" class="text-end">Total Discount</th>
+                    <th class="text-end">{{ number_format($temporaryInvoiceItemDiscount, 2) }}</th>
+                </tr>
+                <tr>
+                    <th colspan="7" class="text-end">Subtotal</th>
                     <th class="text-end">{{ number_format($temporaryinvoice->subtotal, 2) }}</th>
                 </tr>
                 <tr>
-                    <th colspan="5" class="text-end">Discount</th>
+                    <th colspan="7" class="text-end">Discount</th>
                     <th class="text-end">{{ number_format($temporaryinvoice->discount, 2) }}</th>
                 </tr>
                 <tr class="total-row">
-                    <th colspan="5" class="text-end">Total</th>
+                    <th colspan="7" class="text-end">Total</th>
                     <th class="text-end">{{ number_format($temporaryinvoice->total, 2) }}</th>
                 </tr>
             </tfoot>

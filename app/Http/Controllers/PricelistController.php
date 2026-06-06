@@ -46,30 +46,28 @@ class PricelistController extends Controller
     if(Auth::check()){
     $validator=Validator::make($req->all(),[
 
-        'itemname'=>'required',
-        'costprice'=>'required|numeric', 
-        'saleprice'=>'required|numeric', 
-        'wholesaleprice'=>'numeric', 
-       
-       
-           
+        'items' => 'required|array|min:1|max:12',
+        'items.*.itemname' => 'required|string|max:255',
+        'items.*.costprice' => 'required|numeric',
+        'items.*.saleprice' => 'required|numeric',
+        'items.*.wholesaleprice' => 'nullable|numeric',
+        'items.*.note' => 'nullable|string',
     ]);
 
     if($validator->passes()){
 
-        $pricelistobj=new pricelist();
-        $pricelistobj->itemname=$req->itemname;
-        $pricelistobj->costprice=$req->costprice;
-        $pricelistobj->saleprice=$req->saleprice;
-        $pricelistobj->wholesaleprice=$req->wholesaleprice;
-        $pricelistobj->note=$req->note;  
-        $pricelistobj->added_by = session('user_email');
-     
-        $pricelistobj->save();
+        foreach ($req->items as $item) {
+            $pricelistobj=new pricelist();
+            $pricelistobj->itemname=$item['itemname'];
+            $pricelistobj->costprice=$item['costprice'];
+            $pricelistobj->saleprice=$item['saleprice'];
+            $pricelistobj->wholesaleprice=$item['wholesaleprice'] ?? 0;
+            $pricelistobj->note=$item['note'] ?? null;
+            $pricelistobj->added_by = session('user_email');
+            $pricelistobj->save();
+        }
 
-      
-
-        return redirect()->route('pricelists.index')->with('success','Items Price Added Sucessfully !!');  
+        return redirect()->route('pricelists.index')->with('success', count($req->items).' Items Price Added Sucessfully !!');
     }
     else{
         return redirect()->route('pricelists.create')->withErrors($validator)->withInput();

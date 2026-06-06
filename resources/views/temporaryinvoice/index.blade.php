@@ -175,6 +175,8 @@
                         '<td>' + escapeHtml(item.item_name) + '</td>' +
                         '<td>' + escapeHtml(item.quantity) + '</td>' +
                         '<td>' + money(item.price) + '</td>' +
+                        '<td>' + money(item.discount_percent || 0) + '%</td>' +
+                        '<td>' + money(item.discount_amount || 0) + '</td>' +
                         '<td>' + money(item.subtotal) + '</td>' +
                     '</tr>';
                 }).join('');
@@ -191,11 +193,11 @@
                     '<p><b>Date:</b> ' + escapeHtml(data.invoice_date) + '</p>' +
                     '</div></div>' +
                     '<div class="table-responsive"><table class="temporary-invoice-popup-table">' +
-                    '<colgroup><col style="width: 6%;"><col style="width: 46%;"><col style="width: 12%;"><col style="width: 18%;"><col style="width: 18%;"></colgroup>' +
-                    '<thead><tr><th>#</th><th>ITEM</th><th>QTY</th><th>PRICE</th><th>AMOUNT</th></tr></thead>' +
+                    '<colgroup><col style="width: 6%;"><col style="width: 32%;"><col style="width: 10%;"><col style="width: 13%;"><col style="width: 11%;"><col style="width: 13%;"><col style="width: 15%;"></colgroup>' +
+                    '<thead><tr><th>#</th><th>ITEM</th><th>QTY</th><th>PRICE</th><th>DISC %</th><th>DISC AMT</th><th>AMOUNT</th></tr></thead>' +
                     '<tbody>' + rows + '</tbody>' +
                     '<tfoot>' +
-                    '<tr><td colspan="3"></td><th>Total:</th><th>Rs ' + money(data.total) + '</th></tr>' +
+                    '<tr><td colspan="5"></td><th>Total:</th><th>Rs ' + money(data.total) + '</th></tr>' +
                     '</tfoot></table></div>' +
                     '<div class="temporary-invoice-popup-words"><b>Amount in words:</b> ' + escapeHtml(amountWords(data.total)) + '</div>' +
                     (data.notes ? '<div class="temporary-invoice-popup-notes"><b>Notes:</b> ' + escapeHtml(data.notes) + '</div>' : '');

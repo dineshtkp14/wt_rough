@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TemporaryInvoice;
 use App\Models\TemporaryInvoiceFixedItemSet;
+use App\Models\pricelist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -114,6 +115,36 @@ class TemporaryInvoiceController extends Controller
 
         return response()->json($sets->map(function ($set) {
             return $this->fixedItemSetPayload($set);
+        })->values());
+    }
+
+    public function priceListSuggestions(Request $request)
+    {
+        if (!Auth::check()) {
+            return response()->json([], 401);
+        }
+
+        $search = trim((string) $request->query('q', ''));
+
+        $items = pricelist::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('itemname', 'like', '%' . $search . '%')
+                        ->orWhere('id', 'like', '%' . $search . '%');
+                });
+            })
+            ->orderBy('itemname')
+            ->limit(20)
+            ->get(['id', 'itemname', 'saleprice', 'wholesaleprice', 'note']);
+
+        return response()->json($items->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'item_name' => $item->itemname,
+                'sale_price' => (float) $item->saleprice,
+                'wholesale_price' => (float) $item->wholesaleprice,
+                'note' => $item->note,
+            ];
         })->values());
     }
 
@@ -255,11 +286,14 @@ class TemporaryInvoiceController extends Controller
             'items.*.quantity' => 'required|numeric|min:0',
             'items.*.unit' => 'nullable|string|max:50',
             'items.*.price' => 'required|numeric|min:0',
+            'items.*.discount_percent' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $temporaryInvoice = DB::transaction(function () use ($validated) {
             $subtotal = collect($validated['items'])->sum(function ($item) {
-                return (float) $item['quantity'] * (float) $item['price'];
+                $rowTotal = (float) $item['quantity'] * (float) $item['price'];
+                $discountPercent = (float) ($item['discount_percent'] ?? 0);
+                return max(0, $rowTotal - ($rowTotal * $discountPercent / 100));
             });
             $discount = (float) ($validated['discount'] ?? 0);
             $total = max(0, $subtotal - $discount);
@@ -287,7 +321,7 @@ class TemporaryInvoiceController extends Controller
                     'quantity' => $item['quantity'],
                     'unit' => $item['unit'] ?? null,
                     'price' => $item['price'],
-                    'subtotal' => (float) $item['quantity'] * (float) $item['price'],
+                    'subtotal' => max(0, ((float) $item['quantity'] * (float) $item['price']) * (1 - ((float) ($item['discount_percent'] ?? 0) / 100))),
                 ]);
             }
 
@@ -326,11 +360,19 @@ class TemporaryInvoiceController extends Controller
                 'notes' => $temporaryinvoice->notes,
                 'print_url' => route('temporaryinvoice.print', $temporaryinvoice),
                 'items' => $temporaryinvoice->items->map(function ($item) {
+                    $gross = (float) $item->quantity * (float) $item->price;
+                    $discountAmount = max(0, $gross - (float) $item->subtotal);
+                    $discountPercent = $gross > 0
+                        ? max(0, ($discountAmount / $gross) * 100)
+                        : 0;
+
                     return [
                         'item_name' => $item->item_name,
                         'quantity' => $item->quantity,
                         'unit' => $item->unit,
                         'price' => (float) $item->price,
+                        'discount_percent' => $discountPercent,
+                        'discount_amount' => $discountAmount,
                         'subtotal' => (float) $item->subtotal,
                     ];
                 })->values(),
