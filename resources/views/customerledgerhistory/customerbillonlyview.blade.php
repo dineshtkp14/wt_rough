@@ -174,6 +174,19 @@
 
       @endif
 
+        @if (!empty($paymentCustomer))
+            <a href="{{ route('cpayments.create', [
+                    'customerid' => $paymentCustomer->id,
+                    'amount' => $totalDueAmount ?? 0,
+                    'totaldueamountfornotclear' => $totalDueAmount ?? 0,
+                    'cname' => trim(($paymentCustomer->name ?? '') . ' | ' . ($paymentCustomer->address ?? '') . ' | ' . ($paymentCustomer->phoneno ?? '')),
+                ]) }}"
+                class="customer-ledger-payment-btn me-4">
+                <i class="fa-solid fa-money-bill-wave"></i>
+                Customer Ledger Payment
+            </a>
+        @endif
+
         <a href="{{ route('invoicebillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
             <div class="icon-box d-flex justify-content-center align-items-center" style="font-size: 34px;">
                 <i class="fa-solid fa-print"></i>
@@ -410,6 +423,26 @@
             min-height: 42px;
             padding: 0 14px;
             text-decoration: none !important;
+        }
+
+        .customer-ledger-payment-btn {
+            align-items: center;
+            background: #dc3545 !important;
+            border: 5px solid #ffc107 !important;
+            border-radius: 6px;
+            color: #ffffff !important;
+            display: inline-flex;
+            font-size: 24px;
+            font-weight: 500;
+            gap: 8px;
+            padding: 8px 14px;
+            text-decoration: none !important;
+            white-space: nowrap;
+        }
+
+        .customer-ledger-payment-btn:hover {
+            background: #c82333 !important;
+            color: #ffffff !important;
         }
 
         @media (max-width: 700px) {

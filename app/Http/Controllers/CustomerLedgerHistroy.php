@@ -1499,6 +1499,8 @@ public function oldpricecheck(Request $req)
         
             $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
             $customerinfodetails = null;
+            $paymentCustomer = null;
+            $totalDueAmount = 0;
 
             $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
             $forinvoicetype = $cusleddetaiforinvoicetype->first();           
@@ -1519,6 +1521,9 @@ public function oldpricecheck(Request $req)
             foreach ($allInvoices as $data) {
                 if ($data->customerid) {
                     $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
+                    $paymentCustomer = $customerinfodetails->first();
+                    $totalDueAmount = customerledgerdetails::where('customerid', $data->customerid)
+                        ->sum(DB::raw('COALESCE(debit, 0) - COALESCE(credit, 0)'));
                 }
             }
         
@@ -1528,6 +1533,8 @@ public function oldpricecheck(Request $req)
                 'itemsname' => $itemsname,
                 'invoiceid' => $invoiceid,
                 'cinfodetails' => $customerinfodetails,
+                'paymentCustomer' => $paymentCustomer,
+                'totalDueAmount' => $totalDueAmount,
                 'forinvoicetype'=>$forinvoicetype,
                 'breadcrumb' => $breadcrumb
             ]);
