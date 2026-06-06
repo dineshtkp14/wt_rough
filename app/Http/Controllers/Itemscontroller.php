@@ -53,87 +53,84 @@ class Itemscontroller extends Controller
          $validator = Validator::make($req->all(), [
              'date' => 'required',
              'companyid' => 'required',
-             'itemsname' => 'required',
-             'costprice' => 'required',
-             'quantity' => 'required',
-             'mrp' => 'required',
-             'showwarning' => 'required',
-             'unit' => 'required',
-             'itemstorearea' => 'required',
-
-
+             'firm_name' => 'required',
+             'items' => 'required|array|min:1|max:12',
+             'items.*.itemsname' => 'required',
+             'items.*.costprice' => 'required|numeric|min:0',
+             'items.*.quantity' => 'required|numeric|min:0',
+             'items.*.mrp' => 'required|numeric|min:0',
+             'items.*.showwarning' => 'required|numeric|min:0',
+             'items.*.unit' => 'required',
+             'items.*.itemstorearea' => 'required',
+             'items.*.wp' => 'nullable|numeric|min:0',
+             'items.*.competetiveretail' => 'nullable|numeric|min:0',
+             'items.*.competetivewholesale' => 'nullable|numeric|min:0',
          ]);
  
          if ($validator->passes()) {
              $company = company::find($req->companyid);
  
              if ($company) {
-               
- 
-                 $itemsdetails = new item();
-                 $itemsdetails->billno = $req->billno;
+                $createdCount = 0;
 
-                $itemsdetails->companyid = $req->companyid; // Update with the company name
+                DB::transaction(function () use ($req, &$createdCount) {
+                    foreach (array_slice($req->items, 0, 12) as $row) {
+                        if (empty($row['itemsname'])) {
+                            continue;
+                        }
 
-                $itemsdetails->date = $req->date;
-                $itemsdetails->itemsname = $req->itemsname;
-                $itemsdetails->quantity = $req->quantity;
-                $itemsdetails->unit = $req->unit;
+                        $itemsdetails = new item();
+                        $itemsdetails->billno = $req->billno;
+                        $itemsdetails->companyid = $req->companyid;
+                        $itemsdetails->date = $req->date;
+                        $itemsdetails->itemsname = $row['itemsname'];
+                        $itemsdetails->quantity = $row['quantity'];
+                        $itemsdetails->unit = $row['unit'];
+                        $itemsdetails->costprice = $row['costprice'];
+                        $itemsdetails->mrp = $row['mrp'];
+                        $itemsdetails->notes = $req->notes;
+                        $itemsdetails->firm_name = $req->firm_name;
+                        $itemsdetails->com_Retail_price = $row['competetiveretail'] ?? null;
+                        $itemsdetails->com_wholesale_price = $row['competetivewholesale'] ?? null;
+                        $itemsdetails->wholesale_price = $row['wp'] ?? null;
+                        $itemsdetails->showwarning = $row['showwarning'];
+                        $itemsdetails->total = $row['quantity'] * $row['costprice'];
+                        $itemsdetails->opening_stock = $row['quantity'];
+                        $itemsdetails->item_store_area = $row['itemstorearea'];
+                        $itemsdetails->added_by = session('user_email');
+                        $itemsdetails->save();
 
-                $itemsdetails->costprice = $req->costprice;
-                $itemsdetails->mrp = $req->mrp;
-                $itemsdetails->notes = $req->notes;
-                $itemsdetails->firm_name = $req->firm_name;
+                        $additional_info = 'billno: ' . $itemsdetails->billno . ', ' .
+                            'companyid: ' . $itemsdetails->companyid . ', ' .
+                            'date: ' . $itemsdetails->date . ', ' .
+                            'itemsname: ' . $itemsdetails->itemsname . ', ' .
+                            'quantity: ' . $itemsdetails->quantity . ', ' .
+                            'unit: ' . $itemsdetails->unit . ', ' .
+                            'costprice: ' . $itemsdetails->costprice . ', ' .
+                            'mrp: ' . $itemsdetails->mrp . ', ' .
+                            'notes: ' . $itemsdetails->notes . ', ' .
+                            'firm_name: ' . $itemsdetails->firm_name . ', ' .
+                            'com_Retail_price: ' . $itemsdetails->com_Retail_price . ', ' .
+                            'com_wholesale_price: ' . $itemsdetails->com_wholesale_price . ', ' .
+                            'wholesale_price: ' . $itemsdetails->wholesale_price . ', ' .
+                            'showwarning: ' . $itemsdetails->showwarning . ', ' .
+                            'total: ' . $itemsdetails->total . ', ' .
+                            'opening_stock: ' . $itemsdetails->opening_stock . ', ' .
+                            'item_store_area: ' . $itemsdetails->item_store_area . ', ' .
+                            'added_by: ' . $itemsdetails->added_by;
 
+                        Trackitemstable::create([
+                            'title' => "data inserted",
+                            'updated_by' => session('user_email'),
+                            'notes' => $additional_info,
+                        ]);
 
-                $itemsdetails->com_Retail_price = $req->competetiveretail;
-                $itemsdetails->com_wholesale_price = $req->competetivewholesale;
-                $itemsdetails->wholesale_price = $req->wp;
-                $itemsdetails->showwarning = $req->showwarning;
+                        session()->put('lastInsertedId', $itemsdetails->id);
+                        $createdCount++;
+                    }
+                });
 
-                $itemsdetails->total = $req->quantity * $req->costprice;
-                $itemsdetails->opening_stock = $req->quantity;
-                $itemsdetails->item_store_area = $req->itemstorearea;
-
-                $itemsdetails->added_by = session('user_email');
-                $itemsdetails->save();
-
-//insertintotracktable
-// Concatenate all the attributes of $itemsdetails
-$additional_info = 'billno: ' . $itemsdetails->billno . ', ' .
-                   'companyid: ' . $itemsdetails->companyid . ', ' .
-                   'date: ' . $itemsdetails->date . ', ' .
-                   'itemsname: ' . $itemsdetails->itemsname . ', ' .
-                   'quantity: ' . $itemsdetails->quantity . ', ' .
-                   'unit: ' . $itemsdetails->unit . ', ' .
-                   'costprice: ' . $itemsdetails->costprice . ', ' .
-                   'mrp: ' . $itemsdetails->mrp . ', ' .
-                   'notes: ' . $itemsdetails->notes . ', ' .
-                   'firm_name: ' . $itemsdetails->firm_name . ', ' .
-                   'com_Retail_price: ' . $itemsdetails->com_Retail_price . ', ' .
-                   'com_wholesale_price: ' . $itemsdetails->com_wholesale_price . ', ' .
-                   'wholesale_price: ' . $itemsdetails->wholesale_price . ', ' .
-                   'showwarning: ' . $itemsdetails->showwarning . ', ' .
-                   'total: ' . $itemsdetails->total . ', ' .
-                   'opening_stock: ' . $itemsdetails->opening_stock . ', ' .
-                   'opening_stock: ' . $itemsdetails->item_store_area . ', ' .
-                   'added_by: ' . $itemsdetails->added_by;
-
-
-                // Insert into track table
-                   Trackitemstable::create([
-
-
-    'title' => "data inserted",
-    'updated_by' => session('user_email'),
-    'notes' => $additional_info,
-   
-
-]);
-session()->put('lastInsertedId', $itemsdetails->id);
-
- 
-                 return redirect()->route('items.index')->with('success', 'Items Added Successfully !!');
+                 return redirect()->route('items.index')->with('success', $createdCount . ' Items Added Successfully !!');
              } else {
                  // Handle the case where the company is not found
                  return redirect()->route('items.create')->withErrors(['companyid' => 'Invalid Company'])->withInput();
