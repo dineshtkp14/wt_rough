@@ -605,7 +605,7 @@
                                         Sales</a></li>
                                 <li><a href="{{ route('allsalesdetails.showdetails') }}"><i
                                             class="fa-solid fa-money-bill-wave"></i>Show Sales</a></li>
-                                <li><a href="{{ route('temporaryinvoice.index') }}"><i
+                                <li><a href="{{ route('temporaryinvoice.create') }}"><i
                                             class="fa-solid fa-file-lines"></i>Temporary Invoice</a></li>
                                 <li><a href="{{ url('/sales-details-per-day') }}"><i
                                             class="fa-solid fa-table-list"></i>Sales Details Per Day</a></li>
@@ -733,7 +733,7 @@
                     </li>
 
                     <li class="nav-item invoice">
-                        <a href="{{ route('temporaryinvoice.index') }}" class="nav-link-single">
+                        <a href="{{ route('temporaryinvoice.create') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-temporary-invoice"
                                 aria-expanded="false">
                                 <i class="fa-solid fa-file-lines"></i>
