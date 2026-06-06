@@ -220,7 +220,7 @@
             var selectedFixedSetId = null;
             var fixedSetUrl = "{{ route('temporaryinvoice.fixed-item-sets.index') }}";
             var fixedSetStoreUrl = "{{ route('temporaryinvoice.fixed-item-sets.store') }}";
-            var priceListUrl = "{{ route('temporaryinvoice.price-list-suggestions') }}";
+            var priceListUrl = "{{ url('temporaryinvoice-price-list-suggestions') }}";
             var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             function money(value) {
