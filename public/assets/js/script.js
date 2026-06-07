@@ -272,23 +272,49 @@ function inputHTML(counter) {
             </tr>`;
 }
 
-function appendInputRow() {
+function appendInputRow(rowData = null) {
     if (salesData.length >= 13) {
         return false;
     }
 
     counter++;
     $("#invoiceTableBody").append(inputHTML(counter));
-    salesData.push({
+    const row = {
         id: counter,
-        product: "",
-        unstocked: "",
-        quantity: "",
-        unit: "",
-        price: "",
+        product: rowData && rowData.product ? `${rowData.product}` : "",
+        unstocked: rowData && rowData.unstocked ? `${rowData.unstocked}` : "",
+        quantity: rowData && rowData.quantity ? `${rowData.quantity}` : "",
+        unit: rowData && rowData.unit ? `${rowData.unit}` : "",
+        price: rowData && rowData.price ? `${rowData.price}` : "",
         discount: "",
-        subtotal: "",
-    });
+        subtotal: rowData && rowData.subtotal ? `${rowData.subtotal}` : "",
+    };
+
+    salesData.push(row);
+
+    if (rowData) {
+        const rowEl = $(`#inputRow${counter}`);
+        rowEl.find("#quantityInput").val(row.quantity);
+        rowEl.find("#priceInput").val(row.price);
+        rowEl.find("#subTotalInput").val(row.subtotal);
+        rowEl.find("#unitInput").val(row.unit || "choose");
+
+        if (row.product) {
+            rowEl.find("#selectProductLink").data("query", rowData.item_name || "");
+            rowEl.find("#selectProductLink h6").text(rowData.item_name || "");
+            rowEl.find("#selectProductLink p").text("");
+            rowEl.find("#unstockedInput").attr("disabled", "true");
+            rowEl.find("#unitInput").attr("disabled", "true");
+
+            if (rowData.max_quantity) {
+                rowEl.find("#quantityInput").attr("placeholder", `(Max: ${rowData.max_quantity})`);
+                rowEl.find("#quantityInput").attr("data-max", rowData.max_quantity);
+            }
+        } else {
+            rowEl.find("#unstockedInput").val(row.unstocked);
+        }
+    }
+
     triggerRemoveEvent();
     handleInputChange();
     handleOldPriceSearch();
@@ -761,7 +787,41 @@ $(".sales-input-final").on("input", function () {
 $(window).on("load", function () {
     const currentUrl = window.location.href;
 
-    appendInputRow();
+    if (window.INVOICE_EDIT_DATA) {
+        finalData[0] = {
+            customer: `${window.INVOICE_EDIT_DATA.customer || ""}`,
+            subtotal: `${window.INVOICE_EDIT_DATA.subtotal || 0}`,
+            discount: `${window.INVOICE_EDIT_DATA.discount || 0}`,
+            total: `${window.INVOICE_EDIT_DATA.total || 0}`,
+            note: window.INVOICE_EDIT_DATA.note || "",
+        };
+
+        $("#searchCustomerInput").val(window.INVOICE_EDIT_DATA.customer_name || "");
+        $("#customerIdInput").val(window.INVOICE_EDIT_DATA.customer || "");
+        $("#selectedCustomerAddress").text(window.INVOICE_EDIT_DATA.customer_address || "-");
+        $("#selectedCustomerPhone").text(window.INVOICE_EDIT_DATA.customer_phone || "-");
+        $("#selectedCustomerInline").show();
+        $("#invoice_type").val(window.INVOICE_EDIT_DATA.invoice_type || "");
+        if (typeof changeBackgroundColor === "function") {
+            changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
+        }
+        $("#salesDate").val(window.INVOICE_EDIT_DATA.date || "");
+        $("#noteInput").val(window.INVOICE_EDIT_DATA.note || "");
+        $("#discountInputFinal").val(finalData[0]["discount"]);
+
+        $.each(window.INVOICE_EDIT_DATA.rows || [], function (index, row) {
+            appendInputRow(row);
+        });
+
+        if (salesData.length === 0) {
+            appendInputRow();
+        }
+
+        getFinalCalculations();
+    } else {
+        appendInputRow();
+    }
+
     $("#addRowBtn").on("click", function (e) {
         e.preventDefault();
         appendInputRow();
@@ -834,7 +894,8 @@ $(window).on("load", function () {
 
                 if (
                     currentUrl.indexOf("creditnotes/create") !== -1 ||
-                    currentUrl.indexOf("itemsales/create") !== -1
+                    currentUrl.indexOf("itemsales/create") !== -1 ||
+                    currentUrl.indexOf("/invoice/") !== -1
                 ) {
                     $("#verifyBtn").hide();
                     $("#submitBtn").text("Save").show();
@@ -847,7 +908,8 @@ $(window).on("load", function () {
             $("#submitBtn").attr("disabled", "disabled");
             if (
                 currentUrl.indexOf("creditnotes/create") !== -1 ||
-                currentUrl.indexOf("itemsales/create") !== -1
+                currentUrl.indexOf("itemsales/create") !== -1 ||
+                currentUrl.indexOf("/invoice/") !== -1
             ) {
                 $("#submitBtn").hide();
                 $("#verifyBtn").show();

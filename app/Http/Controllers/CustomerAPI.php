@@ -8,6 +8,67 @@ use Illuminate\Support\Facades\DB;
 
 class CustomerAPI extends Controller
 {
+    private function normalizeSearchText($value): string
+    {
+        return strtolower(preg_replace('/[^a-z0-9]+/i', '', (string) $value));
+    }
+
+    private function fuzzyTermMatches($term, $text): bool
+    {
+        $term = $this->normalizeSearchText($term);
+        $tokens = collect(preg_split('/\s+/', (string) $text))
+            ->map(fn ($token) => $this->normalizeSearchText($token))
+            ->filter();
+
+        if ($term === '' || $tokens->isEmpty()) {
+            return false;
+        }
+
+        foreach ($tokens as $token) {
+            if ($token === '' || str_contains($token, $term) || str_contains($term, $token)) {
+                return true;
+            }
+
+            $distance = levenshtein($term, $token);
+            $allowedDistance = strlen($term) <= 5 ? 2 : 3;
+
+            if ($distance <= $allowedDistance) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function fuzzyCustomerScore($customer, $terms): int
+    {
+        $haystack = trim(($customer->name ?? '') . ' ' . ($customer->address ?? ''));
+        $score = 0;
+
+        foreach ($terms as $term) {
+            $term = $this->normalizeSearchText($term);
+            $bestDistance = 99;
+
+            foreach (preg_split('/\s+/', $haystack) as $token) {
+                $token = $this->normalizeSearchText($token);
+                if ($token === '') {
+                    continue;
+                }
+
+                if (str_contains($token, $term) || str_contains($term, $token)) {
+                    $bestDistance = 0;
+                    break;
+                }
+
+                $bestDistance = min($bestDistance, levenshtein($term, $token));
+            }
+
+            $score += $bestDistance;
+        }
+
+        return $score;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -68,6 +129,33 @@ class CustomerAPI extends Controller
             ->orderBy('name')
             ->limit(20)
             ->get();
+
+        if ($cus->isEmpty() && $terms->isNotEmpty() && !$terms->contains(fn ($term) => preg_match('/\d/', $term))) {
+            $firstTerm = $this->normalizeSearchText($terms->first());
+            $firstLetter = substr($firstTerm, 0, 1);
+
+            $fallbackCustomers = customerinfo::query()
+                ->where(function ($query) use ($firstLetter) {
+                    $query->where('name', 'LIKE', $firstLetter.'%')
+                        ->orWhere('name', 'LIKE', '% '.$firstLetter.'%')
+                        ->orWhere('address', 'LIKE', $firstLetter.'%')
+                        ->orWhere('address', 'LIKE', '% '.$firstLetter.'%');
+                })
+                ->limit(250)
+                ->get();
+
+            $cus = $fallbackCustomers
+                ->filter(function ($customer) use ($terms) {
+                    return $terms->every(function ($term) use ($customer) {
+                        return $this->fuzzyTermMatches($term, ($customer->name ?? '') . ' ' . ($customer->address ?? ''));
+                    });
+                })
+                ->sortBy(function ($customer) use ($terms) {
+                    return $this->fuzzyCustomerScore($customer, $terms);
+                })
+                ->take(20)
+                ->values();
+        }
 
         $customerIds = $cus->pluck('id');
 

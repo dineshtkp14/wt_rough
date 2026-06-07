@@ -199,6 +199,140 @@ h5 {
     margin-left: 14px;
 }
 
+@media (max-width: 768px) {
+    .invoice-create-page {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .invoice-top-controls {
+        align-items: stretch !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .invoice-control,
+    .customer-control,
+    .type-control,
+    .date-control {
+        width: 100% !important;
+    }
+
+    .invoice-control small {
+        display: block;
+        padding: 6px 0 0 !important;
+    }
+
+    .selected-customer-inline {
+        flex-direction: column;
+        gap: 2px;
+        padding-left: 0;
+    }
+
+    .selected-customer-separator {
+        margin-left: 0;
+        margin-top: 4px;
+    }
+
+    .invoice-table-shell {
+        background: #ffffff;
+        border: 1px solid #d5deea;
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .invoice-table-shell::after {
+        color: #64748b;
+        content: "Swipe table left/right";
+        display: block;
+        font-size: 12px;
+        font-weight: 800;
+        padding: 8px 12px;
+        text-align: center;
+    }
+
+    .invoicetable {
+        min-width: 920px;
+    }
+
+    .invoicetable th {
+        background: #3348d4;
+        color: #ffffff;
+        font-size: 14px;
+    }
+
+    .invoicetable th,
+    .invoicetable td {
+        padding: 8px;
+        vertical-align: middle;
+    }
+
+    .invoicetable .form-control,
+    .invoicetable .form-select {
+        font-size: 16px;
+        min-height: 42px;
+    }
+
+    .invoice-bottom-grid {
+        margin-top: 18px !important;
+    }
+
+    .invoice-notes-panel,
+    .invoice-total-panel {
+        width: 100%;
+    }
+
+    .invoice-total-box {
+        background: #ffffff;
+        border: 1px solid #d5deea;
+        border-radius: 8px;
+        box-shadow: 0 8px 22px rgba(15, 23, 42, .08);
+        margin-top: 14px;
+        padding: 14px;
+    }
+
+    .invoice-action-btn {
+        min-height: 48px;
+        min-width: 0 !important;
+        width: 100%;
+    }
+
+    .modal-box {
+        width: min(94vw, 560px);
+    }
+
+    .modal-result-wrapper,
+    .result-wrapper {
+        max-width: calc(100vw - 28px);
+    }
+}
+
+@media (max-width: 480px) {
+    .invoicetable {
+        min-width: 860px;
+    }
+
+    .invoice-total-box .input-group {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .invoice-total-box .input-group-text,
+    .invoice-total-box .form-control {
+        border-radius: 6px !important;
+        width: 100%;
+    }
+
+    .old-price-result-box {
+        left: 12px !important;
+        min-width: 0 !important;
+        width: calc(100vw - 24px) !important;
+    }
+}
+
 #spinnerIcon {
     animation: spinner 3s infinite linear;
 }

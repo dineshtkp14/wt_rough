@@ -299,7 +299,7 @@
                         <td>{{ $inv['customer'] }}</td>
                         <td>Rs {{ number_format($inv['amount'], 2) }}</td>
                         <td>{{ $inv['type'] }}</td>
-                        <td>{{ $inv['date'] }}</td>
+                        <td>{{ $inv['date'] }}<br><small>{{ $inv['time'] }}</small></td>
                         <td>
                             <span class="status-badge status-{{ $inv['status'] }}">
                                 {{ ucfirst($inv['status']) }}
@@ -368,7 +368,7 @@
                                 {{ $pay['mode'] }}
                             </span>
                         </td>
-                        <td>{{ $pay['date'] }}</td>
+                        <td>{{ $pay['date'] }}<br><small>{{ $pay['time'] }}</small></td>
                     </tr>
                     @empty
                     <tr>

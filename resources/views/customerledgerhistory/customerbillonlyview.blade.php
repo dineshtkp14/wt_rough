@@ -187,7 +187,17 @@
             </a>
         @endif
 
-        @if (!empty($invoiceid))
+        @php
+            $invoiceForEdit = ($allinvoices ?? collect())->first();
+            $canEditInvoice = auth()->check()
+                && $invoiceForEdit
+                && (
+                    auth()->user()->email === 'dineshtkp14@gmail.com'
+                    || ($invoiceForEdit->created_at && \Carbon\Carbon::parse($invoiceForEdit->created_at)->gte(now()->subMinute()))
+                );
+        @endphp
+
+        @if (!empty($invoiceid) && $canEditInvoice)
             <a href="{{ route('invoice.edit', $invoiceid) }}"
                 class="btn btn-warning btn-lg me-4"
                 style="font-weight: 800; color: #111827;">
