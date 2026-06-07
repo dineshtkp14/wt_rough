@@ -60,7 +60,7 @@
                 @csrf
                 <div class="invoice-top-controls pt-0 pb-4 d-flex justify-content-between align-items-start flex-wrap gap-3" style="margin-top: 2px;">
                     
-                    <div class="invoice-control customer-control" style="width: min(720px, 100%)">
+                    <div class="invoice-control customer-control" style="width: min(620px, 100%)">
                         <div class="search-box">
                             <input type="text" class="search-input" placeholder="Search Customer"
                                 id="searchCustomerInput" data-api="customer_search" autocomplete="off">
