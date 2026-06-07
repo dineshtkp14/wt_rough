@@ -152,6 +152,12 @@
                 </div>
                 @if($cid)
                     <div class="clhs-toolbar-actions">
+                        <button type="button"
+                            onclick="openMissingInvoiceModal({{ $cid }}, '{{ $from }}', '{{ $to }}')"
+                            class="clhs-print-all-btn check-invoices">
+                            <i class="fa-solid fa-list-check"></i>
+                            <span>Check Invoice No</span>
+                        </button>
                         <a href="{{ route('print.all.customer.invoices', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
                             onclick="openPdfInNewTab(event, this.href); return false;"
                             class="clhs-print-all-btn invoices {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
@@ -207,7 +213,13 @@
                                 @endphp
                                 <tr class="{{ $isPayment ? 'is-payment-row' : '' }} {{ $isSettlement ? 'is-settlement-row' : '' }} {{ \Carbon\Carbon::parse($i->date)->isToday() ? 'clhs-today-row' : '' }}">
                                     <td>{{ method_exists($all, 'firstItem') ? $all->firstItem() + $loop->index : $loop->iteration }}</td>
-                                    <td>{{ $i->date }}</td>
+                                    <td>
+                                        <div class="clhs-row-date-picker">
+                                            <span>{{ $i->date }}</span>
+                                            <button type="button" onclick="setLedgerDateFromRow('{{ $i->date }}', 'date1')" title="Use as start date">Start</button>
+                                            <button type="button" onclick="setLedgerDateFromRow('{{ $i->date }}', 'date2')" title="Use as end date">End</button>
+                                        </div>
+                                    </td>
                                     <td>{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}</td>
                                     <td>{{ $i->created_at }}</td>
                                     <td>{{ $i->particulars }}</td>
@@ -349,6 +361,19 @@
                 <i class="fas fa-print"></i> Print PDF
             </a>
             <button class="btn-close-modal" onclick="closeCreditNoteModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="missingInvoiceModal" class="invoice-modal">
+    <div class="invoice-modal-content">
+        <div class="missing-invoice-modal-header">
+            <h3>Invoice Number Check</h3>
+            <button class="invoice-modal-close" onclick="closeMissingInvoiceModal()">&times;</button>
+        </div>
+        <div class="invoice-modal-body" id="missingInvoiceModalBody"></div>
+        <div class="invoice-modal-footer">
+            <button class="btn-close-modal" onclick="closeMissingInvoiceModal()">Close</button>
         </div>
     </div>
 </div>
@@ -656,6 +681,16 @@
     background: #b45309;
 }
 
+.clhs-print-all-btn.check-invoices {
+    background: #334155;
+    border: 0;
+    color: #ffffff;
+}
+
+.clhs-print-all-btn.check-invoices:hover {
+    background: #0f172a;
+}
+
 .clhs-table-wrap {
     background: #ffffff;
     border: 1px solid #cbd5e1;
@@ -824,7 +859,8 @@
 .invoice-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; border-radius: 8px 8px 0 0; }
 .payment-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 8px 8px 0 0; }
 .credit-note-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border-radius: 8px 8px 0 0; }
-.invoice-modal-header h3, .payment-modal-header h3, .credit-note-modal-header h3 { margin: 0; font-size: 1.25rem; }
+.missing-invoice-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #334155 0%, #0f172a 100%); color: white; border-radius: 8px 8px 0 0; }
+.invoice-modal-header h3, .payment-modal-header h3, .credit-note-modal-header h3, .missing-invoice-modal-header h3 { margin: 0; font-size: 1.25rem; }
 .invoice-modal-close, .payment-modal-close, .credit-note-modal-close { background: none; border: none; color: white; font-size: 28px; cursor: pointer; line-height: 1; }
 .invoice-modal-body, .payment-modal-body, .credit-note-modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
 .invoice-modal-footer, .payment-modal-footer, .credit-note-modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 15px 20px; border-top: 1px solid #e5e7eb; background: #f9fafb; border-radius: 0 0 8px 8px; }
@@ -854,6 +890,137 @@
 .payment-display .payment-details { background: #f9fafb; padding: 15px; border-radius: 8px; margin-top: 20px; }
 .payment-display .payment-details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
 .payment-display .payment-details-label { font-weight: 600; color: #4b5563; }
+
+.missing-invoice-summary {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 18px;
+}
+
+.missing-invoice-summary div {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.missing-invoice-summary span {
+    color: #64748b;
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.missing-invoice-summary strong {
+    color: #0f172a;
+    display: block;
+    font-size: 1.7rem;
+    line-height: 1.1;
+    margin-top: 4px;
+}
+
+.missing-invoice-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.missing-invoice-pill {
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 999px;
+    color: #991b1b;
+    font-weight: 900;
+    padding: 6px 12px;
+}
+
+.missing-invoice-ok {
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    color: #166534;
+    font-weight: 900;
+    padding: 14px;
+}
+
+.missing-invoice-input {
+    margin: 14px 0;
+}
+
+.missing-invoice-input label {
+    color: #0f172a;
+    display: block;
+    font-weight: 900;
+    margin-bottom: 6px;
+}
+
+.missing-invoice-input textarea {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    min-height: 120px;
+    padding: 12px;
+    width: 100%;
+}
+
+.missing-invoice-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.missing-invoice-check-btn {
+    background: #334155;
+    border: 0;
+    border-radius: 8px;
+    color: #ffffff;
+    font-weight: 900;
+    padding: 10px 16px;
+}
+
+.missing-invoice-check-btn:hover {
+    background: #0f172a;
+}
+
+.missing-invoice-hint {
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.clhs-row-date-picker {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 140px;
+}
+
+.clhs-row-date-picker span {
+    flex-basis: 100%;
+    font-weight: 800;
+}
+
+.clhs-row-date-picker button {
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 6px;
+    color: #2f3fd0;
+    font-size: 0.75rem;
+    font-weight: 800;
+    line-height: 1;
+    padding: 5px 8px;
+}
+
+.clhs-row-date-picker button:hover {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #ffffff;
+}
 
 @media (max-width: 1100px) {
     .clhs-top-grid,
@@ -892,6 +1059,10 @@
 
     .clhs-toolbar-actions {
         flex-direction: column;
+    }
+
+    .missing-invoice-summary {
+        grid-template-columns: 1fr;
     }
 }
 </style>
@@ -1050,8 +1221,119 @@ function closeCreditNoteModal() {
     body.innerHTML = '';
 }
 
-window.onclick = function(event) { if (event.target === document.getElementById('invoiceModal')) closeInvoiceModal(); if (event.target === document.getElementById('paymentModal')) closePaymentModal(); if (event.target === document.getElementById('creditNoteModal')) closeCreditNoteModal(); }
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeInvoiceModal(); closePaymentModal(); closeCreditNoteModal(); } });
+function openMissingInvoiceModal(customerId, from, to) {
+    const modal = document.getElementById('missingInvoiceModal');
+    const body = document.getElementById('missingInvoiceModalBody');
+    const params = new URLSearchParams({
+        customerid: customerId,
+        date1: from || '',
+        date2: to || ''
+    });
+
+    body.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Checking invoice numbers...</p></div>';
+    modal.style.display = 'block';
+
+    fetch('{{ route("api.customer.missing-invoices") }}?' + params.toString(), {
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
+    .then(data => {
+        if (data.error) throw new Error(data.error);
+        window.customerInvoiceCheckData = data;
+        body.innerHTML = renderCustomerInvoiceCheckForm(data);
+    })
+    .catch(error => {
+        body.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;"><i class="fas fa-exclamation-circle fa-2x"></i><p>Error: ' + error.message + '</p></div>';
+    });
+}
+
+function renderCustomerInvoiceCheckForm(data) {
+    let html = '<div class="missing-invoice-summary">';
+    html += '<div><span>System Invoices</span><strong>' + data.invoice_count + '</strong></div>';
+    html += '<div><span>Customer Brought</span><strong id="customerBroughtInvoiceCount">0</strong></div>';
+    html += '<div><span>Missing From Customer</span><strong id="customerMissingInvoiceCount">' + data.invoice_count + '</strong></div>';
+    html += '</div>';
+    html += '<p><strong>Date Range:</strong> ' + (data.date1 || 'All') + ' to ' + (data.date2 || 'All') + '</p>';
+    html += '<div class="missing-invoice-input">';
+    html += '<label for="customerInvoiceNoInput">Enter invoice numbers customer brought</label>';
+    html += '<textarea id="customerInvoiceNoInput" placeholder="Example: 7676, 7677, 7680 or one invoice number per line"></textarea>';
+    html += '<div class="missing-invoice-hint">You can paste numbers separated by comma, space, or new line.</div>';
+    html += '</div>';
+    html += '<div class="missing-invoice-actions">';
+    html += '<button type="button" class="missing-invoice-check-btn" onclick="checkCustomerBroughtInvoices()">Check Missing Invoice No</button>';
+    html += '</div>';
+    html += '<div id="customerInvoiceCheckResult">';
+    html += '<div class="missing-invoice-ok">Enter the invoice numbers from customer and click check.</div>';
+    html += '</div>';
+    return html;
+}
+
+function invoiceNumbersFromText(text) {
+    return Array.from(new Set((text || '')
+        .split(/[^0-9]+/)
+        .map(function (value) { return parseInt(value, 10); })
+        .filter(function (value) { return value > 0; })));
+}
+
+function checkCustomerBroughtInvoices() {
+    const data = window.customerInvoiceCheckData;
+    const input = document.getElementById('customerInvoiceNoInput');
+    const result = document.getElementById('customerInvoiceCheckResult');
+    if (!data || !input || !result) return;
+
+    const systemInvoices = (data.invoice_numbers || []).map(function (value) { return parseInt(value, 10); });
+    const customerInvoices = invoiceNumbersFromText(input.value);
+    const customerSet = new Set(customerInvoices);
+    const systemSet = new Set(systemInvoices);
+    const missingFromCustomer = systemInvoices.filter(function (invoiceNo) { return !customerSet.has(invoiceNo); });
+    const notInSystem = customerInvoices.filter(function (invoiceNo) { return !systemSet.has(invoiceNo); });
+
+    document.getElementById('customerBroughtInvoiceCount').textContent = customerInvoices.length;
+    document.getElementById('customerMissingInvoiceCount').textContent = missingFromCustomer.length;
+
+    let html = '';
+    if (missingFromCustomer.length > 0) {
+        html += '<h4>Customer Did Not Bring These Invoice No</h4>';
+        html += '<div class="missing-invoice-list">';
+        missingFromCustomer.forEach(function (invoiceNo) {
+            html += '<span class="missing-invoice-pill">' + invoiceNo + '</span>';
+        });
+        html += '</div>';
+    } else {
+        html += '<div class="missing-invoice-ok"><i class="fa-solid fa-circle-check"></i> Customer brought all invoice numbers for this date range.</div>';
+    }
+
+    if (notInSystem.length > 0) {
+        html += '<h4 style="margin-top:18px;">Customer Gave These Invoice No But Not Found In System</h4>';
+        html += '<div class="missing-invoice-list">';
+        notInSystem.forEach(function (invoiceNo) {
+            html += '<span class="missing-invoice-pill">' + invoiceNo + '</span>';
+        });
+        html += '</div>';
+    }
+
+    result.innerHTML = html;
+}
+
+function closeMissingInvoiceModal() {
+    const modal = document.getElementById('missingInvoiceModal');
+    const body = document.getElementById('missingInvoiceModalBody');
+    modal.style.display = 'none';
+    body.innerHTML = '';
+    window.customerInvoiceCheckData = null;
+}
+
+window.onclick = function(event) { if (event.target === document.getElementById('invoiceModal')) closeInvoiceModal(); if (event.target === document.getElementById('paymentModal')) closePaymentModal(); if (event.target === document.getElementById('creditNoteModal')) closeCreditNoteModal(); if (event.target === document.getElementById('missingInvoiceModal')) closeMissingInvoiceModal(); }
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeInvoiceModal(); closePaymentModal(); closeCreditNoteModal(); closeMissingInvoiceModal(); } });
+
+window.setLedgerDateFromRow = function (date, fieldName) {
+    const input = document.querySelector('#chosendatepdfform input[name="' + fieldName + '"]');
+    if (!input) return;
+
+    input.value = date;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    input.focus();
+};
 </script>
 
 </div>

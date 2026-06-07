@@ -214,7 +214,13 @@
                                 @endphp
                                 <tr class="{{ $isPayment ? 'is-payment-row' : '' }} {{ $isSettlement ? 'is-settlement-row' : '' }} {{ \Carbon\Carbon::parse($i->date)->isToday() ? 'clhs-today-row' : '' }}">
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $i->date }}</td>
+                                    <td>
+                                        <div class="clhs-row-date-picker">
+                                            <span>{{ $i->date }}</span>
+                                            <button type="button" onclick="setLedgerDateFromRow('{{ $i->date }}', 'date1')" title="Use as start date">Start</button>
+                                            <button type="button" onclick="setLedgerDateFromRow('{{ $i->date }}', 'date2')" title="Use as end date">End</button>
+                                        </div>
+                                    </td>
                                     <td>{{ \App\Support\NepaliDate::adToBsString($i->date, 'en') }}</td>
                                     <td>{{ $i->created_at }}</td>
                                     <td>{{ $i->particulars }}</td>
@@ -1332,6 +1338,36 @@
             font-weight: 800;
         }
 
+        .clhs-row-date-picker {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-width: 140px;
+        }
+
+        .clhs-row-date-picker span {
+            flex-basis: 100%;
+            font-weight: 800;
+        }
+
+        .clhs-row-date-picker button {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 6px;
+            color: #2f3fd0;
+            font-size: 0.75rem;
+            font-weight: 800;
+            line-height: 1;
+            padding: 5px 8px;
+        }
+
+        .clhs-row-date-picker button:hover {
+            background: #4f46e5;
+            border-color: #4f46e5;
+            color: #ffffff;
+        }
+
         @media (max-width: 1100px) {
             .clhs-top-grid,
             .clhs-customer-meta {
@@ -1373,4 +1409,15 @@
             }
         }
     </style>
+
+    <script>
+        window.setLedgerDateFromRow = function (date, fieldName) {
+            const input = document.querySelector('#chosendatepdfform input[name="' + fieldName + '"]');
+            if (!input) return;
+
+            input.value = date;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            input.focus();
+        };
+    </script>
 @stop

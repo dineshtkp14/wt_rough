@@ -108,6 +108,16 @@ class CustomerLedgerHistroy extends Controller
             is_numeric($row->id ?? null) ? str_pad($row->id, 12, '0', STR_PAD_LEFT) : $row->id
         );
     }
+
+    private function customerTotalDueForMessage($customerid)
+    {
+        $ledgerRows = customerledgerdetails::where('customerid', $customerid)->get();
+        $debitNotCash = $ledgerRows->where('invoicetype', '!=', 'cash')->sum('debit');
+        $credit = $ledgerRows->sum('credit');
+        $creditNoteCredit = $this->creditNoteRowsForLedger($customerid)->sum('credit');
+
+        return $debitNotCash - $credit - $creditNoteCredit;
+    }
     
 
     public function returncusbills(Request $req){
@@ -1188,6 +1198,69 @@ class CustomerLedgerHistroy extends Controller
         return redirect('/login');
     }
 
+    public function checkMissingCustomerInvoices(Request $req)
+    {
+        if (!Auth::check()) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        $customerid = $req->customerid;
+        $from = $req->date1;
+        $to = $req->date2;
+
+        if (!$customerid) {
+            return response()->json(['error' => 'Customer is required'], 422);
+        }
+
+        $invoiceQuery = invoice::where('customerid', $customerid);
+        if ($from && $to) {
+            $invoiceQuery->whereBetween('inv_date', [$from, $to]);
+        }
+
+        $invoiceNumbers = $invoiceQuery
+            ->orderBy('id')
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        $ledgerInvoiceQuery = customerledgerdetails::where('customerid', $customerid)
+            ->whereNotNull('invoiceid')
+            ->where('invoiceid', '!=', '');
+        if ($from && $to) {
+            $ledgerInvoiceQuery->whereBetween('date', [$from, $to]);
+        }
+
+        $ledgerInvoiceNumbers = $ledgerInvoiceQuery
+            ->pluck('invoiceid')
+            ->map(fn ($id) => (int) $id)
+            ->filter(fn ($id) => $id > 0)
+            ->unique()
+            ->sort()
+            ->values();
+
+        $missingFromLedger = $invoiceNumbers
+            ->diff($ledgerInvoiceNumbers)
+            ->values();
+
+        $extraInLedger = $ledgerInvoiceNumbers
+            ->diff($invoiceNumbers)
+            ->values();
+
+        return response()->json([
+            'customerid' => (int) $customerid,
+            'date1' => $from,
+            'date2' => $to,
+            'invoice_count' => $invoiceNumbers->count(),
+            'ledger_invoice_count' => $ledgerInvoiceNumbers->count(),
+            'missing_count' => $missingFromLedger->count(),
+            'invoice_numbers' => $invoiceNumbers,
+            'ledger_invoice_numbers' => $ledgerInvoiceNumbers,
+            'missing_from_ledger' => $missingFromLedger,
+            'extra_in_ledger' => $extraInLedger,
+        ]);
+    }
+
     public function returnchoosendatehistroycashandcredit(Request $req)
     {
         if (Auth::check()) {
@@ -1560,8 +1633,7 @@ public function oldpricecheck(Request $req)
                 if ($data->customerid) {
                     $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
                     $paymentCustomer = $customerinfodetails->first();
-                    $totalDueAmount = customerledgerdetails::where('customerid', $data->customerid)
-                        ->sum(DB::raw('COALESCE(debit, 0) - COALESCE(credit, 0)'));
+                    $totalDueAmount = $this->customerTotalDueForMessage($data->customerid);
                 }
             }
         
@@ -1627,10 +1699,7 @@ public function oldpricecheck(Request $req)
                 ]);
             }
 
-            // Calculate customer's total due amount from ledger
-            $totalDueAmount = customerledgerdetails::where('customerid', $invoice->customerid)
-                ->where('created_at', '<=', now())
-                ->sum(DB::raw('COALESCE(debit, 0) - COALESCE(credit, 0)'));
+            $totalDueAmount = $this->customerTotalDueForMessage($invoice->customerid);
 
             // Create SMS message
             $invoiceMessage = 'Namaste ' . ($customer->name ? $customer->name : 'Customer')

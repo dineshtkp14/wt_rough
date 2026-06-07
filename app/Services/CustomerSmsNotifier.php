@@ -73,15 +73,20 @@ class CustomerSmsNotifier
 
     public function customerTotalDue(int $customerId): float
     {
-        $ledgerDue = (float) DB::table('customerledgerdetails')
+        $debitNotCash = (float) DB::table('customerledgerdetails')
             ->where('customerid', $customerId)
-            ->sum(DB::raw('COALESCE(debit, 0) - COALESCE(credit, 0)'));
+            ->where('invoicetype', '!=', 'cash')
+            ->sum(DB::raw('COALESCE(debit, 0)'));
+
+        $ledgerCredit = (float) DB::table('customerledgerdetails')
+            ->where('customerid', $customerId)
+            ->sum(DB::raw('COALESCE(credit, 0)'));
 
         $creditNoteCredit = (float) DB::table('creditnotes_customerledgerdetails')
             ->where('customerid', $customerId)
             ->sum(DB::raw('COALESCE(debit, credit, 0)'));
 
-        return $ledgerDue - $creditNoteCredit;
+        return $debitNotCash - $ledgerCredit - $creditNoteCredit;
     }
 
     private function sendToCustomer(?customerinfo $customer, string $message, string $smsType, ?int $invoiceId = null): ?array

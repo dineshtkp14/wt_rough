@@ -7,6 +7,7 @@ use App\Models\invoice;
 use App\Models\SmsLog;
 use App\Services\SmsService;
 use App\Helpers\InvoiceSmsHelper;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SendInvoiceSms extends Command
@@ -24,6 +25,24 @@ class SendInvoiceSms extends Command
      * @var string
      */
     protected $description = 'Send SMS notification for invoice creation with customer details';
+
+    private function customerTotalDueForMessage($customerid)
+    {
+        $debitNotCash = (float) DB::table('customerledgerdetails')
+            ->where('customerid', $customerid)
+            ->where('invoicetype', '!=', 'cash')
+            ->sum(DB::raw('COALESCE(debit, 0)'));
+
+        $credit = (float) DB::table('customerledgerdetails')
+            ->where('customerid', $customerid)
+            ->sum(DB::raw('COALESCE(credit, 0)'));
+
+        $creditNoteCredit = (float) DB::table('creditnotes_customerledgerdetails')
+            ->where('customerid', $customerid)
+            ->sum(DB::raw('COALESCE(debit, credit, 0)'));
+
+        return $debitNotCash - $credit - $creditNoteCredit;
+    }
 
     /**
      * Execute the console command.
@@ -60,11 +79,7 @@ class SendInvoiceSms extends Command
 
         $phone = SmsService::formatPhoneNumber($customer->phoneno);
 
-        // Calculate total due amount
-        $totalDueAmount = invoice::where('customerid', $invoice->customerid)
-            ->where('inv_type', 'credit')
-            ->where('created_at', '<=', now())
-            ->sum('total');
+        $totalDueAmount = $this->customerTotalDueForMessage($invoice->customerid);
 
         // Create message
         $message = 'Namaste ' . $customer->name

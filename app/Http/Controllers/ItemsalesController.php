@@ -21,6 +21,18 @@ use Illuminate\Support\Facades\Log;
 
 class ItemsalesController extends Controller
 {
+    private function customerTotalDueForMessage($customerid)
+    {
+        $ledgerRows = customerledgerdetails::where('customerid', $customerid)->get();
+        $debitNotCash = $ledgerRows->where('invoicetype', '!=', 'cash')->sum('debit');
+        $credit = $ledgerRows->sum('credit');
+        $creditNoteCredit = (float) DB::table('creditnotes_customerledgerdetails')
+            ->where('customerid', $customerid)
+            ->sum(DB::raw('COALESCE(debit, credit, 0)'));
+
+        return $debitNotCash - $credit - $creditNoteCredit;
+    }
+
     
     public function index()
     {
@@ -140,10 +152,7 @@ class ItemsalesController extends Controller
             ->with('success', 'Invoice Created Successfully !!');
 
         if ($invoice_data->inv_type === 'credit') {
-            // Calculate customer's total due amount from ledger
-            $totalDueAmount = customerledgerdetails::where('customerid', $invoice_data->customerid)
-                ->where('created_at', '<=', now())
-                ->sum(DB::raw('COALESCE(debit, 0) - COALESCE(credit, 0)'));
+            $totalDueAmount = $this->customerTotalDueForMessage($invoice_data->customerid);
 
             // Create SMS message with invoice details and total due amount
             $invoiceMessage = 'Namaste ' . ($customer->name ?? 'Customer')

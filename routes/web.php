@@ -359,6 +359,7 @@ Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoicei
 Route::get('/api/invoice-data',[ModernDashboardController::class,'getInvoiceData'])->name('api.invoice.data');
 Route::get('/api/payment-data',[ModernDashboardController::class,'getPaymentData'])->name('api.payment.data');
 Route::get('/api/credit-note-data',[ModernDashboardController::class,'getCreditNoteData'])->name('api.creditnote.data');
+Route::get('/api/customer-missing-invoices',[CustomerLedgerHistroy::class,'checkMissingCustomerInvoices'])->name('api.customer.missing-invoices');
 Route::get('/api/deleted-invoice-data',[ModernDashboardController::class,'getDeletedInvoiceData'])->name('api.deletedinvoice.data');
 Route::get('/invoice/print-all-today',[ModernDashboardController::class,'printAllTodayInvoices'])->name('invoice.print.all.today');
 Route::get('/payment/print-all-today',[ModernDashboardController::class,'printAllTodayPayments'])->name('payment.print.all.today');
