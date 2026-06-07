@@ -23,6 +23,39 @@
                 </a>
             </div>
         @endif
+        @if (Session::has('payment_sms_message'))
+            <div class="modal fade" id="paymentSmsModal" tabindex="-1" aria-labelledby="paymentSmsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content payment-sms-modal payment-sms-modal-{{ Session::get('payment_sms_status', 'success') }}">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="paymentSmsModalLabel">
+                                @if (Session::get('payment_sms_status') === 'success')
+                                    SMS Sent
+                                @elseif (Session::get('payment_sms_status') === 'warning')
+                                    SMS Not Sent
+                                @else
+                                    SMS Failed
+                                @endif
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="payment-sms-result">{{ Session::get('payment_sms_message') }}</p>
+
+                            @if (Session::has('payment_sms_sent_text'))
+                                <div class="payment-sms-preview">
+                                    <strong>SMS message sent</strong>
+                                    <span>{{ Session::get('payment_sms_sent_text') }}</span>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
         <div class="card shadow p-4" style="width: 100% !important; max-width: 100% !important;">
             <!-- Shop Name -->
           
@@ -227,6 +260,18 @@
     });
 </script>
 
+@if (Session::has('payment_sms_message'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalElement = document.getElementById('paymentSmsModal');
+
+        if (modalElement && window.bootstrap) {
+            new bootstrap.Modal(modalElement).show();
+        }
+    });
+</script>
+@endif
+
 <style>
     .payment-share-panel {
         align-items: center;
@@ -270,6 +315,73 @@
         min-height: 42px;
         padding: 0 14px;
         text-decoration: none !important;
+    }
+
+    .payment-sms-modal {
+        border: 0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .payment-sms-modal .modal-header {
+        border-bottom: 0;
+        color: #ffffff;
+    }
+
+    .payment-sms-modal .modal-title {
+        font-weight: 900;
+    }
+
+    .payment-sms-modal .modal-body {
+        color: #111827;
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1.35;
+        padding: 22px;
+    }
+
+    .payment-sms-result {
+        margin: 0;
+    }
+
+    .payment-sms-preview {
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        margin-top: 14px;
+        padding: 12px;
+    }
+
+    .payment-sms-preview strong,
+    .payment-sms-preview span {
+        display: block;
+    }
+
+    .payment-sms-preview strong {
+        color: #334155;
+        font-size: 14px;
+        font-weight: 900;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+    }
+
+    .payment-sms-preview span {
+        color: #0f172a;
+        font-size: 16px;
+        font-weight: 800;
+        line-height: 1.35;
+    }
+
+    .payment-sms-modal-success .modal-header {
+        background: #16a34a;
+    }
+
+    .payment-sms-modal-warning .modal-header {
+        background: #d97706;
+    }
+
+    .payment-sms-modal-danger .modal-header {
+        background: #dc2626;
     }
 
     @media (max-width: 700px) {

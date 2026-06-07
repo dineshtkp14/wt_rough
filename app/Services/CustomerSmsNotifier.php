@@ -30,7 +30,7 @@ class CustomerSmsNotifier
     public function paymentCreated(customerledgerdetails $payment, ?customerinfo $customer = null): ?array
     {
         $customer = $customer ?: customerinfo::find($payment->customerid);
-        $remainingDue = max(0, $this->customerTotalDue((int) $payment->customerid));
+        $remainingDue = $this->customerTotalDue((int) $payment->customerid);
 
         $message = 'Namaste ' . ($customer->name ?? 'Customer')
             . ', payment received Rs ' . number_format((float) $payment->credit, 2)
@@ -119,6 +119,9 @@ class CustomerSmsNotifier
                 'status' => $response['status'] ?? null,
             ]);
 
+            $response['message'] = $message;
+            $response['phone'] = $phone;
+
             return $response;
         } catch (\Throwable $e) {
             Log::channel('sms')->error('Customer SMS notification failed', [
@@ -131,6 +134,7 @@ class CustomerSmsNotifier
                 'success' => false,
                 'status' => null,
                 'error' => $e->getMessage(),
+                'message' => $message,
             ];
         }
     }

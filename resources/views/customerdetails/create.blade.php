@@ -184,6 +184,20 @@
     </div>
 </div>
 
+<div class="modal fade" id="paymentSendingSmsModal" tabindex="-1" aria-labelledby="paymentSendingSmsModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content payment-sending-modal">
+            <div class="modal-body">
+                <div class="payment-sending-icon">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <h5 id="paymentSendingSmsModalLabel">Saving payment and sending SMS...</h5>
+                <p>Please wait until the receipt opens.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -340,6 +354,11 @@ $(document).ready(function () {
             $('form').submit(function () {
                 // Disable the submit button
                 $('#submitBtn').prop('disabled', true);
+
+                var modalElement = document.getElementById('paymentSendingSmsModal');
+                if (modalElement && window.bootstrap) {
+                    new bootstrap.Modal(modalElement).show();
+                }
                 
             });
         });
@@ -476,4 +495,58 @@ $(document).ready(function () {
 
         document.getElementById('amount').addEventListener('input', updateAmountInWords);
 </script>
+
+<style>
+    .payment-sending-modal {
+        border: 0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .payment-sending-modal .modal-body {
+        padding: 28px;
+        text-align: center;
+    }
+
+    .payment-sending-icon {
+        align-items: center;
+        background: #2563eb;
+        border-radius: 50%;
+        color: #ffffff;
+        display: inline-flex;
+        height: 58px;
+        justify-content: center;
+        margin-bottom: 14px;
+        width: 58px;
+    }
+
+    .payment-sending-icon i {
+        animation: paymentSendingPulse 1s ease-in-out infinite;
+        font-size: 24px;
+    }
+
+    .payment-sending-modal h5 {
+        color: #111827;
+        font-size: 20px;
+        font-weight: 900;
+        margin: 0 0 6px;
+    }
+
+    .payment-sending-modal p {
+        color: #4b5563;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    @keyframes paymentSendingPulse {
+        0%, 100% {
+            transform: translateX(0);
+        }
+
+        50% {
+            transform: translateX(5px);
+        }
+    }
+</style>
 @stop

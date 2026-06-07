@@ -897,6 +897,14 @@
             vertical-align: middle;
         }
 
+        .clhs-table th:nth-child(9),
+        .clhs-table th:nth-child(10),
+        .clhs-table td:nth-child(9),
+        .clhs-table td:nth-child(10) {
+            min-width: 130px;
+            white-space: nowrap;
+        }
+
         .clhs-table th {
             background: #5d5ced;
             color: #ffffff;
@@ -1015,9 +1023,17 @@
 
         .clhs-total-row td {
             background: #111827 !important;
-            color: #ffffff;
-            font-size: 18px;
+            color: #ffffff !important;
+            font-size: 20px;
             font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .clhs-total-row td:last-child,
+        .clhs-total-row td:nth-last-child(2) {
+            font-size: 22px;
+            min-width: 150px;
+            padding: 16px 14px;
         }
 
         .clhs-empty-state {

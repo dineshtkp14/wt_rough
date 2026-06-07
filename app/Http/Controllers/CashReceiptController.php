@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\CreditnotesCustomerledgerdetail;
 use App\Models\customerledgerdetails;
 use App\Models\customerinfo;
 
@@ -10,6 +11,39 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class CashReceiptController extends Controller
 {
+    private function hasExistingCreditNoteLedgerRow($customerid, $creditNoteRow)
+    {
+        $creditNoteAmount = (float) ($creditNoteRow->debit ?? $creditNoteRow->credit ?? 0);
+
+        return customerledgerdetails::where('customerid', $customerid)
+            ->where(function ($query) use ($creditNoteRow, $creditNoteAmount) {
+                $query->where('cninvoiceid', $creditNoteRow->invoiceid)
+                    ->orWhere('returnidforcreditnotes', $creditNoteRow->invoiceid)
+                    ->orWhere(function ($returnQuery) use ($creditNoteRow, $creditNoteAmount) {
+                        $returnQuery->where('date', $creditNoteRow->date)
+                            ->where(function ($typeQuery) {
+                                $typeQuery->where('particulars', 'salesreturn')
+                                    ->orWhere('particulars', 'Goods_Return')
+                                    ->orWhere('voucher_type', 'return')
+                                    ->orWhere('voucher_type', 'Return');
+                            })
+                            ->whereBetween('credit', [
+                                $creditNoteAmount - 0.01,
+                                $creditNoteAmount + 0.01,
+                            ]);
+                    });
+            })
+            ->exists();
+    }
+
+    private function creditNoteRowsForLedger($customerid)
+    {
+        return CreditnotesCustomerledgerdetail::where('customerid', $customerid)
+            ->get()
+            ->reject(function ($row) use ($customerid) {
+                return $this->hasExistingCreditNoteLedgerRow($customerid, $row);
+            });
+    }
 
     public function returnReceiptDeyailsbyReceiptNo(Request $req)
     {
@@ -81,26 +115,26 @@ class CashReceiptController extends Controller
 
 
 
-// stratfortotaldueamount
-$cusledgertails = Customerledgerdetails::where('customerid', $data->customerid)
-->where(function($query) {
-    $query->where('invoicetype', 'credit')
-          ->orWhere('invoicetype', 'payment');
-})
-->get();
-$querycheck = customerledgerdetails::where('customerid', $data->customerid)
-->where(function($query) {
-    $query->where('invoicetype', 'credit')
-          ->orWhere('invoicetype', 'payment');
-})
-->get();
-$debittotalsumwithdate = $querycheck->sum('debit');
-$credittotalsumwithdate = $querycheck->sum('credit');
+    $receipt = $alldetails->first();
+    $debittotalsumwithdate = 0;
+    $credittotalsumwithdate = 0;
 
-// $xd = customerinfo::where('id', $data->customerid)->get();
-// $afn = $xd;
+    if ($receipt) {
+        $querycheck = customerledgerdetails::where('customerid', $receipt->customerid)
+            ->where(function($query) {
+                $query->where('invoicetype', 'credit')
+                    ->orWhere('invoicetype', 'payment')
+                    ->orWhere('invoicetype', 'settlement');
+            })
+            ->get();
 
-//end for totaldueamount
+        $creditNoteRows = $this->creditNoteRowsForLedger($receipt->customerid);
+
+        $debittotalsumwithdate = $querycheck->sum('debit');
+        $credittotalsumwithdate = $querycheck->sum('credit') + $creditNoteRows->sum(function ($row) {
+            return (float) ($row->debit ?? $row->credit ?? 0);
+        });
+    }
     
 
    

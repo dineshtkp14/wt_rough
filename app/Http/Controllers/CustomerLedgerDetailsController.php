@@ -153,13 +153,45 @@ public function store(Request $req)
         ]);
     });
 
+    $smsStatus = null;
+    $smsMessage = null;
+    $smsSentText = null;
+
     if ($payment && !$req->has('disableFields')) {
-        (new CustomerSmsNotifier())->paymentCreated($payment);
+        $customer = customerinfo::find($payment->customerid);
+        $smsResponse = (new CustomerSmsNotifier())->paymentCreated($payment, $customer);
+
+        if ($smsResponse === null) {
+            $smsStatus = 'warning';
+            $smsMessage = 'Payment saved, but SMS was not sent because customer phone number is missing.';
+        } elseif ($smsResponse['success'] ?? false) {
+            $smsStatus = 'success';
+            $smsMessage = 'Payment saved and SMS sent successfully to ' . ($customer->phoneno ?? 'customer') . '.';
+        } else {
+            $smsStatus = 'danger';
+            $smsMessage = 'Payment saved, but SMS failed: ' . ($smsResponse['error'] ?? $smsResponse['body'] ?? 'Unknown error');
+        }
+
+        if (is_array($smsResponse)) {
+            $smsSentText = $smsResponse['message'] ?? null;
+        }
     }
 
+    $redirect = redirect()
+        ->route('cashreceipt.search', ['receiptno' => $nextUserId])
+        ->with('success', 'Invoice Created Successfully !!');
 
+    if ($smsStatus && $smsMessage) {
+        $redirect
+            ->with('payment_sms_status', $smsStatus)
+            ->with('payment_sms_message', $smsMessage);
 
-    return redirect()->route('cashreceipt.search', ['receiptno' => $nextUserId])->with('success', 'Invoice Created Successfully !!');
+        if ($smsSentText) {
+            $redirect->with('payment_sms_sent_text', $smsSentText);
+        }
+    }
+
+    return $redirect;
 }
 
 public function edit($id)
