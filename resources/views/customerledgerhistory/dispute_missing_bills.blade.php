@@ -21,7 +21,7 @@
                 Customer Ledger Dispute / Missing Bills
             </div>
 
-            <form action="{{ route('customer.ledger.dispute') }}" method="get" id="disputeSearchForm">
+            <form action="{{ url('/customer-ledger-dispute') }}" method="get" id="disputeSearchForm">
                 <div class="search-box dispute-search">
                     <input id="customerIdInput" name="customerid" value="{{ $customerId }}" hidden>
                     <input type="text"
@@ -67,14 +67,14 @@
                         Check Missing Bills
                     </button>
                     @if($hasCustomer)
-                        <a href="{{ route('customer.ledger.dispute.pdf', $proofQuery) }}"
+                        <a href="{{ url('/customer-ledger-dispute/pdf') . '?' . http_build_query($proofQuery) }}"
                             onclick="openPdfInNewTab(event, this.href); return false;"
                             class="dispute-btn print">
                             <i class="fa-solid fa-print"></i>
                             Print Proof
                         </a>
                         @if($missingFromCustomer->isNotEmpty())
-                            <a href="{{ route('customer.ledger.dispute.missing-invoices.pdf', $proofQuery) }}"
+                            <a href="{{ url('/customer-ledger-dispute/missing-invoices/pdf') . '?' . http_build_query($proofQuery) }}"
                                 onclick="openPdfInNewTab(event, this.href); return false;"
                                 class="dispute-btn missing-print">
                                 <i class="fa-solid fa-file-invoice"></i>

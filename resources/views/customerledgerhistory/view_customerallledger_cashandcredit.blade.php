@@ -152,7 +152,7 @@
                 </div>
                 @if($cid)
                     <div class="clhs-toolbar-actions">
-                        <a href="{{ route('customer.ledger.dispute', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
+                        <a href="{{ url('/customer-ledger-dispute') . '?' . http_build_query(['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
                             class="clhs-print-all-btn dispute"
                             target="_blank">
                             <i class="fa-solid fa-triangle-exclamation"></i>

@@ -154,7 +154,7 @@
                 </div>
                 @if($customeridonly)
                     <div class="clhs-toolbar-actions">
-                        <a href="{{ route('customer.ledger.dispute', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
+                        <a href="{{ url('/customer-ledger-dispute') . '?' . http_build_query(['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
                             class="clhs-print-all-btn dispute"
                             target="_blank">
                             <i class="fa-solid fa-triangle-exclamation"></i>
