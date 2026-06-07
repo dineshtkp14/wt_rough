@@ -239,6 +239,10 @@
 </head>
 
 <body>
+    <button type="button" class="sidebar-collapse-btn" id="sidebarCollapseBtn" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
     <!-- Modern Sidebar -->
     <aside class="side-nav">
         <h1 class="visually-hidden">Sidebar Navigation</h1>
@@ -795,6 +799,45 @@
                 document.getElementById('eea' + id).submit();
             }
         }
+
+        (function() {
+            const body = document.body;
+            const button = document.getElementById('sidebarCollapseBtn');
+            const sidebar = document.querySelector('.side-nav');
+            const storageKey = 'wt-sidebar-collapsed';
+
+            if (!button || !sidebar) return;
+
+            if (localStorage.getItem(storageKey) === '1' && window.innerWidth > 768) {
+                body.classList.add('sidebar-collapsed');
+            }
+
+            button.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('open');
+                    body.classList.toggle('sidebar-open', sidebar.classList.contains('open'));
+                    return;
+                }
+
+                body.classList.toggle('sidebar-collapsed');
+                localStorage.setItem(storageKey, body.classList.contains('sidebar-collapsed') ? '1' : '0');
+            });
+
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth > 768 || !body.classList.contains('sidebar-open')) return;
+                if (sidebar.contains(event.target) || button.contains(event.target)) return;
+
+                sidebar.classList.remove('open');
+                body.classList.remove('sidebar-open');
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('open');
+                    body.classList.remove('sidebar-open');
+                }
+            });
+        })();
     </script>
 
     @php
