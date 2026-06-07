@@ -168,8 +168,11 @@ public function store(Request $req)
             $smsStatus = 'success';
             $smsMessage = 'Payment saved and SMS sent successfully to ' . ($customer->phoneno ?? 'customer') . '.';
         } else {
+            $smsError = $smsResponse['error'] ?? $smsResponse['body'] ?? 'Unknown error';
+            $smsMessage = str_contains(strtolower($smsError), 'empty queue')
+                ? 'Payment saved, but SMS failed because the mobile number is not correct. Please check customer mobile number.'
+                : 'Payment saved, but SMS failed: ' . $smsError;
             $smsStatus = 'danger';
-            $smsMessage = 'Payment saved, but SMS failed: ' . ($smsResponse['error'] ?? $smsResponse['body'] ?? 'Unknown error');
         }
 
         if (is_array($smsResponse)) {

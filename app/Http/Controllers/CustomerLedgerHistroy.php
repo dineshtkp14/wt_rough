@@ -1261,6 +1261,163 @@ class CustomerLedgerHistroy extends Controller
         ]);
     }
 
+    private function customerLedgerDisputeData(Request $req): array
+    {
+        $customerId = $req->customerid;
+        $from = $req->date1;
+        $to = $req->date2;
+        $customer = $customerId ? customerinfo::find($customerId) : null;
+
+        $invoiceQuery = invoice::where('customerid', $customerId);
+        if ($from && $to) {
+            $invoiceQuery->whereBetween('inv_date', [$from, $to]);
+        }
+
+        $invoices = $customerId
+            ? $invoiceQuery->orderBy('id', 'asc')->get()
+            : collect();
+
+        $invoiceNumbers = $invoices->pluck('id')->map(fn ($id) => (int) $id)->values();
+        $ledgerRows = $customerId
+            ? customerledgerdetails::where('customerid', $customerId)
+                ->when($from && $to, function ($query) use ($from, $to) {
+                    $query->whereBetween('date', [$from, $to]);
+                })
+                ->get()
+            : collect();
+
+        $creditNoteRows = $customerId
+            ? $this->creditNoteRowsForLedger($customerId, $from, $to)
+            : collect();
+
+        $creditLedgerRows = $ledgerRows->whereIn('invoicetype', ['credit', 'payment', 'settlement']);
+        $totalDebit = $creditLedgerRows->sum('debit');
+        $totalCredit = $creditLedgerRows->sum('credit') + $creditNoteRows->sum('credit');
+        $totalDue = $totalDebit - $totalCredit;
+
+        $customerNumbers = collect(preg_split('/[^0-9]+/', (string) $req->customer_invoice_numbers))
+            ->map(fn ($number) => (int) $number)
+            ->filter(fn ($number) => $number > 0)
+            ->unique()
+            ->sort()
+            ->values();
+
+        $missingFromCustomer = $customerNumbers->isNotEmpty()
+            ? $invoiceNumbers->diff($customerNumbers)->values()
+            : collect();
+
+        $notInSystem = $customerNumbers->diff($invoiceNumbers)->values();
+
+        return [
+            'customer' => $customer,
+            'customerId' => $customerId,
+            'from' => $from,
+            'to' => $to,
+            'invoices' => $invoices,
+            'invoiceNumbers' => $invoiceNumbers,
+            'totalDebit' => $totalDebit,
+            'totalCredit' => $totalCredit,
+            'totalDue' => $totalDue,
+            'customerNumbers' => $customerNumbers,
+            'missingFromCustomer' => $missingFromCustomer,
+            'notInSystem' => $notInSystem,
+        ];
+    }
+
+    public function customerLedgerDispute(Request $req)
+    {
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
+
+        $breadcrumb = [
+            'subtitle' => 'Check',
+            'title' => 'Customer Ledger Dispute / Missing Bills',
+            'link' => 'Customer Ledger Dispute / Missing Bills',
+        ];
+
+        return view('customerledgerhistory.dispute_missing_bills', array_merge(
+            $this->customerLedgerDisputeData($req),
+            ['breadcrumb' => $breadcrumb]
+        ));
+    }
+
+    public function customerLedgerDisputePdf(Request $req)
+    {
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
+
+        $data = $this->customerLedgerDisputeData($req);
+        $pdf = FacadePdf::setOptions([
+            'dpi' => 150,
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'defaultFont' => 'dejavu serif',
+            'chroot' => public_path(),
+        ])
+            ->loadView('customerledgerhistory.dispute_missing_bills_pdf', $data)
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->stream('customer-ledger-dispute-proof.pdf');
+    }
+
+    public function customerLedgerDisputeMissingInvoicesPdf(Request $req)
+    {
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
+
+        $data = $this->customerLedgerDisputeData($req);
+        $customer = $data['customer'];
+        $missingInvoiceNumbers = $data['missingFromCustomer'];
+
+        $missingInvoices = invoice::where('customerid', $data['customerId'])
+            ->whereIn('id', $missingInvoiceNumbers)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $invoiceData = [];
+        foreach ($missingInvoices as $inv) {
+            $items = salesitem::where('invoiceid', $inv->id)->get();
+
+            foreach ($items as $saleItem) {
+                $itemInfo = item::where('id', $saleItem->itemid)
+                    ->select('id', 'itemsname', 'mrp', 'unit')
+                    ->first();
+
+                $saleItem->itemidorg = $itemInfo ? $itemInfo->id : ($saleItem->itemid ?? '-');
+                $saleItem->itemname = $itemInfo ? $itemInfo->itemsname : ($saleItem->unstockedname ?? 'N/A');
+                $saleItem->mrp = $itemInfo ? $itemInfo->mrp : null;
+                $saleItem->unit = $itemInfo ? $itemInfo->unit : ($saleItem->unit ?? 'pcs');
+                $saleItem->nos = $saleItem->quantity ?? 1;
+                $saleItem->subtotal = $saleItem->subtotal ?? (($saleItem->price ?? 0) * ($saleItem->quantity ?? 1));
+            }
+
+            $invoiceData[] = [
+                'invoice' => $inv,
+                'items' => $items,
+            ];
+        }
+
+        $pdf = FacadePdf::setOptions([
+            'dpi' => 150,
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'defaultFont' => 'NotoSansDevanagari',
+            'chroot' => public_path(),
+        ])
+            ->loadView('customerledgerhistory.print_all_customer_invoices', [
+                'customer' => $customer,
+                'invoiceData' => $invoiceData,
+                'from' => $data['from'],
+                'to' => $data['to'],
+            ])
+            ->setPaper('A5', 'portrait');
+
+        return $pdf->stream('missing_customer_invoices.pdf');
+    }
+
     public function returnchoosendatehistroycashandcredit(Request $req)
     {
         if (Auth::check()) {

@@ -154,6 +154,12 @@
                 </div>
                 @if($customeridonly)
                     <div class="clhs-toolbar-actions">
+                        <a href="{{ route('customer.ledger.dispute', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
+                            class="clhs-print-all-btn dispute"
+                            target="_blank">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Dispute / Missing Bills</span>
+                        </a>
                         <a href="{{ route('print.all.customer.invoices', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate, 'invoice_type' => 'credit']) }}"
                             onclick="openPdfInNewTab(event, this.href); return false;"
                             class="clhs-print-all-btn invoices {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
@@ -838,6 +844,16 @@
             color: #ffffff !important;
         }
 
+        .clhs-print-all-btn.dispute {
+            background: #dc2626;
+            color: #ffffff !important;
+        }
+
+        .clhs-print-all-btn.dispute:hover {
+            background: #b91c1c;
+            color: #ffffff !important;
+        }
+
         .clhs-toolbar {
             align-items: center;
             display: flex;
@@ -1435,5 +1451,14 @@
             input.dispatchEvent(new Event('change', { bubbles: true }));
             input.focus();
         };
+
+        $(document).on('customer:selected', function () {
+            const form = document.getElementById('chosendatepdfform');
+            const customerInput = document.getElementById('customerIdInput');
+
+            if (form && customerInput && customerInput.value) {
+                form.submit();
+            }
+        });
     </script>
 @stop

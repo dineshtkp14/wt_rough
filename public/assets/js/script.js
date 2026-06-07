@@ -181,6 +181,7 @@ function triggerCustomerResultClick() {
             $("#searchCustomerInput").val(data.name);
             $("#customerIdInput").val(data.id);
             $("#customerResultWrapper").slideUp();
+            $(document).trigger("customer:selected", [data]);
         });
 }
 

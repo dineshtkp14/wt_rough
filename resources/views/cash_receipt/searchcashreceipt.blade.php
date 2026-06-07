@@ -23,39 +23,6 @@
                 </a>
             </div>
         @endif
-        @if (Session::has('payment_sms_message'))
-            <div class="modal fade" id="paymentSmsModal" tabindex="-1" aria-labelledby="paymentSmsModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content payment-sms-modal payment-sms-modal-{{ Session::get('payment_sms_status', 'success') }}">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="paymentSmsModalLabel">
-                                @if (Session::get('payment_sms_status') === 'success')
-                                    SMS Sent
-                                @elseif (Session::get('payment_sms_status') === 'warning')
-                                    SMS Not Sent
-                                @else
-                                    SMS Failed
-                                @endif
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p class="payment-sms-result">{{ Session::get('payment_sms_message') }}</p>
-
-                            @if (Session::has('payment_sms_sent_text'))
-                                <div class="payment-sms-preview">
-                                    <strong>SMS message sent</strong>
-                                    <span>{{ Session::get('payment_sms_sent_text') }}</span>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
         <div class="card shadow p-4" style="width: 100% !important; max-width: 100% !important;">
             <!-- Shop Name -->
           
@@ -71,6 +38,19 @@
                         <button type="submit" class="btn btn-primary">Search</button>
                     </div>
                 </form>
+
+                @if (Session::has('payment_sms_message'))
+                    <div class="payment-sms-inline payment-sms-inline-{{ Session::get('payment_sms_status', 'success') }}" id="paymentSmsInlineMessage">
+                        <strong>{{ Session::get('payment_sms_message') }}</strong>
+
+                        @if (Session::get('payment_sms_status') === 'success' && Session::has('payment_sms_sent_text'))
+                            <div class="payment-sms-inline-preview">
+                                <span>SMS message sent</span>
+                                <p>{{ Session::get('payment_sms_sent_text') }}</p>
+                            </div>
+                        @endif
+                    </div>
+                @endif
             </div>
             <!-- Print Buttons -->
             <div class="d-flex justify-content-end align-items-center pt-4 p-4 gap-4">
@@ -233,6 +213,20 @@
         newTab.focus();
     }
 
+    document.addEventListener('DOMContentLoaded', function () {
+        var smsMessage = document.getElementById('paymentSmsInlineMessage');
+
+        if (smsMessage) {
+            setTimeout(function () {
+                smsMessage.classList.add('is-hiding');
+
+                setTimeout(function () {
+                    smsMessage.remove();
+                }, 350);
+            }, 10000);
+        }
+    });
+
 
      // Attach click event listener to the edit button
      document.getElementById('editButton').addEventListener('click', function(event) {
@@ -259,18 +253,6 @@
         xhr.send(JSON.stringify({ /* Any data you want to send to the server */ }));
     });
 </script>
-
-@if (Session::has('payment_sms_message'))
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var modalElement = document.getElementById('paymentSmsModal');
-
-        if (modalElement && window.bootstrap) {
-            new bootstrap.Modal(modalElement).show();
-        }
-    });
-</script>
-@endif
 
 <style>
     .payment-share-panel {
@@ -317,71 +299,65 @@
         text-decoration: none !important;
     }
 
-    .payment-sms-modal {
-        border: 0;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .payment-sms-modal .modal-header {
-        border-bottom: 0;
-        color: #ffffff;
-    }
-
-    .payment-sms-modal .modal-title {
-        font-weight: 900;
-    }
-
-    .payment-sms-modal .modal-body {
-        color: #111827;
-        font-size: 18px;
-        font-weight: 800;
-        line-height: 1.35;
-        padding: 22px;
-    }
-
-    .payment-sms-result {
-        margin: 0;
-    }
-
-    .payment-sms-preview {
-        background: #f8fafc;
+    .payment-sms-inline {
         border: 1px solid #cbd5e1;
         border-radius: 8px;
-        margin-top: 14px;
-        padding: 12px;
+        color: #111827;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.35;
+        margin-top: 8px;
+        padding: 8px 10px;
+        transition: opacity .35s ease, transform .35s ease;
     }
 
-    .payment-sms-preview strong,
-    .payment-sms-preview span {
+    .payment-sms-inline.is-hiding {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    .payment-sms-inline-success {
+        background: #ecfdf5;
+        border-color: #86efac;
+    }
+
+    .payment-sms-inline-warning {
+        background: #fffbeb;
+        border-color: #fbbf24;
+    }
+
+    .payment-sms-inline-danger {
+        background: #fef2f2;
+        border-color: #fca5a5;
+    }
+
+    .payment-sms-inline-preview {
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        margin-top: 8px;
+        padding: 8px;
+    }
+
+    .payment-sms-inline-preview span,
+    .payment-sms-inline-preview p {
         display: block;
     }
 
-    .payment-sms-preview strong {
+    .payment-sms-inline-preview span {
         color: #334155;
-        font-size: 14px;
+        font-size: 10px;
         font-weight: 900;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
         text-transform: uppercase;
     }
 
-    .payment-sms-preview span {
+    .payment-sms-inline-preview p {
         color: #0f172a;
-        font-size: 16px;
-        font-weight: 800;
+        font-size: 11px;
+        font-weight: 700;
         line-height: 1.35;
-    }
-
-    .payment-sms-modal-success .modal-header {
-        background: #16a34a;
-    }
-
-    .payment-sms-modal-warning .modal-header {
-        background: #d97706;
-    }
-
-    .payment-sms-modal-danger .modal-header {
-        background: #dc2626;
+        margin: 0;
     }
 
     @media (max-width: 700px) {

@@ -313,6 +313,9 @@ Route::delete('/cpayments/{cpayments}',[CustomerLedgerDetailsController::class,'
 
 //Route::get('/clhs',[CustomerLedgerHistroy::class,'index'])->name('clhs.index');
 Route::get('/clhs',[CustomerLedgerHistroy::class,'returnchoosendatehistroy'])->name('clhs.returnchoosendatehistroy');
+Route::get('/customer-ledger-dispute',[CustomerLedgerHistroy::class,'customerLedgerDispute'])->name('customer.ledger.dispute');
+Route::get('/customer-ledger-dispute/pdf',[CustomerLedgerHistroy::class,'customerLedgerDisputePdf'])->name('customer.ledger.dispute.pdf');
+Route::get('/customer-ledger-dispute/missing-invoices/pdf',[CustomerLedgerHistroy::class,'customerLedgerDisputeMissingInvoicesPdf'])->name('customer.ledger.dispute.missing-invoices.pdf');
 Route::get('/allcashandcredit',[CustomerLedgerHistroy::class,'returnchoosendatehistroycashandcredit'])->name('returnchoosendatehistroycashandcredit');
 Route::get('/all-customer-credit-list', function () {
     if (!auth()->check()) {

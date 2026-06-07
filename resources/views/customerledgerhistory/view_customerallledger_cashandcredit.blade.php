@@ -152,6 +152,12 @@
                 </div>
                 @if($cid)
                     <div class="clhs-toolbar-actions">
+                        <a href="{{ route('customer.ledger.dispute', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
+                            class="clhs-print-all-btn dispute"
+                            target="_blank">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Dispute / Missing Bills</span>
+                        </a>
                         <button type="button"
                             onclick="openMissingInvoiceModal({{ $cid }}, '{{ $from }}', '{{ $to }}')"
                             class="clhs-print-all-btn check-invoices">
@@ -689,6 +695,15 @@
 
 .clhs-print-all-btn.check-invoices:hover {
     background: #0f172a;
+}
+
+.clhs-print-all-btn.dispute {
+    background: #dc2626;
+    color: #ffffff !important;
+}
+
+.clhs-print-all-btn.dispute:hover {
+    background: #b91c1c;
 }
 
 .clhs-table-wrap {
