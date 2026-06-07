@@ -251,7 +251,7 @@ Route::delete('/chequedeposit/{chequedeposit}',[ChequeDepositController::class,'
 Route::get('/chequereceipt',[ChequeDepositController::class,'returnReceiptDeyailsbyReceiptNo'])->name('chequereceipt.search');
 Route::get('chequereceipt/pdf/convert/',[ChequeDepositController::class,'returnReceiptDeyailsbyReceiptNoPDF'])->name('chequereceipt.convert');
 
-
+//water
 
 Route::get('/items',[Itemscontroller::class,'index'])->name('items.index');
 Route::get('/items/create',[Itemscontroller::class,'create'])->name('items.create');
