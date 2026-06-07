@@ -1130,36 +1130,41 @@ class CustomerLedgerHistroy extends Controller
     public function printAllCashReceipts(Request $req, $customerid)
     {
         if (Auth::check()) {
+            $from = $req->date1;
+            $to = $req->date2;
+            $ledgerMode = $req->input('ledger_mode', 'credit');
             $customerinfo = customerinfo::where('id', $customerid)->first();
             
             $allReceipts = customerledgerdetails::where('customerid', $customerid)
                 ->where('invoicetype', 'payment')
+                ->when($from && $to, function ($query) use ($from, $to) {
+                    return $query->whereBetween('date', [$from, $to]);
+                })
                 ->orderBy('id', 'DESC')
                 ->get();
 
-            // Calculate running balance for each receipt
-            $runningBalance = 0;
+            $ledgerDueQuery = customerledgerdetails::where('customerid', $customerid);
+            if ($from && $to) {
+                $ledgerDueQuery->whereBetween('date', [$from, $to]);
+            }
+
+            $ledgerRowsForDue = $ledgerDueQuery->get();
+            $creditNoteRowsForDue = $this->creditNoteRowsForLedger($customerid, $from, $to);
+
+            if ($ledgerMode === 'cash_credit') {
+                $totalDebitForDue = $ledgerRowsForDue->where('invoicetype', '!=', 'cash')->sum('debit');
+                $totalCreditForDue = $ledgerRowsForDue->sum('credit') + $creditNoteRowsForDue->sum('credit');
+            } else {
+                $creditLedgerRowsForDue = $ledgerRowsForDue->whereIn('invoicetype', ['credit', 'payment', 'settlement']);
+                $totalDebitForDue = $creditLedgerRowsForDue->sum('debit');
+                $totalCreditForDue = $creditLedgerRowsForDue->sum('credit') + $creditNoteRowsForDue->sum('credit');
+            }
+
+            $summaryDueAmount = $totalDebitForDue - $totalCreditForDue;
             $receiptData = [];
-            
-            // Get all ledger entries for this customer to calculate balances
-            $allLedgerEntries = customerledgerdetails::where('customerid', $customerid)
-                ->where(function($query) {
-                    $query->where('invoicetype', 'credit')
-                          ->orWhere('invoicetype', 'payment');
-                })
-                ->orderBy('id', 'ASC')
-                ->get();
-            
+
             foreach ($allReceipts as $receipt) {
-                // Calculate balance up to this receipt
-                $balanceUpToReceipt = 0;
-                foreach ($allLedgerEntries as $entry) {
-                    if ($entry->id <= $receipt->id) {
-                        $balanceUpToReceipt += ($entry->debit ?? 0) - ($entry->credit ?? 0);
-                    }
-                }
-                
-                $receipt->totaldueamount = abs($balanceUpToReceipt);
+                $receipt->totaldueamount = $summaryDueAmount;
                 $receiptData[] = $receipt;
             }
 
@@ -1173,6 +1178,8 @@ class CustomerLedgerHistroy extends Controller
             ->loadView('customerledgerhistory.print_all_cash_receipts', [
                 'customer' => $customerinfo,
                 'receipts' => $receiptData,
+                'from' => $from,
+                'to' => $to,
             ])
             ->setPaper('A5', 'landscape');
         

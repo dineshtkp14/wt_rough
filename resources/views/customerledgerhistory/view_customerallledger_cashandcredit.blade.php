@@ -164,7 +164,7 @@
                             <i class="fa-solid fa-file-invoice"></i>
                             <span>Print All Credit Notes</span>
                         </a>
-                        <a href="{{ route('customer.printallcashreceipts', ['customerid' => $cid]) }}"
+                        <a href="{{ route('customer.printallcashreceipts', ['customerid' => $cid, 'date1' => $from, 'date2' => $to, 'ledger_mode' => 'cash_credit']) }}"
                             onclick="openPdfInNewTab(event, this.href); return false;"
                             class="clhs-print-all-btn receipts">
                             <i class="fa-solid fa-receipt"></i>
