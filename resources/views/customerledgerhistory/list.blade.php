@@ -6,6 +6,7 @@
         $dueAmount = (float) $dts - (float) $cts;
         $hasRows = $all && count($all) > 0;
         $hasCreditNotes = $all && collect($all)->contains('invoicetype', 'credit_note');
+        $hasNilAccount = $all && collect($all)->contains('invoicetype', 'settlement');
         $amountToWords = function ($num) use (&$amountToWords) {
             $num = (int) floor($num);
             $ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
@@ -176,6 +177,12 @@
                             class="clhs-print-btn {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
                             <span>Print</span>
                             <i class="fa-solid fa-print"></i>
+                        </a>
+                        <a href="{{ route('clhspdf.convert', ['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate, 'after_nil' => 1]) }}"
+                            onclick="openPdfInNewTab(event, this.href); return false;"
+                            class="clhs-print-all-btn after-nil {{ !$hasNilAccount ? 'pdf-link-disabled' : '' }}">
+                            <i class="fa-solid fa-print"></i>
+                            <span>Print After Nil Account</span>
                         </a>
                     </div>
                 @endif
@@ -812,6 +819,16 @@
 
         .clhs-print-all-btn.creditnotes:hover {
             background: #b45309;
+            color: #ffffff !important;
+        }
+
+        .clhs-print-all-btn.after-nil {
+            background: #7c3aed;
+            color: #ffffff !important;
+        }
+
+        .clhs-print-all-btn.after-nil:hover {
+            background: #6d28d9;
             color: #ffffff !important;
         }
 

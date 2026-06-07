@@ -16,6 +16,7 @@ const OLD_PRICE_SEARCH_URL = window.location.origin + "/itemsales/old-price-sear
 
 let customerSearchQuery = "";
 let productSearchQuery = "";
+let customerCardAutoHideTimer = null;
 
 let currentLink = null;
 let currentIndex = null;
@@ -32,6 +33,15 @@ let finalData = [
         note: "",
     },
 ];
+
+function scheduleCustomerCardAutoHide() {
+    clearTimeout(customerCardAutoHideTimer);
+    customerCardAutoHideTimer = setTimeout(function () {
+        $("#customerCard").fadeOut(300);
+        $("#toggleBox").addClass("animate");
+        $("#toggleBox").data("toggle", "close");
+    }, 7000);
+}
 
 const pathname = window.location.pathname;
 const exactPathname = pathname.split("/")[1];
@@ -89,6 +99,9 @@ $("#searchCustomerInput").on("keyup", function (e) {
     $("#customerCard").hide();
     finalData[0]["customer"] = "";
     $("#customerIdInput").val("");
+    $("#selectedCustomerInline").slideUp(100);
+    $("#selectedCustomerAddress").text("-");
+    $("#selectedCustomerPhone").text("-");
     const apiKey = $(this).data("api");
 
     if (customerSearchQuery.trim() === "") {
@@ -150,6 +163,9 @@ function triggerCustomerResultClick() {
             }
 
             $("#customerPhone").text(phoneText);
+            $("#selectedCustomerAddress").text(data.address || "-");
+            $("#selectedCustomerPhone").text(phoneText || "-");
+            $("#selectedCustomerInline").slideDown(150);
             finalData[0]["customer"] = `${data.id}`;
 
             $("#customerCard").show();
@@ -160,6 +176,7 @@ function triggerCustomerResultClick() {
 
             $("#toggleBox").removeClass("animate");
             $("#toggleBox").data("toggle", "open");
+            scheduleCustomerCardAutoHide();
 
             $("#searchCustomerInput").val(data.name);
             $("#customerIdInput").val(data.id);
@@ -170,6 +187,7 @@ function triggerCustomerResultClick() {
 $("#toggleBox")
     .off()
     .on("click", function () {
+        clearTimeout(customerCardAutoHideTimer);
         const toggleStatus = $(this).data("toggle");
         if (toggleStatus === "close") {
             $("#customerCard").animate({
@@ -255,7 +273,7 @@ function inputHTML(counter) {
 }
 
 function appendInputRow() {
-    if (salesData.length >= 11) {
+    if (salesData.length >= 13) {
         return false;
     }
 

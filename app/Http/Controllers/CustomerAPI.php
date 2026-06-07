@@ -13,11 +13,59 @@ class CustomerAPI extends Controller
      */
     public function index(Request $req)
     {
+        $search = trim((string) $req->name);
+        $terms = collect(preg_split('/\s+/', $search))
+            ->filter()
+            ->values();
 
-        $cus = customerinfo::where('name', 'LIKE', '%'.$req->name.'%')
-            ->orWhere('email', 'LIKE', '%'.$req->name.'%')
-            ->orWhere('phoneno', 'LIKE', '%'.$req->name.'%')
-            ->orWhere('address', 'LIKE', '%'.$req->name.'%')
+        $cus = customerinfo::query()
+            ->when($terms->isNotEmpty(), function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->where(function ($termQuery) use ($term) {
+                        $like = '%'.$term.'%';
+
+                        if (preg_match('/\d/', $term)) {
+                            $termQuery->where('phoneno', 'LIKE', $like)
+                                ->orWhere('alternate_phoneno', 'LIKE', $like);
+                        } else {
+                            $termQuery->where('name', 'LIKE', $like)
+                                ->orWhere('address', 'LIKE', $like);
+                        }
+                    });
+                }
+            })
+            ->when($search !== '', function ($query) use ($search) {
+                $query->orderByRaw(
+                    'CASE
+                        WHEN name LIKE ? THEN 0
+                        WHEN name LIKE ? THEN 1
+                        WHEN phoneno LIKE ? THEN 2
+                        WHEN alternate_phoneno LIKE ? THEN 3
+                        WHEN address LIKE ? THEN 4
+                        ELSE 5
+                    END',
+                    [
+                        $search.'%',
+                        '%'.$search.'%',
+                        '%'.$search.'%',
+                        '%'.$search.'%',
+                        '%'.$search.'%',
+                    ]
+                );
+            })
+            ->when($terms->isNotEmpty(), function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->orderByRaw(
+                        'CASE
+                            WHEN name LIKE ? THEN 0
+                            WHEN name LIKE ? THEN 1
+                            ELSE 2
+                        END',
+                        [$term.'%', '%'.$term.'%']
+                    );
+                }
+            })
+            ->orderBy('name')
             ->limit(20)
             ->get();
 

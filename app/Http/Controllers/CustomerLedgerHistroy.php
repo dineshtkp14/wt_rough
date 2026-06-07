@@ -98,6 +98,16 @@ class CustomerLedgerHistroy extends Controller
             );
         })->values();
     }
+
+    private function ledgerRowSortKey($row)
+    {
+        return sprintf(
+            '%s %s %s',
+            $row->date ?? '',
+            $row->created_at ?? '',
+            is_numeric($row->id ?? null) ? str_pad($row->id, 12, '0', STR_PAD_LEFT) : $row->id
+        );
+    }
     
 
     public function returncusbills(Request $req){
@@ -282,7 +292,28 @@ class CustomerLedgerHistroy extends Controller
         }
 
          $cusledgertails = $this->sortLedgerRows($cusledgertails->concat($creditNoteRows ?? collect()));
-         $credittotalsumwithdate += ($creditNoteRows ?? collect())->sum('credit');
+
+         if ($req->boolean('after_nil')) {
+             $latestNilAccount = $cusledgertails
+                 ->where('invoicetype', 'settlement')
+                 ->sortByDesc(function ($row) {
+                     return $this->ledgerRowSortKey($row);
+                 })
+                 ->first();
+
+             if ($latestNilAccount) {
+                 $latestNilAccountKey = $this->ledgerRowSortKey($latestNilAccount);
+                 $cusledgertails = $cusledgertails
+                     ->filter(function ($row) use ($latestNilAccountKey) {
+                         return $row->invoicetype !== 'settlement'
+                             && $this->ledgerRowSortKey($row) > $latestNilAccountKey;
+                     })
+                     ->values();
+             }
+         }
+
+         $debittotalsumwithdate = $cusledgertails->sum('debit');
+         $credittotalsumwithdate = $cusledgertails->sum('credit');
  
          $pdfview = view('customerledgerhistory.customerLedgerDetailsConvertPdf', [
              'all' => $cusledgertails,

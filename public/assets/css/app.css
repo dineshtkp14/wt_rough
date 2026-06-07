@@ -132,12 +132,27 @@ h5 {
 }
 
 .customer-suggestion-box {
-    gap: 4px;
+    gap: 8px;
+    padding: 18px 14px;
 }
 
 .customer-suggestion-content {
     min-width: 0;
     width: 100%;
+}
+
+.customer-suggestion-box > .fa-user {
+    color: #0f172a;
+    font-size: 20px;
+    margin-top: 3px;
+    width: 22px;
+}
+
+.customer-suggestion-content h1 {
+    color: #0f172a;
+    line-height: 1.25;
+    white-space: normal;
+    word-break: break-word;
 }
 
 .customer-suggestion-meta {
@@ -154,12 +169,34 @@ h5 {
     color: #475569;
     font-size: 14px;
     font-weight: 800;
+    line-height: 1.2;
     margin-top: 2px;
+    text-transform: uppercase;
 }
 
 .customer-suggestion-due {
     color: #b91c1c;
     font-weight: 900;
+}
+
+.selected-customer-inline {
+    color: #0f172a;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 14px;
+    font-weight: 700;
+    gap: 6px;
+    margin-top: 8px;
+    padding-left: 20px;
+}
+
+.selected-customer-inline span {
+    color: #02090f;
+    font-weight: 800;
+}
+
+.selected-customer-separator {
+    margin-left: 14px;
 }
 
 #spinnerIcon {

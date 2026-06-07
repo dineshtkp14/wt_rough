@@ -58,13 +58,17 @@
 
 
                 @csrf
-                <div class="invoice-top-controls pt-0 pb-4 d-flex justify-content-between align-items-start" style="margin-top: 2px;">
+                <div class="invoice-top-controls pt-0 pb-4 d-flex justify-content-between align-items-start flex-wrap gap-3" style="margin-top: 2px;">
                     
-                    <div class="invoice-control customer-control" style="width: 400px">
+                    <div class="invoice-control customer-control" style="width: min(720px, 100%)">
                         <div class="search-box">
-                           <input type="text" class="search-input" placeholder="Search Customer"
+                            <input type="text" class="search-input" placeholder="Search Customer"
                                 id="searchCustomerInput" data-api="customer_search" autocomplete="off">
                             <i class="fas fa-search search-icon"> </i>
+                            <div class="selected-customer-inline" id="selectedCustomerInline" style="display: none;">
+                                <span>Address:</span> <strong id="selectedCustomerAddress">-</strong>
+                                <span class="selected-customer-separator">Contact No:</span> <strong id="selectedCustomerPhone">-</strong>
+                            </div>
                             <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
                                 <div class="result-box d-flex justify-content-start align-items-center"
                                     id="customerLoadingResultBox">
