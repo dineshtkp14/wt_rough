@@ -100,7 +100,15 @@ public function update($id, Request $req)
 
             $invoice->save();
 
-            return redirect()->route('invoice.index')->with('success', 'Updated Successfully!');
+            DB::table('customerledgerdetails')
+                ->where('invoiceid', $invoice->id)
+                ->update([
+                    'debit' => $invoice->total,
+                    'updated_at' => now(),
+                ]);
+
+            return redirect()->route('onlyviewbillafterbill', ['invoiceid' => $invoice->id])
+                ->with('success', 'Invoice Updated Successfully!');
         } else {
             return redirect()->route('invoice.edit', $id)->withErrors($validator)->withInput();
         }

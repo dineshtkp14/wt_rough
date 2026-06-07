@@ -19,6 +19,13 @@
     </div>
 
     <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="m-0">Edit Invoice #{{ $invoice->id }}</h3>
+            <a href="{{ route('onlyviewbillafterbill', ['invoiceid' => $invoice->id]) }}" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back To Invoice
+            </a>
+        </div>
 
         <form class="row gx-5 gy-3" action="{{ route('invoice.update', $invoice->id) }}" method="post">
             @csrf  

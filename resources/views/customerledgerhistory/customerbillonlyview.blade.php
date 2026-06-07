@@ -187,6 +187,15 @@
             </a>
         @endif
 
+        @if (!empty($invoiceid))
+            <a href="{{ route('invoice.edit', $invoiceid) }}"
+                class="btn btn-warning btn-lg me-4"
+                style="font-weight: 800; color: #111827;">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Edit Invoice
+            </a>
+        @endif
+
         <a href="{{ route('invoicebillno.convert', ['invoiceid' => $invoiceid]) }}" onclick="openPdfInNewTab(event, this.href); return false;" class="{{ count($allinvoices) <= 0 ? 'pdf-link-disabled' : '' }}" id="pdfLink" style="font-size: 18px;">Print
             <div class="icon-box d-flex justify-content-center align-items-center" style="font-size: 34px;">
                 <i class="fa-solid fa-print"></i>
