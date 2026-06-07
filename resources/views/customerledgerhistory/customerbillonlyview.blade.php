@@ -159,7 +159,7 @@
 
     <div class="col-12 d-flex justify-content-end align-items-center pt-4 p-4">
 
-     @if (Session::has('success'))  
+     @if (Session::has('success') && !empty($invoiceid))  
 
        <span class="me-5">
         <form action="{{ route('customer.deletebillnoforuser', ['invoiceid' => $invoiceid]) }}" method="POST">
@@ -478,6 +478,7 @@
     </style>
 
     <script>
+@if (!empty($invoiceid))
 var invoiceSmsAlreadySending = false;
 
 function updateInvoiceSmsStatus(message, isError) {
@@ -539,6 +540,7 @@ function sendInvoiceSms(autoSend) {
 window.addEventListener('load', function () {
     sendInvoiceSms(true);
 });
+@endif
 @endif
 
 
