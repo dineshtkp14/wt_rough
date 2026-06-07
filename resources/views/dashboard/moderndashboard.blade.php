@@ -443,6 +443,29 @@
             min-height: 250px;
         }
 
+        .top-selling-scroll {
+            max-height: 520px;
+            overflow: auto;
+        }
+
+        .top-selling-scroll .table-modern th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .rank-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fff7ed;
+            color: var(--primary-dark);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
 
@@ -1684,6 +1707,50 @@
                 <div class="chart-container">
                     <canvas id="topItemsChart"></canvas>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top:1.5rem">
+        <div class="card-hd" style="flex-wrap: wrap; gap: 10px;">
+            <h5>Top 100 Most Sold Items</h5>
+            <a href="{{ route('itemsales.index') }}" class="view-all">View sales items</a>
+        </div>
+        <div class="card-bd">
+            <div class="top-selling-scroll">
+                <table class="table-modern">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Item</th>
+                            <th>Total Qty</th>
+                            <th>Total Sales</th>
+                            <th>Invoices</th>
+                            <th>Last Sale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($topSellingItems as $saleItem)
+                            <tr>
+                                <td><span class="rank-badge">{{ $loop->iteration }}</span></td>
+                                <td>
+                                    <strong>{{ $saleItem['item_name'] }}</strong>
+                                    @if (!empty($saleItem['item_id']))
+                                        <br><small style="color:#9ca3af">Item #{{ $saleItem['item_id'] }}</small>
+                                    @endif
+                                </td>
+                                <td>{{ number_format($saleItem['total_qty'], 2) }}</td>
+                                <td>Rs {{ number_format($saleItem['total_amount'], 2) }}</td>
+                                <td>{{ number_format($saleItem['invoice_count']) }}</td>
+                                <td>{{ $saleItem['last_sale_date'] }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" style="text-align:center;color:#9ca3af;">No sales items found</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

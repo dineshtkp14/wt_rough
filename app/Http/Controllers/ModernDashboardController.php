@@ -66,22 +66,34 @@ class ModernDashboardController extends Controller
         }
         $dailySales = ['labels' => $dailyLabels, 'data' => $dailyData];
 
-        $topItemsRaw = salesitem::select('itemid', DB::raw('SUM(quantity) as total_qty'))
-            ->whereNotNull('itemid')
-            ->where('date', '>=', now()->subDays(30))
-            ->groupBy('itemid')
+        $topSellingItems = salesitem::query()
+            ->leftJoin('items', 'salesitems.itemid', '=', 'items.id')
+            ->select('salesitems.itemid')
+            ->selectRaw("COALESCE(items.itemsname, salesitems.unstockedname, 'Unknown') as item_name")
+            ->selectRaw('SUM(salesitems.quantity) as total_qty')
+            ->selectRaw('SUM(salesitems.subtotal) as total_amount')
+            ->selectRaw('COUNT(DISTINCT salesitems.invoiceid) as invoice_count')
+            ->selectRaw('MAX(salesitems.date) as last_sale_date')
+            ->groupBy('salesitems.itemid', DB::raw("COALESCE(items.itemsname, salesitems.unstockedname, 'Unknown')"))
             ->orderByDesc('total_qty')
-            ->limit(5)
-            ->get();
-
-        $itemIds   = $topItemsRaw->pluck('itemid')->filter()->toArray();
-        $itemNames = item::whereIn('id', $itemIds)->pluck('itemsname', 'id');
+            ->limit(100)
+            ->get()
+            ->map(function ($row) {
+                return [
+                    'item_id' => $row->itemid,
+                    'item_name' => $row->item_name,
+                    'total_qty' => (float) $row->total_qty,
+                    'total_amount' => (float) $row->total_amount,
+                    'invoice_count' => (int) $row->invoice_count,
+                    'last_sale_date' => $row->last_sale_date ? NepaliDate::adToBsString($row->last_sale_date, 'en') : '-',
+                ];
+            });
 
         $topLabels = [];
         $topData   = [];
-        foreach ($topItemsRaw as $row) {
-            $topLabels[] = $itemNames[$row->itemid] ?? 'Unknown';
-            $topData[]   = (float) $row->total_qty;
+        foreach ($topSellingItems->take(5) as $row) {
+            $topLabels[] = $row['item_name'];
+            $topData[]   = $row['total_qty'];
         }
         if (empty($topLabels)) {
             $topLabels = ['No Data'];
@@ -236,7 +248,8 @@ class ModernDashboardController extends Controller
             'recentPayments',
             'recentCreditNotes',
             'recentDeletedInvoices',
-            'lowStockAlerts'
+            'lowStockAlerts',
+            'topSellingItems'
         ));
     }
 

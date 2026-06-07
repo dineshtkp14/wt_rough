@@ -37,13 +37,32 @@ const pathname = window.location.pathname;
 const exactPathname = pathname.split("/")[1];
 const quantityCase = exactPathname === "creditnotes" ? "all" : "limited";
 
+function escapeHTML(value) {
+    return `${value ?? ""}`
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 function customerResultHTML(value) {
+    const phone = [value.phoneno, value.alternate_phoneno]
+        .filter((number) => number !== null && number !== undefined && `${number}`.trim() !== "")
+        .join(", ");
+    const totalDue = value.total_due_formatted || "0.00";
+
     return `
-     <div class="result-box d-flex justify-content-start align-items-center customer-result-box" data-value='${JSON.stringify(
-         value
-     )}'> 
+     <div class="result-box d-flex justify-content-start align-items-start customer-result-box customer-suggestion-box" data-value="${encodeURIComponent(JSON.stringify(value))}"> 
             <i class="fas fa-user"> </i>
-            <h1 class="m-0 px-2">${value.name}</h1>
+            <div class="customer-suggestion-content px-2">
+                <h1 class="m-0">${escapeHTML(value.name)}</h1>
+                <div class="customer-suggestion-address">${escapeHTML(value.address || "No address")}</div>
+                <div class="customer-suggestion-meta">
+                    <span><i class="fas fa-phone"></i> ${escapeHTML(phone || "No contact no")}</span>
+                    <span class="customer-suggestion-due">Due: Rs ${escapeHTML(totalDue)}</span>
+                </div>
+            </div>
      </div>`;
 }
 
@@ -113,7 +132,7 @@ function triggerCustomerResultClick() {
         .off()
         .on("click", function () {
             const json = $(this).attr("data-value");
-            const data = JSON.parse(json);
+            const data = JSON.parse(decodeURIComponent(json));
 
             $("#customerName").text(data.name);
             $("#customerId").text(data.id);

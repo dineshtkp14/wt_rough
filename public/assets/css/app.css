@@ -107,7 +107,7 @@ h5 {
     background-color: white !important;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     border-radius: 6px;
-    max-height: 195.2px;
+    max-height: 360px;
     overflow-y: auto;
 }
 
@@ -126,8 +126,40 @@ h5 {
     background-color: #f1f1f1;
 }
 .result-box h1 {
-    font-size: 14px !important;
+    font-size: 17px !important;
+    font-weight: 800;
     cursor: pointer;
+}
+
+.customer-suggestion-box {
+    gap: 4px;
+}
+
+.customer-suggestion-content {
+    min-width: 0;
+    width: 100%;
+}
+
+.customer-suggestion-meta {
+    color: #64748b;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 14px;
+    font-weight: 800;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.customer-suggestion-address {
+    color: #475569;
+    font-size: 14px;
+    font-weight: 800;
+    margin-top: 2px;
+}
+
+.customer-suggestion-due {
+    color: #b91c1c;
+    font-weight: 900;
 }
 
 #spinnerIcon {
