@@ -295,7 +295,7 @@
                     </li>
 
                     <li class="nav-item dashboard">
-                        <a href="{{ route('smarttools.index') }}" class="nav-link-single">
+                        <a href="{{ url('/smart-tools') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#smart-tools-collapse"
                                 aria-expanded="false">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i>
@@ -659,7 +659,7 @@
                     </li>
 
                     <li class="nav-item dashboard">
-                        <a href="{{ route('smarttools.index') }}" class="nav-link-single">
+                        <a href="{{ url('/smart-tools') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-smart-tools"
                                 aria-expanded="false">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i>
