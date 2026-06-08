@@ -19,7 +19,7 @@
             
             <div class="col-md-8">
                 <label for="orderlist" class="form-label">Order List  <span style="color: red;">*</span></label>
-                <textarea placeholder="Enter order list" class="form-control @error('orderlist') is-invalid @enderror" name="orderlist" rows="10" style="font-size: 20px;">{{ old('orderlist') }}</textarea>
+                <textarea placeholder="Enter order list" class="form-control @error('orderlist') is-invalid @enderror" name="orderlist" id="orderlist" rows="10" style="font-size: 20px;">{{ old('orderlist') }}</textarea>
                 @error('orderlist')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
@@ -40,7 +40,7 @@
 
             <div class="col-md-6">
                 <label for="notes" class="form-label">Notes</label>
-                <textarea placeholder="Enter notes" class="form-control @error('notes') is-invalid @enderror" name="notes" rows="3">{{ old('notes') }}</textarea>
+                <textarea placeholder="Enter notes" class="form-control @error('notes') is-invalid @enderror" name="notes" id="notes" rows="3">{{ old('notes') }}</textarea>
                 @error('notes')
                     <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
@@ -59,6 +59,7 @@
             // Disable the submit button
             $('#submitBtn').prop('disabled', true);
         });
+
     });
 </script>
 @stop

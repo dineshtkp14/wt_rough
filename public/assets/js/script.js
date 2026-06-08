@@ -56,6 +56,52 @@ function escapeHTML(value) {
         .replace(/'/g, "&#039;");
 }
 
+function clearInvoiceErrors() {
+    $(".invoice-field-invalid").removeClass("invoice-field-invalid");
+    $(".field-error-text").remove();
+    $("#invoiceErrorBox").removeClass("has-error has-success");
+    $("#errorText").attr("class", "fw-bold").text("Ready to verify invoice.");
+}
+
+function setInvoiceMessage(message, type = "error") {
+    const box = $("#invoiceErrorBox");
+    box.removeClass("has-error has-success");
+    box.addClass(type === "success" ? "has-success" : "has-error");
+    $("#errorText")
+        .attr("class", type === "success" ? "text-success fw-bold" : "text-danger fw-bold")
+        .text(message);
+}
+
+function markFieldError(field, message) {
+    const target = $(field);
+    if (!target.length) return;
+
+    target.addClass("invoice-field-invalid");
+
+    let holder = target.closest(".input-group").length ? target.closest(".input-group") : target;
+    if (target.hasClass("search-input") && target.closest(".search-box").length) {
+        holder = target.closest(".search-box");
+    } else if (target.closest(".old-price-wrapper").length) {
+        holder = target.closest(".old-price-wrapper");
+    }
+    if (!holder.next(".field-error-text").length) {
+        holder.after(`<span class="field-error-text">${escapeHTML(message)}</span>`);
+    }
+}
+
+function setInvoiceError(message, field) {
+    setInvoiceMessage(message, "error");
+    markFieldError(field, message);
+
+    const target = $(field);
+    if (target.length) {
+        target.trigger("focus");
+        $("html, body").animate({
+            scrollTop: Math.max(0, target.offset().top - 130),
+        }, 180);
+    }
+}
+
 function customerResultHTML(value) {
     const phone = [value.phoneno, value.alternate_phoneno]
         .filter((number) => number !== null && number !== undefined && `${number}`.trim() !== "")
@@ -213,7 +259,7 @@ function inputHTML(counter) {
     <td>${serialNo}</td> <!-- Serial number column -->
 
                 <td><button class="btn btn-danger remove-row-btn" data-id="${counter}"><i class="fa-solid fa-xmark"></i></button></td>
-                <td>
+                <td class="item-cell">
                 <a href="#" class="select-product-link" id="selectProductLink" style="text-decoration: none;" data-id="${counter}" data-query="">
                         <h6 class="m-0" style="font-size: 14px; color: #000000;"></h6>
                         <p class="m-0" style="font-size: 14px; font-weight: 500;">
@@ -221,15 +267,17 @@ function inputHTML(counter) {
                         </p>
                     </a>
                 </td>
-                <td>
+                <td class="unstocked-cell">
                     <div class="old-price-wrapper position-relative">
                         <input autocomplete="off" type="text" placeholder="Unstocked Name" class="form-control sales-input old-price-input" id="unstockedInput" value="" data-id="${counter}" data-name="unstocked">
                         <div class="old-price-result-box" data-id="${counter}" style="display:none;"></div>
                     </div>
                 </td>
-                <td>
+                <td class="quantity-table-cell">
 
-                    <input  autocomplete="off" type="text" placeholder="Quantity  " class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
+                    <div class="quantity-cell">
+                        <input autocomplete="off" type="text" placeholder="Quantity" class="form-control sales-input" id="quantityInput" value="" data-id="${counter}" data-name="quantity">
+                    </div>
                 </td>
 
             <td>
@@ -250,7 +298,7 @@ function inputHTML(counter) {
 
                 
 
-                <td>
+                <td class="price-cell">
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">Rs.</span>
                         <input autocomplete="off" type="text"  placeholder="Price" class="form-control sales-input" id="priceInput" value="" data-id="${counter}" data-name="price" >
@@ -264,7 +312,7 @@ function inputHTML(counter) {
 
 
 
-                <td>
+                <td class="subtotal-cell">
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">Rs.</span>
                         <input autocomplete="off" type="text" placeholder="0.00" class="form-control" id="subTotalInput" value="" data-id="${counter}" data-name="subtotal" disabled>
@@ -298,6 +346,9 @@ function appendInputRow(rowData = null) {
         rowEl.find("#quantityInput").val(row.quantity);
         rowEl.find("#priceInput").val(row.price);
         rowEl.find("#subTotalInput").val(row.subtotal);
+        rowEl.find("#unstockedInput").attr("title", row.unstocked);
+        rowEl.find("#priceInput").attr("title", row.price);
+        rowEl.find("#subTotalInput").attr("title", row.subtotal);
         rowEl.find("#unitInput").val(row.unit || "choose");
 
         if (row.product) {
@@ -308,12 +359,14 @@ function appendInputRow(rowData = null) {
             rowEl.find("#unitInput").attr("disabled", "true");
 
             if (rowData.max_quantity) {
-                rowEl.find("#quantityInput").attr("placeholder", `(Max: ${rowData.max_quantity})`);
-                rowEl.find("#quantityInput").attr("data-max", rowData.max_quantity);
+                rowEl.find("#quantityInput")
+                    .attr("data-max", rowData.max_quantity)
+                    .attr("placeholder", `Quantity (Max: ${rowData.max_quantity})`);
             }
         } else {
             rowEl.find("#unstockedInput").val(row.unstocked);
         }
+
     }
 
     triggerRemoveEvent();
@@ -462,6 +515,11 @@ function addInputValue(index, inputId, dataId, dataName, value) {
         salesData[index]["discount"]
     );
     $(`#inputRow${dataId} #subTotalInput`).val(salesData[index]["subtotal"]);
+    $(`#inputRow${dataId} #subTotalInput`).attr("title", salesData[index]["subtotal"]);
+
+    if (dataName === "unstocked" || dataName === "price" || dataName === "quantity") {
+        $(`#inputRow${dataId} #${inputId}`).attr("title", salesData[index][dataName]);
+    }
 
     getFinalCalculations();
 }
@@ -476,6 +534,9 @@ function handleInputChange() {
         const value = target.value.trim(); // Trim the selected value
 
         const index = salesData.findIndex((obj) => obj.id === dataId);
+        $(target).removeClass("invoice-field-invalid");
+        $(target).closest(".input-group").next(".field-error-text").remove();
+        $(target).next(".field-error-text").remove();
 
         if (inputId !== "unstockedInput") {
             hideOldPriceBoxes();
@@ -483,14 +544,12 @@ function handleInputChange() {
 
         if (inputId === "unitInput") {
             // Check if a unit is selected
-            if (value === "select") {
+            if (value === "select" || value === "choose") {
                 // If no unit is selected, show the validation error
-                $("#errorText").attr("class", "text-danger fw-bold");
-                $("#errorText").text("Please select a unit!");
+                setInvoiceError("Please select a unit.", target);
                 $("#submitBtn").attr("disabled", "disabled");
             } else {
                 // If a unit is selected, clear the validation error and update the salesData
-                $("#errorText").text(""); // Clear the error message
                 salesData[index][dataName] = value; // Update the salesData
                 if ($(`#${inputId}`).val() !== "select") {
                     // Check if the previous value was "select"
@@ -723,7 +782,7 @@ function triggerProductResultClick() {
             if (currentUrl.indexOf("creditnotes/create") === -1) {
                 $(`#inputRow${currentID} #quantityInput`).attr(
                     "placeholder",
-                    `(Max: ${data.quantity})`
+                    `Quantity (Max: ${data.quantity})`
                 );
                 $(`#inputRow${currentID} #quantityInput`).attr(
                     "data-max",
@@ -831,53 +890,46 @@ $(window).on("load", function () {
     $("#verifyBtn").on("click", function (e) {
         e.preventDefault();
         hideOldPriceBoxes();
+        clearInvoiceErrors();
 
         let hasError = false; // Flag to track if any error occurs
 
         if ($("#salesDate").val().trim() === "") {
-            $("#errorText").attr("class", "text-danger fw-bold");
-            $("#errorText").text("Please select Date !");
+            setInvoiceError("Please select date.", $("#salesDate"));
             hasError = true;
         } else if (finalData[0]["customer"].trim() === "") {
-            $("#errorText").attr("class", "text-danger fw-bold");
-            $("#errorText").text("Please select customer Name !");
+            setInvoiceError("Please select customer name.", $("#searchCustomerInput"));
             hasError = true;
         } else if (
             currentUrl.indexOf("creditnotes/create") === -1 &&
             $("#invoice_type").val().trim() === ""
         ) {
             // Check if invoice type is selected, but only if it's not a credit note creation page
-            $("#errorText").attr("class", "text-danger fw-bold");
-            $("#errorText").text("Please select invoice type !");
+            setInvoiceError("Please select invoice type.", $("#invoice_type"));
             hasError = true;
         } else {
             $.each(salesData, function (index, value) {
+                const row = $(`#inputRow${value.id}`);
                 if (
                     value.product.trim() === "" &&
                     value.unstocked.trim() === ""
                 ) {
-                    $("#errorText").attr("class", "text-danger fw-bold");
-                    $("#errorText").text(
-                        "Please enter Unstocked  or select Item !"
-                    );
+                    setInvoiceError("Please select item or enter unstocked item.", row.find("#unstockedInput"));
                     hasError = true;
                     return false; // Exit the loop early since there's an error
                 } else if (
                     value.quantity.trim() === "" ||
                     parseFloat(value.quantity) <= 0
                 ) {
-                    $("#errorText").attr("class", "text-danger fw-bold");
-                    $("#errorText").text("Please enter valid quantity !");
+                    setInvoiceError("Please enter valid quantity.", row.find("#quantityInput"));
                     hasError = true;
                     return false; // Exit the loop early since there's an error
                 } else if (value.price.trim() === "") {
-                    $("#errorText").attr("class", "text-danger fw-bold");
-                    $("#errorText").text("Please enter valid price !");
+                    setInvoiceError("Please enter valid price.", row.find("#priceInput"));
                     hasError = true;
                     return false; // Exit the loop early since there's an error
-                } else if (value.unit.trim() === "") {
-                    $("#errorText").attr("class", "text-danger fw-bold");
-                    $("#errorText").text("Please Select unit !");
+                } else if (value.unit.trim() === "" || value.unit.trim() === "choose") {
+                    setInvoiceError("Please select unit.", row.find("#unitInput"));
                     hasError = true;
                     return false; // Exit the loop early since there's an error
                 }
@@ -889,8 +941,7 @@ $(window).on("load", function () {
                 $("#salesArrInput").val(JSON.stringify(salesData));
                 $("#finalArrInput").val(JSON.stringify(finalData));
 
-                $("#errorText").attr("class", "text-success fw-bold");
-                $("#errorText").text("Success, Now you can submit !");
+                setInvoiceMessage("Success, now you can save invoice.", "success");
                 $("#submitBtn").removeAttr("disabled");
 
                 if (

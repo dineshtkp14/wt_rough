@@ -44,10 +44,10 @@
 
         <div class="container-fluid invoice-create-page">
 
-        <span class="invoice-quick-actions">
+        <div class="invoice-quick-actions">
             <a href="{{ route('customerinfos.create') }}" class="btn btn-primary m"> <i class="fa-solid fa-plus"></i> Add New Customer</a>
-            <a href="{{ route('onlyviewbillafterbill') }}" class="btn ms-5" style="background-color: #556B2F; border-color:rgb(29, 3, 3); color: #ffffff;"> <i class="fa-solid fa-eye"></i> Search Invoice</a>
-        </span>
+            <a href="{{ route('onlyviewbillafterbill') }}" class="btn" style="background-color: #556B2F; border-color:rgb(29, 3, 3); color: #ffffff;"> <i class="fa-solid fa-eye"></i> Search Invoice</a>
+        </div>
             <form action="{{ route('itemsales.store') }}" method="post">
 
 
@@ -58,9 +58,10 @@
 
 
                 @csrf
-                <div class="invoice-top-controls pt-0 pb-4 d-flex justify-content-between align-items-start flex-wrap gap-3" style="margin-top: 2px;">
+                <div class="invoice-top-controls">
                     
-                    <div class="invoice-control customer-control" style="width: min(620px, 100%)">
+                    <div class="invoice-control customer-control">
+                        <label class="invoice-field-label" for="searchCustomerInput">Customer</label>
                         <div class="search-box">
                             <input type="text" class="search-input" placeholder="Search Customer"
                                 id="searchCustomerInput" data-api="customer_search" autocomplete="off">
@@ -93,24 +94,26 @@
 
 
 
-                    <div class="invoice-control type-control" style="width: 350px"   >
+                    <div class="invoice-control type-control">
+                        <label class="invoice-field-label" for="invoice_type">Invoice Type</label>
                         <select id="invoice_type" name="invoice_type" class="d-inline form-select select-background"  onchange="changeBackgroundColor(this)">
                             <option value="">--Choose Invoice Type--</option>
                             <option value="cash">CASH </option>
                             <option value="credit">CREDIT </option>
                            
                         </select>
-                        <small style="font-size: 14px; padding:20px; color:#02090f;"> Choose mode of invoice &nbsp;    (cash / Credit) </small>
+                        <small class="invoice-help-text">Cash / Credit</small>
                     </div>
 
                     
-                    <div class="invoice-control date-control" style="width: 250px; " class="">
+                    <div class="invoice-control date-control">
+                        <label class="invoice-field-label" for="salesDate">Date</label>
                         <div class="input-group mb-1">
                             <span class="input-group-text">Date:</span>
                             <input type="date" class="form-control" placeholder="" id="salesDate"
                                 class="form-control foritemsaledatecss" value="{{ now()->format('Y-m-d') }}" name="date">
                         </div>
-                        <small class="text-muted">
+                        <small class="text-muted invoice-help-text">
                             Nepali Date: {{ \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en') }}
                         </small>
                         
@@ -144,8 +147,8 @@
                     </table>
                 </div>
 
-                <div class="invoice-bottom-grid row mt-5 mb-4 p-0">
-                    <div class="col-md-9 invoice-notes-panel">
+                <div class="invoice-bottom-grid">
+                    <div class="invoice-notes-panel">
                         <div class="">
                             <label class="my-3"><b>Amount in words: </b><span id="totalAmountWords"
                                     style="text-transform: capitalize;">...</span></label><br>
@@ -177,7 +180,7 @@
 
                         </div>
                     </div>
-                    <div class="col-md-3 invoice-total-panel">
+                    <div class="invoice-total-panel">
                         <div class="invoice-total-box">
                             <div class="input-group mb-1">
                                 <span class="input-group-text">Sub Total (Rs.)</span>
@@ -195,15 +198,32 @@
                                     data-name="total" disabled>
                             </div>
                             <br>
-                            <div class="error-message mb-2">
-                                <small class="text-danger fw-bold" id="errorText"></small>
+                            <div class="error-message mb-2" id="invoiceErrorBox">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <small class="fw-bold" id="errorText">Ready to verify invoice.</small>
                             </div>
-                            <button class="btn btn-primary btn-md invoice-action-btn" id="verifyBtn">Verify</button>
-                            <button class="btn btn-success btn-md invoice-action-btn" type="submit" id="submitBtn" style="display: none;" disabled>Save</button>
+                            <button class="btn btn-primary btn-md invoice-action-btn" id="verifyBtn">
+                                <i class="fa-solid fa-check"></i> Verify
+                            </button>
+                            <button class="btn btn-success btn-md invoice-action-btn" type="submit" id="submitBtn" style="display: none;" disabled>
+                                <i class="fa-solid fa-floppy-disk"></i> Save Invoice
+                            </button>
                         </div>
                     </div>
                 </div>
             </form>
+        </div>
+
+        <div class="invoice-submit-overlay" id="invoiceSubmitOverlay" aria-live="polite" style="display: none;">
+            <div class="invoice-submit-card">
+                <div class="invoice-submit-receipt">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <h2>Creating invoice</h2>
+                <p>Please wait...</p>
+            </div>
         </div>
 
         <div class="modal-wrapper" id="modalWrapper" style="display: none;">
@@ -242,10 +262,12 @@
     <script>
 
 $(document).ready(function () {
-        $('form').submit(function () {
-            // Disable the submit button
-            $('#submitBtn').prop('disabled', true);
-            
+        $('.invoice-create-page form').on('submit', function () {
+            $('#invoiceSubmitOverlay').css('display', 'flex');
+            $('#submitBtn')
+                .prop('disabled', true)
+                .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...');
+            $('#verifyBtn').prop('disabled', true);
         });
     });
 
@@ -276,7 +298,7 @@ $(document).ready(function () {
     <style>
         .select-background {
             background-color: white;
-            font-size: 25px;
+            font-size: 18px;
         }
     
         .cash-bg {
@@ -286,6 +308,110 @@ $(document).ready(function () {
         .credit-bg {
             background-color: rgb(216, 18, 141) !important;
             color: white;
+        }
+
+        .invoice-submit-overlay {
+            align-items: center;
+            backdrop-filter: blur(3px);
+            background: rgba(15, 23, 42, .36);
+            inset: 0;
+            justify-content: center;
+            position: fixed;
+            z-index: 9999;
+        }
+
+        .invoice-submit-card {
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #dbe4f0;
+            border-radius: 10px;
+            box-shadow: 0 24px 70px rgba(15, 23, 42, .28);
+            display: grid;
+            gap: 8px;
+            justify-items: center;
+            max-width: 320px;
+            padding: 28px 32px;
+            text-align: center;
+            width: calc(100% - 32px);
+        }
+
+        .invoice-submit-card h2 {
+            color: #111827;
+            font-size: 22px;
+            font-weight: 900;
+            margin: 0;
+        }
+
+        .invoice-submit-card p {
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .invoice-submit-receipt {
+            animation: invoiceReceiptFloat 1.15s ease-in-out infinite;
+            background: #f8fafc;
+            border: 2px solid #1d4ed8;
+            border-radius: 8px;
+            display: grid;
+            gap: 7px;
+            height: 74px;
+            padding: 14px 12px;
+            position: relative;
+            width: 64px;
+        }
+
+        .invoice-submit-receipt::after {
+            background:
+                linear-gradient(135deg, transparent 7px, #ffffff 0) left,
+                linear-gradient(225deg, transparent 7px, #ffffff 0) right;
+            background-repeat: no-repeat;
+            background-size: 50% 100%;
+            bottom: -2px;
+            content: "";
+            height: 10px;
+            left: 0;
+            position: absolute;
+            right: 0;
+        }
+
+        .invoice-submit-receipt span {
+            animation: invoiceLinePulse 1.15s ease-in-out infinite;
+            background: #2563eb;
+            border-radius: 999px;
+            height: 6px;
+        }
+
+        .invoice-submit-receipt span:nth-child(2) {
+            animation-delay: .15s;
+            width: 78%;
+        }
+
+        .invoice-submit-receipt span:nth-child(3) {
+            animation-delay: .3s;
+            width: 55%;
+        }
+
+        @keyframes invoiceReceiptFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @keyframes invoiceLinePulse {
+            0%, 100% {
+                opacity: .35;
+                transform: scaleX(.72);
+                transform-origin: left;
+            }
+            50% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
         }
 
         .old-price-wrapper {
@@ -334,19 +460,35 @@ $(document).ready(function () {
         }
 
         .invoice-action-btn {
-            min-width: 300px;
-            padding-left: 24px;
-            padding-right: 24px;
+            align-items: center;
+            display: inline-flex;
+            font-size: 18px;
+            font-weight: 900;
+            gap: 8px;
+            justify-content: center;
+            min-height: 54px;
+            width: 100%;
         }
 
         .invoice-create-page {
             padding-bottom: 24px;
+            width: 100%;
+            max-width: none;
+            margin: 0;
+        }
+
+        .main-content {
+            flex: 1 1 auto;
+            min-width: 0;
+            width: 100%;
+            padding-right: 24px;
         }
 
         .invoice-quick-actions {
-            float: right;
-            margin-top: -100px;
-            margin-right: 500px;
+            display: flex;
+            gap: 14px;
+            justify-content: flex-end;
+            margin: -86px 0 24px;
         }
 
         .invoice-quick-actions .btn {
@@ -358,11 +500,15 @@ $(document).ready(function () {
         }
 
         .invoice-top-controls {
-            gap: 18px;
+            align-items: start;
+            display: grid;
+            gap: 14px;
+            grid-template-columns: minmax(340px, 1.7fr) minmax(230px, .72fr) minmax(210px, .58fr);
+            margin: 0 0 14px;
         }
 
         .invoice-control {
-            flex: 0 1 auto;
+            min-width: 0;
         }
 
         .invoice-control .search-box,
@@ -371,7 +517,38 @@ $(document).ready(function () {
             width: 100%;
         }
 
+        .invoice-field-label {
+            color: #172033;
+            display: block;
+            font-size: 13px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .invoice-help-text {
+            color: #64748b !important;
+            display: block;
+            font-size: 13px !important;
+            font-weight: 800;
+            margin-top: 5px;
+            padding: 0 !important;
+        }
+
+        .invoice-control .search-input,
+        .invoice-control .form-select,
+        .invoice-control .form-control {
+            min-height: 44px;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
         .invoice-table-shell {
+            background: #ffffff;
+            border: 1px solid #d5deea;
+            border-radius: 8px;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, .06);
             overflow: visible;
         }
 
@@ -387,20 +564,152 @@ $(document).ready(function () {
 
         .invoicetable {
             width: 100%;
+            margin: 0;
+            table-layout: fixed;
         }
 
         .invoicetable th,
         .invoicetable td {
+            padding: 8px 10px;
             vertical-align: middle;
         }
 
         .invoicetable th {
+            background: #f1f5f9;
+            color: #111827;
+            font-size: 14px;
             font-weight: 900;
+            line-height: 1.1;
             white-space: nowrap;
         }
 
+        .invoice-create-page .invoicetable th:nth-child(1),
+        .invoice-create-page .invoicetable td:nth-child(1) {
+            width: 42px;
+            text-align: center;
+        }
+
+        .invoice-create-page .invoicetable th:nth-child(2),
+        .invoice-create-page .invoicetable td:nth-child(2) {
+            width: 56px;
+            text-align: center;
+        }
+
+        .invoice-create-page .invoicetable th:nth-child(3),
+        .invoice-create-page .invoicetable td:nth-child(3) {
+            width: 110px;
+        }
+
+        .invoice-create-page .invoicetable th:nth-child(4),
+        .invoice-create-page .invoicetable td:nth-child(4) {
+            width: 34%;
+        }
+
+        .invoice-create-page .invoicetable th:nth-child(5),
+        .invoice-create-page .invoicetable td:nth-child(5) {
+            width: 145px;
+        }
+
+        .invoice-create-page .invoicetable th:nth-child(6),
+        .invoice-create-page .invoicetable td:nth-child(6) {
+            width: 135px;
+        }
+
+        .invoice-create-page .invoicetable th:nth-child(7),
+        .invoice-create-page .invoicetable td:nth-child(7) {
+            width: 220px;
+        }
+
+        .invoice-create-page .invoicetable th:nth-child(8),
+        .invoice-create-page .invoicetable td:nth-child(8) {
+            width: 250px;
+        }
+
+        .invoicetable .form-control,
+        .invoicetable .form-select {
+            min-height: 42px;
+            border-radius: 7px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .invoicetable .btn {
+            min-height: 38px;
+            min-width: 38px;
+            padding: 6px 10px;
+        }
+
+        .invoicetable .input-group {
+            flex-wrap: nowrap;
+        }
+
+        .invoicetable .input-group-text {
+            flex: 0 0 auto;
+            padding-left: 10px;
+            padding-right: 10px;
+            font-weight: 800;
+        }
+
+        .invoicetable #priceInput,
+        .invoicetable #subTotalInput {
+            min-width: 0;
+            padding-left: 8px;
+            padding-right: 8px;
+            text-align: right;
+        }
+
+        .unstocked-cell,
+        .price-cell,
+        .subtotal-cell {
+            position: relative;
+        }
+
+        .unstocked-cell #unstockedInput {
+            font-weight: 500;
+            line-height: 1.1;
+        }
+
+        .price-cell #priceInput,
+        .subtotal-cell #subTotalInput {
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .price-cell #priceInput,
+        .subtotal-cell #subTotalInput {
+            font-size: clamp(13px, 1vw, 16px);
+            letter-spacing: 0;
+        }
+
+        .quantity-cell {
+            display: grid;
+            gap: 5px;
+        }
+
+        .select-product-link h6 {
+            display: -webkit-box;
+            font-size: 12px !important;
+            line-height: 1.15;
+            max-height: 28px;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+
+        .select-product-link p {
+            font-size: 12px !important;
+            line-height: 1.1;
+            margin-top: 2px !important;
+        }
+
         .invoice-total-box {
-            background: transparent;
+            background: #ffffff;
+            border: 1px solid #d5deea;
+            border-radius: 8px;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, .1);
+            padding: 14px;
+            position: sticky;
+            top: 14px;
         }
 
         .invoice-total-box .input-group-text {
@@ -408,13 +717,62 @@ $(document).ready(function () {
         }
 
         .invoice-total-box .form-control {
+            min-height: 46px;
+            font-size: 18px;
             font-weight: 800;
             text-align: right;
+        }
+
+        .invoice-bottom-grid {
+            align-items: start;
+            display: grid;
+            gap: 18px;
+            grid-template-columns: minmax(0, 1fr) minmax(340px, 390px);
+            margin: 22px 0 24px;
         }
 
         .invoice-notes-panel textarea {
             min-height: 96px;
             font-size: 16px;
+        }
+
+        .error-message {
+            align-items: flex-start;
+            background: #f8fafc;
+            border: 1px solid #d5deea;
+            border-radius: 8px;
+            color: #64748b;
+            display: flex;
+            gap: 8px;
+            min-height: 42px;
+            padding: 10px 11px;
+        }
+
+        .error-message.has-error {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #b91c1c;
+        }
+
+        .error-message.has-success {
+            background: #ecfdf5;
+            border-color: #86efac;
+            color: #166534;
+        }
+
+        .invoice-field-invalid,
+        .invoice-field-invalid:focus {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, .12) !important;
+        }
+
+        .field-error-text {
+            color: #b91c1c;
+            display: block;
+            font-size: 12px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-top: 5px;
         }
 
         #creditDaysWrapper {
@@ -424,23 +782,22 @@ $(document).ready(function () {
         @media (max-width: 1200px) {
             .invoice-quick-actions {
                 display: flex;
-                float: none;
                 justify-content: flex-end;
                 gap: 14px;
-                margin: 0 0 18px;
+                margin: -72px 0 22px;
                 padding-right: 0;
             }
 
             .invoice-top-controls {
-                align-items: stretch !important;
-                flex-wrap: wrap;
+                grid-template-columns: 1fr 1fr;
             }
 
-            .invoice-control,
-            .customer-control,
-            .type-control,
-            .date-control {
-                width: calc(50% - 9px) !important;
+            .customer-control {
+                grid-column: 1 / -1;
+            }
+
+            .invoice-bottom-grid {
+                grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
             }
         }
 
@@ -459,6 +816,7 @@ $(document).ready(function () {
                 align-items: stretch;
                 flex-direction: column;
                 gap: 10px;
+                margin: 0 0 12px;
             }
 
             .invoice-quick-actions .btn {
@@ -468,14 +826,7 @@ $(document).ready(function () {
             }
 
             .invoice-top-controls {
-                flex-direction: column;
-            }
-
-            .invoice-control,
-            .customer-control,
-            .type-control,
-            .date-control {
-                width: 100% !important;
+                grid-template-columns: 1fr;
             }
 
             .select-background {
@@ -489,10 +840,6 @@ $(document).ready(function () {
             }
 
             .invoice-table-shell {
-                background: #ffffff;
-                border: 1px solid #d5deea;
-                border-radius: 8px;
-                box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
                 overflow-x: auto;
                 overflow-y: visible;
                 -webkit-overflow-scrolling: touch;
@@ -503,7 +850,7 @@ $(document).ready(function () {
             }
 
             .invoicetable {
-                min-width: 920px;
+                min-width: 1220px;
             }
 
             .invoicetable th,
@@ -512,8 +859,8 @@ $(document).ready(function () {
             }
 
             .invoicetable th {
-                background: #3348d4;
-                color: #ffffff;
+                background: #f1f5f9;
+                color: #111827;
                 font-size: 14px;
             }
 
@@ -529,12 +876,8 @@ $(document).ready(function () {
             }
 
             .invoice-bottom-grid {
+                grid-template-columns: 1fr;
                 margin-top: 18px !important;
-            }
-
-            .invoice-notes-panel,
-            .invoice-total-panel {
-                width: 100%;
             }
 
             .credit-days-holder {
@@ -553,12 +896,8 @@ $(document).ready(function () {
             }
 
             .invoice-total-box {
-                background: #ffffff;
-                border: 1px solid #d5deea;
-                border-radius: 8px;
-                box-shadow: 0 8px 22px rgba(15, 23, 42, .08);
                 margin-top: 14px;
-                padding: 14px;
+                position: static;
             }
 
             .invoice-total-box .form-control {
@@ -591,7 +930,7 @@ $(document).ready(function () {
 
         @media (max-width: 480px) {
             .invoicetable {
-                min-width: 860px;
+                min-width: 1160px;
             }
 
             .old-price-result-box {

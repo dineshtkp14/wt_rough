@@ -294,6 +294,17 @@
                         </a>
                     </li>
 
+                    <li class="nav-item dashboard">
+                        <a href="{{ route('smarttools.index') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#smart-tools-collapse"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>Smart Tools</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
                     <!-- Check Today -->
                     <li class="nav-item dashboard">
                         <a href="{{ route('checktoday.index') }}" class="nav-link-single">
@@ -642,6 +653,17 @@
                                 aria-expanded="false">
                                 <i class="fa-solid fa-chart-line"></i>
                                 <span>Modern Dashboard</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </a>
+                    </li>
+
+                    <li class="nav-item dashboard">
+                        <a href="{{ route('smarttools.index') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-smart-tools"
+                                aria-expanded="false">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>Smart Tools</span>
                                 <i class="fa-solid fa-chevron-down"></i>
                             </button>
                         </a>

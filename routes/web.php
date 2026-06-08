@@ -74,6 +74,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\trackCreditnotesController;
 use App\Http\Controllers\ModernDashboardController;
 use App\Http\Controllers\TemporaryInvoiceController;
+use App\Http\Controllers\SmartToolsController;
 
 
 
@@ -97,6 +98,8 @@ Route::get('/userdash',[UserdashboardController::class,'index'])->name('userdash
 
 
 Route::get('/convertdate',[DateConversionController::class,'convertdate'])->name('convertdate');
+
+Route::get('/smart-tools',[SmartToolsController::class,'index'])->name('smarttools.index');
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
