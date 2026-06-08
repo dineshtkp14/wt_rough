@@ -91,7 +91,7 @@
                     <div class="d-flex justify-content-center credit-days-holder">
                         <div class="d-inline-flex align-items-center mt-3 px-3 py-2 border rounded shadow-sm" id="creditDaysWrapper" style="display:none; background:#f8f9fa;">
                             <span class="fw-semibold me-2" style="font-size:16px;">Credit Days</span>
-                            <input type="number" class="form-control" id="creditDays" name="credit_days" placeholder="Enter days" min="0" step="1"
+                            <input type="number" class="form-control" id="creditDays" name="credit_days" placeholder="Enter days" min="1" step="1"
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 style="width:130px; font-size:16px; font-weight:600; text-align:center;">
                         </div>
@@ -112,8 +112,8 @@
                             <input autocomplete="off" type="text" class="form-control" placeholder="0.00" id="totalInputFinal" data-name="total" disabled>
                         </div>
                         <br>
-                        <div class="error-message mb-2">
-                            <small class="text-danger fw-bold" id="errorText"></small>
+                        <div class="error-message mb-2" id="invoiceErrorBox">
+                            <small class="fw-bold" id="errorText">Ready to verify invoice.</small>
                         </div>
                         <button class="btn btn-primary btn-md invoice-action-btn" id="verifyBtn">Verify</button>
                         <button class="btn btn-success btn-md invoice-action-btn" type="submit" id="submitBtn" style="display: none;" disabled>Save</button>
@@ -159,6 +159,12 @@
         } else if (selectElement.value === 'credit') {
             selectElement.classList.remove('cash-bg');
             selectElement.classList.add('credit-bg');
+        } else {
+            selectElement.classList.remove('cash-bg', 'credit-bg');
+        }
+
+        if (typeof updateCreditDaysVisibility === 'function') {
+            updateCreditDaysVisibility();
         }
     }
 

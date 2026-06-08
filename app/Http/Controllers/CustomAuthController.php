@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
+use App\Services\SmsService;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Session as FacadesSession;
 use Session;
 
@@ -129,6 +132,173 @@ class CustomAuthcontroller extends Controller
         ]);
 
         return back()->with("status", "Password changed successfully!");
+    }
+
+    public function forgotPassword()
+    {
+        if (Auth::check()) {
+            return redirect()->route('dashboard.index');
+        }
+
+        return view('Auth.forgot-password');
+    }
+
+    public function sendPasswordResetOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $query = User::where('email', $request->email);
+
+        if (Schema::hasColumn('users', 'role')) {
+            $query->where('role', 'admin');
+        }
+
+        $user = $query->first();
+
+        if (!$user || empty($user->phoneno)) {
+            return back()
+                ->withInput()
+                ->with('message', 'Administrator email or mobile number was not found.');
+        }
+
+        if (!$this->isValidMobileNumber($user->phoneno)) {
+            return back()
+                ->withInput()
+                ->with('message', 'Administrator mobile number is invalid. Please update the admin mobile number first.');
+        }
+
+        $recentOtp = DB::table('password_reset_tokens')
+            ->where('email', $user->email)
+            ->where('created_at', '>=', now()->subMinute())
+            ->first();
+
+        if ($recentOtp) {
+            return back()
+                ->withInput()
+                ->with('message', 'Please wait one minute before requesting another OTP.');
+        }
+
+        $otp = (string) random_int(100000, 999999);
+
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $user->email],
+            [
+                'token' => Hash::make($otp),
+                'created_at' => now(),
+            ]
+        );
+
+        $phone = SmsService::formatPhoneNumber($user->phoneno);
+        $message = "Your WT administrator password reset OTP is {$otp}. It expires in 10 minutes.";
+        $response = (new SmsService())->send($phone, $message);
+
+        if (empty($response['success'])) {
+            DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+
+            $error = $response['body'] ?? $response['error'] ?? 'Unknown SMS gateway error.';
+
+            return back()
+                ->withInput()
+                ->with('message', 'OTP could not be sent: ' . $error);
+        }
+
+        $request->session()->put('password_reset_email', $user->email);
+
+        return redirect()
+            ->route('password.otp.form')
+            ->with('status', 'OTP sent to mobile ' . $this->maskPhoneNumber($phone) . '.');
+    }
+
+    public function passwordOtpForm(Request $request)
+    {
+        if (Auth::check()) {
+            return redirect()->route('dashboard.index');
+        }
+
+        if (!$request->session()->has('password_reset_email')) {
+            return redirect()->route('password.request');
+        }
+
+        return view('Auth.reset-password-otp');
+    }
+
+    public function resetPasswordWithOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|digits:6',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $email = $request->session()->get('password_reset_email');
+
+        if (!$email) {
+            return redirect()->route('password.request')->with('message', 'Please request a new OTP.');
+        }
+
+        $reset = DB::table('password_reset_tokens')->where('email', $email)->first();
+
+        if (!$reset || now()->diffInMinutes($reset->created_at) > 10) {
+            DB::table('password_reset_tokens')->where('email', $email)->delete();
+
+            return redirect()->route('password.request')->with('message', 'OTP expired. Please request a new OTP.');
+        }
+
+        if (!Hash::check($request->otp, $reset->token)) {
+            return back()->with('message', 'Invalid OTP. Please check the SMS and try again.');
+        }
+
+        $query = User::where('email', $email);
+
+        if (Schema::hasColumn('users', 'role')) {
+            $query->where('role', 'admin');
+        }
+
+        $user = $query->first();
+
+        if (!$user) {
+            return redirect()->route('password.request')->with('message', 'Administrator account was not found.');
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        DB::table('password_reset_tokens')->where('email', $email)->delete();
+        $request->session()->forget('password_reset_email');
+
+        return redirect('/login')->with('signupmessage', 'Password reset successfully. You can login now.');
+    }
+
+    private function maskPhoneNumber($phone)
+    {
+        $phone = (string) $phone;
+
+        if (strlen($phone) <= 4) {
+            return str_repeat('*', strlen($phone));
+        }
+
+        return str_repeat('*', strlen($phone) - 4) . substr($phone, -4);
+    }
+
+    private function isValidMobileNumber($phone)
+    {
+        $phone = preg_replace('/\D+/', '', (string) $phone);
+
+        if (strlen($phone) === 13 && substr($phone, 0, 3) === '977') {
+            $phone = substr($phone, 3);
+        }
+
+        if (!preg_match('/^9\d{9}$/', $phone)) {
+            return false;
+        }
+
+        return !in_array($phone, [
+            '9999999999',
+            '1234567890',
+            '1111111111',
+            '0000000000',
+        ], true);
     }
 
     public function signupsave(Request $request)

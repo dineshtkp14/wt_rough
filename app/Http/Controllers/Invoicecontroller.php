@@ -98,6 +98,7 @@ class Invoicecontroller extends Controller
     }
 
     $customer = customerinfo::find($invoices->customerid);
+    $ledger = DB::table('customerledgerdetails')->where('invoiceid', $invoices->id)->first();
     $salesRows = salesitem::where('invoiceid', $invoices->id)->orderBy('id')->get();
     $editRows = $salesRows->map(function ($row) {
         $itemInfo = $row->itemid ? item::select('id', 'itemsname', 'quantity')->find($row->itemid) : null;
@@ -126,6 +127,7 @@ class Invoicecontroller extends Controller
         'discount' => (string) $invoices->discount,
         'total' => (string) $invoices->total,
         'note' => $invoices->notes ?? '',
+        'credit_days' => $ledger ? (string) ($ledger->credit_limit_days ?? '') : '',
         'rows' => $editRows,
     ];
 
@@ -143,6 +145,7 @@ public function update($id, Request $req)
             'final_arr' => 'required',
             'invoice_type' => 'required|in:cash,credit',
             'date' => 'required|date',
+            'credit_days' => 'required_if:invoice_type,credit|nullable|integer|min:1',
         ]);
 
         if ($validator->passes()) {
@@ -207,7 +210,7 @@ public function update($id, Request $req)
                         'date' => $invoice->inv_date,
                         'invoicetype' => $invoice->inv_type,
                         'debit' => $invoice->total,
-                        'credit_limit_days' => $req->credit_days,
+                        'credit_limit_days' => $req->invoice_type === 'credit' ? $req->credit_days : null,
                         'updated_at' => now(),
                     ]);
 

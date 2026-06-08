@@ -72,6 +72,27 @@ function setInvoiceMessage(message, type = "error") {
         .text(message);
 }
 
+function updateCreditDaysVisibility() {
+    const invoiceType = $("#invoice_type").val();
+    const wrapper = $("#creditDaysWrapper");
+    const input = $("#creditDays");
+
+    if (!wrapper.length || !input.length) {
+        return;
+    }
+
+    if (invoiceType === "credit") {
+        wrapper.css("display", "inline-flex");
+        input.attr("required", "required");
+        return;
+    }
+
+    wrapper.hide();
+    input.removeAttr("required").val("").removeClass("invoice-field-invalid");
+    input.closest(".input-group").next(".field-error-text").remove();
+    input.next(".field-error-text").remove();
+}
+
 function markFieldError(field, message) {
     const target = $(field);
     if (!target.length) return;
@@ -865,8 +886,10 @@ $(window).on("load", function () {
         if (typeof changeBackgroundColor === "function") {
             changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
         }
+        updateCreditDaysVisibility();
         $("#salesDate").val(window.INVOICE_EDIT_DATA.date || "");
         $("#noteInput").val(window.INVOICE_EDIT_DATA.note || "");
+        $("#creditDays").val(window.INVOICE_EDIT_DATA.credit_days || "");
         $("#discountInputFinal").val(finalData[0]["discount"]);
 
         $.each(window.INVOICE_EDIT_DATA.rows || [], function (index, row) {
@@ -881,6 +904,14 @@ $(window).on("load", function () {
     } else {
         appendInputRow();
     }
+
+    updateCreditDaysVisibility();
+
+    $("#invoice_type").on("change", function () {
+        updateCreditDaysVisibility();
+        $("#submitBtn").attr("disabled", "disabled").hide();
+        $("#verifyBtn").show();
+    });
 
     $("#addRowBtn").on("click", function (e) {
         e.preventDefault();
@@ -906,6 +937,13 @@ $(window).on("load", function () {
         ) {
             // Check if invoice type is selected, but only if it's not a credit note creation page
             setInvoiceError("Please select invoice type.", $("#invoice_type"));
+            hasError = true;
+        } else if (
+            currentUrl.indexOf("creditnotes/create") === -1 &&
+            $("#invoice_type").val().trim() === "credit" &&
+            ($("#creditDays").val().trim() === "" || parseInt($("#creditDays").val(), 10) <= 0)
+        ) {
+            setInvoiceError("Please enter credit days for credit invoice.", $("#creditDays"));
             hasError = true;
         } else {
             $.each(salesData, function (index, value) {

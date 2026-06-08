@@ -175,6 +175,9 @@
                                         <span class="text-danger">{{ $errors->first('password') }}</span>
                                     @endif
                                 </div>
+                                <div class="text-right mb-3">
+                                    <a href="{{ route('password.request') }}" class="text-warning">Forgot Password?</a>
+                                </div>
 
                                 <div class="d-grid mx-auto">
                                     <button type="submit" class="btn btn-primary btn-block">

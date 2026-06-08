@@ -460,6 +460,10 @@ Route::get('/sales-details-per-day', [showperday_controller::class, 'salesDetail
 //  Route::get('/dashboard', [CustomAuthController::class, 'dashboard']); 
  Route::get('/login', [CustomAuthController::class, 'forlogin'])->name('login');
  Route::post('postlogin', [CustomAuthController::class, 'login'])->name('postlogin'); 
+ Route::get('/forgot-password', [CustomAuthController::class, 'forgotPassword'])->name('password.request');
+ Route::post('/forgot-password', [CustomAuthController::class, 'sendPasswordResetOtp'])->name('password.otp.send');
+ Route::get('/reset-password-otp', [CustomAuthController::class, 'passwordOtpForm'])->name('password.otp.form');
+ Route::post('/reset-password-otp', [CustomAuthController::class, 'resetPasswordWithOtp'])->name('password.otp.reset');
  Route::get('signup', [CustomAuthController::class, 'signup'])->name('register-user');
 
 //  Route::get('changepass', [CustomAuthController::class, 'changepass'])->name('user.password');

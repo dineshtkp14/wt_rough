@@ -74,9 +74,24 @@ class ItemsalesController extends Controller
     public function store(Request $req)
     {
         if(Auth::check()){
+        $validator = Validator::make($req->all(), [
+            'sales_arr' => 'required',
+            'final_arr' => 'required',
+            'invoice_type' => 'required|in:cash,credit',
+            'date' => 'required|date',
+            'credit_days' => 'required_if:invoice_type,credit|nullable|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('itemsales.create')->withErrors($validator)->withInput();
+        }
            
         $sales_arr = json_decode($req->sales_arr); //rowdetails
         $final_arr = json_decode($req->final_arr); //finaltotalinvoice
+
+        if (!is_array($sales_arr) || empty($sales_arr) || !is_array($final_arr) || empty($final_arr)) {
+            return redirect()->route('itemsales.create')->with('error', 'Please verify invoice details before saving.');
+        }
         // invoice insert
         $invoice_data = new invoice();
         $invoice_data->customerid = $final_arr[0]->customer;
@@ -135,7 +150,7 @@ class ItemsalesController extends Controller
         $cus_data->voucher_type = "sales";
         $cus_data->invoicetype = $req->invoice_type;
         $cus_data->debit =  $final_arr[0]->total;
-        $cus_data->credit_limit_days = $req->credit_days;
+        $cus_data->credit_limit_days = $req->invoice_type === 'credit' ? $req->credit_days : null;
         $cus_data->added_by = session('user_email');
 
         $cus_data->save();

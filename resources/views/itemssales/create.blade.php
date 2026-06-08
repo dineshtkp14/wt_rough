@@ -168,7 +168,7 @@
                                         id="creditDays"
                                         name="credit_days"
                                         placeholder="Enter days"
-                                        min="0"
+                                        min="1"
                                         step="1"
                                         oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                         style="width:130px; font-size:16px; font-weight:600; text-align:center;">
@@ -281,6 +281,12 @@ $(document).ready(function () {
             } else if (selectedValue === 'credit') {
                 selectElement.classList.remove('cash-bg');
                 selectElement.classList.add('credit-bg');
+            } else {
+                selectElement.classList.remove('cash-bg', 'credit-bg');
+            }
+
+            if (typeof updateCreditDaysVisibility === 'function') {
+                updateCreditDaysVisibility();
             }
         }
     
