@@ -178,7 +178,10 @@
             </div>
 
             <div class="d-grid gap-2 pt-2 pb-4">
-                <button type="submit" id="submitBtn" class="btn btn-lg btn-primary">Payment</button>
+                <button type="submit" id="paymentSubmitBtn" class="btn btn-lg btn-primary">
+                    <i class="fas fa-save"></i>
+                    Save Payment
+                </button>
             </div>
         </form>
     </div>
@@ -224,6 +227,15 @@
         if (voucherType) {
             document.getElementById('vt').value = voucherType;
             document.getElementById('hiddenVt').value = voucherType;
+        }
+        if (amountx) {
+            const amountInput = document.getElementById('amount');
+            if (amountInput) {
+                amountInput.value = amountx;
+                if (typeof updateAmountInWords === 'function') {
+                    updateAmountInWords();
+                }
+            }
         }
         if (cname) {
     const cnameElement = document.getElementById('cname');
@@ -353,7 +365,7 @@
 $(document).ready(function () {
             $('form').submit(function () {
                 // Disable the submit button
-                $('#submitBtn').prop('disabled', true);
+                $('#paymentSubmitBtn').prop('disabled', true);
 
                 var modalElement = document.getElementById('paymentSendingSmsModal');
                 if (modalElement && window.bootstrap) {
@@ -408,7 +420,7 @@ $(document).ready(function () {
             const particulars = document.getElementById('particulars');
             const voucherType = document.getElementById('vt');
             const amount = document.getElementById('amount');
-            const submitBtn = document.getElementById('submitBtn');
+            const submitBtn = document.getElementById('paymentSubmitBtn');
         
             function validateForm() {
                 const isValid =
@@ -419,9 +431,6 @@ $(document).ready(function () {
                 submitBtn.disabled = !isValid;
             }
         
-            // Initial state (DISABLED on page load)
-            submitBtn.disabled = true;
-        
             // Listen to all possible changes
             particulars.addEventListener('input', validateForm);
             voucherType.addEventListener('input', validateForm);
@@ -431,6 +440,8 @@ $(document).ready(function () {
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
                 cb.addEventListener('change', validateForm);
             });
+
+            validateForm();
         });
         </script>
         
