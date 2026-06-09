@@ -176,7 +176,7 @@
                                     @endif
                                 </div>
                                 <div class="text-right mb-3">
-                                    <a href="{{ route('password.request') }}" class="text-warning">Forgot Password?</a>
+                                    <a href="{{ \Illuminate\Support\Facades\Route::has('password.request') ? route('password.request') : url('/forgot-password') }}" class="text-warning">Forgot Password?</a>
                                 </div>
 
                                 <div class="d-grid mx-auto">

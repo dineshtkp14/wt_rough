@@ -40,7 +40,7 @@ function scheduleCustomerCardAutoHide() {
         $("#customerCard").fadeOut(300);
         $("#toggleBox").addClass("animate");
         $("#toggleBox").data("toggle", "close");
-    }, 7000);
+    }, 2000);
 }
 
 const pathname = window.location.pathname;
@@ -75,6 +75,7 @@ function setInvoiceMessage(message, type = "error") {
 function updateCreditDaysVisibility() {
     const invoiceType = $("#invoice_type").val();
     const wrapper = $("#creditDaysWrapper");
+    const holder = $(".invoice-credit-days-field");
     const input = $("#creditDays");
 
     if (!wrapper.length || !input.length) {
@@ -82,15 +83,49 @@ function updateCreditDaysVisibility() {
     }
 
     if (invoiceType === "credit") {
+        holder.show();
         wrapper.css("display", "inline-flex");
         input.attr("required", "required");
         return;
     }
 
+    holder.hide();
     wrapper.hide();
     input.removeAttr("required").val("").removeClass("invoice-field-invalid");
     input.closest(".input-group").next(".field-error-text").remove();
     input.next(".field-error-text").remove();
+}
+
+function resetInvoiceVerification() {
+    $("#submitBtn").attr("disabled", "disabled").hide();
+    $("#verifyBtn").show();
+}
+
+function updateInvoiceStepVisibility() {
+    const hasCustomer = `${finalData[0]["customer"] || ""}`.trim() !== "";
+    const invoiceType = $("#invoice_type").val();
+    const creditDays = parseInt($("#creditDays").val(), 10);
+    const creditDaysOk = invoiceType !== "credit" || creditDays > 0;
+    const showBottomGrid = hasCustomer && invoiceType !== "";
+    const showWorkArea = hasCustomer && invoiceType !== "" && creditDaysOk;
+
+    $(".invoice-step-after-customer").toggle(hasCustomer);
+    if (showBottomGrid) {
+        $(".invoice-step-bottom-grid").css("display", "grid");
+    } else {
+        $(".invoice-step-bottom-grid").hide();
+    }
+    $(".invoice-work-field").toggle(showWorkArea);
+
+    if (!hasCustomer) {
+        $("#invoice_type").val("");
+        $("#salesDate").closest(".date-control").hide();
+        updateCreditDaysVisibility();
+        resetInvoiceVerification();
+        return;
+    }
+
+    updateCreditDaysVisibility();
 }
 
 function markFieldError(field, message) {
@@ -143,6 +178,42 @@ function customerResultHTML(value) {
      </div>`;
 }
 
+function selectCustomerForInvoice(data) {
+    if (!data) {
+        return;
+    }
+
+    let phoneText = data.phoneno || "";
+
+    if (data.alternate_phoneno !== null && data.alternate_phoneno !== undefined && `${data.alternate_phoneno}`.trim() !== "") {
+        phoneText += (phoneText ? ", " : "") + data.alternate_phoneno;
+    }
+
+    $("#customerName").text(data.name || "");
+    $("#customerId").text(data.id || "");
+    $("#customerAddress").text(data.address || "");
+    $("#customerEmail").text(data.email || "");
+    $("#customerPhone").text(phoneText);
+    $("#selectedCustomerAddress").text(data.address || "-");
+    $("#selectedCustomerPhone").text(phoneText || "-");
+    $("#selectedCustomerInline").slideDown(150);
+    finalData[0]["customer"] = `${data.id || ""}`;
+
+    $("#customerCard").show().animate({
+        right: "0",
+    });
+
+    $("#toggleBox").removeClass("animate");
+    $("#toggleBox").data("toggle", "open");
+    scheduleCustomerCardAutoHide();
+
+    $("#searchCustomerInput").val(data.name || "");
+    $("#customerIdInput").val(data.id || "");
+    $("#customerResultWrapper").slideUp();
+    $(document).trigger("customer:selected", [data]);
+    updateInvoiceStepVisibility();
+}
+
 function productResultHTML(value) {
     return `
      <div class="result-box d-flex justify-content-start align-items-center product-result-box" data-value='${JSON.stringify(
@@ -169,6 +240,7 @@ $("#searchCustomerInput").on("keyup", function (e) {
     $("#selectedCustomerInline").slideUp(100);
     $("#selectedCustomerAddress").text("-");
     $("#selectedCustomerPhone").text("-");
+    updateInvoiceStepVisibility();
     const apiKey = $(this).data("api");
 
     if (customerSearchQuery.trim() === "") {
@@ -214,41 +286,7 @@ function triggerCustomerResultClick() {
             const json = $(this).attr("data-value");
             const data = JSON.parse(decodeURIComponent(json));
 
-            $("#customerName").text(data.name);
-            $("#customerId").text(data.id);
-
-            $("#customerAddress").text(data.address);
-            $("#customerEmail").text(data.email);
-            // $("#customerPhone").text(data.phoneno);
-            var phoneText = data.phoneno;
-
-            if (
-                data.alternate_phoneno !== null &&
-                data.alternate_phoneno !== undefined
-            ) {
-                phoneText += ", " + data.alternate_phoneno;
-            }
-
-            $("#customerPhone").text(phoneText);
-            $("#selectedCustomerAddress").text(data.address || "-");
-            $("#selectedCustomerPhone").text(phoneText || "-");
-            $("#selectedCustomerInline").slideDown(150);
-            finalData[0]["customer"] = `${data.id}`;
-
-            $("#customerCard").show();
-
-            $("#customerCard").animate({
-                right: "0",
-            });
-
-            $("#toggleBox").removeClass("animate");
-            $("#toggleBox").data("toggle", "open");
-            scheduleCustomerCardAutoHide();
-
-            $("#searchCustomerInput").val(data.name);
-            $("#customerIdInput").val(data.id);
-            $("#customerResultWrapper").slideUp();
-            $(document).trigger("customer:selected", [data]);
+            selectCustomerForInvoice(data);
         });
 }
 
@@ -887,6 +925,7 @@ $(window).on("load", function () {
             changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
         }
         updateCreditDaysVisibility();
+        updateInvoiceStepVisibility();
         $("#salesDate").val(window.INVOICE_EDIT_DATA.date || "");
         $("#noteInput").val(window.INVOICE_EDIT_DATA.note || "");
         $("#creditDays").val(window.INVOICE_EDIT_DATA.credit_days || "");
@@ -906,16 +945,86 @@ $(window).on("load", function () {
     }
 
     updateCreditDaysVisibility();
+    updateInvoiceStepVisibility();
 
     $("#invoice_type").on("change", function () {
         updateCreditDaysVisibility();
-        $("#submitBtn").attr("disabled", "disabled").hide();
-        $("#verifyBtn").show();
+        updateInvoiceStepVisibility();
+        resetInvoiceVerification();
+    });
+
+    $("#creditDays").on("input change", function () {
+        updateInvoiceStepVisibility();
+        resetInvoiceVerification();
+    });
+
+    $("#quickCustomerForm").on("submit", function (e) {
+        e.preventDefault();
+
+        const form = $(this);
+        const button = $("#quickCustomerSaveBtn");
+        const status = $("#quickCustomerStatus");
+
+        $(".quick-customer-error").text("");
+        status.hide().removeClass("is-error is-success").text("");
+        button
+            .prop("disabled", true)
+            .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+
+        $.ajax({
+            url: "/customerinfos/quick-store",
+            type: "POST",
+            dataType: "json",
+            data: form.serialize(),
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (response) {
+                status.addClass("is-success").text(response.message || "Customer added successfully.").show();
+                selectCustomerForInvoice(response.customer);
+                form[0].reset();
+
+                const modalElement = document.getElementById("quickCustomerModal");
+                const modal = bootstrap.Modal.getInstance(modalElement);
+
+                setTimeout(function () {
+                    if (modal) {
+                        modal.hide();
+                    }
+                    status.hide().removeClass("is-success").text("");
+                }, 650);
+            },
+            error: function (xhr) {
+                const response = xhr.responseJSON || {};
+                const errors = response.errors || {};
+
+                $.each(errors, function (field, messages) {
+                    $(`[data-error-for="${field}"]`).text(messages[0] || "");
+                });
+
+                status
+                    .addClass("is-error")
+                    .text(response.message || "Could not add customer. Please check the details.")
+                    .show();
+            },
+            complete: function () {
+                button
+                    .prop("disabled", false)
+                    .html('<i class="fa-solid fa-floppy-disk"></i> Save & Select');
+            },
+        });
     });
 
     $("#addRowBtn").on("click", function (e) {
         e.preventDefault();
         appendInputRow();
+    });
+
+    $(document).on("keydown", function (e) {
+        if (e.key === "F1" && $("#addRowBtn").length) {
+            e.preventDefault();
+            $("#addRowBtn").trigger("click");
+        }
     });
 
     $("#verifyBtn").on("click", function (e) {

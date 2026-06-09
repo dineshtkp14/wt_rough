@@ -45,7 +45,9 @@
         <div class="container-fluid invoice-create-page">
 
         <div class="invoice-quick-actions">
-            <a href="{{ route('customerinfos.create') }}" class="btn btn-primary m"> <i class="fa-solid fa-plus"></i> Add New Customer</a>
+            <button type="button" class="btn btn-primary m" data-bs-toggle="modal" data-bs-target="#quickCustomerModal">
+                <i class="fa-solid fa-plus"></i> Add New Customer
+            </button>
             <a href="{{ route('onlyviewbillafterbill') }}" class="btn" style="background-color: #556B2F; border-color:rgb(29, 3, 3); color: #ffffff;"> <i class="fa-solid fa-eye"></i> Search Invoice</a>
         </div>
             <form action="{{ route('itemsales.store') }}" method="post">
@@ -94,7 +96,7 @@
 
 
 
-                    <div class="invoice-control type-control">
+                    <div class="invoice-control type-control invoice-step-after-customer">
                         <label class="invoice-field-label" for="invoice_type">Invoice Type</label>
                         <select id="invoice_type" name="invoice_type" class="d-inline form-select select-background"  onchange="changeBackgroundColor(this)">
                             <option value="">--Choose Invoice Type--</option>
@@ -106,7 +108,7 @@
                     </div>
 
                     
-                    <div class="invoice-control date-control">
+                    <div class="invoice-control date-control invoice-step-after-customer">
                         <label class="invoice-field-label" for="salesDate">Date</label>
                         <div class="input-group mb-1">
                             <span class="input-group-text">Date:</span>
@@ -126,7 +128,7 @@
                 </div>
                 <input type="hidden" id="salesArrInput" name="sales_arr" value="" />
                 <input type="hidden" id="finalArrInput" name="final_arr" value="" />
-                <div class="invoice-table-shell">
+                <div class="invoice-table-shell invoice-work-field">
                     <table class="invoicetable table-responsive bg-white">
                         <tbody id="invoiceTableBody" style="max-height: none;">
                             <tr>
@@ -147,15 +149,15 @@
                     </table>
                 </div>
 
-                <div class="invoice-bottom-grid">
+                <div class="invoice-bottom-grid invoice-step-bottom-grid">
                     <div class="invoice-notes-panel">
                         <div class="">
-                            <label class="my-3"><b>Amount in words: </b><span id="totalAmountWords"
+                            <label class="my-3 invoice-work-field"><b>Amount in words: </b><span id="totalAmountWords"
                                     style="text-transform: capitalize;">...</span></label><br>
-                            <textarea autocomplete="off" placeholder="Additional notes" class="form-control" id="noteInput" rows="3" cols="20"></textarea>
+                            <textarea autocomplete="off" placeholder="Additional notes" class="form-control invoice-work-field" id="noteInput" rows="3" cols="20"></textarea>
 
                             {{-- /forcreditdaystextbox --}}
-                            <div class="d-flex justify-content-center credit-days-holder">
+                            <div class="d-flex justify-content-center credit-days-holder invoice-credit-days-field">
                                 <div class="d-inline-flex align-items-center mt-3 px-3 py-2 border rounded shadow-sm"
                                      id="creditDaysWrapper" style="display:none; background:#f8f9fa;">
                             
@@ -180,7 +182,7 @@
 
                         </div>
                     </div>
-                    <div class="invoice-total-panel">
+                    <div class="invoice-total-panel invoice-work-field">
                         <div class="invoice-total-box">
                             <div class="input-group mb-1">
                                 <span class="input-group-text">Sub Total (Rs.)</span>
@@ -212,6 +214,73 @@
                     </div>
                 </div>
             </form>
+        </div>
+
+        <div class="modal fade" id="quickCustomerModal" tabindex="-1" aria-labelledby="quickCustomerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content quick-customer-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="quickCustomerModalLabel">
+                            <i class="fa-solid fa-user-plus"></i>
+                            Quick Add Customer
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="quickCustomerForm">
+                        <div class="modal-body">
+                            <div class="quick-customer-status" id="quickCustomerStatus" style="display:none;"></div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="name" id="quickCustomerName" placeholder="Customer name">
+                                    <span class="quick-customer-error" data-error-for="name"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Address <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="address" placeholder="Address">
+                                    <span class="quick-customer-error" data-error-for="address"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone No <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="phoneno" placeholder="10 digit phone" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                    <span class="quick-customer-error" data-error-for="phoneno"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Alternate Phone</label>
+                                    <input type="text" class="form-control" name="alternate_phoneno" placeholder="Alternate phone" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                    <span class="quick-customer-error" data-error-for="alternate_phoneno"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" placeholder="Email">
+                                    <span class="quick-customer-error" data-error-for="email"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Customer Type</label>
+                                    <select class="form-select" name="type">
+                                        <option value="">-- Select Type --</option>
+                                        <option value="shop">Shop</option>
+                                        <option value="customer">Customer</option>
+                                    </select>
+                                    <span class="quick-customer-error" data-error-for="type"></span>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Notes</label>
+                                    <textarea class="form-control" name="remarks" rows="2" placeholder="Notes"></textarea>
+                                    <span class="quick-customer-error" data-error-for="remarks"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="quickCustomerSaveBtn">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                Save & Select
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div class="invoice-submit-overlay" id="invoiceSubmitOverlay" aria-live="polite" style="display: none;">
@@ -324,6 +393,64 @@ $(document).ready(function () {
             justify-content: center;
             position: fixed;
             z-index: 9999;
+        }
+
+        .quick-customer-modal .modal-header {
+            background: #f8fafc;
+            border-bottom: 1px solid #dbe4f0;
+        }
+
+        .quick-customer-modal .modal-title {
+            align-items: center;
+            color: #111827;
+            display: inline-flex;
+            font-size: 20px;
+            font-weight: 900;
+            gap: 8px;
+        }
+
+        .quick-customer-modal .form-label {
+            color: #172033;
+            font-size: 13px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .quick-customer-modal .form-control,
+        .quick-customer-modal .form-select {
+            min-height: 44px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .quick-customer-error {
+            color: #b91c1c;
+            display: block;
+            font-size: 12px;
+            font-weight: 900;
+            margin-top: 5px;
+        }
+
+        .quick-customer-status {
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            padding: 10px 12px;
+        }
+
+        .quick-customer-status.is-error {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #b91c1c;
+        }
+
+        .quick-customer-status.is-success {
+            background: #ecfdf5;
+            border: 1px solid #86efac;
+            color: #166534;
         }
 
         .invoice-submit-card {
@@ -476,6 +603,12 @@ $(document).ready(function () {
             width: 100%;
         }
 
+        .invoice-step-after-customer,
+        .invoice-step-bottom-grid,
+        .invoice-work-field {
+            display: none;
+        }
+
         .invoice-create-page {
             padding-bottom: 24px;
             width: 100%;
@@ -569,6 +702,7 @@ $(document).ready(function () {
         }
 
         .invoicetable {
+            display: table !important;
             width: 100%;
             margin: 0;
             table-layout: fixed;
@@ -628,7 +762,8 @@ $(document).ready(function () {
 
         .invoice-create-page .invoicetable th:nth-child(8),
         .invoice-create-page .invoicetable td:nth-child(8) {
-            width: 250px;
+            min-width: 250px;
+            width: auto;
         }
 
         .invoicetable .form-control,

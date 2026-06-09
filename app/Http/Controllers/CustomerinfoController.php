@@ -62,6 +62,55 @@ class CustomerinfoController extends Controller
 return redirect('/login');
 }
 
+    public function quickStore(Request $req)
+    {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $validator = Validator::make($req->all(), [
+            'name' => 'required',
+            'address' => 'required',
+            'phoneno' => 'required|size:10|unique:customerinfos,phoneno',
+            'alternate_phoneno' => 'nullable',
+            'email' => 'nullable|email',
+            'type' => 'nullable',
+            'remarks' => 'nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Please check customer details.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $cusinfo = new customerinfo();
+        $cusinfo->name = strtoupper($req->name);
+        $cusinfo->address = strtoupper($req->address);
+        $cusinfo->email = $req->email;
+        $cusinfo->phoneno = $req->phoneno;
+        $cusinfo->type = $req->type;
+        $cusinfo->alternate_phoneno = $req->alternate_phoneno;
+        $cusinfo->remarks = $req->remarks;
+        $cusinfo->added_by = session('user_email');
+        $cusinfo->save();
+
+        Trackcustomerinfos::create([
+            'title' => 'Insert',
+            'updated_by' => session('user_email'),
+            'notes' => "Name: {$cusinfo->name}, Address: {$cusinfo->address}, Email: {$cusinfo->email}, Phoneno: {$cusinfo->phoneno}, Alternate Phoneno: {$cusinfo->alternate_phoneno}, Remarks: {$cusinfo->remarks}, Added by: " . session('user_email'),
+        ]);
+
+        $cusinfo->total_due = 0;
+        $cusinfo->total_due_formatted = '0.00';
+
+        return response()->json([
+            'message' => 'Customer added successfully.',
+            'customer' => $cusinfo,
+        ]);
+    }
+
     public function store(Request $req)
    {
     if(Auth::check()){

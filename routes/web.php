@@ -200,6 +200,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 
 Route::get('/customerinfos',[CustomerinfoController::class,'index'])->name('customerinfos.index');
 Route::get('/customerinfos/create',[CustomerinfoController::class,'create'])->name('customerinfos.create');
+Route::post('/customerinfos/quick-store',[CustomerinfoController::class,'quickStore'])->name('customerinfos.quick-store');
 Route::post('/customerinfos',[CustomerinfoController::class,'store'])->name('customerinfos.store');
 Route::get('/customerinfos/{customerinfo}/edit',[CustomerinfoController::class,'edit'])->name('customerinfos.edit');
 Route::put('/customerinfos/{customerinfo}',[CustomerinfoController::class,'update'])->name('customerinfos.update');
