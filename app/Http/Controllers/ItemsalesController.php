@@ -10,6 +10,7 @@ use App\Models\item;
 use App\Models\SmsLog;
 use App\Services\SmsService;
 use App\Helpers\InvoiceSmsHelper;
+use App\Support\NepaliDate;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -334,6 +335,7 @@ class ItemsalesController extends Controller
          return [
              'invoiceid' => $row->invoiceid,
              'date' => $row->date,
+             'nepali_date' => $row->date ? NepaliDate::adToBsString($row->date, 'en') : '',
              'item_name' => $row->itemsname ?: $row->unstockedname,
              'quantity' => $row->quantity,
              'unit' => $row->unit,

@@ -672,7 +672,7 @@ function oldPriceResultHTML(value) {
             </span>
             <span class="old-price-price-line">Rs. ${escapeHTML(value.price || "0")}</span>
             <small class="old-price-meta-line">
-                <span>${escapeHTML(value.date || "")} | Bill: ${escapeHTML(value.invoiceid || "")}</span>
+                <span>${value.nepali_date ? `Miti: ${escapeHTML(value.nepali_date)} | ` : ""}Bill: ${escapeHTML(value.invoiceid || "")}</span>
                 ${sourceText}
             </small>
         </button>`;
