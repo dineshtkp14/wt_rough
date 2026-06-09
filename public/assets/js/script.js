@@ -18,6 +18,7 @@ let customerSearchQuery = "";
 let productSearchQuery = "";
 let customerCardAutoHideTimer = null;
 let selectedCustomerCreditLimitDays = null;
+let selectedCustomerDefaultCreditLimitDays = null;
 
 let currentLink = null;
 let currentIndex = null;
@@ -79,12 +80,17 @@ function updateCreditDaysVisibility() {
     const holder = $(".invoice-credit-days-field");
     const input = $("#creditDays");
     const hasExistingCreditDays = parseInt(selectedCustomerCreditLimitDays, 10) > 0;
+    const defaultCreditDays = parseInt(selectedCustomerDefaultCreditLimitDays, 10);
 
     if (!wrapper.length || !input.length) {
         return;
     }
 
     if (invoiceType === "credit" && !hasExistingCreditDays) {
+        if (defaultCreditDays > 0 && input.val().trim() === "") {
+            input.val(defaultCreditDays);
+        }
+
         holder.show();
         wrapper.css("display", "inline-flex");
         input.attr("required", "required");
@@ -114,7 +120,8 @@ function updateInvoiceStepVisibility() {
     const invoiceType = $("#invoice_type").val();
     const creditDays = parseInt($("#creditDays").val(), 10);
     const hasExistingCreditDays = parseInt(selectedCustomerCreditLimitDays, 10) > 0;
-    const creditDaysOk = invoiceType !== "credit" || hasExistingCreditDays || creditDays > 0;
+    const defaultCreditDays = parseInt(selectedCustomerDefaultCreditLimitDays, 10);
+    const creditDaysOk = invoiceType !== "credit" || hasExistingCreditDays || creditDays > 0 || defaultCreditDays > 0;
     const showBottomGrid = hasCustomer && invoiceType !== "";
     const showWorkArea = hasCustomer && invoiceType !== "" && creditDaysOk;
 
@@ -128,6 +135,7 @@ function updateInvoiceStepVisibility() {
 
     if (!hasCustomer) {
         selectedCustomerCreditLimitDays = null;
+        selectedCustomerDefaultCreditLimitDays = null;
         $("#invoice_type").val("");
         $("#salesDate").closest(".date-control").hide();
         updateCreditDaysVisibility();
@@ -211,6 +219,9 @@ function selectCustomerForInvoice(data) {
     selectedCustomerCreditLimitDays = parseInt(data.credit_limit_days, 10) > 0
         ? parseInt(data.credit_limit_days, 10)
         : null;
+    selectedCustomerDefaultCreditLimitDays = parseInt(data.default_credit_limit_days, 10) > 0
+        ? parseInt(data.default_credit_limit_days, 10)
+        : null;
 
     $("#customerCard").show().animate({
         right: "0",
@@ -250,6 +261,7 @@ $("#searchCustomerInput").on("keyup", function (e) {
     $("#customerCard").hide();
     finalData[0]["customer"] = "";
     selectedCustomerCreditLimitDays = null;
+    selectedCustomerDefaultCreditLimitDays = null;
     $("#customerIdInput").val("");
     $("#selectedCustomerInline").slideUp(100);
     $("#selectedCustomerAddress").text("-");
@@ -937,6 +949,9 @@ $(window).on("load", function () {
         selectedCustomerCreditLimitDays = parseInt(window.INVOICE_EDIT_DATA.customer_credit_limit_days, 10) > 0
             ? parseInt(window.INVOICE_EDIT_DATA.customer_credit_limit_days, 10)
             : null;
+        selectedCustomerDefaultCreditLimitDays = parseInt(window.INVOICE_EDIT_DATA.customer_default_credit_limit_days, 10) > 0
+            ? parseInt(window.INVOICE_EDIT_DATA.customer_default_credit_limit_days, 10)
+            : null;
         $("#invoice_type").val(window.INVOICE_EDIT_DATA.invoice_type || "");
         if (typeof changeBackgroundColor === "function") {
             changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
@@ -1068,6 +1083,7 @@ $(window).on("load", function () {
             currentUrl.indexOf("creditnotes/create") === -1 &&
             $("#invoice_type").val().trim() === "credit" &&
             !(parseInt(selectedCustomerCreditLimitDays, 10) > 0) &&
+            !(parseInt(selectedCustomerDefaultCreditLimitDays, 10) > 0) &&
             ($("#creditDays").val().trim() === "" || parseInt($("#creditDays").val(), 10) <= 0)
         ) {
             setInvoiceError("Please enter credit days for credit invoice.", $("#creditDays"));

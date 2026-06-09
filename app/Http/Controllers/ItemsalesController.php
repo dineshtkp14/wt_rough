@@ -45,6 +45,19 @@ class ItemsalesController extends Controller
         return $days ? (int) $days : null;
     }
 
+    private function customerHasAccountOrDue($customerid): bool
+    {
+        if (!$customerid) {
+            return false;
+        }
+
+        if (DB::table('customerledgerdetails')->where('customerid', $customerid)->exists()) {
+            return true;
+        }
+
+        return $this->customerTotalDueForMessage($customerid) > 0;
+    }
+
     
     public function index()
     {
@@ -110,6 +123,14 @@ class ItemsalesController extends Controller
 
         if ($req->invoice_type === 'credit') {
             $creditLimitDays = $this->customerCreditLimitDays($customerId);
+
+            if (!$creditLimitDays) {
+                if ($this->customerHasAccountOrDue($customerId) && empty($req->credit_days)) {
+                    $creditLimitDays = 30;
+                } elseif ($this->customerHasAccountOrDue($customerId)) {
+                    $creditLimitDays = (int) $req->credit_days;
+                }
+            }
 
             if (!$creditLimitDays) {
                 $creditLimitValidator = Validator::make($req->all(), [

@@ -106,6 +106,8 @@ return redirect('/login');
         $cusinfo->total_due_formatted = '0.00';
         $cusinfo->credit_limit_days = null;
         $cusinfo->has_credit_limit_days = false;
+        $cusinfo->has_account_or_due = false;
+        $cusinfo->default_credit_limit_days = null;
 
         return response()->json([
             'message' => 'Customer added successfully.',

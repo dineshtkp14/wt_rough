@@ -162,6 +162,7 @@ class CustomerAPI extends Controller
         $ledgerDue = collect();
         $creditNoteCredit = collect();
         $creditLimitDays = collect();
+        $ledgerCustomerIds = collect();
 
         if ($customerIds->isNotEmpty()) {
             $ledgerDue = DB::table('customerledgerdetails')
@@ -170,6 +171,11 @@ class CustomerAPI extends Controller
                 ->whereIn('invoicetype', ['credit', 'payment', 'settlement'])
                 ->groupBy('customerid')
                 ->pluck('due', 'customerid');
+
+            $ledgerCustomerIds = DB::table('customerledgerdetails')
+                ->whereIn('customerid', $customerIds)
+                ->distinct()
+                ->pluck('customerid');
 
             $creditNoteCredit = DB::table('creditnotes_customerledgerdetails as cn')
                 ->select('cn.customerid', DB::raw('SUM(COALESCE(cn.debit, cn.credit, 0)) as credit'))
@@ -203,7 +209,7 @@ class CustomerAPI extends Controller
                 ->pluck('credit_limit_days', 'customerid');
         }
 
-        $cus->transform(function ($customer) use ($ledgerDue, $creditNoteCredit, $creditLimitDays) {
+        $cus->transform(function ($customer) use ($ledgerDue, $creditNoteCredit, $creditLimitDays, $ledgerCustomerIds) {
             $due = (float) ($ledgerDue[$customer->id] ?? 0) - (float) ($creditNoteCredit[$customer->id] ?? 0);
             $customer->total_due = max(0, $due);
             $customer->total_due_formatted = number_format($customer->total_due, 2);
@@ -211,6 +217,10 @@ class CustomerAPI extends Controller
                 ? (int) $creditLimitDays[$customer->id]
                 : null;
             $customer->has_credit_limit_days = !is_null($customer->credit_limit_days);
+            $customer->has_account_or_due = $ledgerCustomerIds->contains($customer->id) || $customer->total_due > 0;
+            $customer->default_credit_limit_days = !$customer->has_credit_limit_days && $customer->has_account_or_due
+                ? 30
+                : null;
 
             return $customer;
         });

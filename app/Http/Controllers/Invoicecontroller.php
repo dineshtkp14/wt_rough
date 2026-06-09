@@ -41,6 +41,26 @@ class Invoicecontroller extends Controller
         return $days ? (int) $days : null;
     }
 
+    private function customerHasAccountOrDue($customerid): bool
+    {
+        if (!$customerid) {
+            return false;
+        }
+
+        if (DB::table('customerledgerdetails')->where('customerid', $customerid)->exists()) {
+            return true;
+        }
+
+        $ledgerRows = DB::table('customerledgerdetails')->where('customerid', $customerid)->get();
+        $debitNotCash = $ledgerRows->where('invoicetype', '!=', 'cash')->sum('debit');
+        $credit = $ledgerRows->sum('credit');
+        $creditNoteCredit = (float) DB::table('creditnotes_customerledgerdetails')
+            ->where('customerid', $customerid)
+            ->sum(DB::raw('COALESCE(debit, credit, 0)'));
+
+        return ($debitNotCash - $credit - $creditNoteCredit) > 0;
+    }
+
     public function index()
     {
         if(Auth::check()){
@@ -141,6 +161,9 @@ class Invoicecontroller extends Controller
         'note' => $invoices->notes ?? '',
         'credit_days' => $ledger ? (string) ($ledger->credit_limit_days ?? '') : '',
         'customer_credit_limit_days' => $this->customerCreditLimitDays($invoices->customerid),
+        'customer_default_credit_limit_days' => !$this->customerCreditLimitDays($invoices->customerid) && $this->customerHasAccountOrDue($invoices->customerid)
+            ? 30
+            : null,
         'rows' => $editRows,
     ];
 
@@ -174,6 +197,14 @@ public function update($id, Request $req)
 
             if ($req->invoice_type === 'credit') {
                 $creditLimitDays = $this->customerCreditLimitDays($customerId);
+
+                if (!$creditLimitDays) {
+                    if ($this->customerHasAccountOrDue($customerId) && empty($req->credit_days)) {
+                        $creditLimitDays = 30;
+                    } elseif ($this->customerHasAccountOrDue($customerId)) {
+                        $creditLimitDays = (int) $req->credit_days;
+                    }
+                }
 
                 if (!$creditLimitDays) {
                     $creditLimitValidator = Validator::make($req->all(), [
