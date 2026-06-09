@@ -33,6 +33,18 @@ class ItemsalesController extends Controller
         return $debitNotCash - $credit - $creditNoteCredit;
     }
 
+    private function customerCreditLimitDays($customerid)
+    {
+        $days = DB::table('customerledgerdetails')
+            ->where('customerid', $customerid)
+            ->whereNotNull('credit_limit_days')
+            ->where('credit_limit_days', '>', 0)
+            ->orderByDesc('id')
+            ->value('credit_limit_days');
+
+        return $days ? (int) $days : null;
+    }
+
     
     public function index()
     {
@@ -79,7 +91,7 @@ class ItemsalesController extends Controller
             'final_arr' => 'required',
             'invoice_type' => 'required|in:cash,credit',
             'date' => 'required|date',
-            'credit_days' => 'required_if:invoice_type,credit|nullable|integer|min:1',
+            'credit_days' => 'nullable|integer|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -92,9 +104,28 @@ class ItemsalesController extends Controller
         if (!is_array($sales_arr) || empty($sales_arr) || !is_array($final_arr) || empty($final_arr)) {
             return redirect()->route('itemsales.create')->with('error', 'Please verify invoice details before saving.');
         }
+
+        $customerId = $final_arr[0]->customer ?? null;
+        $creditLimitDays = null;
+
+        if ($req->invoice_type === 'credit') {
+            $creditLimitDays = $this->customerCreditLimitDays($customerId);
+
+            if (!$creditLimitDays) {
+                $creditLimitValidator = Validator::make($req->all(), [
+                    'credit_days' => 'required|integer|min:1',
+                ]);
+
+                if ($creditLimitValidator->fails()) {
+                    return redirect()->route('itemsales.create')->withErrors($creditLimitValidator)->withInput();
+                }
+
+                $creditLimitDays = (int) $req->credit_days;
+            }
+        }
         // invoice insert
         $invoice_data = new invoice();
-        $invoice_data->customerid = $final_arr[0]->customer;
+        $invoice_data->customerid = $customerId;
         // $invoice_data->paidamount = null;
         // $invoice_data->dueamount = $final_arr[0]->total;
         $invoice_data->subtotal = $final_arr[0]->subtotal;
@@ -150,7 +181,7 @@ class ItemsalesController extends Controller
         $cus_data->voucher_type = "sales";
         $cus_data->invoicetype = $req->invoice_type;
         $cus_data->debit =  $final_arr[0]->total;
-        $cus_data->credit_limit_days = $req->invoice_type === 'credit' ? $req->credit_days : null;
+        $cus_data->credit_limit_days = $req->invoice_type === 'credit' ? $creditLimitDays : null;
         $cus_data->added_by = session('user_email');
 
         $cus_data->save();

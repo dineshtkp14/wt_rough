@@ -161,6 +161,7 @@ class CustomerAPI extends Controller
 
         $ledgerDue = collect();
         $creditNoteCredit = collect();
+        $creditLimitDays = collect();
 
         if ($customerIds->isNotEmpty()) {
             $ledgerDue = DB::table('customerledgerdetails')
@@ -192,12 +193,24 @@ class CustomerAPI extends Controller
                 })
                 ->groupBy('cn.customerid')
                 ->pluck('credit', 'customerid');
+
+            $creditLimitDays = DB::table('customerledgerdetails')
+                ->select('customerid', DB::raw('MAX(credit_limit_days) as credit_limit_days'))
+                ->whereIn('customerid', $customerIds)
+                ->whereNotNull('credit_limit_days')
+                ->where('credit_limit_days', '>', 0)
+                ->groupBy('customerid')
+                ->pluck('credit_limit_days', 'customerid');
         }
 
-        $cus->transform(function ($customer) use ($ledgerDue, $creditNoteCredit) {
+        $cus->transform(function ($customer) use ($ledgerDue, $creditNoteCredit, $creditLimitDays) {
             $due = (float) ($ledgerDue[$customer->id] ?? 0) - (float) ($creditNoteCredit[$customer->id] ?? 0);
             $customer->total_due = max(0, $due);
             $customer->total_due_formatted = number_format($customer->total_due, 2);
+            $customer->credit_limit_days = isset($creditLimitDays[$customer->id])
+                ? (int) $creditLimitDays[$customer->id]
+                : null;
+            $customer->has_credit_limit_days = !is_null($customer->credit_limit_days);
 
             return $customer;
         });

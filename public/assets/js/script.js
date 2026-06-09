@@ -17,6 +17,7 @@ const OLD_PRICE_SEARCH_URL = window.location.origin + "/itemsales/old-price-sear
 let customerSearchQuery = "";
 let productSearchQuery = "";
 let customerCardAutoHideTimer = null;
+let selectedCustomerCreditLimitDays = null;
 
 let currentLink = null;
 let currentIndex = null;
@@ -77,21 +78,28 @@ function updateCreditDaysVisibility() {
     const wrapper = $("#creditDaysWrapper");
     const holder = $(".invoice-credit-days-field");
     const input = $("#creditDays");
+    const hasExistingCreditDays = parseInt(selectedCustomerCreditLimitDays, 10) > 0;
 
     if (!wrapper.length || !input.length) {
         return;
     }
 
-    if (invoiceType === "credit") {
+    if (invoiceType === "credit" && !hasExistingCreditDays) {
         holder.show();
         wrapper.css("display", "inline-flex");
         input.attr("required", "required");
         return;
     }
 
+    if (invoiceType === "credit" && hasExistingCreditDays) {
+        input.val(selectedCustomerCreditLimitDays);
+    } else {
+        input.val("");
+    }
+
     holder.hide();
     wrapper.hide();
-    input.removeAttr("required").val("").removeClass("invoice-field-invalid");
+    input.removeAttr("required").removeClass("invoice-field-invalid");
     input.closest(".input-group").next(".field-error-text").remove();
     input.next(".field-error-text").remove();
 }
@@ -105,7 +113,8 @@ function updateInvoiceStepVisibility() {
     const hasCustomer = `${finalData[0]["customer"] || ""}`.trim() !== "";
     const invoiceType = $("#invoice_type").val();
     const creditDays = parseInt($("#creditDays").val(), 10);
-    const creditDaysOk = invoiceType !== "credit" || creditDays > 0;
+    const hasExistingCreditDays = parseInt(selectedCustomerCreditLimitDays, 10) > 0;
+    const creditDaysOk = invoiceType !== "credit" || hasExistingCreditDays || creditDays > 0;
     const showBottomGrid = hasCustomer && invoiceType !== "";
     const showWorkArea = hasCustomer && invoiceType !== "" && creditDaysOk;
 
@@ -118,6 +127,7 @@ function updateInvoiceStepVisibility() {
     $(".invoice-work-field").toggle(showWorkArea);
 
     if (!hasCustomer) {
+        selectedCustomerCreditLimitDays = null;
         $("#invoice_type").val("");
         $("#salesDate").closest(".date-control").hide();
         updateCreditDaysVisibility();
@@ -198,6 +208,9 @@ function selectCustomerForInvoice(data) {
     $("#selectedCustomerPhone").text(phoneText || "-");
     $("#selectedCustomerInline").slideDown(150);
     finalData[0]["customer"] = `${data.id || ""}`;
+    selectedCustomerCreditLimitDays = parseInt(data.credit_limit_days, 10) > 0
+        ? parseInt(data.credit_limit_days, 10)
+        : null;
 
     $("#customerCard").show().animate({
         right: "0",
@@ -236,6 +249,7 @@ $("#searchCustomerInput").on("keyup", function (e) {
 
     $("#customerCard").hide();
     finalData[0]["customer"] = "";
+    selectedCustomerCreditLimitDays = null;
     $("#customerIdInput").val("");
     $("#selectedCustomerInline").slideUp(100);
     $("#selectedCustomerAddress").text("-");
@@ -920,6 +934,9 @@ $(window).on("load", function () {
         $("#selectedCustomerAddress").text(window.INVOICE_EDIT_DATA.customer_address || "-");
         $("#selectedCustomerPhone").text(window.INVOICE_EDIT_DATA.customer_phone || "-");
         $("#selectedCustomerInline").show();
+        selectedCustomerCreditLimitDays = parseInt(window.INVOICE_EDIT_DATA.customer_credit_limit_days, 10) > 0
+            ? parseInt(window.INVOICE_EDIT_DATA.customer_credit_limit_days, 10)
+            : null;
         $("#invoice_type").val(window.INVOICE_EDIT_DATA.invoice_type || "");
         if (typeof changeBackgroundColor === "function") {
             changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
@@ -1050,6 +1067,7 @@ $(window).on("load", function () {
         } else if (
             currentUrl.indexOf("creditnotes/create") === -1 &&
             $("#invoice_type").val().trim() === "credit" &&
+            !(parseInt(selectedCustomerCreditLimitDays, 10) > 0) &&
             ($("#creditDays").val().trim() === "" || parseInt($("#creditDays").val(), 10) <= 0)
         ) {
             setInvoiceError("Please enter credit days for credit invoice.", $("#creditDays"));

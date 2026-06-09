@@ -29,6 +29,18 @@ class Invoicecontroller extends Controller
         return $invoice->created_at && $invoice->created_at->gte(now()->subMinute());
     }
 
+    private function customerCreditLimitDays($customerid)
+    {
+        $days = DB::table('customerledgerdetails')
+            ->where('customerid', $customerid)
+            ->whereNotNull('credit_limit_days')
+            ->where('credit_limit_days', '>', 0)
+            ->orderByDesc('id')
+            ->value('credit_limit_days');
+
+        return $days ? (int) $days : null;
+    }
+
     public function index()
     {
         if(Auth::check()){
@@ -128,6 +140,7 @@ class Invoicecontroller extends Controller
         'total' => (string) $invoices->total,
         'note' => $invoices->notes ?? '',
         'credit_days' => $ledger ? (string) ($ledger->credit_limit_days ?? '') : '',
+        'customer_credit_limit_days' => $this->customerCreditLimitDays($invoices->customerid),
         'rows' => $editRows,
     ];
 
@@ -145,7 +158,7 @@ public function update($id, Request $req)
             'final_arr' => 'required',
             'invoice_type' => 'required|in:cash,credit',
             'date' => 'required|date',
-            'credit_days' => 'required_if:invoice_type,credit|nullable|integer|min:1',
+            'credit_days' => 'nullable|integer|min:1',
         ]);
 
         if ($validator->passes()) {
@@ -156,13 +169,32 @@ public function update($id, Request $req)
                 return redirect()->route('invoice.edit', $id)->with('error', 'Please verify invoice details before saving.');
             }
 
+            $customerId = $finalArr[0]->customer ?? null;
+            $creditLimitDays = null;
+
+            if ($req->invoice_type === 'credit') {
+                $creditLimitDays = $this->customerCreditLimitDays($customerId);
+
+                if (!$creditLimitDays) {
+                    $creditLimitValidator = Validator::make($req->all(), [
+                        'credit_days' => 'required|integer|min:1',
+                    ]);
+
+                    if ($creditLimitValidator->fails()) {
+                        return redirect()->route('invoice.edit', $id)->withErrors($creditLimitValidator)->withInput();
+                    }
+
+                    $creditLimitDays = (int) $req->credit_days;
+                }
+            }
+
             $existingInvoice = invoice::findOrFail($id);
             if (!$this->canEditInvoice($existingInvoice)) {
                 return redirect()->route('onlyviewbillafterbill', ['invoiceid' => $existingInvoice->id])
                     ->with('error', 'Invoice edit is allowed only within 1 minute after creation.');
             }
 
-            $invoice = DB::transaction(function () use ($id, $req, $salesArr, $finalArr) {
+            $invoice = DB::transaction(function () use ($id, $req, $salesArr, $finalArr, $creditLimitDays) {
                 $invoice = invoice::findOrFail($id);
                 $final = $finalArr[0];
 
@@ -210,7 +242,7 @@ public function update($id, Request $req)
                         'date' => $invoice->inv_date,
                         'invoicetype' => $invoice->inv_type,
                         'debit' => $invoice->total,
-                        'credit_limit_days' => $req->invoice_type === 'credit' ? $req->credit_days : null,
+                        'credit_limit_days' => $req->invoice_type === 'credit' ? $creditLimitDays : null,
                         'updated_at' => now(),
                     ]);
 
