@@ -208,7 +208,6 @@
         const customerId = urlParams.get('customerid');
         const particulars = urlParams.get('particulars');
         const voucherType = urlParams.get('voucher_type');
-        const amountx = urlParams.get('amount');
         const cname = urlParams.get('cname');
 
 
@@ -227,15 +226,6 @@
         if (voucherType) {
             document.getElementById('vt').value = voucherType;
             document.getElementById('hiddenVt').value = voucherType;
-        }
-        if (amountx) {
-            const amountInput = document.getElementById('amount');
-            if (amountInput) {
-                amountInput.value = amountx;
-                if (typeof updateAmountInWords === 'function') {
-                    updateAmountInWords();
-                }
-            }
         }
         if (cname) {
     const cnameElement = document.getElementById('cname');
