@@ -290,6 +290,61 @@ class ItemsalesController extends Controller
     return redirect('/login');
  }
 
+ private function oldPriceRows($customerId, $terms, bool $excludeCustomer = false)
+ {
+     return salesitem::query()
+         ->from('salesitems as s')
+         ->leftJoin('items as it', 'it.id', '=', 's.itemid')
+         ->leftJoin('invoices as inv', 'inv.id', '=', 's.invoiceid')
+         ->leftJoin('customerinfos as cus', 'cus.id', '=', 'inv.customerid')
+         ->when($excludeCustomer, function ($query) use ($customerId) {
+             $query->where('inv.customerid', '!=', $customerId)
+                 ->whereRaw('LOWER(COALESCE(cus.type, "")) = ?', ['shop']);
+         }, function ($query) use ($customerId) {
+             $query->where('inv.customerid', $customerId);
+         })
+         ->where(function ($query) use ($terms) {
+             foreach ($terms as $term) {
+                 $like = '%' . $term . '%';
+                 $query->where(function ($subQuery) use ($like) {
+                     $subQuery->where('s.unstockedname', 'like', $like)
+                         ->orWhere('it.itemsname', 'like', $like);
+                 });
+             }
+         })
+         ->orderByDesc('s.date')
+         ->orderByDesc('s.id')
+         ->limit(8)
+         ->get([
+             's.invoiceid',
+             's.date',
+             's.unstockedname',
+             's.quantity',
+             's.unit',
+             's.price',
+             's.subtotal',
+             'it.itemsname',
+             'cus.name as customer_name',
+         ]);
+ }
+
+ private function formatOldPriceRows($rows, string $sourceType)
+ {
+     return $rows->map(function ($row) use ($sourceType) {
+         return [
+             'invoiceid' => $row->invoiceid,
+             'date' => $row->date,
+             'item_name' => $row->itemsname ?: $row->unstockedname,
+             'quantity' => $row->quantity,
+             'unit' => $row->unit,
+             'price' => $row->price,
+             'subtotal' => $row->subtotal,
+             'customer_name' => $row->customer_name,
+             'source_type' => $sourceType,
+         ];
+     });
+ }
+
  public function oldPriceSearch(Request $req)
  {
      if (!Auth::check()) {
@@ -312,44 +367,21 @@ class ItemsalesController extends Controller
          ->filter()
          ->values();
 
-     $results = salesitem::query()
-         ->from('salesitems as s')
-         ->leftJoin('items as it', 'it.id', '=', 's.itemid')
-         ->leftJoin('invoices as inv', 'inv.id', '=', 's.invoiceid')
-         ->where('inv.customerid', $customerId)
-         ->where(function ($query) use ($terms) {
-             foreach ($terms as $term) {
-                 $like = '%' . $term . '%';
-                 $query->where(function ($subQuery) use ($like) {
-                     $subQuery->where('s.unstockedname', 'like', $like)
-                         ->orWhere('it.itemsname', 'like', $like);
-                 });
-             }
-         })
-         ->orderByDesc('s.date')
-         ->orderByDesc('s.id')
-         ->limit(8)
-         ->get([
-             's.invoiceid',
-             's.date',
-             's.unstockedname',
-             's.quantity',
-             's.unit',
-             's.price',
-             's.subtotal',
-             'it.itemsname',
-         ])
-         ->map(function ($row) {
-             return [
-                 'invoiceid' => $row->invoiceid,
-                 'date' => $row->date,
-                 'item_name' => $row->itemsname ?: $row->unstockedname,
-                 'quantity' => $row->quantity,
-                 'unit' => $row->unit,
-                 'price' => $row->price,
-                 'subtotal' => $row->subtotal,
-             ];
-         });
+     $results = $this->formatOldPriceRows(
+         $this->oldPriceRows($customerId, $terms),
+         'same_customer'
+     );
+
+     if ($results->isEmpty()) {
+         $customerType = customerinfo::where('id', $customerId)->value('type');
+
+         if (strtolower((string) $customerType) === 'shop') {
+             $results = $this->formatOldPriceRows(
+                 $this->oldPriceRows($customerId, $terms, true),
+                 'other_customer'
+             );
+         }
+     }
 
      return response()->json($results);
  }

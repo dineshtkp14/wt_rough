@@ -656,12 +656,25 @@ function hideOldPriceBoxes() {
 
 function oldPriceResultHTML(value) {
     const encodedValue = encodeURIComponent(JSON.stringify(value));
+    const isOtherCustomer = value.source_type === "other_customer";
+    const itemClass = isOtherCustomer
+        ? "old-price-result-item old-price-result-item-other"
+        : "old-price-result-item";
+    const sourceText = isOtherCustomer && value.customer_name
+        ? `<span class="old-price-customer-pill">Other customer: ${escapeHTML(value.customer_name)}</span>`
+        : "";
 
     return `
-        <button type="button" class="old-price-result-item" data-value="${encodedValue}">
-            <span><b>${value.item_name || ""}</b></span>
-            <span>Rs. ${value.price || "0"}</span>
-            <small>${value.date || ""} | Bill: ${value.invoiceid || ""}</small>
+        <button type="button" class="${itemClass}" data-value="${encodedValue}">
+            <span class="old-price-item-line">
+                <b>${escapeHTML(value.item_name || "")}</b>
+                ${isOtherCustomer ? '<span class="old-price-smart-badge">Smart suggestion</span>' : ""}
+            </span>
+            <span class="old-price-price-line">Rs. ${escapeHTML(value.price || "0")}</span>
+            <small class="old-price-meta-line">
+                <span>${escapeHTML(value.date || "")} | Bill: ${escapeHTML(value.invoiceid || "")}</span>
+                ${sourceText}
+            </small>
         </button>`;
 }
 

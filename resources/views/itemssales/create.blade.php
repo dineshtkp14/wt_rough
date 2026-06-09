@@ -586,6 +586,60 @@ $(document).ready(function () {
             color: #6c757d;
         }
 
+        .old-price-result-item-other {
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding-left: 12px;
+        }
+
+        .old-price-result-item-other:hover {
+            background: #e0f2fe;
+        }
+
+        .old-price-item-line {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .old-price-price-line {
+            color: #0f172a;
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .old-price-smart-badge {
+            background: #0369a1;
+            border-radius: 999px;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 900;
+            line-height: 1;
+            padding: 4px 7px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .old-price-meta-line {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .old-price-customer-pill {
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+            border-radius: 999px;
+            color: #075985;
+            display: inline-flex;
+            font-size: 12px;
+            font-weight: 900;
+            line-height: 1.1;
+            padding: 3px 7px;
+        }
+
         .old-price-empty {
             color: #dc3545;
             font-size: 14px;
