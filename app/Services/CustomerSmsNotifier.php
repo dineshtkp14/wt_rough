@@ -30,7 +30,7 @@ class CustomerSmsNotifier
     public function paymentCreated(customerledgerdetails $payment, ?customerinfo $customer = null): ?array
     {
         $customer = $customer ?: customerinfo::find($payment->customerid);
-        $remainingDue = $this->customerTotalDue((int) $payment->customerid);
+        $remainingDue = max(0, $this->customerTotalDue((int) $payment->customerid));
 
         $message = 'Namaste ' . ($customer->name ?? 'Customer')
             . ', payment received Rs ' . number_format((float) $payment->credit, 2)
