@@ -127,8 +127,11 @@
     </div>
 
 
-    <div class="d-grid gap-2 pt-2 pb-4">
-        <button id="submitBtn" type="submit" class="btn btn-lg btn-primary">Save</button>
+    <div class="col-12 company-form-actions">
+        <button id="submitBtn" type="submit" class="btn btn-lg btn-primary company-submit-btn">
+            <i class="fa-solid fa-floppy-disk"></i>
+            Save Bill Entry
+        </button>
     </div>
 </form>
 </div>
@@ -202,4 +205,29 @@
         });
     });
 </script>
+<style>
+    .company-form-actions {
+        align-items: center;
+        background: #eef2f7;
+        border-top: 1px solid #cbd5e1;
+        bottom: 0;
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 24px;
+        padding: 14px 0 18px;
+        position: sticky;
+        z-index: 10;
+    }
+
+    .company-submit-btn {
+        align-items: center;
+        display: inline-flex;
+        font-size: 22px;
+        font-weight: 900;
+        gap: 10px;
+        justify-content: center;
+        min-height: 56px;
+        min-width: 260px;
+    }
+</style>
 @stop

@@ -125,6 +125,21 @@
     var newTab = window.open(url, '_blank');
     if (newTab) newTab.focus();
   }
+
+  $(document).on('customer:selected', function () {
+    const form = document.getElementById('chosendatepdfform');
+    const customerInput = document.getElementById('customerIdInput');
+
+    if (!form || !customerInput || !customerInput.value) {
+      return;
+    }
+
+    if (form.requestSubmit) {
+      form.requestSubmit();
+    } else {
+      form.submit();
+    }
+  });
 </script>
 
 <script>

@@ -206,6 +206,21 @@
             var newTab = window.open(url, '_blank');
             newTab.focus();
         }
+
+        $(document).on('customer:selected', function () {
+            const form = document.getElementById('chosendatepdfform');
+            const companyInput = document.getElementById('customerIdInput');
+
+            if (!form || !companyInput || !companyInput.value) {
+                return;
+            }
+
+            if (form.requestSubmit) {
+                form.requestSubmit();
+            } else {
+                form.submit();
+            }
+        });
     </script>
 
     <style>
