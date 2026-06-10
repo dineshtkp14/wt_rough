@@ -10,6 +10,7 @@ use App\Models\item;
 use App\Models\Trackinvoice;
 use App\Models\SmsLog;
 use App\Services\SmsService;
+use App\Services\CustomerLedgerBalance;
 use App\Helpers\InvoiceSmsHelper;
 
 use App\Models\salesitem;
@@ -111,12 +112,7 @@ class CustomerLedgerHistroy extends Controller
 
     private function customerTotalDueForMessage($customerid)
     {
-        $ledgerRows = customerledgerdetails::where('customerid', $customerid)->get();
-        $debitNotCash = $ledgerRows->where('invoicetype', '!=', 'cash')->sum('debit');
-        $credit = $ledgerRows->sum('credit');
-        $creditNoteCredit = $this->creditNoteRowsForLedger($customerid)->sum('credit');
-
-        return $debitNotCash - $credit - $creditNoteCredit;
+        return (new CustomerLedgerBalance())->totalDue((int) $customerid);
     }
     
 

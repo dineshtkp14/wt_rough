@@ -8,7 +8,6 @@ use App\Models\customerinfo;
 use App\Models\customerledgerdetails;
 use App\Models\invoice;
 use App\Models\SmsLog;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CustomerSmsNotifier
@@ -30,7 +29,7 @@ class CustomerSmsNotifier
     public function paymentCreated(customerledgerdetails $payment, ?customerinfo $customer = null): ?array
     {
         $customer = $customer ?: customerinfo::find($payment->customerid);
-        $remainingDue = max(0, $this->customerTotalDue((int) $payment->customerid));
+        $remainingDue = $this->customerTotalDue((int) $payment->customerid);
 
         $message = 'Namaste ' . ($customer->name ?? 'Customer')
             . ', payment received Rs ' . number_format((float) $payment->credit, 2)
@@ -44,7 +43,7 @@ class CustomerSmsNotifier
     public function salesReturnCreated(CreditnotesInvoice $creditNote, ?customerinfo $customer = null): ?array
     {
         $customer = $customer ?: customerinfo::find($creditNote->customerid);
-        $remainingDue = max(0, $this->customerTotalDue((int) $creditNote->customerid));
+        $remainingDue = $this->customerTotalDue((int) $creditNote->customerid);
 
         $message = 'Namaste ' . ($customer->name ?? 'Customer')
             . ', sales return/credit note no ' . $creditNote->id
@@ -65,7 +64,7 @@ class CustomerSmsNotifier
         $message = $message ?: 'Namaste ' . ($customer->name ?? 'Customer')
             . ', your invoice no ' . $invoice->id
             . ' has been created. Invoice Amount: Rs ' . number_format((float) $invoice->total, 2)
-            . '. Your total due till today: Rs ' . number_format(max(0, $this->customerTotalDue((int) $invoice->customerid)), 2)
+            . '. Your total due till today: Rs ' . number_format($this->customerTotalDue((int) $invoice->customerid), 2)
             . '. Thank you!';
 
         return $this->sendToCustomer($customer, $message, 'invoice_created', $invoice->id);
@@ -73,20 +72,7 @@ class CustomerSmsNotifier
 
     public function customerTotalDue(int $customerId): float
     {
-        $debitNotCash = (float) DB::table('customerledgerdetails')
-            ->where('customerid', $customerId)
-            ->where('invoicetype', '!=', 'cash')
-            ->sum(DB::raw('COALESCE(debit, 0)'));
-
-        $ledgerCredit = (float) DB::table('customerledgerdetails')
-            ->where('customerid', $customerId)
-            ->sum(DB::raw('COALESCE(credit, 0)'));
-
-        $creditNoteCredit = (float) DB::table('creditnotes_customerledgerdetails')
-            ->where('customerid', $customerId)
-            ->sum(DB::raw('COALESCE(debit, credit, 0)'));
-
-        return $debitNotCash - $ledgerCredit - $creditNoteCredit;
+        return (new CustomerLedgerBalance())->totalDue($customerId);
     }
 
     private function sendToCustomer(?customerinfo $customer, string $message, string $smsType, ?int $invoiceId = null): ?array

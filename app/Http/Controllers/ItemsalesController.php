@@ -9,6 +9,7 @@ use App\Models\invoice;
 use App\Models\item;
 use App\Models\SmsLog;
 use App\Services\SmsService;
+use App\Services\CustomerLedgerBalance;
 use App\Helpers\InvoiceSmsHelper;
 use App\Support\NepaliDate;
 
@@ -24,14 +25,7 @@ class ItemsalesController extends Controller
 {
     private function customerTotalDueForMessage($customerid)
     {
-        $ledgerRows = customerledgerdetails::where('customerid', $customerid)->get();
-        $debitNotCash = $ledgerRows->where('invoicetype', '!=', 'cash')->sum('debit');
-        $credit = $ledgerRows->sum('credit');
-        $creditNoteCredit = (float) DB::table('creditnotes_customerledgerdetails')
-            ->where('customerid', $customerid)
-            ->sum(DB::raw('COALESCE(debit, credit, 0)'));
-
-        return $debitNotCash - $credit - $creditNoteCredit;
+        return (new CustomerLedgerBalance())->totalDue((int) $customerid);
     }
 
     private function customerCreditLimitDays($customerid)
