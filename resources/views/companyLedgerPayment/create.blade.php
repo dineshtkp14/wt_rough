@@ -365,18 +365,15 @@
         align-items: center;
         background: rgba(255, 255, 255, .96);
         border: 1px solid #cbd5e1;
-        border-radius: 8px 0 0 8px;
-        bottom: 96px;
+        border-radius: 8px;
+        bottom: 16px;
         box-shadow: 0 12px 32px rgba(15, 23, 42, .18);
         display: flex;
         justify-content: center;
-        margin: 0;
+        margin: 18px auto 0;
         padding: 14px;
-        position: fixed;
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%);
-        width: auto;
+        position: sticky;
+        width: fit-content;
         z-index: 1050;
     }
 
@@ -412,9 +409,9 @@
         .company-form-actions {
             border-radius: 0;
             bottom: 0;
-            left: 0;
-            right: 0;
-            transform: none;
+            margin-left: -14px;
+            margin-right: -14px;
+            width: auto;
         }
 
         .company-submit-btn {
