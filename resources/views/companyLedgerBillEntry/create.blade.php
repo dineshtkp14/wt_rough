@@ -128,7 +128,7 @@
 
 
     <div class="col-12 company-form-actions">
-        <button id="submitBtn" type="submit" class="btn btn-lg btn-primary company-submit-btn">
+        <button id="companySubmitBtn" type="submit" class="btn btn-lg btn-primary company-submit-btn">
             <i class="fa-solid fa-floppy-disk"></i>
             Save Bill Entry
         </button>
@@ -201,7 +201,7 @@
 <script>
     $(document).ready(function () {
         $('form').submit(function () {
-            $('#submitBtn').prop('disabled', true);
+            $('#companySubmitBtn').prop('disabled', true);
         });
     });
 </script>

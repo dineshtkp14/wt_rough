@@ -142,7 +142,7 @@
            
 
             <div class="col-12 company-form-actions">
-                    <button type="submit" id="submitBtn" class="btn btn-lg btn-primary company-submit-btn">
+                    <button type="submit" id="companySubmitBtn" class="btn btn-lg btn-primary company-submit-btn">
                         <i class="fa-solid fa-floppy-disk"></i>
                         Save Payment
                     </button>
@@ -221,7 +221,7 @@
     $(document).ready(function () {
             $('form').submit(function () {
                 // Disable the submit button
-                $('#submitBtn').prop('disabled', true);
+                $('#companySubmitBtn').prop('disabled', true);
                 
             });
         });
