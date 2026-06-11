@@ -454,6 +454,23 @@
             z-index: 1;
         }
 
+        .recent-table-scroll {
+            max-height: 620px;
+            overflow: auto;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+        }
+
+        .recent-table-scroll .table-modern th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        .recent-table-scroll .table-modern {
+            min-width: 620px;
+        }
+
         .rank-badge {
             width: 32px;
             height: 32px;
@@ -1453,6 +1470,7 @@
                 </div>
             </div>
             <div class="card-bd">
+                <div class="recent-table-scroll">
                 <table class="table-modern">
                     <thead>
                         <tr>
@@ -1502,6 +1520,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
         <div class="card">
@@ -1515,6 +1534,7 @@
                 </div>
             </div>
             <div class="card-bd">
+                <div class="recent-table-scroll">
                 <table class="table-modern">
                     <thead>
                         <tr>
@@ -1569,6 +1589,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>
@@ -1580,6 +1601,7 @@
                 <a href="{{ route('creditnotescustomeronlyview.billno') }}" class="view-all">Search credit note</a>
             </div>
             <div class="card-bd">
+                <div class="recent-table-scroll">
                 <table class="table-modern">
                     <thead>
                         <tr>
@@ -1627,6 +1649,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
 
@@ -1636,6 +1659,7 @@
                 <a href="{{ route('deleted.invoice') }}" class="view-all">View all</a>
             </div>
             <div class="card-bd">
+                <div class="recent-table-scroll">
                 <table class="table-modern">
                     <thead>
                         <tr>
@@ -1665,6 +1689,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>

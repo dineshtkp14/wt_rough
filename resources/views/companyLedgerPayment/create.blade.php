@@ -251,13 +251,16 @@
         </script>
 <style>
     .company-create-page {
+        overflow-x: hidden;
         padding-bottom: 96px;
     }
 
     .company-create-shell {
-        max-width: 1500px;
+        box-sizing: border-box;
+        max-width: 100%;
         padding-left: 26px;
         padding-right: 26px;
+        width: 100%;
     }
 
     .company-alert {
@@ -273,7 +276,9 @@
         border: 1px solid #dbe3ef;
         border-radius: 8px;
         box-shadow: 0 12px 28px rgba(15, 23, 42, .07);
+        box-sizing: border-box;
         margin-top: -42px;
+        max-width: 100%;
         padding: 22px;
     }
 
@@ -387,6 +392,7 @@
         justify-content: center;
         min-height: 86px;
         min-width: 720px;
+        max-width: calc(100vw - 360px);
         padding-left: 42px;
         padding-right: 42px;
         text-transform: uppercase;
@@ -415,6 +421,7 @@
         }
 
         .company-submit-btn {
+            max-width: none;
             min-width: 0;
             width: 100%;
         }

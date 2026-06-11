@@ -25,6 +25,10 @@
     }
     *{ box-sizing:border-box; }
     p{ margin:0 0 1px 0; line-height:1.12; }
+    .invoice-page{ page-break-after:always; }
+    .invoice-page:last-child{ page-break-after:auto; }
+    .page-count{ font-size:12px; text-align:right; margin-top:4px; }
+    .continuation-note{ font-size:13px; font-weight:700; text-align:right; padding-top:6px; }
 
     /* ---------- Inner page padding box ---------- */
     .page{ padding:50px; background:#fff; }      /* ← page padding */
@@ -74,87 +78,109 @@
   </style>
 </head>
 <body>
-<div class="page"><!-- inner padding box -->
-  <div class="watermark">OHT</div>
+@php
+  $invoice = $allinvoices ? $allinvoices->first() : null;
+  $items = collect($allcusbyid ?? []);
+  $itemPages = $items->chunk(13);
+  if ($itemPages->isEmpty()) {
+    $itemPages = collect([collect()]);
+  }
+  $totalPages = $itemPages->count();
+  $invoiceTime = optional($invoice)->created_at
+    ? \Carbon\Carbon::parse($invoice->created_at)->format('H:i:s')
+    : '';
 
-  <div class="letterhead">
-    <h1>OM HARI TRADELINK</h1>
-  </div>
+  $amountToWords = function ($num) use (&$amountToWords) {
+    $num = (int) floor($num);
+    $ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+    $tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+    if ($num == 0) return "Zero";
+    $words = "";
+    if ($num >= 10000000) { $words .= $amountToWords(floor($num/10000000))." Crore "; $num %= 10000000; }
+    if ($num >= 100000)   { $words .= $amountToWords(floor($num/100000))." Lakh ";  $num %= 100000; }
+    if ($num >= 1000)     { $words .= $amountToWords(floor($num/1000))." Thousand "; $num %= 1000; }
+    if ($num >= 100)      { $words .= $amountToWords(floor($num/100))." Hundred ";  $num %= 100; }
+    if ($num >= 20)       { $words .= $tens[floor($num/10)]." "; $num %= 10; }
+    if ($num > 0)         { $words .= $ones[(int)$num]." "; }
+    return trim($words);
+  };
+@endphp
 
-  <div class="address-info">
-    <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
-    <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
-  </div>
+@foreach($itemPages as $pageIndex => $pageItems)
+  @php
+    $isLastPage = $loop->last;
+    $serialNo = ($pageIndex * 13) + 1;
+  @endphp
 
-  <div class="invoice-info clearfix">
-    <div class="firstdiv">
-      @php
-        $invoiceTime = optional($allinvoices->first())->created_at
-          ? \Carbon\Carbon::parse($allinvoices->first()->created_at)->format('H:i:s')
-          : '';
-      @endphp
-      @if(isset($forinvoicetype) && !empty($forinvoicetype))
-        @if($forinvoicetype->invoicetype == 'credit')
-          <p style="background:#000;color:#fff;padding:6px 10px;font-size:16px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
-        @else
-          <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+  <div class="page invoice-page">
+    <div class="watermark">OHT</div>
+
+    <div class="letterhead">
+      <h1>OM HARI TRADELINK</h1>
+    </div>
+
+    <div class="address-info">
+      <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
+      <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
+    </div>
+
+    <div class="invoice-info clearfix">
+      <div class="firstdiv">
+        @if(isset($forinvoicetype) && !empty($forinvoicetype))
+          @if($forinvoicetype->invoicetype == 'credit')
+            <p style="background:#000;color:#fff;padding:6px 10px;font-size:16px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+          @else
+            <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+          @endif
+
+          <p class="date-line">Date: {{ $forinvoicetype->date }} {{ $invoiceTime }}</p>
+
+          <p class="label-nep miti-line">
+            Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+          </p>
+        @endif
+      </div>
+
+      <div class="forbillandpan">
+        <div class="invoice-no">INVOICE NO: <span class="num">{{ $invoiceid }}</span></div>
+        @if ($invoice && $invoice->total < 19900)
+          <div class="pan-line">PAN No. 608641838</div>
+        @endif
+      </div>
+
+      <div class="seconddiv forfontsizebll">
+        @if ($cinfodetails)
+          @foreach($cinfodetails as $i)
+            <p>Name: {{ $i->name }}</p>
+            <p>Address: {{ $i->address }}</p>
+            <p>Email: {{ $i->email }}</p>
+            <p>Contact No: {{ $i->phoneno }}, {{ $i->alternate_phoneno }}</p>
+          @endforeach
         @endif
 
-        <p class="date-line">Date: {{ $forinvoicetype->date }} {{ $invoiceTime }}</p>
-
-        <p class="label-nep miti-line">
-          Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
-        </p>
-      @endif
+        @if ($invoice)
+          <p>Customer Id: {{ $invoice->customerid }}</p>
+        @endif
+      </div>
     </div>
 
-    <div class="forbillandpan">
-      <div class="invoice-no">INVOICE NO: <span class="num">{{ $invoiceid }}</span></div>
-      @if ($allinvoices)
-        @foreach($allinvoices as $i)
-          @if ($i->total < 19900)
-            <div class="pan-line">PAN No. 608641838</div>
-          @endif
-        @endforeach
-      @endif
-    </div>
+    <div class="page-count">Page {{ $pageIndex + 1 }} of {{ $totalPages }}</div>
 
-    <div class="seconddiv forfontsizebll">
-      @if ($cinfodetails)
-        @foreach($cinfodetails as $i)
-          <p>Name: {{ $i->name }}</p>
-          <p>Address: {{ $i->address }}</p>
-          <p>Email: {{ $i->email }}</p>
-          <p>Contact No: {{ $i->phoneno }}, {{ $i->alternate_phoneno }}</p>
-        @endforeach
-      @endif
-
-      @if ($allinvoices)
-        @foreach($allinvoices as $i)
-          <p>Customer Id: {{ $i->customerid }}</p>
-        @endforeach
-      @endif
-    </div>
-  </div>
-
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>ITEM ID</th>
-          <th>ITEM Name</th>
-          <th>Quantity</th>
-          <th>Unit</th>
-          <th>Sold Price</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        @php $serialNo = 1; @endphp
-
-        @if ($allcusbyid)
-          @foreach($allcusbyid as $i)
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ITEM ID</th>
+            <th>ITEM Name</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Sold Price</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($pageItems as $i)
             <tr>
               <td>{{ $serialNo++ }}</td>
               <td>{{ $i->itemidorg }}</td>
@@ -165,63 +191,48 @@
               <td>{{ $i->subtotal }}</td>
             </tr>
           @endforeach
-        @endif
 
-        @if ($allinvoices)
-          @foreach($allinvoices as $i)
+          @if($isLastPage && $invoice)
             <tr>
               <td colspan="5"></td>
               <td class="text-right"><b>Sub-Total:</b></td>
-              <td><b>{{ $i->subtotal }}</b></td>
+              <td><b>{{ $invoice->subtotal }}</b></td>
             </tr>
             <tr>
               <td colspan="5">
                 <p style="font-size:13px;text-align:left;"># Goods once sold won't be returned</p>
               </td>
               <td class="text-right">E-Discount:</td>
-              <td>{{ $i->discount }}</td>
+              <td>{{ $invoice->discount }}</td>
             </tr>
             <tr>
               <td colspan="5" style="font-size:14px;text-align:left;">
                 <b>Amount in Words: </b>
-                @php
-                  function convertNumberToWords($num) {
-                    $ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
-                    $tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
-                    if ($num == 0) return "Zero";
-                    $words = "";
-                    if ($num >= 10000000) { $words .= convertNumberToWords(floor($num/10000000))." Crore "; $num %= 10000000; }
-                    if ($num >= 100000)   { $words .= convertNumberToWords(floor($num/100000))." Lakh ";  $num %= 100000; }
-                    if ($num >= 1000)     { $words .= convertNumberToWords(floor($num/1000))." Thousand "; $num %= 1000; }
-                    if ($num >= 100)      { $words .= convertNumberToWords(floor($num/100))." Hundred ";  $num %= 100; }
-                    if ($num >= 20)       { $words .= $tens[floor($num/10)]." "; $num %= 10; }
-                    if ($num > 0)         { $words .= $ones[(int)$num]." "; }
-                    return trim($words);
-                  }
-                  echo convertNumberToWords($i->total) . " only/-";
-                @endphp
+                {{ $amountToWords($invoice->total) }} only/-
               </td>
               <td class="text-right"><b>Total Amount:</b></td>
-              <td>{{ $i->total }}</td>
+              <td>{{ $invoice->total }}</td>
             </tr>
             <tr>
-              <td colspan="7" class="notes" style="text-align:left"><b>Notes:</b> {{ $i->notes }}</td>
+              <td colspan="7" class="notes" style="text-align:left"><b>Notes:</b> {{ $invoice->notes }}</td>
             </tr>
-          @endforeach
-        @endif
-      </tbody>
-    </table>
-  </div>
+          @elseif(!$isLastPage)
+            <tr>
+              <td colspan="7" class="continuation-note">Continued on next page...</td>
+            </tr>
+          @endif
+        </tbody>
+      </table>
+    </div>
 
-  <br>
-  @if ($allinvoices)
-    @foreach($allinvoices as $i)
-      <p>Bill Created_by: {{ $i->added_by }}</p>
+    @if($isLastPage && $invoice)
+      <br>
+      <p>Bill Created_by: {{ $invoice->added_by }}</p>
       <p style="font-size:13px;">Printed Time and Date:
         <span style="color:#4b4b4b;">{{ date('Y-m-d H:i:s') }}</span>
       </p>
-    @endforeach
-  @endif
-</div><!-- /.page -->
+    @endif
+  </div>
+@endforeach
 </body>
 </html>

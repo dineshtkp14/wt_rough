@@ -123,6 +123,13 @@
                             <div><span>Email</span><b>{{ $customer->email ?? '-' }}</b></div>
                         </div>
 
+                        @if(!empty(trim($customer->remarks ?? '')))
+                            <div class="clhs-customer-note">
+                                <span>Notes</span>
+                                <b>{{ $customer->remarks }}</b>
+                            </div>
+                        @endif
+
                         <div class="clhs-due-card {{ $dueAmount < 0 ? 'is-negative' : '' }}">
                             <span>Total Due Amount</span>
                             <strong>{{ number_format($dueAmount, 2) }} -/</strong>
@@ -681,6 +688,33 @@
             display: block;
             font-size: 16px;
             margin-top: 3px;
+            word-break: break-word;
+        }
+
+        .clhs-customer-note {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-left: 5px solid #f97316;
+            border-radius: 6px;
+            margin: -2px 0 14px;
+            padding: 10px 12px;
+        }
+
+        .clhs-customer-note span {
+            color: #9a3412;
+            display: block;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .clhs-customer-note b {
+            color: #111827;
+            display: block;
+            font-size: 16px;
+            line-height: 1.35;
+            margin-top: 3px;
+            white-space: pre-wrap;
             word-break: break-word;
         }
 

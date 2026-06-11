@@ -859,6 +859,56 @@
                     body.classList.remove('sidebar-open');
                 }
             });
+
+            const tooltip = document.createElement('div');
+            tooltip.className = 'sidebar-hover-label';
+            document.body.appendChild(tooltip);
+
+            function getSidebarTooltipText(target) {
+                const label = target.querySelector('span');
+                if (label && label.textContent.trim()) {
+                    return label.textContent.trim();
+                }
+
+                if (target.classList.contains('user-avatar')) {
+                    return 'User';
+                }
+
+                return target.getAttribute('aria-label') || target.getAttribute('title') || '';
+            }
+
+            function showSidebarTooltip(target) {
+                if (!body.classList.contains('sidebar-collapsed') || window.innerWidth <= 768) return;
+
+                const text = getSidebarTooltipText(target);
+                if (!text) return;
+
+                const rect = target.getBoundingClientRect();
+                tooltip.textContent = text;
+                tooltip.style.top = `${rect.top + rect.height / 2}px`;
+                tooltip.style.left = `${rect.right + 12}px`;
+                tooltip.style.display = 'block';
+            }
+
+            function hideSidebarTooltip() {
+                tooltip.style.display = 'none';
+            }
+
+            sidebar.querySelectorAll('.nav-toggle, .btn-logout, .user-avatar').forEach(function(item) {
+                const tooltipText = getSidebarTooltipText(item);
+                if (tooltipText) {
+                    item.setAttribute('title', tooltipText);
+                }
+
+                item.addEventListener('mouseenter', function() {
+                    showSidebarTooltip(item);
+                });
+                item.addEventListener('mouseleave', hideSidebarTooltip);
+                item.addEventListener('focus', function() {
+                    showSidebarTooltip(item);
+                });
+                item.addEventListener('blur', hideSidebarTooltip);
+            });
         })();
     </script>
 

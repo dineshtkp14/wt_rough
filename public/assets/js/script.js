@@ -406,8 +406,44 @@ function inputHTML(counter) {
             </tr>`;
 }
 
+const INVOICE_ROWS_PER_PAGE = 13;
+const MAX_INVOICE_ROWS = 50;
+let currentInvoiceRowsPage = 1;
+
+function getInvoiceRowsTotalPages() {
+    return Math.max(1, Math.ceil(salesData.length / INVOICE_ROWS_PER_PAGE));
+}
+
+function renderInvoiceRowsPage() {
+    const totalPages = getInvoiceRowsTotalPages();
+    currentInvoiceRowsPage = Math.min(Math.max(1, currentInvoiceRowsPage), totalPages);
+
+    const startIndex = (currentInvoiceRowsPage - 1) * INVOICE_ROWS_PER_PAGE;
+    const endIndex = startIndex + INVOICE_ROWS_PER_PAGE;
+    const visibleIds = salesData.slice(startIndex, endIndex).map((row) => row.id);
+
+    $("#invoiceTableBody tr[id^='inputRow']").each(function () {
+        const rowId = parseInt(this.id.replace("inputRow", ""), 10);
+        $(this).toggle(visibleIds.includes(rowId));
+    });
+
+    $("#invoiceRowPager").toggle(salesData.length > INVOICE_ROWS_PER_PAGE);
+    $("#invoiceRowsPageText").text(`Page ${currentInvoiceRowsPage} of ${totalPages}`);
+    $("#invoiceRowsPrevBtn").prop("disabled", currentInvoiceRowsPage <= 1);
+    $("#invoiceRowsNextBtn").prop("disabled", currentInvoiceRowsPage >= totalPages);
+}
+
+$(document)
+    .off("click.invoiceRowsPager")
+    .on("click.invoiceRowsPager", "#invoiceRowsPrevBtn, #invoiceRowsNextBtn", function () {
+        const totalPages = getInvoiceRowsTotalPages();
+        currentInvoiceRowsPage += this.id === "invoiceRowsNextBtn" ? 1 : -1;
+        currentInvoiceRowsPage = Math.min(Math.max(1, currentInvoiceRowsPage), totalPages);
+        renderInvoiceRowsPage();
+    });
+
 function appendInputRow(rowData = null) {
-    if (salesData.length >= 13) {
+    if (salesData.length >= MAX_INVOICE_ROWS) {
         return false;
     }
 
@@ -459,7 +495,101 @@ function appendInputRow(rowData = null) {
     handleOldPriceSearch();
     selectProduct();
     getFinalCalculations();
+    currentInvoiceRowsPage = getInvoiceRowsTotalPages();
+    renderInvoiceRowsPage();
 }
+
+const RANDOM_INVOICE_TEST_ITEMS = [
+    "Test Rice",
+    "Test Oil",
+    "Test Sugar",
+    "Test Dal",
+    "Test Flour",
+    "Test Soap",
+    "Test Salt",
+    "Test Noodles",
+    "Test Biscuit",
+    "Test Tea",
+    "Test Masala",
+    "Test Toothpaste",
+    "Test Shampoo",
+    "Test Stationery",
+    "Test Hardware",
+    "Test Cloth",
+    "Test Plastic",
+    "Test Battery",
+    "Test Wire",
+    "Test Pipe",
+];
+
+function fillRandomInvoiceRows() {
+    const pageStartIndex = (currentInvoiceRowsPage - 1) * INVOICE_ROWS_PER_PAGE;
+    const targetRows = Math.min(pageStartIndex + INVOICE_ROWS_PER_PAGE, MAX_INVOICE_ROWS);
+    const units = ["pcs", "kg", "feet", "mtr"];
+
+    while (salesData.length < targetRows) {
+        appendInputRow();
+    }
+
+    const pageRows = salesData.slice(pageStartIndex, targetRows);
+
+    pageRows.forEach(function (row, pageIndex) {
+        const index = pageStartIndex + pageIndex;
+        const rowEl = $(`#inputRow${row.id}`);
+        const itemName = `${RANDOM_INVOICE_TEST_ITEMS[index % RANDOM_INVOICE_TEST_ITEMS.length]} ${index + 1}`;
+        const quantity = `${Math.floor(Math.random() * 9) + 1}`;
+        const unit = units[Math.floor(Math.random() * units.length)];
+        const price = `${Math.floor(Math.random() * 900) + 100}`;
+        const subtotal = getRowCalculations(quantity, price, "");
+
+        row.product = "";
+        row.unstocked = itemName;
+        row.quantity = quantity;
+        row.unit = unit;
+        row.price = price;
+        row.discount = "";
+        row.subtotal = subtotal;
+
+        rowEl.find("#selectProductLink")
+            .css({ "pointer-events": "", color: "" })
+            .data("query", "");
+        rowEl.find("#selectProductLink h6").text("");
+        rowEl.find("#selectProductLink p").text("or select Items");
+
+        rowEl.find("#unstockedInput")
+            .prop("disabled", false)
+            .val(itemName)
+            .attr("title", itemName)
+            .removeClass("invoice-field-invalid");
+        rowEl.find("#quantityInput")
+            .removeAttr("data-max")
+            .attr("placeholder", "Quantity")
+            .val(quantity)
+            .attr("title", quantity)
+            .removeClass("invoice-field-invalid");
+        rowEl.find("#unitInput")
+            .prop("disabled", false)
+            .val(unit)
+            .removeClass("invoice-field-invalid");
+        rowEl.find("#priceInput")
+            .val(price)
+            .attr("title", price)
+            .removeClass("invoice-field-invalid");
+        rowEl.find("#subTotalInput")
+            .val(subtotal)
+            .attr("title", subtotal);
+    });
+
+    $(".field-error-text").remove();
+    getFinalCalculations();
+    renderInvoiceRowsPage();
+}
+
+$(document)
+    .off("click.fillRandomInvoiceRows")
+    .on("click.fillRandomInvoiceRows", "#fillRandomInvoiceRowsBtn", function () {
+        fillRandomInvoiceRows();
+    });
 
 function removeObj(id) {
     let index = salesData.findIndex((obj) => obj.id === id);
@@ -483,6 +613,7 @@ function triggerRemoveEvent() {
             $(`#${parentId}`).remove();
             removeObj(dataId);
             getFinalCalculations();
+            renderInvoiceRowsPage();
         });
 }
 

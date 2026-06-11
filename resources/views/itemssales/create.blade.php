@@ -45,6 +45,9 @@
         <div class="container-fluid invoice-create-page">
 
         <div class="invoice-quick-actions">
+            <button type="button" class="btn btn-warning m" id="fillRandomInvoiceRowsBtn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Fill Test Values
+            </button>
             <button type="button" class="btn btn-primary m" data-bs-toggle="modal" data-bs-target="#quickCustomerModal">
                 <i class="fa-solid fa-plus"></i> Add New Customer
             </button>
@@ -147,6 +150,17 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="invoice-row-pager invoice-work-field" id="invoiceRowPager" style="display: none;">
+                    <button type="button" class="invoice-row-page-btn" id="invoiceRowsPrevBtn">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        Previous Page
+                    </button>
+                    <strong id="invoiceRowsPageText">Page 1 of 1</strong>
+                    <button type="button" class="invoice-row-page-btn" id="invoiceRowsNextBtn">
+                        Next Page
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                 </div>
 
                 <div class="invoice-bottom-grid invoice-step-bottom-grid">
@@ -742,7 +756,8 @@ $(document).ready(function () {
             border: 1px solid #d5deea;
             border-radius: 8px;
             box-shadow: 0 8px 22px rgba(15, 23, 42, .06);
-            overflow: visible;
+            overflow-x: auto;
+            overflow-y: visible;
         }
 
         .invoice-table-shell::after {
@@ -757,21 +772,22 @@ $(document).ready(function () {
 
         .invoicetable {
             display: table !important;
+            min-width: 1360px;
             width: 100%;
             margin: 0;
-            table-layout: fixed;
+            table-layout: auto;
         }
 
         .invoicetable th,
         .invoicetable td {
-            padding: 8px 10px;
+            padding: 4px 8px;
             vertical-align: middle;
         }
 
         .invoicetable th {
             background: #f1f5f9;
             color: #111827;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 900;
             line-height: 1.1;
             white-space: nowrap;
@@ -791,63 +807,71 @@ $(document).ready(function () {
 
         .invoice-create-page .invoicetable th:nth-child(3),
         .invoice-create-page .invoicetable td:nth-child(3) {
-            width: 110px;
+            width: 95px;
         }
 
         .invoice-create-page .invoicetable th:nth-child(4),
         .invoice-create-page .invoicetable td:nth-child(4) {
-            width: 34%;
+            width: 28%;
         }
 
         .invoice-create-page .invoicetable th:nth-child(5),
         .invoice-create-page .invoicetable td:nth-child(5) {
-            width: 145px;
+            min-width: 170px;
+            width: 170px;
         }
 
         .invoice-create-page .invoicetable th:nth-child(6),
         .invoice-create-page .invoicetable td:nth-child(6) {
-            width: 135px;
+            min-width: 130px;
+            width: 130px;
         }
 
         .invoice-create-page .invoicetable th:nth-child(7),
         .invoice-create-page .invoicetable td:nth-child(7) {
-            width: 220px;
+            min-width: 260px;
+            width: 260px;
         }
 
         .invoice-create-page .invoicetable th:nth-child(8),
         .invoice-create-page .invoicetable td:nth-child(8) {
-            min-width: 250px;
-            width: auto;
+            min-width: 210px;
+            width: 210px;
         }
 
         .invoicetable .form-control,
         .invoicetable .form-select {
-            min-height: 42px;
-            border-radius: 7px;
-            font-size: 16px;
+            min-height: 34px;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: 600;
+            padding-bottom: 4px;
+            padding-top: 4px;
         }
 
         .invoicetable .btn {
-            min-height: 38px;
-            min-width: 38px;
-            padding: 6px 10px;
+            min-height: 32px;
+            min-width: 32px;
+            padding: 4px 8px;
         }
 
         .invoicetable .input-group {
             flex-wrap: nowrap;
+            min-width: 0;
         }
 
         .invoicetable .input-group-text {
             flex: 0 0 auto;
-            padding-left: 10px;
-            padding-right: 10px;
+            padding-bottom: 4px;
+            padding-left: 8px;
+            padding-right: 8px;
+            padding-top: 4px;
             font-weight: 800;
         }
 
         .invoicetable #priceInput,
         .invoicetable #subTotalInput {
-            min-width: 0;
+            min-width: 120px;
             padding-left: 8px;
             padding-right: 8px;
             text-align: right;
@@ -861,13 +885,13 @@ $(document).ready(function () {
 
         .unstocked-cell #unstockedInput {
             font-weight: 500;
-            line-height: 1.1;
+            line-height: 1;
         }
 
         .price-cell #priceInput,
         .subtotal-cell #subTotalInput {
             font-weight: 700;
-            line-height: 1.1;
+            line-height: 1;
         }
 
         .price-cell #priceInput,
@@ -878,23 +902,68 @@ $(document).ready(function () {
 
         .quantity-cell {
             display: grid;
-            gap: 5px;
+            gap: 3px;
+        }
+
+        .quantity-cell #quantityInput {
+            min-width: 140px;
+        }
+
+        .invoice-row-pager {
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #d5deea;
+            border-radius: 8px;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, .06);
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 10px;
+            padding: 10px 12px;
+        }
+
+        .invoice-row-pager strong {
+            color: #111827;
+            font-size: 16px;
+            font-weight: 900;
+            min-width: 130px;
+            text-align: center;
+        }
+
+        .invoice-row-page-btn {
+            align-items: center;
+            background: #1f2937;
+            border: 0;
+            border-radius: 6px;
+            color: #ffffff;
+            display: inline-flex;
+            font-size: 15px;
+            font-weight: 900;
+            gap: 8px;
+            min-height: 40px;
+            padding: 0 14px;
+        }
+
+        .invoice-row-page-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            opacity: .75;
         }
 
         .select-product-link h6 {
             display: -webkit-box;
-            font-size: 12px !important;
-            line-height: 1.15;
-            max-height: 28px;
+            font-size: 11px !important;
+            line-height: 1.05;
+            max-height: 24px;
             overflow: hidden;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 2;
         }
 
         .select-product-link p {
-            font-size: 12px !important;
-            line-height: 1.1;
-            margin-top: 2px !important;
+            font-size: 11px !important;
+            line-height: 1;
+            margin-top: 0 !important;
         }
 
         .invoice-total-box {
@@ -1050,7 +1119,7 @@ $(document).ready(function () {
 
             .invoicetable th,
             .invoicetable td {
-                padding: 8px;
+                padding: 5px 7px;
             }
 
             .invoicetable th {
@@ -1061,13 +1130,13 @@ $(document).ready(function () {
 
             .invoicetable .form-control,
             .invoicetable .form-select {
-                min-height: 42px;
-                font-size: 16px;
+                min-height: 36px;
+                font-size: 14px;
             }
 
             .invoicetable .btn {
-                min-height: 42px;
-                min-width: 42px;
+                min-height: 34px;
+                min-width: 34px;
             }
 
             .invoice-bottom-grid {

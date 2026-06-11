@@ -109,6 +109,38 @@ body.sidebar-collapsed .collapse {
     display: none !important;
 }
 
+.sidebar-hover-label {
+    background: #0f172a;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 8px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.32);
+    color: #ffffff;
+    display: none;
+    font-size: 0.86rem;
+    font-weight: 700;
+    left: 88px;
+    line-height: 1.2;
+    max-width: 260px;
+    padding: 0.55rem 0.75rem;
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    z-index: 2000;
+}
+
+.sidebar-hover-label::before {
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid #0f172a;
+    border-top: 6px solid transparent;
+    content: "";
+    left: -6px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 body.sidebar-collapsed .main-content {
     padding-left: calc(var(--sidebar-collapsed-width) + 20px) !important;
 }

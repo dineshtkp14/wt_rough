@@ -130,7 +130,7 @@ class ModernDashboardController extends Controller
             ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'customerinfos.name as customer')
             ->orderByDesc('invoices.inv_date')
             ->orderByDesc('invoices.id')
-            ->limit(8)
+            ->limit(100)
             ->get();
 
         $recentInvoices = [];
@@ -153,7 +153,7 @@ class ModernDashboardController extends Controller
             ->where('customerledgerdetails.invoicetype', 'payment')
             ->orderByDesc('customerledgerdetails.date')
             ->orderByDesc('customerledgerdetails.id')
-            ->limit(8)
+            ->limit(100)
             ->get();
 
         $recentPayments = [];
@@ -181,7 +181,7 @@ class ModernDashboardController extends Controller
             ->select('creditnotes_invoices.id', 'creditnotes_invoices.total as amount', 'creditnotes_invoices.inv_date as date', 'customerinfos.name as customer')
             ->orderByDesc('creditnotes_invoices.inv_date')
             ->orderByDesc('creditnotes_invoices.id')
-            ->limit(8)
+            ->limit(100)
             ->get();
 
         $recentCreditNotes = [];
@@ -200,7 +200,7 @@ class ModernDashboardController extends Controller
             ->select('backup_invoices.id', 'backup_invoices.invoice_id', 'backup_invoices.total as amount', 'backup_invoices.inv_type as type', 'backup_invoices.inv_date as date', 'backup_invoices.created_at', 'customerinfos.name as customer')
             ->orderByDesc('backup_invoices.created_at')
             ->orderByDesc('backup_invoices.id')
-            ->limit(8)
+            ->limit(100)
             ->get();
 
         $recentDeletedInvoices = [];
