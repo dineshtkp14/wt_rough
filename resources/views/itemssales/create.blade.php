@@ -45,9 +45,6 @@
         <div class="container-fluid invoice-create-page">
 
         <div class="invoice-quick-actions">
-            <button type="button" class="btn btn-warning m" id="fillRandomInvoiceRowsBtn">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Fill Test Values
-            </button>
             <button type="button" class="btn btn-primary m" data-bs-toggle="modal" data-bs-target="#quickCustomerModal">
                 <i class="fa-solid fa-plus"></i> Add New Customer
             </button>
