@@ -51,7 +51,7 @@ class SendInvoiceSms extends Command
      */
     private function sendInvoiceSms($invoiceId)
     {
-        $invoice = invoice::with('customer')->find($invoiceId);
+        $invoice = invoice::with(['customer', 'salesitems.item'])->find($invoiceId);
 
         if (!$invoice) {
             $this->error("Invoice #{$invoiceId} not found!");
@@ -68,14 +68,7 @@ class SendInvoiceSms extends Command
 
         $totalDueAmount = $this->customerTotalDueForMessage($invoice->customerid);
 
-        // Create message
-        $message = 'Namaste ' . $customer->name
-            . ', your invoice no ' . $invoice->id
-            . ' has been created. Invoice Amount: Rs ' . number_format((float) $invoice->total, 2)
-            . '. Your total due till today: Rs ' . number_format($totalDueAmount, 2)
-            . '. Thank you!';
-
-        $message = InvoiceSmsHelper::truncateMessage($message);
+        $message = InvoiceSmsHelper::invoiceCreatedMessage($invoice, $totalDueAmount);
 
         try {
             $smsService = new SmsService();

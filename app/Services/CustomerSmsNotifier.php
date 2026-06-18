@@ -31,11 +31,12 @@ class CustomerSmsNotifier
         $customer = $customer ?: customerinfo::find($payment->customerid);
         $remainingDue = $this->customerTotalDue((int) $payment->customerid);
 
-        $message = 'Namaste ' . ($customer->name ?? 'Customer')
-            . ', payment received Rs ' . number_format((float) $payment->credit, 2)
-            . '. Receipt no ' . $payment->id
-            . '. Remaining due Rs ' . number_format($remainingDue, 2)
-            . '. Thank you!';
+        $message = InvoiceSmsHelper::paymentReceivedMessage(
+            $customer->name ?? 'Customer',
+            (float) $payment->credit,
+            $payment->id,
+            $remainingDue
+        );
 
         return $this->sendToCustomer($customer, $message, 'payment_received');
     }
@@ -61,11 +62,10 @@ class CustomerSmsNotifier
         }
 
         $customer = $customer ?: customerinfo::find($invoice->customerid);
-        $message = $message ?: 'Namaste ' . ($customer->name ?? 'Customer')
-            . ', your invoice no ' . $invoice->id
-            . ' has been created. Invoice Amount: Rs ' . number_format((float) $invoice->total, 2)
-            . '. Your total due till today: Rs ' . number_format($this->customerTotalDue((int) $invoice->customerid), 2)
-            . '. Thank you!';
+        $message = $message ?: InvoiceSmsHelper::invoiceCreatedMessage(
+            $invoice,
+            $this->customerTotalDue((int) $invoice->customerid)
+        );
 
         return $this->sendToCustomer($customer, $message, 'invoice_created', $invoice->id);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Helpers\InvoiceSmsHelper;
 use App\Models\customerledgerdetails;
 use App\Models\TrackCustomerLedger;
 use App\Services\CustomerSmsNotifier;
@@ -145,9 +146,12 @@ class AllCustomerCreditListLivewire extends Component
             $whatsappPhone = '977' . $whatsappPhone;
         }
 
-        $paymentMessage = 'Namaste, Rs ' . number_format((float) $this->quickPaymentAmount, 2)
-            . ' payment received. Remaining due Rs ' . number_format($remainingDue, 2)
-            . '. Thank you.';
+        $paymentMessage = InvoiceSmsHelper::paymentReceivedMessage(
+            $this->quickPaymentCustomerName ?: 'Customer',
+            (float) $this->quickPaymentAmount,
+            $payment->id,
+            $remainingDue
+        );
 
         $redirect = redirect()->route('cashreceipt.search', ['receiptno' => $payment->id])
             ->with('success', 'Payment received successfully.')

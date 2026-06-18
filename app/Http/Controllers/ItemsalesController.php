@@ -216,15 +216,8 @@ class ItemsalesController extends Controller
         if ($invoice_data->inv_type === 'credit') {
             $totalDueAmount = $this->customerTotalDueForMessage($invoice_data->customerid);
 
-            // Create SMS message with invoice details and total due amount
-            $invoiceMessage = 'Namaste ' . ($customer->name ?? 'Customer')
-                . ', your invoice no ' . $invoice_data->id
-                . ' has been created. Invoice Amount: Rs ' . number_format((float) $invoice_data->total, 2)
-                . '. Your total due till today: Rs ' . number_format($totalDueAmount, 2)
-                . '. Thank you!';
-
-            // Truncate message to SMS character limit
-            $invoiceMessage = InvoiceSmsHelper::truncateMessage($invoiceMessage);
+            $invoice_data->load(['customer', 'salesitems.item']);
+            $invoiceMessage = InvoiceSmsHelper::invoiceCreatedMessage($invoice_data, $totalDueAmount);
 
             // Auto-send SMS if customer has phone number
             if ($phone && $customer) {

@@ -1854,14 +1854,8 @@ public function oldpricecheck(Request $req)
 
             $totalDueAmount = $this->customerTotalDueForMessage($invoice->customerid);
 
-            // Create SMS message
-            $invoiceMessage = 'Namaste ' . ($customer->name ? $customer->name : 'Customer')
-                . ', your invoice no ' . $invoice->id
-                . ' has been created. Invoice Amount: Rs ' . number_format((float) $invoice->total, 2)
-                . '. Your total due till today: Rs ' . number_format($totalDueAmount, 2)
-                . '. Thank you!';
-
-            $invoiceMessage = InvoiceSmsHelper::truncateMessage($invoiceMessage);
+            $invoice->load(['customer', 'salesitems.item']);
+            $invoiceMessage = InvoiceSmsHelper::invoiceCreatedMessage($invoice, $totalDueAmount);
 
             // Send SMS
             $smsService = new SmsService();

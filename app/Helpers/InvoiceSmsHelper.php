@@ -7,27 +7,59 @@ use App\Models\customerinfo;
 
 class InvoiceSmsHelper
 {
+    private const SMS_LIMIT = 160;
+
     /**
      * Generate SMS message for invoice creation
      * 
      * @param invoice $invoice
      * @return string
      */
-    public static function invoiceCreatedMessage(invoice $invoice)
+    public static function invoiceCreatedMessage(invoice $invoice, ?float $totalDue = null)
     {
+        $invoice->loadMissing(['customer', 'salesitems.item']);
+
         $customer = $invoice->customer;
         $customerName = $customer ? $customer->name : 'Customer';
-        
-        $message = "Namaste {$customerName}, Your invoice #{$invoice->id} has been created. ";
-        $message .= "Total: Rs " . number_format($invoice->total, 2) . ". ";
-        
-        if ($invoice->inv_type === 'credit') {
-            $message .= "Due Date: " . ($invoice->inv_due_date ?? 'Contact for details') . ". ";
-        }
-        
-        $message .= "Thank you!";
+        $totalDue = $totalDue ?? (float) $invoice->total;
+        $itemSummary = self::invoiceItemSummary($invoice);
 
-        return $message;
+        $messages = [
+            'Namaste ' . $customerName . ', inv ' . $invoice->id . ': ' . $itemSummary['names']
+                . ' Rs ' . self::formatAmount($invoice->total)
+                . '. Total due till today Rs ' . self::formatAmount($totalDue) . '.',
+            'Namaste ' . $customerName . ', inv ' . $invoice->id . ': ' . $itemSummary['short']
+                . ' Rs ' . self::formatAmount($invoice->total)
+                . '. Total due till today Rs ' . self::formatAmount($totalDue) . '.',
+            'Inv ' . $invoice->id . ': ' . $itemSummary['short']
+                . ' Rs ' . self::formatAmount($invoice->total)
+                . '. Total due till today Rs ' . self::formatAmount($totalDue) . '.',
+            'Inv ' . $invoice->id . ' Rs ' . self::formatAmount($invoice->total)
+                . '. Total due till today Rs ' . self::formatAmount($totalDue) . '.',
+        ];
+
+        return self::firstMessageWithinLimit($messages);
+    }
+
+    public static function invoiceItemSummary(invoice $invoice): array
+    {
+        $invoice->loadMissing(['salesitems.item']);
+
+        $items = $invoice->salesitems->map(function ($saleItem) {
+            return trim((string) ($saleItem->item->itemsname ?? $saleItem->unstockedname ?? 'Item'));
+        })->filter()->values();
+
+        if ($items->isEmpty()) {
+            return [
+                'names' => 'items',
+                'short' => 'items',
+            ];
+        }
+
+        return [
+            'names' => $items->implode(', '),
+            'short' => $items->count() === 1 ? $items->first() : $items->count() . ' items',
+        ];
     }
 
     /**
@@ -59,16 +91,29 @@ class InvoiceSmsHelper
     {
         $customer = $invoice->customer;
         $customerName = $customer ? $customer->name : 'Customer';
-        
-        $message = "Namaste {$customerName}, ";
-        $message .= "We received your payment of Rs " . number_format($paidAmount, 2) . ". ";
-        $message .= "Thank you for your business!";
 
-        return $message;
+        return self::paymentReceivedMessage($customerName, $paidAmount, null, null);
+    }
+
+    public static function paymentReceivedMessage($customerName, $paidAmount, $receiptNo = null, $remainingDue = null)
+    {
+        $receiptText = $receiptNo ? '. Rcpt ' . $receiptNo : '';
+        $dueText = $remainingDue !== null ? '. Total due till today Rs ' . self::formatAmount($remainingDue) : '';
+
+        $messages = [
+            'Namaste ' . ($customerName ?: 'Customer')
+                . ', payment Rs ' . self::formatAmount($paidAmount)
+                . ' received' . $receiptText . $dueText . '.',
+            'Payment Rs ' . self::formatAmount($paidAmount)
+                . ' received' . $receiptText . $dueText . '.',
+            'Payment Rs ' . self::formatAmount($paidAmount) . ' received' . $dueText . '.',
+        ];
+
+        return self::firstMessageWithinLimit($messages);
     }
 
     /**
-     * Truncate message to 720 characters (SMS limit)
+     * Truncate message to 160 characters (single SMS limit)
      * 
      * @param string $message
      * @return string
@@ -77,8 +122,8 @@ class InvoiceSmsHelper
     {
         $message = self::withTeamSignature($message);
 
-        if (strlen($message) > 720) {
-            return substr($message, 0, 717) . '...';
+        if (strlen($message) > self::SMS_LIMIT) {
+            return substr($message, 0, self::SMS_LIMIT - 3) . '...';
         }
         return $message;
     }
@@ -91,6 +136,30 @@ class InvoiceSmsHelper
             return $message;
         }
 
-        return rtrim($message) . "\n" . $signature;
+        return rtrim($message) . ' ' . $signature;
+    }
+
+    private static function firstMessageWithinLimit(array $messages): string
+    {
+        foreach ($messages as $message) {
+            $message = self::withTeamSignature($message);
+
+            if (strlen($message) <= self::SMS_LIMIT) {
+                return $message;
+            }
+        }
+
+        return self::truncateMessage(end($messages));
+    }
+
+    private static function formatAmount($amount): string
+    {
+        $amount = (float) $amount;
+
+        if (floor($amount) == $amount) {
+            return number_format($amount, 0);
+        }
+
+        return number_format($amount, 2);
     }
 }
