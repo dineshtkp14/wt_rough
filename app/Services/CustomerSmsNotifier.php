@@ -35,7 +35,9 @@ class CustomerSmsNotifier
             $customer->name ?? 'Customer',
             (float) $payment->credit,
             $payment->id,
-            $remainingDue
+            $remainingDue,
+            $payment->voucher_type,
+            $payment->particulars
         );
 
         return $this->sendToCustomer($customer, $message, 'payment_received');

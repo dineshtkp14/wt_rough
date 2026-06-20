@@ -92,20 +92,24 @@ class InvoiceSmsHelper
         $customer = $invoice->customer;
         $customerName = $customer ? $customer->name : 'Customer';
 
-        return self::paymentReceivedMessage($customerName, $paidAmount, null, null);
+        return self::paymentReceivedMessage($customerName, $paidAmount, null, null, null, null);
     }
 
-    public static function paymentReceivedMessage($customerName, $paidAmount, $receiptNo = null, $remainingDue = null)
+    public static function paymentReceivedMessage($customerName, $paidAmount, $receiptNo = null, $remainingDue = null, $paymentMode = null, $particulars = null)
     {
         $receiptText = $receiptNo ? '. Rcpt ' . $receiptNo : '';
+        $modeText = $paymentMode ? '. Mode ' . self::shortenPaymentMode($paymentMode) : '';
+        $particularsText = self::paymentParticularsText($particulars, $paymentMode);
         $dueText = $remainingDue !== null ? '. Total due till today Rs ' . self::formatAmount($remainingDue) : '';
 
         $messages = [
             'Namaste ' . ($customerName ?: 'Customer')
                 . ', payment Rs ' . self::formatAmount($paidAmount)
-                . ' received' . $receiptText . $dueText . '.',
+                . ' received' . $receiptText . $modeText . $particularsText . $dueText . '.',
             'Payment Rs ' . self::formatAmount($paidAmount)
-                . ' received' . $receiptText . $dueText . '.',
+                . ' received' . $receiptText . $modeText . $particularsText . $dueText . '.',
+            'Payment Rs ' . self::formatAmount($paidAmount) . ' received' . $particularsText . $dueText . '.',
+            'Payment Rs ' . self::formatAmount($paidAmount) . ' received' . $modeText . $dueText . '.',
             'Payment Rs ' . self::formatAmount($paidAmount) . ' received' . $dueText . '.',
         ];
 
@@ -161,5 +165,28 @@ class InvoiceSmsHelper
         }
 
         return number_format($amount, 2);
+    }
+
+    private static function shortenPaymentMode($paymentMode): string
+    {
+        $paymentMode = trim((string) $paymentMode);
+
+        if ($paymentMode === '') {
+            return '';
+        }
+
+        return substr(preg_replace('/\s+/', ' ', $paymentMode), 0, 20);
+    }
+
+    private static function paymentParticularsText($particulars, $paymentMode): string
+    {
+        $particulars = trim(preg_replace('/\s+/', ' ', (string) $particulars));
+        $paymentMode = trim(preg_replace('/\s+/', ' ', (string) $paymentMode));
+
+        if ($particulars === '' || strcasecmp($particulars, $paymentMode) === 0) {
+            return '';
+        }
+
+        return '. Particulars ' . substr($particulars, 0, 35);
     }
 }

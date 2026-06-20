@@ -150,7 +150,9 @@ class AllCustomerCreditListLivewire extends Component
             $this->quickPaymentCustomerName ?: 'Customer',
             (float) $this->quickPaymentAmount,
             $payment->id,
-            $remainingDue
+            $remainingDue,
+            $payment->voucher_type,
+            $payment->particulars
         );
 
         $redirect = redirect()->route('cashreceipt.search', ['receiptno' => $payment->id])

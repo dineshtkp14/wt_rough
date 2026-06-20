@@ -413,7 +413,7 @@ class ItemsalesController extends Controller
              $item->unstockedname = $req->unstockedname;
              $item->quantity = $req->quantity;
              $item->price = $req->price;
-             $data->unit = $value->unit;
+             $item->unit = $req->unit;
 
             //  $item->discount = $req->discount;
              $item->subtotal = $req->subtotal;
