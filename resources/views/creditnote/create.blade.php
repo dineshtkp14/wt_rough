@@ -59,7 +59,7 @@
                 <div class="cn-form-shell">
                 <div class="py-4 d-flex justify-content-between align-items-start cn-entry-bar">
                     {{-- <a href="{{ route('customerinfos.create') }}" class="btn btn-primary"> <i class="fa-solid fa-plus"></i> Add New Customer</a> --}}
-                    <div style="width: 300px">
+                    <div class="cn-customer-picker">
                         <div class="search-box">
                            <input type="text" class="search-input" placeholder="Search Customer"
                                 id="searchCustomerInput" data-api="customer_search" autocomplete="off">
@@ -80,6 +80,17 @@
                                 <div id="customerResultList">
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="selected-customer-inline cn-selected-customer" id="selectedCustomerInline" style="display: none;">
+                        <div>
+                            <span>Address</span>
+                            <b id="selectedCustomerAddress">-</b>
+                        </div>
+                        <div>
+                            <span>Contact</span>
+                            <b id="selectedCustomerPhone">-</b>
                         </div>
                     </div>
 
@@ -341,10 +352,70 @@ $(document).ready(function () {
         }
 
         .cn-entry-bar {
+            align-items: center !important;
             background: #fff7ed;
             border: 1px solid #fed7aa;
+            gap: 14px;
             margin-bottom: 16px;
             padding: 16px !important;
+        }
+
+        .cn-customer-picker {
+            flex: 0 1 430px;
+            max-width: 520px;
+            min-width: 360px;
+        }
+
+        .cn-create-page #searchCustomerInput {
+            font-size: 18px;
+            font-weight: 800;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cn-selected-customer {
+            align-items: stretch;
+            display: none;
+            flex: 1 1 360px;
+            gap: 10px;
+            margin: 0;
+            min-width: 320px;
+            padding-left: 0;
+        }
+
+        .cn-create-page #selectedCustomerInline[style*="display: block"] {
+            display: flex !important;
+        }
+
+        .cn-selected-customer div {
+            background: #ffffff;
+            border: 1px solid #fdba74;
+            border-radius: 8px;
+            display: grid;
+            gap: 3px;
+            min-width: 0;
+            padding: 9px 12px;
+        }
+
+        .cn-selected-customer span {
+            color: #9a3412;
+            font-size: 11px;
+            font-weight: 900;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .cn-selected-customer b {
+            color: #111827;
+            display: block;
+            font-size: 15px;
+            font-weight: 900;
+            line-height: 1.2;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .cn-create-page .search-input,
@@ -567,6 +638,18 @@ $(document).ready(function () {
                 align-items: stretch;
                 flex-direction: column;
                 gap: 14px;
+            }
+
+            .cn-customer-picker,
+            .cn-selected-customer {
+                flex-basis: auto;
+                max-width: none;
+                min-width: 0;
+                width: 100%;
+            }
+
+            .cn-selected-customer {
+                flex-direction: column;
             }
 
             .cn-action-row {
