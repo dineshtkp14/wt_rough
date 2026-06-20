@@ -378,6 +378,134 @@ $(document).ready(function () {
             border-color: #fed7aa !important;
         }
 
+        .cn-create-page .old-price-wrapper {
+            position: relative;
+        }
+
+        .cn-create-page .old-price-result-box {
+            background: #ffffff;
+            border: 1px solid #fdba74;
+            border-radius: 8px;
+            box-shadow: 0 16px 34px rgba(124, 45, 18, .22);
+            max-height: 280px;
+            min-width: 380px;
+            overflow: hidden;
+            padding: 6px;
+            position: fixed;
+            z-index: 99999;
+        }
+
+        .cn-create-page .old-price-result-box::before {
+            background: linear-gradient(90deg, #f97316, #fb923c, #fed7aa);
+            content: "";
+            display: block;
+            height: 3px;
+            margin: -6px -6px 6px;
+        }
+
+        .cn-create-page .old-price-result-item {
+            background: #fffaf5;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: #111827;
+            cursor: pointer;
+            display: grid;
+            gap: 5px;
+            margin-bottom: 5px;
+            padding: 10px 12px;
+            text-align: left;
+            transition: background .16s ease, border-color .16s ease, transform .16s ease;
+            width: 100%;
+        }
+
+        .cn-create-page .old-price-result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .cn-create-page .old-price-result-item:hover,
+        .cn-create-page .old-price-result-item:focus {
+            background: #ffedd5;
+            border-color: #fb923c;
+            outline: none;
+            transform: translateY(-1px);
+        }
+
+        .cn-create-page .old-price-item-line {
+            align-items: center;
+            color: #111827;
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 15px;
+            gap: 7px;
+            line-height: 1.2;
+        }
+
+        .cn-create-page .old-price-item-line b {
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .cn-create-page .old-price-price-line {
+            color: #7c2d12;
+            font-size: 17px;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+
+        .cn-create-page .old-price-meta-line {
+            align-items: center;
+            color: #64748b;
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 12px;
+            font-weight: 800;
+            gap: 6px;
+            line-height: 1.25;
+        }
+
+        .cn-create-page .old-price-smart-badge,
+        .cn-create-page .old-price-customer-pill {
+            border-radius: 999px;
+            display: inline-flex;
+            font-size: 11px;
+            font-weight: 900;
+            line-height: 1;
+            padding: 4px 7px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .cn-create-page .old-price-smart-badge {
+            background: #7c2d12;
+            color: #ffffff;
+        }
+
+        .cn-create-page .old-price-customer-pill {
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+            color: #075985;
+        }
+
+        .cn-create-page .old-price-result-item-other {
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .cn-create-page .old-price-result-item-other:hover,
+        .cn-create-page .old-price-result-item-other:focus {
+            background: #e0f2fe;
+            border-color: #38bdf8;
+        }
+
+        .cn-create-page .old-price-empty {
+            background: #fff7ed;
+            border-radius: 6px;
+            color: #9a3412;
+            font-size: 13px;
+            font-weight: 900;
+            padding: 10px 12px;
+        }
+
         .cn-return-table #addRowBtn {
             background: #16a34a;
             border: 0;
@@ -448,6 +576,14 @@ $(document).ready(function () {
 
             .cn-action-row .btn {
                 width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cn-create-page .old-price-result-box {
+                left: 12px !important;
+                min-width: 0;
+                width: calc(100vw - 24px) !important;
             }
         }
     </style>
