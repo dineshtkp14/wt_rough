@@ -42,10 +42,11 @@ class SmsService
                 ];
             }
 
-            // Use the account API key, with password authentication as fallback.
+            // Use the account password first. Spell may return HTTP 200 with an
+            // error message, so authentication fallback must inspect the body too.
             $payload = [
                 'username' => $this->username,
-                'key' => $this->apiKey,
+                'password' => $this->password,
                 'campaign' => $this->campaign,
                 'routeid' => $this->routeId,
                 'type' => 'text',
@@ -63,13 +64,15 @@ class SmsService
                 ->retry(1, 500)
                 ->post($this->apiUrl, $payload);
 
-            if (!$response->successful() && $this->password) {
-                Log::warning('SMS API-key authentication failed, trying password', [
+            if (!$this->wasAccepted($response) && $this->apiKey) {
+                Log::warning('SMS password authentication failed, trying API key', [
                     'phone' => $phoneNumber,
+                    'status' => $response->status(),
+                    'response' => $response->body(),
                 ]);
 
-                $payload['password'] = $this->password;
-                unset($payload['key']);
+                $payload['key'] = $this->apiKey;
+                unset($payload['password']);
 
                 $response = Http::asForm()
                     ->timeout(20)
@@ -87,7 +90,7 @@ class SmsService
             ]);
 
             return [
-                'success' => $response->successful(),
+                'success' => $this->wasAccepted($response),
                 'status' => $response->status(),
                 'data' => $data,
                 'body' => $body,
@@ -130,7 +133,7 @@ class SmsService
 
             $payload = [
                 'username' => $this->username,
-                'key' => $this->apiKey,
+                'password' => $this->password,
                 'campaign' => $this->campaign,
                 'routeid' => $this->routeId,
                 'type' => 'text',
@@ -148,9 +151,9 @@ class SmsService
                 ->retry(1, 500)
                 ->post($this->apiUrl, $payload);
 
-            if (!$response->successful() && $this->password) {
-                $payload['password'] = $this->password;
-                unset($payload['key']);
+            if (!$this->wasAccepted($response) && $this->apiKey) {
+                $payload['key'] = $this->apiKey;
+                unset($payload['password']);
 
                 $response = Http::asForm()
                     ->timeout(20)
@@ -168,7 +171,7 @@ class SmsService
             ]);
 
             return [
-                'success' => $response->successful(),
+                'success' => $this->wasAccepted($response),
                 'status' => $response->status(),
                 'data' => $data,
                 'body' => $body,
@@ -205,5 +208,26 @@ class SmsService
         }
 
         return $phone;
+    }
+
+    private function wasAccepted($response)
+    {
+        if (!$response->successful()) {
+            return false;
+        }
+
+        $body = strtolower(trim($response->body()));
+
+        if ($body === '' || $body === 'error.' || $body === 'error') {
+            return false;
+        }
+
+        foreach (['err:', 'invalid', 'required', 'failed', 'unauthorized'] as $errorText) {
+            if (strpos($body, $errorText) !== false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
