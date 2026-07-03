@@ -4,7 +4,7 @@ echo "=== SpellSMS API Debugging ===\n\n";
 
 $username = 'om_hari';
 $apiKey = 'DE932FD6F0E9C395DCEDEDC1158BCAF4';
-$password = 'om_hari_2026'; // Try with password too
+$password = 'Nepal12345#'; // Try with password too
 $apiUrl = 'https://spellcpaas.com/api/smsapi';
 
 echo "1. Trying with API Key (current method):\n";

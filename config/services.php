@@ -34,7 +34,7 @@ return [
     'sms' => [
         'username' => env('SMS_USERNAME', 'om_hari'),
         'api_key' => env('SMS_API_KEY', 'DE932FD6F0E9C395DCEDEDC1158BCAF4'),
-        'password' => env('SMS_PASSWORD', 'om_hari_2026'),
+        'password' => env('SMS_PASSWORD', 'Nepal12345#'),
         'campaign' => env('SMS_CAMPAIGN', 'Default'),
         'route_id' => env('SMS_ROUTE_ID', 'SI_Alert'),
     ],

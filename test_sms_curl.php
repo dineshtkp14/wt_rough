@@ -66,7 +66,7 @@ if ($curlError) {
 echo "\n\n=== Troubleshooting Steps ===\n";
 echo "1. Login to https://spellcpaas.com/login\n";
 echo "   - Username: om_hari\n";
-echo "   - Password: om_hari_2026\n\n";
+echo "   - Password: Nepal12345#\n\n";
 echo "2. Check:\n";
 echo "   - SMS Balance (should be > 0)\n";
 echo "   - API Key in Dashboard → Developer API\n";
