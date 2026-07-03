@@ -34,7 +34,7 @@ class SmsService
     public function send($phoneNumber, $message, $scheduledTime = null)
     {
         try {
-            if (empty($this->username) || (empty($this->apiKey) && empty($this->password))) {
+            if (empty($this->username) || empty($this->apiKey) || empty($this->password)) {
                 return [
                     'success' => false,
                     'status' => null,
@@ -42,11 +42,12 @@ class SmsService
                 ];
             }
 
-            // Use the account password first. Spell may return HTTP 200 with an
-            // error message, so authentication fallback must inspect the body too.
+            // The current Spell account requires the username/password pair and
+            // its API key to be submitted together.
             $payload = [
                 'username' => $this->username,
                 'password' => $this->password,
+                'key' => $this->apiKey,
                 'campaign' => $this->campaign,
                 'routeid' => $this->routeId,
                 'type' => 'text',
@@ -63,22 +64,6 @@ class SmsService
                 ->timeout(20)
                 ->retry(1, 500)
                 ->post($this->apiUrl, $payload);
-
-            if (!$this->wasAccepted($response) && $this->apiKey) {
-                Log::warning('SMS password authentication failed, trying API key', [
-                    'phone' => $phoneNumber,
-                    'status' => $response->status(),
-                    'response' => $response->body(),
-                ]);
-
-                $payload['key'] = $this->apiKey;
-                unset($payload['password']);
-
-                $response = Http::asForm()
-                    ->timeout(20)
-                    ->retry(1, 500)
-                    ->post($this->apiUrl, $payload);
-            }
 
             $data = $response->json();
             $body = $response->body();
@@ -121,7 +106,7 @@ class SmsService
     public function sendBulk(array $phoneNumbers, $message, $scheduledTime = null)
     {
         try {
-            if (empty($this->username) || (empty($this->apiKey) && empty($this->password))) {
+            if (empty($this->username) || empty($this->apiKey) || empty($this->password)) {
                 return [
                     'success' => false,
                     'status' => null,
@@ -134,6 +119,7 @@ class SmsService
             $payload = [
                 'username' => $this->username,
                 'password' => $this->password,
+                'key' => $this->apiKey,
                 'campaign' => $this->campaign,
                 'routeid' => $this->routeId,
                 'type' => 'text',
@@ -150,16 +136,6 @@ class SmsService
                 ->timeout(20)
                 ->retry(1, 500)
                 ->post($this->apiUrl, $payload);
-
-            if (!$this->wasAccepted($response) && $this->apiKey) {
-                $payload['key'] = $this->apiKey;
-                unset($payload['password']);
-
-                $response = Http::asForm()
-                    ->timeout(20)
-                    ->retry(1, 500)
-                    ->post($this->apiUrl, $payload);
-            }
 
             $data = $response->json();
             $body = $response->body();
