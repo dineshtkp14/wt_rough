@@ -9,7 +9,7 @@ echo "=== Testing SpellSMS API ===\n\n";
 
 // Configuration
 $username = 'om_hari';
-$apiKey = 'DE932FD6F0E9C395DCEDECC1158BCAF4';
+$apiKey = 'DE932FD6F0E9C395DCED38SXV07IEDCAF4';
 $apiUrl = 'https://spellcpaas.com/api/smsapi';
 
 // Test 1: Check API credentials

@@ -17,7 +17,7 @@ class SmsService
     public function __construct()
     {
         $this->username = config('services.sms.username') ?: 'om_hari';
-        $this->apiKey = config('services.sms.api_key') ?: 'DE932FD6F0E9C395DCEDEDC1158BCAF4';
+        $this->apiKey = config('services.sms.api_key') ?: 'DE932FD6F0E9C395DCED38SXV07IEDCAF4';
         $this->password = config('services.sms.password') ?: 'Nepal12345#';
         $this->campaign = config('services.sms.campaign', 'Default');
         $this->routeId = config('services.sms.route_id', 'SI_Alert');
@@ -42,7 +42,7 @@ class SmsService
                 ];
             }
 
-            // Try with API Key first (recommended method)
+            // Use the account API key, with password authentication as fallback.
             $payload = [
                 'username' => $this->username,
                 'key' => $this->apiKey,
@@ -63,13 +63,11 @@ class SmsService
                 ->retry(1, 500)
                 ->post($this->apiUrl, $payload);
 
-            // If INVALID API KEY error, try with username + password
-            if ($response->status() === 400 && strpos($response->body(), 'INVALID API KEY') !== false) {
-                Log::warning('API Key method failed, trying username/password method', [
+            if (!$response->successful() && $this->password) {
+                Log::warning('SMS API-key authentication failed, trying password', [
                     'phone' => $phoneNumber,
                 ]);
 
-                // Alternative: use username + password instead
                 $payload['password'] = $this->password;
                 unset($payload['key']);
 
@@ -150,7 +148,7 @@ class SmsService
                 ->retry(1, 500)
                 ->post($this->apiUrl, $payload);
 
-            if ($response->status() === 400 && strpos($response->body(), 'INVALID API KEY') !== false) {
+            if (!$response->successful() && $this->password) {
                 $payload['password'] = $this->password;
                 unset($payload['key']);
 

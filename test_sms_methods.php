@@ -3,7 +3,7 @@
 echo "=== SpellSMS Account Verification ===\n\n";
 
 $username = 'om_hari';
-$apiKey = 'DE932FD6F0E9C395DCEDEDC1158BCAF4';
+$apiKey = 'DE932FD6F0E9C395DCED38SXV07IEDCAF4';
 $password = 'Nepal12345#';
 $apiUrl = 'https://spellcpaas.com/api/smsapi';
 

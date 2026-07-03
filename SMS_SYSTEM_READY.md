@@ -8,7 +8,7 @@ Your SMS API is **fully activated and tested**.
 
 1. **SpellSMS API Integration** - WORKING ✓
     - Username: `om_hari`
-    - API Key: `DE932FD6F0E9C395DCEDEDC1158BCAF4`
+    - API Key: `DE932FD6F0E9C395DCED38SXV07IEDCAF4`
     - Status: **200 OK** (Confirmed)
     - Balance: **Available** ✓
 

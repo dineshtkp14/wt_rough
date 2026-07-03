@@ -3,7 +3,7 @@
 echo "=== Testing SpellSMS API with cURL ===\n\n";
 
 $username = 'om_hari';
-$apiKey = 'DE932FD6F0E9C395DCEDECC1158BCAF4';
+$apiKey = 'DE932FD6F0E9C395DCED38SXV07IEDCAF4';
 $apiUrl = 'https://spellcpaas.com/api/smsapi';
 
 // Test payload
@@ -70,7 +70,7 @@ echo "   - Password: Nepal12345#\n\n";
 echo "2. Check:\n";
 echo "   - SMS Balance (should be > 0)\n";
 echo "   - API Key in Dashboard → Developer API\n";
-echo "   - Verify the API key matches: DE932FD6F0E9C395DCEDECC1158BCAF4\n";
+echo "   - Verify the API key matches: DE932FD6F0E9C395DCED38SXV07IEDCAF4\n";
 echo "   - Check if SMS sending is enabled\n\n";
 echo "3. Common Issues:\n";
 echo "   - Invalid API Key\n";
