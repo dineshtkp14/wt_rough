@@ -75,6 +75,7 @@ return redirect('/login');
             'alternate_phoneno' => 'nullable',
             'email' => 'nullable|email',
             'type' => 'nullable',
+            'vat_no' => 'nullable|max:50',
             'remarks' => 'nullable',
         ]);
 
@@ -91,6 +92,7 @@ return redirect('/login');
         $cusinfo->email = $req->email;
         $cusinfo->phoneno = $req->phoneno;
         $cusinfo->type = $req->type;
+        $cusinfo->vat_no = $req->type === 'shop' ? $req->vat_no : null;
         $cusinfo->alternate_phoneno = $req->alternate_phoneno;
         $cusinfo->remarks = $req->remarks;
         $cusinfo->added_by = session('user_email');
@@ -99,7 +101,7 @@ return redirect('/login');
         Trackcustomerinfos::create([
             'title' => 'Insert',
             'updated_by' => session('user_email'),
-            'notes' => "Name: {$cusinfo->name}, Address: {$cusinfo->address}, Email: {$cusinfo->email}, Phoneno: {$cusinfo->phoneno}, Alternate Phoneno: {$cusinfo->alternate_phoneno}, Remarks: {$cusinfo->remarks}, Added by: " . session('user_email'),
+            'notes' => "Name: {$cusinfo->name}, Address: {$cusinfo->address}, Email: {$cusinfo->email}, Phoneno: {$cusinfo->phoneno}, Type: {$cusinfo->type}, Vat No: {$cusinfo->vat_no}, Alternate Phoneno: {$cusinfo->alternate_phoneno}, Remarks: {$cusinfo->remarks}, Added by: " . session('user_email'),
         ]);
 
         $cusinfo->total_due = 0;
@@ -124,6 +126,7 @@ return redirect('/login');
         'address'=>'required',
         // 'phoneno' => 'required|unique:customerinfos,phoneno',
         'phoneno' => 'required|size:10|unique:customerinfos,phoneno',
+        'vat_no' => 'nullable|max:50',
 
            
     ]);
@@ -136,6 +139,7 @@ return redirect('/login');
         $cusinfo->email=$req->email;
         $cusinfo->phoneno=$req->phoneno;
         $cusinfo->type=$req->type;
+        $cusinfo->vat_no=$req->type === 'shop' ? $req->vat_no : null;
 
         $cusinfo->alternate_phoneno=$req->alternate_phoneno;
 
@@ -146,7 +150,7 @@ return redirect('/login');
 
         session()->put('lastInsertedId', $cusinfo->id);
 
-        $notes = "Name: " . $cusinfo->name . ", Address: " . $cusinfo->address . ", Email: " . $cusinfo->email . ", Phoneno: " . $cusinfo->phoneno . ", Alternate Phoneno: " . $cusinfo->alternate_phoneno . ", Remarks: " . $cusinfo->remarks . ", Added by: " . session('user_email');
+        $notes = "Name: " . $cusinfo->name . ", Address: " . $cusinfo->address . ", Email: " . $cusinfo->email . ", Phoneno: " . $cusinfo->phoneno . ", Type: " . $cusinfo->type . ", Vat No: " . $cusinfo->vat_no . ", Alternate Phoneno: " . $cusinfo->alternate_phoneno . ", Remarks: " . $cusinfo->remarks . ", Added by: " . session('user_email');
 
                     // Insert into track table
                     Trackcustomerinfos::create([
@@ -196,6 +200,7 @@ return redirect('/login');
             'name'=>'required',
             'address'=>'required',
             'phoneno'=>'required', 
+            'vat_no' => 'nullable|max:50',
            
                
         ]);
@@ -211,6 +216,7 @@ return redirect('/login');
             $cusinfo->email=$req->email;
             $cusinfo->phoneno=$req->phoneno;
             $cusinfo->type=$req->type;
+            $cusinfo->vat_no=$req->type === 'shop' ? $req->vat_no : null;
             $cusinfo->alternate_phoneno=$req->alternate_phoneno;
             $cusinfo->remarks=$req->remarks;
             $cusinfo->added_by = session('user_email');
@@ -221,10 +227,10 @@ return redirect('/login');
             // Construct a message with old and new values
             $notes = "Customer ID: " . $cusinfo->id . " updated by " . session('user_email') . ". Old values: ";
             $notes .= "Name: " . $oldCusinfo->name . ", Address: " . $oldCusinfo->address . ", Email: " . $oldCusinfo->email;
-            $notes .= ", Phoneno: " . $oldCusinfo->phoneno . ", Remarks: " . $oldCusinfo->remarks;
+            $notes .= ", Phoneno: " . $oldCusinfo->phoneno . ", Type: " . $oldCusinfo->type . ", Vat No: " . $oldCusinfo->vat_no . ", Remarks: " . $oldCusinfo->remarks;
             $notes .= ". New values: ";
             $notes .= "Name: " . $cusinfo->name . ", Address: " . $cusinfo->address . ", Email: " . $cusinfo->email;
-            $notes .= ", Phoneno: " . $cusinfo->phoneno . ", Remarks: " . $cusinfo->remarks;
+            $notes .= ", Phoneno: " . $cusinfo->phoneno . ", Type: " . $cusinfo->type . ", Vat No: " . $cusinfo->vat_no . ", Remarks: " . $cusinfo->remarks;
 
             // Insert into track table
          

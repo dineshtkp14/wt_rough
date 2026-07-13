@@ -75,6 +75,7 @@ use App\Http\Controllers\trackCreditnotesController;
 use App\Http\Controllers\ModernDashboardController;
 use App\Http\Controllers\TemporaryInvoiceController;
 use App\Http\Controllers\SmartToolsController;
+use App\Http\Controllers\VatBillController;
 
 
 
@@ -100,6 +101,7 @@ Route::get('/userdash',[UserdashboardController::class,'index'])->name('userdash
 Route::get('/convertdate',[DateConversionController::class,'convertdate'])->name('convertdate');
 
 Route::get('/smart-tools',[SmartToolsController::class,'index'])->name('smarttools.index');
+Route::get('/vat-party-ledgers', [VatBillController::class, 'index'])->name('vat-bills.index');
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
@@ -379,6 +381,12 @@ Route::put('/billno/updatecusname', [CustomerLedgerHistroy::class, 'updatecustom
 Route::get('/onlyviewbill',[CustomerLedgerHistroy::class,'onlyviewbillafterbill'])->name('onlyviewbillafterbill');
 Route::delete('/onlyviewbill/{invoiceid}', [CustomerLedgerHistroy::class, 'deletebillfromdatabasefor_user'])->name('customer.deletebillnoforuser');
 Route::post('/invoice/{invoiceid}/send-sms', [CustomerLedgerHistroy::class, 'sendInvoiceSms'])->name('invoice.send-sms');
+Route::get('/invoice/{invoice}/vat-bill/create', [VatBillController::class, 'create'])->name('vat-bills.create');
+Route::get('/invoice/{invoice}/vat-bill/pdf', [VatBillController::class, 'pdf'])->name('vat-bills.ledger.pdf');
+Route::get('/invoice/{invoice}/vat-bill/confirmation', [VatBillController::class, 'confirmation'])->name('vat-bills.confirmation');
+Route::get('/invoice/{invoice}/vat-bill/confirmation/pdf', [VatBillController::class, 'confirmationPdf'])->name('vat-bills.confirmation.pdf');
+Route::get('/invoice/{invoice}/vat-bill', [VatBillController::class, 'show'])->name('vat-bills.show');
+Route::post('/invoice/{invoice}/vat-bill', [VatBillController::class, 'store'])->name('vat-bills.store');
 
 Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_InvoiveBillByBillno'])->name('invoicebillno.convert');
 

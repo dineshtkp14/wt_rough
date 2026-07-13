@@ -24,6 +24,11 @@ class invoice extends Model
         return $this->hasMany(SmsLog::class);
     }
 
+    public function vatBill()
+    {
+        return $this->hasOne(VatBill::class, 'invoice_id');
+    }
+
     /**
      * Get customer's total due amount
      */

@@ -16,6 +16,7 @@
                             <th >Address</th>
                             <th >Email</th>
                             <th >Type</th>
+                            <th >VAT No</th>
 
                             <th >Phoneno</th>
                             <th>Remarks</th>
@@ -40,6 +41,7 @@
                                       <td class="text-center">{{ $i->address }}</td>
                                       <td class="text-center">{{ $i->email }}</td>
                                       <td class="text-center">{{ $i->type }}</td>
+                                      <td class="text-center">{{ $i->vat_no }}</td>
 
                                       <td class="text-center">{!! $i->phoneno . ' <b>,</b> ' . $i->alternate_phoneno !!}</td>
                                       <td class="text-center">{{ $i->remarks}}</td>

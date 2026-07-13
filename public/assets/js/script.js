@@ -1099,6 +1099,19 @@ $(window).on("load", function () {
         });
     });
 
+    function updateQuickCustomerVatNoVisibility() {
+        const isShop = $("#quickCustomerType").val() === "shop";
+        $("#quickCustomerVatBox").toggle(isShop);
+
+        if (!isShop) {
+            $("#quickCustomerVatNo").val("");
+        }
+    }
+
+    $("#quickCustomerType").on("change", updateQuickCustomerVatNoVisibility);
+    $("#quickCustomerModal").on("shown.bs.modal hidden.bs.modal", updateQuickCustomerVatNoVisibility);
+    updateQuickCustomerVatNoVisibility();
+
     $("#addRowBtn").on("click", function (e) {
         e.preventDefault();
         appendInputRow();

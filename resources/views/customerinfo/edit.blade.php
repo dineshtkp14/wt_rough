@@ -71,7 +71,7 @@
             <label class="form-label">
                 Customer Type <span style="color: red;">*</span>
             </label>
-        <select name="type" class="form-control @error('type') is-invalid @enderror">
+        <select name="type" id="customerTypeSelect" class="form-control @error('type') is-invalid @enderror">
             <option value="">-- Select Type --</option>
         
             <option value="shop"
@@ -84,6 +84,15 @@
                 Customer
             </option>
         </select>
+        </div>
+
+        <div class="col-md-6" id="customerVatNoBox" style="display: none;">
+            <label class="form-label">VAT No</label>
+            <input type="text" class="form-control @error('vat_no') is-invalid @enderror"
+                name="vat_no" id="customerVatNoInput" value="{{ old('vat_no',$cus->vat_no) }}" placeholder="Enter VAT No">
+            @error('vat_no')
+                <p class="invalid-feedback">{{ $message }}</p>
+            @enderror
         </div>
            
 
@@ -111,8 +120,20 @@
         const addressInput = document.getElementById('customerAddressInput');
         const phoneInput = document.getElementById('customerPhoneInput');
         const altPhoneInput = document.getElementById('customerAltPhoneInput');
+        const typeSelect = document.getElementById('customerTypeSelect');
+        const vatNoBox = document.getElementById('customerVatNoBox');
+        const vatNoInput = document.getElementById('customerVatNoInput');
         const warning = document.getElementById('duplicateCustomerWarning');
         const list = document.getElementById('duplicateCustomerList');
+
+        function updateVatNoVisibility() {
+            const isShop = typeSelect && typeSelect.value === 'shop';
+            vatNoBox.style.display = isShop ? '' : 'none';
+
+            if (!isShop && vatNoInput) {
+                vatNoInput.value = '';
+            }
+        }
 
         function cleanText(value) {
             return String(value || '').trim().toUpperCase().replace(/\s+/g, ' ');
@@ -177,6 +198,8 @@
             input.addEventListener('input', renderWarning);
         });
 
+        typeSelect.addEventListener('change', updateVatNoVisibility);
+        updateVatNoVisibility();
         renderWarning();
     });
 </script>

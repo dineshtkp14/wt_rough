@@ -23,6 +23,7 @@ class Customerlivewire extends Component
             $cus->orWhere('name','like',"%".$this->searchTerm."%");
             $cus->orWhere('phoneno','like',"%".$this->searchTerm."%");
             $cus->orWhere('email','like',"%".$this->searchTerm."%");
+            $cus->orWhere('vat_no','like',"%".$this->searchTerm."%");
 
             
         }

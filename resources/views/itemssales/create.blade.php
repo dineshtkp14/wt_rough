@@ -268,12 +268,17 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Customer Type</label>
-                                    <select class="form-select" name="type">
+                                    <select class="form-select" name="type" id="quickCustomerType">
                                         <option value="">-- Select Type --</option>
                                         <option value="shop">Shop</option>
                                         <option value="customer">Customer</option>
                                     </select>
                                     <span class="quick-customer-error" data-error-for="type"></span>
+                                </div>
+                                <div class="col-md-6" id="quickCustomerVatBox" style="display:none;">
+                                    <label class="form-label">VAT No</label>
+                                    <input type="text" class="form-control" name="vat_no" id="quickCustomerVatNo" placeholder="VAT no">
+                                    <span class="quick-customer-error" data-error-for="vat_no"></span>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Notes</label>

@@ -1759,7 +1759,7 @@ public function oldpricecheck(Request $req)
             $itemsname = item::where('id', $req->customerid)->get();
             $invoiceid = $req->invoiceid;
         
-            $allInvoices = invoice::where('id', $req->invoiceid)->get();
+            $allInvoices = invoice::with('vatBill')->where('id', $req->invoiceid)->get();
         
             $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
             $customerinfodetails = null;

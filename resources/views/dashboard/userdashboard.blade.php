@@ -91,6 +91,12 @@
         <div class="col-md-4 mb-3">
             <a href="{{ route('transfergoods.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-alt"></i>Transfer Goods</a>
         </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('vat-bills.index') }}" class="btn btn-success btn-block btn-super-duper-bigger">
+                <i class="fa fa-book-open"></i> VAT PARTY LEDGER
+            </a>
+        </div>
        
        
     </div>

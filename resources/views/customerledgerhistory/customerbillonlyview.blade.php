@@ -12,6 +12,18 @@
             </div>
         @endif
 
+        @if (Session::has('vat_success'))
+            <div class="alert alert-success bg-success text-white w-50">
+                {{ Session::get('vat_success') }}
+            </div>
+        @endif
+
+        @if (Session::has('error'))
+            <div class="alert alert-danger bg-danger text-white w-50">
+                {{ Session::get('error') }}
+            </div>
+        @endif
+
         @if (Session::has('invoice_whatsapp_url'))
             <div class="invoice-share-panel">
                 <div>
@@ -189,6 +201,9 @@
 
         @php
             $invoiceForEdit = ($allinvoices ?? collect())->first();
+            $isShopInvoice = $invoiceForEdit
+                && $paymentCustomer
+                && strtolower((string) $paymentCustomer->type) === 'shop';
             $canEditInvoice = auth()->check()
                 && $invoiceForEdit
                 && (
@@ -196,6 +211,24 @@
                     || ($invoiceForEdit->created_at && \Carbon\Carbon::parse($invoiceForEdit->created_at)->gte(now()->subMinute()))
                 );
         @endphp
+
+        @if (Session::has('success') && $isShopInvoice && !$invoiceForEdit->vatBill)
+            <a href="{{ route('vat-bills.create', $invoiceForEdit) }}"
+                class="btn btn-success btn-lg me-4"
+                style="font-weight: 800;">
+                <i class="fa-solid fa-receipt"></i>
+                Add VAT Bill
+            </a>
+        @endif
+
+        @if ($isShopInvoice && $invoiceForEdit->vatBill)
+            <a href="{{ route('vat-bills.show', $invoiceForEdit) }}"
+                class="btn btn-success btn-lg me-4"
+                style="font-weight: 800;">
+                <i class="fa-solid fa-book"></i>
+                VAT Party Ledger
+            </a>
+        @endif
 
         @if (!empty($invoiceid) && $canEditInvoice)
             <a href="{{ route('invoice.edit', $invoiceid) }}"
