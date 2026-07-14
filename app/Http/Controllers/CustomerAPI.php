@@ -87,7 +87,8 @@ class CustomerAPI extends Controller
 
                         if (preg_match('/\d/', $term)) {
                             $termQuery->where('phoneno', 'LIKE', $like)
-                                ->orWhere('alternate_phoneno', 'LIKE', $like);
+                                ->orWhere('alternate_phoneno', 'LIKE', $like)
+                                ->orWhere('vat_no', 'LIKE', $like);
                         } else {
                             $termQuery->where('name', 'LIKE', $like)
                                 ->orWhere('address', 'LIKE', $like);
@@ -101,12 +102,14 @@ class CustomerAPI extends Controller
                         WHEN name LIKE ? THEN 0
                         WHEN name LIKE ? THEN 1
                         WHEN phoneno LIKE ? THEN 2
-                        WHEN alternate_phoneno LIKE ? THEN 3
-                        WHEN address LIKE ? THEN 4
-                        ELSE 5
+                            WHEN alternate_phoneno LIKE ? THEN 3
+                            WHEN vat_no LIKE ? THEN 4
+                            WHEN address LIKE ? THEN 5
+                            ELSE 6
                     END',
                     [
                         $search.'%',
+                        '%'.$search.'%',
                         '%'.$search.'%',
                         '%'.$search.'%',
                         '%'.$search.'%',

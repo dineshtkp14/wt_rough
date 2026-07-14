@@ -646,6 +646,15 @@ class ModernDashboardController extends Controller
             ];
         }
 
-        return view('dashboard.checktoday', compact('breadcrumb', 'recentInvoices', 'recentPayments'));
+        $todayInvoiceTotal = collect($recentInvoices)->sum('amount');
+        $todayPaymentTotal = collect($recentPayments)->sum('amount');
+
+        return view('dashboard.checktoday', compact(
+            'breadcrumb',
+            'recentInvoices',
+            'recentPayments',
+            'todayInvoiceTotal',
+            'todayPaymentTotal'
+        ));
     }
 }

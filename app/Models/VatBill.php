@@ -15,6 +15,10 @@ class VatBill extends Model
         'bill_no',
         'amount_without_tax',
         'firm_type',
+        'party_name',
+        'party_address',
+        'party_vat_no',
+        'party_phone',
         'added_by',
     ];
 

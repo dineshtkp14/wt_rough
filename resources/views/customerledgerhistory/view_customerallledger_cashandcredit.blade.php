@@ -82,14 +82,24 @@
 
                         <div class="clhs-date-grid">
                             <div class="input-group">
-                                <span class="input-group-text">Start Date</span>
-                                <input type="date" name="date1" value="{{ request('date1', $from ?? '') }}" class="form-control">
+                                <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i> Start Date (B.S.)</span>
+                                <input type="text" name="date1_bs"
+                                    value="{{ old('date1_bs', request('date1_bs', !empty($from) ? \App\Support\NepaliDate::adToBsString($from, 'en') : '')) }}"
+                                    class="form-control @error('date1_bs') is-invalid @enderror" placeholder="YYYY-MM-DD"
+                                    inputmode="numeric" pattern="\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2}" title="Enter B.S. date as YYYY-MM-DD">
                             </div>
                             <div class="input-group">
-                                <span class="input-group-text">End Date</span>
-                                <input type="date" name="date2" value="{{ request('date2', $to ?? '') }}" class="form-control">
+                                <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i> End Date (B.S.)</span>
+                                <input type="text" name="date2_bs"
+                                    value="{{ old('date2_bs', request('date2_bs', !empty($to) ? \App\Support\NepaliDate::adToBsString($to, 'en') : '')) }}"
+                                    class="form-control @error('date2_bs') is-invalid @enderror" placeholder="YYYY-MM-DD"
+                                    inputmode="numeric" pattern="\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2}" title="Enter B.S. date as YYYY-MM-DD">
                             </div>
                         </div>
+
+                        @if($errors->has('date1_bs') || $errors->has('date2_bs'))
+                            <div class="clhs-date-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $errors->first('date1_bs') ?: $errors->first('date2_bs') }}</div>
+                        @endif
 
                         <button type="submit" class="clhs-search-btn">
                             <i class="fas fa-search"></i>
@@ -160,59 +170,73 @@
                 @if($cid)
                     <div class="clhs-toolbar-actions">
                         <a href="{{ url('/customer-ledger-dispute') . '?' . http_build_query(['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
-                            class="clhs-print-all-btn dispute"
+                            class="clhs-primary-action dispute"
                             target="_blank">
                             <i class="fa-solid fa-triangle-exclamation"></i>
                             <span>Dispute / Missing Bills</span>
                         </a>
-                        <button type="button"
-                            onclick="openMissingInvoiceModal({{ $cid }}, '{{ $from }}', '{{ $to }}')"
-                            class="clhs-print-all-btn check-invoices">
-                            <i class="fa-solid fa-list-check"></i>
-                            <span>Check Invoice No</span>
-                        </button>
-                        <a href="{{ route('print.all.customer.invoices', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
-                            onclick="openPdfInNewTab(event, this.href); return false;"
-                            class="clhs-print-all-btn invoices {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
-                            <i class="fa-regular fa-file-lines"></i>
-                            <span>Print All Invoices</span>
-                        </a>
-                        <a href="{{ route('print.all.customer.creditnotes', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
-                            onclick="openPdfInNewTab(event, this.href); return false;"
-                            class="clhs-print-all-btn creditnotes {{ !$hasCreditNotes ? 'pdf-link-disabled' : '' }}">
-                            <i class="fa-solid fa-file-invoice"></i>
-                            <span>Print All Credit Notes</span>
-                        </a>
-                        <a href="{{ route('customer.printallcashreceipts', ['customerid' => $cid, 'date1' => $from, 'date2' => $to, 'ledger_mode' => 'cash_credit']) }}"
-                            onclick="openPdfInNewTab(event, this.href); return false;"
-                            class="clhs-print-all-btn receipts">
-                            <i class="fa-solid fa-receipt"></i>
-                            <span>Print All Cash Receipts</span>
-                        </a>
-                        <a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
-                            onclick="openPdfInNewTab(event, this.href); return false;"
-                            class="clhs-print-btn {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
-                            <span>Print</span>
-                            <i class="fa-solid fa-print"></i>
-                        </a>
+
+                        <div class="dropdown clhs-reports-dropdown">
+                            <button class="clhs-reports-trigger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="reports-trigger-icon"><i class="fa-solid fa-print"></i></span>
+                                <span><strong>Print & Reports</strong><small>5 available actions</small></span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end clhs-reports-menu">
+                                <div class="reports-menu-heading"><strong>Print & Reports</strong><small>Choose the action you need</small></div>
+
+                                <button type="button" onclick="openMissingInvoiceModal({{ $cid }}, '{{ $from }}', '{{ $to }}')" class="clhs-report-item">
+                                    <span class="report-icon check-invoices"><i class="fa-solid fa-list-check"></i></span>
+                                    <span><strong>Check Invoice Numbers</strong><small>Compare customer invoice numbers</small></span>
+                                    <i class="fa-solid fa-chevron-right report-arrow"></i>
+                                </button>
+                                <a href="{{ route('pdfreturnchoosendatehistroycashandcredit.convert', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
+                                    onclick="openPdfInNewTab(event, this.href); return false;"
+                                    class="clhs-report-item {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
+                                    <span class="report-icon ledger"><i class="fa-solid fa-book-open"></i></span>
+                                    <span><strong>Print Ledger</strong><small>Complete cash and credit statement</small></span>
+                                    <i class="fa-solid fa-chevron-right report-arrow"></i>
+                                </a>
+                                <a href="{{ route('print.all.customer.invoices', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
+                                    onclick="openPdfInNewTab(event, this.href); return false;"
+                                    class="clhs-report-item {{ !$hasRows ? 'pdf-link-disabled' : '' }}">
+                                    <span class="report-icon invoices"><i class="fa-regular fa-file-lines"></i></span>
+                                    <span><strong>All Invoices</strong><small>Print every invoice in this period</small></span>
+                                    <i class="fa-solid fa-chevron-right report-arrow"></i>
+                                </a>
+                                <a href="{{ route('print.all.customer.creditnotes', ['customerid' => $cid, 'date1' => $from, 'date2' => $to]) }}"
+                                    onclick="openPdfInNewTab(event, this.href); return false;"
+                                    class="clhs-report-item {{ !$hasCreditNotes ? 'pdf-link-disabled' : '' }}">
+                                    <span class="report-icon creditnotes"><i class="fa-solid fa-file-invoice"></i></span>
+                                    <span><strong>All Credit Notes</strong><small>Print available customer credit notes</small></span>
+                                    <i class="fa-solid fa-chevron-right report-arrow"></i>
+                                </a>
+                                <a href="{{ route('customer.printallcashreceipts', ['customerid' => $cid, 'date1' => $from, 'date2' => $to, 'ledger_mode' => 'cash_credit']) }}"
+                                    onclick="openPdfInNewTab(event, this.href); return false;"
+                                    class="clhs-report-item">
+                                    <span class="report-icon receipts"><i class="fa-solid fa-receipt"></i></span>
+                                    <span><strong>All Cash Receipts</strong><small>Print customer payment receipts</small></span>
+                                    <i class="fa-solid fa-chevron-right report-arrow"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 @endif
             </div>
 
             <div class="clhs-table-wrap">
-                <table class="clhs-table">
+                <table class="clhs-table ledger-main-table">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Date</th>
                             <th>Nepali Date</th>
-                            <th>Created At</th>
+                            <th>Date</th>
                             <th>Particulars</th>
                             <th>Voucher Type</th>
                             <th>Invoice Type</th>
                             <th>Invoice No</th>
                             <th class="text-end">Debit</th>
                             <th class="text-end">Credit</th>
+                            <th>Created At</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -228,13 +252,12 @@
                                     <td>{{ method_exists($all, 'firstItem') ? $all->firstItem() + $loop->index : $loop->iteration }}</td>
                                     <td>
                                         <div class="clhs-row-date-picker">
-                                            <span>{{ $i->date }}</span>
-                                            <button type="button" onclick="setLedgerDateFromRow('{{ $i->date }}', 'date1')" title="Use as start date">Start</button>
-                                            <button type="button" onclick="setLedgerDateFromRow('{{ $i->date }}', 'date2')" title="Use as end date">End</button>
+                                            <span>{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}</span>
+                                            <button type="button" onclick="setLedgerDateFromRow('{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}', 'date1_bs')" title="Use as start date">Start</button>
+                                            <button type="button" onclick="setLedgerDateFromRow('{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}', 'date2_bs')" title="Use as end date">End</button>
                                         </div>
                                     </td>
-                                    <td>{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}</td>
-                                    <td>{{ $i->created_at }}</td>
+                                    <td>{{ $i->date }}</td>
                                     <td>{{ $i->particulars }}</td>
                                     <td>{{ $i->voucher_type }}</td>
                                     <td>
@@ -262,12 +285,14 @@
                                     </td>
                                     <td class="text-end">{{ number_format((float) $i->debit, 2) }}</td>
                                     <td class="text-end">{{ number_format((float) $i->credit, 2) }}</td>
+                                    <td>{{ $i->created_at }}</td>
                                 </tr>
                             @endforeach
                             <tr class="clhs-total-row">
-                                <td colspan="8" class="text-end">Total</td>
-                                <td class="text-end">{{ number_format((float) $allnotcash, 2) }}</td>
-                                <td class="text-end">{{ number_format((float) $cts, 2) }}</td>
+                                <td colspan="7" class="text-end">Total</td>
+                                <td class="text-end total-amount">{{ number_format((float) $allnotcash, 2) }}</td>
+                                <td class="text-end total-amount">{{ number_format((float) $cts, 2) }}</td>
+                                <td></td>
                             </tr>
                         @else
                             <tr>
@@ -446,8 +471,36 @@
 }
 
 .clhs-date-grid .input-group-text {
-    background: #f1f5f9;
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1e40af;
     font-weight: 700;
+    gap: 7px;
+}
+
+.clhs-date-grid .form-control {
+    border-color: #bfdbfe;
+    font-weight: 700;
+    letter-spacing: .03em;
+}
+
+.clhs-date-grid .form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 .2rem rgba(59, 130, 246, .14);
+}
+
+.clhs-date-error {
+    align-items: center;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    color: #b91c1c;
+    display: flex;
+    font-size: 13px;
+    font-weight: 800;
+    gap: 7px;
+    margin: -6px 0 14px;
+    padding: 9px 11px;
 }
 
 .clhs-search-btn {
@@ -625,10 +678,16 @@
 
 .clhs-toolbar {
     align-items: center;
+    background: #ffffff;
+    border: 1px solid #dbe3ee;
+    border-left: 5px solid #4f46e5;
+    border-radius: 10px;
+    box-shadow: 0 5px 16px rgba(15,23,42,.06);
     display: flex;
     gap: 16px;
     justify-content: space-between;
     margin: 18px 0 10px;
+    padding: 14px 16px;
 }
 
 .clhs-toolbar h4 {
@@ -651,6 +710,152 @@
     gap: 10px;
     justify-content: flex-end;
 }
+
+.clhs-primary-action,
+.clhs-reports-trigger {
+    align-items: center;
+    border: 0;
+    border-radius: 8px;
+    display: inline-flex;
+    font-weight: 800;
+    gap: 9px;
+    justify-content: center;
+    min-height: 46px;
+    padding: 9px 14px;
+    text-decoration: none !important;
+    transition: box-shadow .15s ease, transform .15s ease;
+    white-space: nowrap;
+}
+
+.clhs-primary-action.dispute {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+    color: #be123c !important;
+}
+
+.clhs-primary-action.dispute span,
+.clhs-primary-action.dispute i {
+    color: #be123c !important;
+}
+
+.clhs-primary-action:hover,
+.clhs-reports-trigger:hover,
+.clhs-reports-trigger[aria-expanded="true"] {
+    box-shadow: 0 6px 14px rgba(15,23,42,.13);
+    transform: translateY(-1px);
+}
+
+.clhs-reports-trigger {
+    background: #1e3a8a;
+    color: #ffffff;
+    min-width: 190px;
+    padding: 6px 13px 6px 7px;
+    text-align: left;
+}
+
+.clhs-reports-trigger:after { margin-left: auto; }
+
+.reports-trigger-icon {
+    align-items: center;
+    background: rgba(255,255,255,.16);
+    border-radius: 7px;
+    color: #ffffff !important;
+    display: flex;
+    flex: 0 0 35px;
+    height: 35px;
+    justify-content: center;
+}
+
+.clhs-reports-trigger>span:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+}
+
+.clhs-reports-trigger strong,
+.clhs-reports-trigger small {
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.clhs-reports-trigger small {
+    font-size: 10px;
+    font-weight: 600;
+    opacity: .72;
+}
+
+.clhs-reports-menu {
+    border: 1px solid #dbe3ee;
+    border-radius: 12px;
+    box-shadow: 0 20px 45px rgba(15,23,42,.2);
+    margin-top: 8px !important;
+    overflow: hidden;
+    padding: 7px;
+    width: 390px;
+    z-index: 1050;
+}
+
+.reports-menu-heading {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    border-radius: 8px 8px 4px 4px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+    padding: 10px 12px;
+}
+
+.reports-menu-heading strong { color: #172554; font-size: 14px; }
+.reports-menu-heading small { color: #64748b; font-size: 11px; }
+
+.clhs-report-item {
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    color: #334155 !important;
+    cursor: pointer;
+    display: flex;
+    font-family: inherit;
+    gap: 10px;
+    padding: 9px 10px;
+    text-align: left;
+    text-decoration: none !important;
+    transition: background .15s ease, border-color .15s ease;
+    width: 100%;
+}
+
+.clhs-report-item:hover {
+    background: #f8fafc;
+    border-color: #dbeafe;
+}
+
+.clhs-report-item>span:nth-child(2) {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.clhs-report-item strong { color: #1e293b; font-size: 13px; line-height: 1.2; }
+.clhs-report-item small { color: #64748b; font-size: 10px; line-height: 1.25; margin-top: 2px; }
+
+.report-icon {
+    align-items: center;
+    border-radius: 8px;
+    color: #ffffff !important;
+    display: flex;
+    flex: 0 0 36px;
+    height: 36px;
+    justify-content: center;
+}
+
+.report-icon.check-invoices { background: #334155; }
+.report-icon.ledger { background: #4f46e5; }
+.report-icon.invoices { background: #059669; }
+.report-icon.creditnotes { background: #d97706; }
+.report-icon.receipts { background: #0891b2; }
+.report-arrow { color: #94a3b8; font-size: 10px; }
+.clhs-report-item.pdf-link-disabled { filter: grayscale(.65); opacity: .45; }
 
 .clhs-print-btn {
     align-items: stretch;
@@ -782,6 +987,33 @@
     vertical-align: middle;
 }
 
+.ledger-main-table th:nth-child(2),
+.ledger-main-table td:nth-child(2) {
+    min-width: 150px;
+    white-space: nowrap;
+    width: 1%;
+}
+
+.ledger-main-table th:nth-child(3),
+.ledger-main-table td:nth-child(3) {
+    min-width: 125px;
+    white-space: nowrap;
+}
+
+.ledger-main-table th:nth-child(8),
+.ledger-main-table th:nth-child(9),
+.ledger-main-table td:nth-child(8),
+.ledger-main-table td:nth-child(9) {
+    min-width: 130px;
+    white-space: nowrap;
+}
+
+.ledger-main-table th:nth-child(10),
+.ledger-main-table td:nth-child(10) {
+    min-width: 175px;
+    white-space: nowrap;
+}
+
 .clhs-table th {
     background: #5d5ced;
     color: #ffffff;
@@ -883,6 +1115,12 @@
     color: #ffffff;
     font-size: 18px;
     font-weight: 900;
+}
+
+.clhs-total-row .total-amount {
+    font-size: 22px;
+    min-width: 150px;
+    padding: 16px 14px;
 }
 
 .clhs-empty-state {
@@ -1045,8 +1283,8 @@
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    min-width: 140px;
+    gap: 4px;
+    min-width: 0;
 }
 
 .clhs-row-date-picker span {
@@ -1062,7 +1300,7 @@
     font-size: 0.75rem;
     font-weight: 800;
     line-height: 1;
-    padding: 5px 8px;
+    padding: 5px 7px;
 }
 
 .clhs-row-date-picker button:hover {
@@ -1108,6 +1346,18 @@
 
     .clhs-toolbar-actions {
         flex-direction: column;
+        width: 100%;
+    }
+
+    .clhs-primary-action,
+    .clhs-reports-dropdown,
+    .clhs-reports-trigger {
+        width: 100%;
+    }
+
+    .clhs-reports-menu {
+        max-width: calc(100vw - 38px);
+        width: 390px;
     }
 
     .missing-invoice-summary {

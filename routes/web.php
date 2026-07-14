@@ -102,6 +102,20 @@ Route::get('/convertdate',[DateConversionController::class,'convertdate'])->name
 
 Route::get('/smart-tools',[SmartToolsController::class,'index'])->name('smarttools.index');
 Route::get('/vat-party-ledgers', [VatBillController::class, 'index'])->name('vat-bills.index');
+Route::get('/vat-bills/create-standalone', [VatBillController::class, 'standaloneCreate'])->name('vat-bills.standalone.create');
+Route::post('/vat-bills/create-standalone', [VatBillController::class, 'standaloneStore'])->name('vat-bills.standalone.store');
+Route::get('/vat-bills/{vatBill}/edit-entry', [VatBillController::class, 'entryEdit'])->name('vat-bills.entry.edit');
+Route::put('/vat-bills/{vatBill}/edit-entry', [VatBillController::class, 'entryUpdate'])->name('vat-bills.entry.update');
+Route::delete('/vat-bills/{vatBill}/delete-entry', [VatBillController::class, 'entryDestroy'])->name('vat-bills.entry.destroy');
+Route::get('/vat-party-ledgers/bill/{vatBill}', [VatBillController::class, 'partyShow'])->name('vat-party-ledgers.show');
+Route::get('/vat-party-ledgers/bill/{vatBill}/pdf', [VatBillController::class, 'partyPdf'])->name('vat-party-ledgers.pdf');
+Route::get('/vat-party-ledgers/bill/{vatBill}/confirmation', [VatBillController::class, 'partyConfirmation'])->name('vat-party-ledgers.confirmation');
+Route::get('/vat-party-ledgers/bill/{vatBill}/confirmation/pdf', [VatBillController::class, 'partyConfirmationPdf'])->name('vat-party-ledgers.confirmation.pdf');
+Route::post('/vat-party-ledgers/bill/{vatBill}/confirmation-details', [VatBillController::class, 'saveConfirmationDetails'])->name('vat-party-ledgers.confirmation-details');
+Route::post('/vat-party-ledgers/bill/{vatBill}/add', [VatBillController::class, 'storeFromPartyLedger'])->name('vat-party-ledgers.add');
+Route::get('/vat-party-ledgers/missing', [VatBillController::class, 'missing'])->name('vat-bills.missing');
+Route::get('/vat-party-ledgers/print-all', [VatBillController::class, 'printAllLedgers'])->name('vat-bills.print-all');
+Route::get('/vat-party-ledgers/print-all-confirmations', [VatBillController::class, 'printAllConfirmations'])->name('vat-bills.print-all-confirmations');
 
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
@@ -382,11 +396,14 @@ Route::get('/onlyviewbill',[CustomerLedgerHistroy::class,'onlyviewbillafterbill'
 Route::delete('/onlyviewbill/{invoiceid}', [CustomerLedgerHistroy::class, 'deletebillfromdatabasefor_user'])->name('customer.deletebillnoforuser');
 Route::post('/invoice/{invoiceid}/send-sms', [CustomerLedgerHistroy::class, 'sendInvoiceSms'])->name('invoice.send-sms');
 Route::get('/invoice/{invoice}/vat-bill/create', [VatBillController::class, 'create'])->name('vat-bills.create');
+Route::get('/invoice/{invoice}/vat-bill/edit', [VatBillController::class, 'edit'])->name('vat-bills.edit');
 Route::get('/invoice/{invoice}/vat-bill/pdf', [VatBillController::class, 'pdf'])->name('vat-bills.ledger.pdf');
 Route::get('/invoice/{invoice}/vat-bill/confirmation', [VatBillController::class, 'confirmation'])->name('vat-bills.confirmation');
 Route::get('/invoice/{invoice}/vat-bill/confirmation/pdf', [VatBillController::class, 'confirmationPdf'])->name('vat-bills.confirmation.pdf');
 Route::get('/invoice/{invoice}/vat-bill', [VatBillController::class, 'show'])->name('vat-bills.show');
 Route::post('/invoice/{invoice}/vat-bill', [VatBillController::class, 'store'])->name('vat-bills.store');
+Route::put('/invoice/{invoice}/vat-bill', [VatBillController::class, 'update'])->name('vat-bills.update');
+Route::delete('/invoice/{invoice}/vat-bill', [VatBillController::class, 'destroy'])->name('vat-bills.destroy');
 
 Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_InvoiveBillByBillno'])->name('invoicebillno.convert');
 

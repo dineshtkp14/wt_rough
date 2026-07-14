@@ -12,6 +12,7 @@ use App\Models\SmsLog;
 use App\Services\SmsService;
 use App\Services\CustomerLedgerBalance;
 use App\Helpers\InvoiceSmsHelper;
+use App\Support\NepaliDate;
 
 use App\Models\salesitem;
 
@@ -31,6 +32,7 @@ use Illuminate\Support\Facades\DB; //
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
 
 
 
@@ -134,14 +136,19 @@ class CustomerLedgerHistroy extends Controller
  public function returnchoosendatehistroy(Request $req)
  {
      if(Auth::check()) {
+         $this->convertBsLedgerDates($req, [
+             'date1_bs' => 'date1',
+             'date2_bs' => 'date2',
+         ]);
+
          $breadcrumb = [
              'subtitle' => 'View',
              'title' => 'Customers Ledger Details (ONLY CREDIT)',
              'link' => 'Customers Ledger Details (ONLY CREDIT)'
          ];
  
-         $from = date($req->date1);
-         $to = date($req->date2);
+         $from = (string) $req->input('date1', '');
+         $to = (string) $req->input('date2', '');
  
          $cusledgertails = null;
          $debittotalsumwithdate = null;
@@ -225,6 +232,42 @@ class CustomerLedgerHistroy extends Controller
      }
  
      return redirect('/login');
+ }
+
+ private function convertBsLedgerDates(Request $request, array $fields): void
+ {
+     foreach ($fields as $bsField => $adField) {
+         $bsDate = trim((string) $request->query($bsField));
+
+         if ($bsDate === '') {
+             continue;
+         }
+
+         if (!preg_match('/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})$/', $bsDate, $parts)) {
+             throw ValidationException::withMessages([
+                 $bsField => 'Enter the B.S. date in YYYY-MM-DD format.',
+             ]);
+         }
+
+         try {
+             $request->merge([
+                 $adField => NepaliDate::bsToAdString((int) $parts[1], (int) $parts[2], (int) $parts[3]),
+             ]);
+         } catch (\InvalidArgumentException $exception) {
+             throw ValidationException::withMessages([
+                 $bsField => 'The entered B.S. date is invalid or outside the supported range.',
+             ]);
+         }
+     }
+
+     $from = $request->input('date1');
+     $to = $request->input('date2');
+
+     if ($from && $to && $to < $from) {
+         throw ValidationException::withMessages([
+             'date2_bs' => 'The End Date (B.S.) must be the same as or later than the Start Date.',
+         ]);
+     }
  }
  
 
@@ -1417,6 +1460,11 @@ class CustomerLedgerHistroy extends Controller
     public function returnchoosendatehistroycashandcredit(Request $req)
     {
         if (Auth::check()) {
+            $this->convertBsLedgerDates($req, [
+                'date1_bs' => 'date1',
+                'date2_bs' => 'date2',
+            ]);
+
             $breadcrumb = [
                 'subtitle' => 'View  (CASH / CREDIT)',
                 'title' => ' Customers Ledger/ Statement (CASH / CREDIT)',

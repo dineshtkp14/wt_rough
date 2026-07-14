@@ -204,6 +204,51 @@
         gap: 15px;
     }
 
+    .summary-card.invoice-summary {
+        border-top: 4px solid #f97316;
+    }
+
+    .summary-card.payment-summary {
+        border-top: 4px solid #10b981;
+    }
+
+    .summary-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .summary-count-row {
+        align-items: baseline;
+        display: flex;
+        gap: 7px;
+    }
+
+    .summary-total {
+        color: #111827;
+        display: block;
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1.15;
+        margin-top: 8px;
+    }
+
+    .summary-total-label {
+        color: #94a3b8;
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        margin-top: 3px;
+        text-transform: uppercase;
+    }
+
+    .invoice-summary .summary-total {
+        color: #c2410c;
+    }
+
+    .payment-summary .summary-total {
+        color: #047857;
+    }
+
     .summary-icon {
         width: 50px;
         height: 50px;
@@ -243,22 +288,24 @@
 
     <!-- Summary Cards -->
     <div class="summary-cards">
-        <div class="summary-card">
+        <div class="summary-card invoice-summary">
             <div class="summary-icon orange">
                 <i class="fas fa-file-invoice"></i>
             </div>
             <div class="summary-info">
-                <h3>{{ count($recentInvoices) }}</h3>
-                <p>Total Invoices Today</p>
+                <div class="summary-count-row"><h3>{{ count($recentInvoices) }}</h3><p>Total Invoices Today</p></div>
+                <strong class="summary-total">Rs {{ number_format((float) $todayInvoiceTotal, 2) }}</strong>
+                <small class="summary-total-label">Today's Invoice Amount</small>
             </div>
         </div>
-        <div class="summary-card">
+        <div class="summary-card payment-summary">
             <div class="summary-icon green">
                 <i class="fas fa-money-bill-wave"></i>
             </div>
             <div class="summary-info">
-                <h3>{{ count($recentPayments) }}</h3>
-                <p>Total Payments Today</p>
+                <div class="summary-count-row"><h3>{{ count($recentPayments) }}</h3><p>Total Payments Today</p></div>
+                <strong class="summary-total">Rs {{ number_format((float) $todayPaymentTotal, 2) }}</strong>
+                <small class="summary-total-label">Today's Payment Amount</small>
             </div>
         </div>
     </div>

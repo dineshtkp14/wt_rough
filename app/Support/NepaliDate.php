@@ -293,12 +293,14 @@ final class NepaliDate
 
     private static function mapDaysToDateAD(int $days): array
     {
-        $epoch = self::makeUTC(self::BEGIN_AD_Y, self::BEGIN_AD_M, self::BEGIN_AD_D + $days);
+        $epoch = self::makeUTC(self::BEGIN_AD_Y, self::BEGIN_AD_M, self::BEGIN_AD_D);
+        $ad = $epoch->modify('+' . $days . ' days');
+
         return [
-            'year'  => (int)$epoch->format('Y'),
-            'month' => (int)$epoch->format('n') - 1, // 0-based
-            'date'  => (int)$epoch->format('j'),
-            'day'   => (int)$epoch->format('w'),
+            'year'  => (int)$ad->format('Y'),
+            'month' => (int)$ad->format('n') - 1, // 0-based
+            'date'  => (int)$ad->format('j'),
+            'day'   => (int)$ad->format('w'),
         ];
     }
 

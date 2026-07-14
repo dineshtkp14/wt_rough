@@ -10,6 +10,10 @@
 
         return 'NPR ' . number_format(abs($amount), 2) . ($amount > 0 ? ' Dr' : ' Cr');
     };
+
+    $formatTransactionAmount = function ($amount) {
+        return abs((float) $amount) < 0.01 ? '-' : number_format((float) $amount, 2);
+    };
 @endphp
 
 <div class="confirmation-letter">
@@ -75,15 +79,34 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td>1</td><td>Purchase</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-            <tr><td>2</td><td>Purchase Return</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-            <tr class="sales-row">
-                <td>3</td><td>Sales</td><td>-</td>
-                <td>{{ number_format($totalTaxable, 2) }}</td>
-                <td>{{ number_format($totalVat, 2) }}</td>
-                <td>{{ number_format($grandTotal, 2) }}</td>
+            <tr>
+                <td>1</td><td>Purchase</td>
+                <td>{{ $formatTransactionAmount($purchaseRow['exempted']) }}</td>
+                <td>{{ $formatTransactionAmount($purchaseRow['taxable']) }}</td>
+                <td>{{ $formatTransactionAmount($purchaseRow['vat']) }}</td>
+                <td>{{ $formatTransactionAmount($purchaseRow['total']) }}</td>
             </tr>
-            <tr><td>4</td><td>Sales Return</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+            <tr>
+                <td>2</td><td>Purchase Return</td>
+                <td>{{ $formatTransactionAmount($purchaseReturnRow['exempted']) }}</td>
+                <td>{{ $formatTransactionAmount($purchaseReturnRow['taxable']) }}</td>
+                <td>{{ $formatTransactionAmount($purchaseReturnRow['vat']) }}</td>
+                <td>{{ $formatTransactionAmount($purchaseReturnRow['total']) }}</td>
+            </tr>
+            <tr class="sales-row">
+                <td>3</td><td>Sales</td>
+                <td>{{ $formatTransactionAmount($salesRow['exempted']) }}</td>
+                <td>{{ number_format($salesRow['taxable'], 2) }}</td>
+                <td>{{ number_format($salesRow['vat'], 2) }}</td>
+                <td>{{ number_format($salesRow['total'], 2) }}</td>
+            </tr>
+            <tr>
+                <td>4</td><td>Sales Return</td>
+                <td>{{ $formatTransactionAmount($salesReturnRow['exempted']) }}</td>
+                <td>{{ $formatTransactionAmount($salesReturnRow['taxable']) }}</td>
+                <td>{{ $formatTransactionAmount($salesReturnRow['vat']) }}</td>
+                <td>{{ $formatTransactionAmount($salesReturnRow['total']) }}</td>
+            </tr>
         </tbody>
     </table>
 
