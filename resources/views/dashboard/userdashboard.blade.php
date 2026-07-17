@@ -97,6 +97,12 @@
                 <i class="fa fa-book-open"></i> VAT PARTY LEDGER
             </a>
         </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('supplier-vat-bills.index') }}" class="btn btn-warning btn-block btn-super-duper-bigger">
+                <i class="fa fa-receipt"></i> VAT SYSTEM
+            </a>
+        </div>
        
        
     </div>

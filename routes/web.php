@@ -76,6 +76,8 @@ use App\Http\Controllers\ModernDashboardController;
 use App\Http\Controllers\TemporaryInvoiceController;
 use App\Http\Controllers\SmartToolsController;
 use App\Http\Controllers\VatBillController;
+use App\Http\Controllers\SupplierVatBillController;
+use App\Http\Controllers\CustomerVatSaleController;
 
 
 
@@ -96,6 +98,30 @@ Route::get('/invoicedash',[UserdashboardController::class,'invoicedash'])->name(
 Route::get('/cndash',[UserdashboardController::class,'cndash'])->name('cndash');
 
 Route::get('/userdash',[UserdashboardController::class,'index'])->name('userdash');
+
+Route::get('/supplier-vat-bills', [SupplierVatBillController::class, 'index'])->name('supplier-vat-bills.index');
+Route::get('/supplier-vat-bills/create', [SupplierVatBillController::class, 'create'])->name('supplier-vat-bills.create');
+Route::post('/supplier-vat-bills', [SupplierVatBillController::class, 'store'])->name('supplier-vat-bills.store');
+Route::get('/supplier-vat-bills/{supplierVatBill}', [SupplierVatBillController::class, 'show'])->name('supplier-vat-bills.show');
+Route::get('/supplier-vat-bills/{supplierVatBill}/edit', [SupplierVatBillController::class, 'edit'])->name('supplier-vat-bills.edit');
+Route::put('/supplier-vat-bills/{supplierVatBill}', [SupplierVatBillController::class, 'update'])->name('supplier-vat-bills.update');
+Route::delete('/supplier-vat-bills/{supplierVatBill}', [SupplierVatBillController::class, 'destroy'])->name('supplier-vat-bills.destroy');
+
+Route::get('/customer-vat-sales/stock-items', [CustomerVatSaleController::class, 'stockItems'])->name('customer-vat-sales.stock-items');
+Route::get('/customer-vat-sales/stock', [CustomerVatSaleController::class, 'stock'])->name('customer-vat-sales.stock');
+Route::get('/customer-vat-sales/monthly-book', [CustomerVatSaleController::class, 'monthlyBook'])->name('customer-vat-sales.monthly-book');
+Route::get('/customer-vat-sales/stock/create', [CustomerVatSaleController::class, 'stockCreate'])->name('customer-vat-sales.stock.create');
+Route::post('/customer-vat-sales/stock', [CustomerVatSaleController::class, 'stockStore'])->name('customer-vat-sales.stock.store');
+Route::get('/customer-vat-sales/stock/{vatStockItem}/edit', [CustomerVatSaleController::class, 'stockEdit'])->name('customer-vat-sales.stock.edit');
+Route::put('/customer-vat-sales/stock/{vatStockItem}', [CustomerVatSaleController::class, 'stockUpdate'])->name('customer-vat-sales.stock.update');
+Route::delete('/customer-vat-sales/stock/{vatStockItem}', [CustomerVatSaleController::class, 'stockDestroy'])->name('customer-vat-sales.stock.destroy');
+Route::get('/customer-vat-sales', [CustomerVatSaleController::class, 'index'])->name('customer-vat-sales.index');
+Route::get('/customer-vat-sales/create', [CustomerVatSaleController::class, 'create'])->name('customer-vat-sales.create');
+Route::post('/customer-vat-sales', [CustomerVatSaleController::class, 'store'])->name('customer-vat-sales.store');
+Route::get('/customer-vat-sales/{customerVatSale}', [CustomerVatSaleController::class, 'show'])->name('customer-vat-sales.show');
+Route::get('/customer-vat-sales/{customerVatSale}/edit', [CustomerVatSaleController::class, 'edit'])->name('customer-vat-sales.edit');
+Route::put('/customer-vat-sales/{customerVatSale}', [CustomerVatSaleController::class, 'update'])->name('customer-vat-sales.update');
+Route::delete('/customer-vat-sales/{customerVatSale}', [CustomerVatSaleController::class, 'destroy'])->name('customer-vat-sales.destroy');
 
 
 Route::get('/convertdate',[DateConversionController::class,'convertdate'])->name('convertdate');

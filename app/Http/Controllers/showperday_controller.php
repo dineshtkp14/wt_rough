@@ -230,10 +230,14 @@ class showperday_controller extends Controller
 
         $invoiceQuery = invoice::query();
         $creditNoteQuery = CreditnotesInvoice::query();
+        $paymentQuery = customerledgerdetails::query()
+            ->where('invoicetype', 'payment')
+            ->where('particulars', '!=', 'salesreturn');
 
         if (!empty($from) && !empty($to)) {
             $invoiceQuery->whereBetween('inv_date', [$from, $to]);
             $creditNoteQuery->whereBetween('inv_date', [$from, $to]);
+            $paymentQuery->whereBetween('date', [$from, $to]);
         }
 
         $cashSales = (clone $invoiceQuery)
@@ -256,23 +260,32 @@ class showperday_controller extends Controller
             ->get()
             ->keyBy('date');
 
+        $paymentsReceived = (clone $paymentQuery)
+            ->select(DB::raw('DATE(date) as date'), DB::raw('SUM(credit) as total'))
+            ->groupBy('date')
+            ->get()
+            ->keyBy('date');
+
         $dates = $cashSales->keys()
             ->merge($creditSales->keys())
             ->merge($creditNotes->keys())
+            ->merge($paymentsReceived->keys())
             ->unique()
             ->sortDesc()
             ->values();
 
-        $rows = $dates->map(function ($date) use ($cashSales, $creditSales, $creditNotes) {
+        $rows = $dates->map(function ($date) use ($cashSales, $creditSales, $creditNotes, $paymentsReceived) {
             $cash = (float) optional($cashSales->get($date))->total;
             $credit = (float) optional($creditSales->get($date))->total;
             $notes = (float) optional($creditNotes->get($date))->total;
+            $payments = (float) optional($paymentsReceived->get($date))->total;
 
             return [
                 'date' => $date,
                 'cash_sales' => $cash,
                 'credit_sales' => $credit,
                 'credit_notes' => $notes,
+                'payments_received' => $payments,
                 'total_sales' => $cash + $credit,
                 'net_after_credit_notes' => ($cash + $credit) - $notes,
             ];
@@ -294,6 +307,7 @@ class showperday_controller extends Controller
             'totalCashSales' => $rows->sum('cash_sales'),
             'totalCreditSales' => $rows->sum('credit_sales'),
             'totalCreditNotes' => $rows->sum('credit_notes'),
+            'totalPaymentsReceived' => $rows->sum('payments_received'),
             'grandTotalSales' => $rows->sum('total_sales'),
             'grandNetSales' => $rows->sum('net_after_credit_notes'),
         ]);

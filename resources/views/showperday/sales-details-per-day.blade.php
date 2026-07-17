@@ -44,6 +44,10 @@
                 <span>Credit Notes</span>
                 <strong>Rs {{ number_format((float) $totalCreditNotes, 2) }}</strong>
             </div>
+            <div class="stat-card payments">
+                <span>Payment Received</span>
+                <strong>Rs {{ number_format((float) $totalPaymentsReceived, 2) }}</strong>
+            </div>
             <div class="stat-card total">
                 <span>Total Sales</span>
                 <strong>Rs {{ number_format((float) $grandTotalSales, 2) }}</strong>
@@ -70,6 +74,7 @@
                         <th>Date</th>
                         <th>Nepali Date</th>
                         <th class="text-end">Credit Notes</th>
+                        <th class="text-end">Payment Received</th>
                         <th class="text-end">Credit Sales</th>
                         <th class="text-end">Cash Sales</th>
                         <th class="text-end">Total Sales</th>
@@ -83,6 +88,7 @@
                             <td>{{ $row['date'] }}</td>
                             <td>{{ \App\Support\NepaliDate::adToBsString($row['date'], 'en') }}</td>
                             <td class="text-end notes-cell">Rs {{ number_format((float) $row['credit_notes'], 2) }}</td>
+                            <td class="text-end payment-cell">Rs {{ number_format((float) $row['payments_received'], 2) }}</td>
                             <td class="text-end credit-cell">Rs {{ number_format((float) $row['credit_sales'], 2) }}</td>
                             <td class="text-end cash-cell">Rs {{ number_format((float) $row['cash_sales'], 2) }}</td>
                             <td class="text-end total-cell">Rs {{ number_format((float) $row['total_sales'], 2) }}</td>
@@ -90,7 +96,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="empty-row">No sales records found.</td>
+                            <td colspan="9" class="empty-row">No sales records found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -177,7 +183,7 @@
 
         .sales-day-stats {
             display: grid;
-            grid-template-columns: repeat(5, minmax(150px, 1fr));
+            grid-template-columns: repeat(6, minmax(150px, 1fr));
             gap: 14px;
             margin-bottom: 18px;
         }
@@ -210,6 +216,7 @@
         .stat-card.cash { border-top-color: #059669; }
         .stat-card.credit { border-top-color: #2563eb; }
         .stat-card.notes { border-top-color: #dc2626; }
+        .stat-card.payments { border-top-color: #0891b2; }
         .stat-card.total { border-top-color: #7c3aed; }
         .stat-card.net { border-top-color: #b45309; }
 
@@ -250,7 +257,7 @@
 
         .sales-day-table {
             width: 100%;
-            min-width: 1120px;
+            min-width: 1260px;
             margin: 0;
             border-collapse: collapse;
         }
@@ -288,6 +295,7 @@
         .cash-cell { color: #047857 !important; font-weight: 900; white-space: nowrap; }
         .credit-cell { color: #1d4ed8 !important; font-weight: 900; white-space: nowrap; }
         .notes-cell { color: #b91c1c !important; font-weight: 900; white-space: nowrap; }
+        .payment-cell { color: #0e7490 !important; font-weight: 900; white-space: nowrap; }
         .total-cell { color: #5b21b6 !important; font-weight: 900; white-space: nowrap; }
         .net-cell { color: #92400e !important; font-weight: 900; white-space: nowrap; }
 
