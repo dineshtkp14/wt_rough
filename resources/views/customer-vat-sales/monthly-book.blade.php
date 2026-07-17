@@ -16,6 +16,47 @@
     .vat-book-summary { border-left: 5px solid #3348d4; }
     .vat-book-summary strong { display: block; font-size: 24px; margin-top: 5px; }
     .vat-book-table { white-space: nowrap; }
+    .vat-book-table th,
+    .vat-book-table td { vertical-align: middle; }
+    .vat-book-table-wrap { overflow-x: auto; }
+    #monthSummaryTable {
+        width: 1336px;
+        min-width: 1336px;
+        max-width: none;
+        table-layout: fixed !important;
+        border-collapse: collapse;
+    }
+    #monthSummaryTable thead { display: table-header-group !important; }
+    #monthSummaryTable tbody { display: table-row-group !important; }
+    #monthSummaryTable tfoot { display: table-footer-group !important; }
+    #monthSummaryTable tr { display: table-row !important; }
+    #monthSummaryTable th,
+    #monthSummaryTable td {
+        display: table-cell !important;
+        padding: 12px 14px !important;
+        overflow-wrap: normal !important;
+        word-break: normal !important;
+    }
+    #monthSummaryTable .month-col { width: 180px; }
+    #monthSummaryTable .count-col { width: 92px; }
+    #monthSummaryTable .amount-col { width: 132px; }
+    #monthSummaryTable .vat-col { width: 180px; }
+    #monthSummaryTable thead th {
+        background: #3348d4;
+        color: #ffffff;
+        font-weight: 800;
+        text-transform: uppercase;
+        white-space: normal;
+    }
+    #monthSummaryTable .group-head {
+        background: #1f2fb2;
+        text-align: center;
+        letter-spacing: .02em;
+    }
+    #monthSummaryTable tfoot th {
+        background: #111827;
+        color: #ffffff;
+    }
     .selected-bs-month > * { background: #eaf1ff !important; font-weight: 800; }
     .vat-payable { color: #b91c1c; }
     .vat-credit { color: #15803d; }
@@ -62,9 +103,38 @@
         <div class="col-xl-3 col-md-6"><div class="card vat-book-summary h-100"><div class="card-body"><span class="text-muted">Sales Total</span><strong>{{ number_format($selectedMonth['sales_total'], 2) }}</strong><small>{{ $selectedMonth['sales_count'] }} customer bill(s)</small></div></div></div>
     </div>
 
-    <div class="card mb-4"><div class="card-header">{{ $bsYear }} B.S. Month-wise Summary</div><div class="card-body p-0"><div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle mb-0 vat-book-table">
-            <thead class="table-primary"><tr><th>Month</th><th class="text-end">Purchase Bills</th><th class="text-end">Purchase Taxable</th><th class="text-end">Input VAT</th><th class="text-end">Purchase Total</th><th class="text-end">Sales Bills</th><th class="text-end">Sales Taxable</th><th class="text-end">Output VAT</th><th class="text-end">Sales Total</th><th class="text-end">VAT Payable/(Credit)</th></tr></thead>
+    <div class="card mb-4"><div class="card-header">{{ $bsYear }} B.S. Month-wise Summary</div><div class="card-body p-0"><div class="table-responsive vat-book-table-wrap">
+        <table id="monthSummaryTable" class="table table-bordered table-hover align-middle mb-0 vat-book-table">
+            <colgroup>
+                <col class="month-col" style="width: 180px;">
+                <col class="count-col" style="width: 92px;">
+                <col class="amount-col" style="width: 132px;">
+                <col class="amount-col" style="width: 132px;">
+                <col class="amount-col" style="width: 132px;">
+                <col class="count-col" style="width: 92px;">
+                <col class="amount-col" style="width: 132px;">
+                <col class="amount-col" style="width: 132px;">
+                <col class="amount-col" style="width: 132px;">
+                <col class="vat-col" style="width: 180px;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th rowspan="2" class="month-col">Month</th>
+                    <th colspan="4" class="group-head">Purchase</th>
+                    <th colspan="4" class="group-head">Sales</th>
+                    <th rowspan="2" class="text-end vat-col">VAT Payable / (Credit)</th>
+                </tr>
+                <tr>
+                    <th class="text-end count-col">Bills</th>
+                    <th class="text-end amount-col">Taxable</th>
+                    <th class="text-end amount-col">Input VAT</th>
+                    <th class="text-end amount-col">Total</th>
+                    <th class="text-end count-col">Bills</th>
+                    <th class="text-end amount-col">Taxable</th>
+                    <th class="text-end amount-col">Output VAT</th>
+                    <th class="text-end amount-col">Total</th>
+                </tr>
+            </thead>
             <tbody>
             @foreach($monthlySummary as $month)
                 <tr class="{{ $month['month'] == $bsMonth ? 'selected-bs-month' : '' }}">
@@ -75,7 +145,7 @@
                 </tr>
             @endforeach
             </tbody>
-            <tfoot class="table-dark"><tr><th>B.S. Year Total</th><th class="text-end">{{ $monthlySummary->sum('purchase_count') }}</th><th class="text-end">{{ number_format($yearTotals['purchase_taxable'], 2) }}</th><th class="text-end">{{ number_format($yearTotals['purchase_vat'], 2) }}</th><th class="text-end">{{ number_format($yearTotals['purchase_total'], 2) }}</th><th class="text-end">{{ $monthlySummary->sum('sales_count') }}</th><th class="text-end">{{ number_format($yearTotals['sales_taxable'], 2) }}</th><th class="text-end">{{ number_format($yearTotals['sales_vat'], 2) }}</th><th class="text-end">{{ number_format($yearTotals['sales_total'], 2) }}</th><th class="text-end">{{ number_format($yearTotals['sales_vat'] - $yearTotals['purchase_vat'], 2) }}</th></tr></tfoot>
+            <tfoot><tr><th class="month-col">B.S. Year Total</th><th class="text-end count-col">{{ $monthlySummary->sum('purchase_count') }}</th><th class="text-end amount-col">{{ number_format($yearTotals['purchase_taxable'], 2) }}</th><th class="text-end amount-col">{{ number_format($yearTotals['purchase_vat'], 2) }}</th><th class="text-end amount-col">{{ number_format($yearTotals['purchase_total'], 2) }}</th><th class="text-end count-col">{{ $monthlySummary->sum('sales_count') }}</th><th class="text-end amount-col">{{ number_format($yearTotals['sales_taxable'], 2) }}</th><th class="text-end amount-col">{{ number_format($yearTotals['sales_vat'], 2) }}</th><th class="text-end amount-col">{{ number_format($yearTotals['sales_total'], 2) }}</th><th class="text-end vat-col">{{ number_format($yearTotals['sales_vat'] - $yearTotals['purchase_vat'], 2) }}</th></tr></tfoot>
         </table>
     </div></div></div>
 
