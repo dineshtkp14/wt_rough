@@ -36,6 +36,7 @@
     /* Header */
     .letterhead{ color:#000; padding:0 20px 8px; text-align:center; }
     .letterhead h1{ margin:0 0 4px; font-size:30px; text-decoration:underline; line-height:1.04; }
+    .letterhead h1.memo-title{ font-size:24px; margin-top:30px; }
 
     .address-info{ font-size:13px; text-align:center; margin-top:6px; }
     .address-info p{ margin:1px 0; }
@@ -92,7 +93,7 @@
   $customer = collect($cinfodetails ?? [])->first();
   $isShopCustomer = strtolower((string) ($customer->type ?? '')) === 'shop';
   $memoType = strtoupper((string) ($forinvoicetype->invoicetype ?? $invoice->inv_type ?? 'cash')) === 'CREDIT'
-    ? 'CREDIT MEMO'
+    ? 'QUOTATION/CREDIT MEMO'
     : 'CASH MEMO';
 
   $amountToWords = function ($num) use (&$amountToWords) {
@@ -121,7 +122,7 @@
     <div class="watermark">OHT</div>
 
     <div class="letterhead">
-      <h1>{{ $isShopCustomer ? $memoType : 'OM HARI TRADELINK' }}</h1>
+      <h1 class="{{ $isShopCustomer ? 'memo-title' : '' }}">{{ $isShopCustomer ? $memoType : 'OM HARI TRADELINK' }}</h1>
     </div>
 
     @unless($isShopCustomer)
