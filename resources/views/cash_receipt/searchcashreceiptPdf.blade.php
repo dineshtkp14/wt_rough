@@ -152,19 +152,25 @@
     </style>
 </head>
 <body>
+    @php
+        $customer = collect($customerinfodetails ?? [])->first();
+        $isShopCustomer = strtolower((string) ($customer->type ?? '')) === 'shop';
+    @endphp
+
     <div class="container">
         <div class="watermark">OHT</div>
     
         <div class="header">
-            <div class="letterhead">
-                <h1>OM HARI TRADELINK</h1>
-            </div>
-    
-            <div class="address-info">
-                <p>Address: Tikapur, Kailali (In front of Tikapur Police Station)</p>
-                <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
-                
-            </div>
+            @unless($isShopCustomer)
+                <div class="letterhead">
+                    <h1>OM HARI TRADELINK</h1>
+                </div>
+        
+                <div class="address-info">
+                    <p>Address: Tikapur, Kailali (In front of Tikapur Police Station)</p>
+                    <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
+                </div>
+            @endunless
             <p class="cashrecipttext">Cash Receipt</p>
         </div>
     

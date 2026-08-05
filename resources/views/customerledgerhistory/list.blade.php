@@ -131,14 +131,13 @@
                             <div><span>Phone</span><b>{{ $customer->phoneno ?? '-' }}</b></div>
                             <div><span>Alternate Phone</span><b>{{ $customer->alternate_phoneno ?? $customer->phoneno ?? '-' }}</b></div>
                             <div><span>Email</span><b>{{ $customer->email ?? '-' }}</b></div>
+                            <div><span>VAT No</span><b>{{ $customer->vat_no ?? '-' }}</b></div>
                         </div>
 
-                        @if(!empty(trim($customer->remarks ?? '')))
-                            <div class="clhs-customer-note">
-                                <span>Notes</span>
-                                <b>{{ $customer->remarks }}</b>
-                            </div>
-                        @endif
+                        <div class="clhs-customer-note">
+                            <span>Notes</span>
+                            <b>{{ $customer->remarks ?? '-' }}</b>
+                        </div>
 
                         <div class="clhs-due-card {{ $dueAmount < 0 ? 'is-negative' : '' }}">
                             <span>Total Due Amount</span>
@@ -718,7 +717,7 @@
         .clhs-customer-meta {
             display: grid;
             gap: 10px;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             margin: 14px 0;
         }
 

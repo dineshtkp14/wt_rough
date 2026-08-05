@@ -45,7 +45,14 @@
                 </div>
     
 
-           
+                <div class="col-md-6">
+                        <label for="inputPassword4" class="form-label">VAT No</label>
+                        <input autocomplete="off" type="text" class="form-control @error('vat_no') is-invalid @enderror"
+                            name="vat_no" value="{{ old('vat_no',$company->vat_no) }}">
+                        @error('vat_no')
+                            <p class="invalid-feedback">{{ $message }}</p>
+                        @enderror
+                </div>
 
                 <div class="col-md-6">
                     <label for="inputPassword4" class="form-label">Notes</label>

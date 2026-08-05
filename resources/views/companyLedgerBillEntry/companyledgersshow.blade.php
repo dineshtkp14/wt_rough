@@ -117,6 +117,12 @@
                         <div><span>Company ID</span><b>{{ $company->id ?? '-' }}</b></div>
                         <div><span>Phone</span><b>{{ $company->phoneno ?? '-' }}</b></div>
                         <div><span>Email</span><b>{{ $company->email ?? '-' }}</b></div>
+                        <div><span>VAT No</span><b>{{ $company->vat_no ?? '-' }}</b></div>
+                    </div>
+
+                    <div class="clhs-customer-note">
+                        <span>Notes</span>
+                        <b>{{ $company->notes ?? '-' }}</b>
                     </div>
 
                     <div class="clhs-due-card {{ $totalDue < 0 ? 'is-negative' : '' }}">
@@ -329,7 +335,7 @@
         .company-ledger-page .clhs-customer-meta {
             display: grid;
             gap: 10px;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             margin: 14px 0;
         }
 
@@ -354,6 +360,30 @@
             display: block;
             font-size: 16px;
             margin-top: 3px;
+            word-break: break-word;
+        }
+
+        .company-ledger-page .clhs-customer-note {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            padding: 10px 12px;
+        }
+
+        .company-ledger-page .clhs-customer-note span {
+            color: #9a3412;
+            display: block;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .company-ledger-page .clhs-customer-note b {
+            color: #7c2d12;
+            display: block;
+            font-size: 15px;
+            margin-top: 4px;
             word-break: break-word;
         }
 

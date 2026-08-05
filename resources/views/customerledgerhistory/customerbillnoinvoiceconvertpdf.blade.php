@@ -89,6 +89,11 @@
   $invoiceTime = optional($invoice)->created_at
     ? \Carbon\Carbon::parse($invoice->created_at)->format('H:i:s')
     : '';
+  $customer = collect($cinfodetails ?? [])->first();
+  $isShopCustomer = strtolower((string) ($customer->type ?? '')) === 'shop';
+  $memoType = strtoupper((string) ($forinvoicetype->invoicetype ?? $invoice->inv_type ?? 'cash')) === 'CREDIT'
+    ? 'CREDIT MEMO'
+    : 'CASH MEMO';
 
   $amountToWords = function ($num) use (&$amountToWords) {
     $num = (int) floor($num);
@@ -116,13 +121,15 @@
     <div class="watermark">OHT</div>
 
     <div class="letterhead">
-      <h1>OM HARI TRADELINK</h1>
+      <h1>{{ $isShopCustomer ? $memoType : 'OM HARI TRADELINK' }}</h1>
     </div>
 
-    <div class="address-info">
-      <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
-      <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
-    </div>
+    @unless($isShopCustomer)
+      <div class="address-info">
+        <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
+        <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
+      </div>
+    @endunless
 
     <div class="invoice-info clearfix">
       <div class="firstdiv">
@@ -143,7 +150,7 @@
 
       <div class="forbillandpan">
         <div class="invoice-no">INVOICE NO: <span class="num">{{ $invoiceid }}</span></div>
-        @if ($invoice && $invoice->total < 19900)
+        @if (!$isShopCustomer && $invoice && $invoice->total < 19900)
           <div class="pan-line">PAN No. 608641838</div>
         @endif
       </div>
