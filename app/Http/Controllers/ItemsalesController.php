@@ -278,16 +278,21 @@ class ItemsalesController extends Controller
     return redirect('/login');
  }
 
- private function oldPriceRows($customerId, $terms, bool $excludeCustomer = false)
+ private function oldPriceRows($customerId, $terms, bool $excludeCustomer = false, ?string $peerCustomerType = 'customer')
  {
      return salesitem::query()
          ->from('salesitems as s')
          ->leftJoin('items as it', 'it.id', '=', 's.itemid')
          ->leftJoin('invoices as inv', 'inv.id', '=', 's.invoiceid')
          ->leftJoin('customerinfos as cus', 'cus.id', '=', 'inv.customerid')
-         ->when($excludeCustomer, function ($query) use ($customerId) {
-             $query->where('inv.customerid', '!=', $customerId)
-                 ->whereRaw('LOWER(COALESCE(cus.type, "")) = ?', ['shop']);
+         ->when($excludeCustomer, function ($query) use ($customerId, $peerCustomerType) {
+             $query->where('inv.customerid', '!=', $customerId);
+
+             if ($peerCustomerType === null) {
+                 $query->whereRaw('LOWER(COALESCE(cus.type, "")) != ?', ['shop']);
+             } else {
+                 $query->whereRaw('LOWER(COALESCE(cus.type, "")) = ?', [$peerCustomerType]);
+             }
          }, function ($query) use ($customerId) {
              $query->where('inv.customerid', $customerId);
          })
@@ -343,6 +348,7 @@ class ItemsalesController extends Controller
      $customerId = $req->query('customerid');
      $customerName = trim($req->query('customer_name', ''));
      $search = trim($req->query('search', ''));
+     $includePeerCustomers = $req->boolean('include_peer_customers');
 
      if (empty($customerId) && $customerName !== '') {
          $customerId = customerinfo::where('name', 'like', '%' . $customerName . '%')->value('id');
@@ -361,15 +367,24 @@ class ItemsalesController extends Controller
          'same_customer'
      );
 
-     if ($results->isEmpty()) {
-         $customerType = customerinfo::where('id', $customerId)->value('type');
+     $customerType = customerinfo::where('id', $customerId)->value('type');
 
-         if (strtolower((string) $customerType) === 'shop') {
-             $results = $this->formatOldPriceRows(
-                 $this->oldPriceRows($customerId, $terms, true),
+     $customerType = strtolower((string) $customerType);
+
+     if ($results->isEmpty() && $customerType === 'shop') {
+         $results = $this->formatOldPriceRows(
+             $this->oldPriceRows($customerId, $terms, true, 'shop'),
+             'other_customer'
+         );
+     }
+
+     if ($includePeerCustomers && $customerType !== 'shop') {
+         $peerResults = $this->formatOldPriceRows(
+                 $this->oldPriceRows($customerId, $terms, true, null),
                  'other_customer'
-             );
-         }
+         );
+
+         $results = $results->concat($peerResults)->take(12)->values();
      }
 
      return response()->json($results);

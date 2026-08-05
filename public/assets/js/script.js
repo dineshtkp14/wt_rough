@@ -19,6 +19,7 @@ let productSearchQuery = "";
 let customerCardAutoHideTimer = null;
 let selectedCustomerCreditLimitDays = null;
 let selectedCustomerDefaultCreditLimitDays = null;
+let selectedCustomerType = "";
 
 let currentLink = null;
 let currentIndex = null;
@@ -216,6 +217,7 @@ function selectCustomerForInvoice(data) {
     $("#selectedCustomerPhone").text(phoneText || "-");
     $("#selectedCustomerInline").slideDown(150);
     finalData[0]["customer"] = `${data.id || ""}`;
+    selectedCustomerType = `${data.type || ""}`.toLowerCase();
     selectedCustomerCreditLimitDays = parseInt(data.credit_limit_days, 10) > 0
         ? parseInt(data.credit_limit_days, 10)
         : null;
@@ -234,6 +236,9 @@ function selectCustomerForInvoice(data) {
     $("#searchCustomerInput").val(data.name || "");
     $("#customerIdInput").val(data.id || "");
     $("#customerResultWrapper").slideUp();
+    $("#peerPriceToggle").prop("checked", false);
+    $("#peerPriceToggleText").text("Suggest Me Price");
+    $("#peerPriceToggleBox").toggle(selectedCustomerType !== "shop");
     $(document).trigger("customer:selected", [data]);
     updateInvoiceStepVisibility();
 }
@@ -260,12 +265,16 @@ $("#searchCustomerInput").on("keyup", function (e) {
 
     $("#customerCard").hide();
     finalData[0]["customer"] = "";
+    selectedCustomerType = "";
     selectedCustomerCreditLimitDays = null;
     selectedCustomerDefaultCreditLimitDays = null;
     $("#customerIdInput").val("");
     $("#selectedCustomerInline").slideUp(100);
     $("#selectedCustomerAddress").text("-");
     $("#selectedCustomerPhone").text("-");
+    $("#peerPriceToggle").prop("checked", false);
+    $("#peerPriceToggleText").text("Suggest Me Price");
+    $("#peerPriceToggleBox").hide();
     updateInvoiceStepVisibility();
     const apiKey = $(this).data("api");
 
@@ -746,6 +755,7 @@ function handleOldPriceSearch() {
                         customerid: customerId,
                         customer_name: customerName,
                         search: search,
+                        include_peer_customers: $("#peerPriceToggle").is(":checked") ? 1 : 0,
                     },
                     success: function (response) {
                         resultBox.empty();
@@ -1111,6 +1121,11 @@ $(window).on("load", function () {
     $("#quickCustomerType").on("change", updateQuickCustomerVatNoVisibility);
     $("#quickCustomerModal").on("shown.bs.modal hidden.bs.modal", updateQuickCustomerVatNoVisibility);
     updateQuickCustomerVatNoVisibility();
+
+    $("#peerPriceToggle").on("change", function () {
+        hideOldPriceBoxes();
+        $(".old-price-input:focus").trigger("input");
+    });
 
     $("#addRowBtn").on("click", function (e) {
         e.preventDefault();

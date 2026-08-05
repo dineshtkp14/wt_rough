@@ -63,14 +63,20 @@
                 <div class="invoice-top-controls">
                     
                     <div class="invoice-control customer-control">
-                        <label class="invoice-field-label" for="searchCustomerInput">Customer</label>
+                        <div class="selected-customer-inline" id="selectedCustomerInline" style="display: none;">
+                            <span>Address:</span> <strong id="selectedCustomerAddress">-</strong>
+                            <span class="selected-customer-separator">Contact No:</span> <strong id="selectedCustomerPhone">-</strong>
+                        </div>
                         <div class="search-box">
                             <input type="text" class="search-input" placeholder="Search Customer"
                                 id="searchCustomerInput" data-api="customer_search" autocomplete="off">
                             <i class="fas fa-search search-icon"> </i>
-                            <div class="selected-customer-inline" id="selectedCustomerInline" style="display: none;">
-                                <span>Address:</span> <strong id="selectedCustomerAddress">-</strong>
-                                <span class="selected-customer-separator">Contact No:</span> <strong id="selectedCustomerPhone">-</strong>
+                            <div class="peer-price-toggle" id="peerPriceToggleBox" style="display: none;">
+                                <input class="peer-price-toggle-input" type="checkbox" id="peerPriceToggle">
+                                <label class="peer-price-toggle-label" for="peerPriceToggle">
+                                    <span class="peer-price-toggle-switch"></span>
+                                    <span id="peerPriceToggleText">Suggest Me Price</span>
+                                </label>
                             </div>
                             <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
                                 <div class="result-box d-flex justify-content-start align-items-center"
@@ -742,6 +748,67 @@ $(document).ready(function () {
             font-weight: 800;
             margin-top: 5px;
             padding: 0 !important;
+        }
+
+        .peer-price-toggle {
+            margin-top: 8px;
+        }
+
+        .peer-price-toggle-input {
+            display: none;
+        }
+
+        .peer-price-toggle-label {
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 999px;
+            color: #475569;
+            cursor: pointer;
+            display: inline-flex;
+            font-size: 12px;
+            font-weight: 900;
+            gap: 7px;
+            line-height: 1;
+            margin: 0;
+            padding: 5px 9px 5px 5px;
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        .peer-price-toggle-switch {
+            background: #94a3b8;
+            border-radius: 999px;
+            display: inline-block;
+            height: 16px;
+            position: relative;
+            width: 30px;
+        }
+
+        .peer-price-toggle-switch::after {
+            background: #ffffff;
+            border-radius: 50%;
+            content: "";
+            height: 12px;
+            left: 2px;
+            position: absolute;
+            top: 2px;
+            transition: transform .15s ease;
+            width: 12px;
+        }
+
+        .peer-price-toggle-input:checked + .peer-price-toggle-label {
+            background: #ecfeff;
+            border-color: #67e8f9;
+            color: #155e75;
+        }
+
+        .peer-price-toggle-input:checked + .peer-price-toggle-label .peer-price-toggle-switch {
+            background: #0891b2;
+        }
+
+        .peer-price-toggle-input:checked + .peer-price-toggle-label .peer-price-toggle-switch::after {
+            transform: translateX(14px);
         }
 
         .invoice-control .search-input,
