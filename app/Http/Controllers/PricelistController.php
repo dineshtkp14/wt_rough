@@ -48,6 +48,7 @@ class PricelistController extends Controller
 
         'items' => 'required|array|min:1|max:12',
         'items.*.itemname' => 'required|string|max:255',
+        'items.*.unit' => 'required|string|in:pcs,kg,feet,mtr',
         'items.*.costprice' => 'required|numeric',
         'items.*.saleprice' => 'required|numeric',
         'items.*.wholesaleprice' => 'nullable|numeric',
@@ -59,6 +60,7 @@ class PricelistController extends Controller
         foreach ($req->items as $item) {
             $pricelistobj=new pricelist();
             $pricelistobj->itemname=$item['itemname'];
+            $pricelistobj->unit=$item['unit'];
             $pricelistobj->costprice=$item['costprice'];
             $pricelistobj->saleprice=$item['saleprice'];
             $pricelistobj->wholesaleprice=$item['wholesaleprice'] ?? 0;
@@ -98,9 +100,10 @@ class PricelistController extends Controller
         $validator=Validator::make($req->all(),[
 
             'itemname'=>'required',
+        'unit'=>'required|string|in:pcs,kg,feet,mtr',
         'costprice'=>'required|numeric', 
         'saleprice'=>'required|numeric', 
-        'wholesaleprice'=>'numeric', 
+        'wholesaleprice'=>'nullable|numeric', 
            
                
         ]);
@@ -110,9 +113,10 @@ class PricelistController extends Controller
           
         $pricelistobj= pricelist::find($id);
         $pricelistobj->itemname=$req->itemname;
+        $pricelistobj->unit=$req->unit;
         $pricelistobj->costprice=$req->costprice;
         $pricelistobj->saleprice=$req->saleprice;
-        $pricelistobj->wholesaleprice=$req->wholesaleprice;
+        $pricelistobj->wholesaleprice=$req->wholesaleprice ?? 0;
         $pricelistobj->note=$req->note;  
         $pricelistobj->added_by = session('user_email');
      

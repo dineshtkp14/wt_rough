@@ -1,18 +1,27 @@
-<div class="container">
+<div class="container price-list-container">
   
-    <div class="card text-center">
-        <div class="card-header">
-           <span class="float-start fw-bold fs-3"><a href="{{route('pricelists.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a> </span>
-
-             <input type="text" class="form-control float-end  border-warning border border-5" placeholder="Search Items Name , ID" style="width: 250px;" wire:model="searchTerm" >
+    <div class="card text-center price-list-card">
+        <div class="price-list-toolbar">
+            <div class="price-list-heading">
+                <span class="price-list-heading-icon"><i class="fa-solid fa-tags"></i></span>
+                <div><small>Inventory pricing</small><strong>Items Price List</strong></div>
+            </div>
+            <div class="price-list-toolbar-right">
+                <div class="price-list-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="price-list-search" placeholder="Search item name or ID" wire:model="searchTerm">
+                </div>
+                <a href="{{ route('pricelists.create') }}" class="price-list-add-btn"><i class="fa-solid fa-plus"></i> Add Price</a>
+            </div>
         </div>
-        <div class="card-body">
-            <table>
+        <div class="price-list-table-wrap">
+            <table class="price-list-table">
                 <thead>
                     <tr>
                         <th>Id</th>
                         <th>Items Name</th>
-                        <th>Sale Price</th>
+                        <th>Unit</th>
+                        <th>MRP</th>
                         <th>Note</th>
                         <th>Date</th>
                         <th>More</th>
@@ -28,10 +37,11 @@
                     <tr>
                         <td data-label="Id">{{$i->id}}</td>
                         <td data-label="Name">{{ $i->itemname }}</td>
+                        <td data-label="Unit">{{ $i->unit ?: '-' }}</td>
                         <td data-label="Address">{{ $i->saleprice}}</td>
                         <td data-label="Contact No.">{{ $i->note }}</td>
                         <td data-label="Amount">{{ $i->created_at }}</td>
-                        <td data-label="Amount">
+                        <td data-label="More">
                             <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{$i->id}}">
                 View  More
@@ -48,6 +58,7 @@
                     </div>
                     <div class="modal-body">
                      <h2>Cost Price: {{$i->costprice}}  /-<br></h2>
+                    <h2> Unit: {{ $i->unit ?: '-' }}</h2>
                     <h2> WholeSale Price: {{$i->wholesaleprice}}  /-</h2>
                     
                     </div>
@@ -62,8 +73,8 @@
                         
                        
                        
-                        <td>
-                        <a href="{{Route('pricelists.edit',$i->id)}}" class="btn "  rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
+                        <td><div class="price-list-action-cell">
+                        <a href="{{Route('pricelists.edit',$i->id)}}" class="btn btn-info"  rel="noopener noreferrer">EDIT</a>
             
                      
             <a href="#" onclick="delfunctionusers({{$i->id}})" class="btn btn-danger"  rel="noopener noreferrer">Delete</a>
@@ -72,19 +83,19 @@
             @method('delete')
             
             </form>
-                        </td>
+                        </div></td>
                         
                     </tr>
                     @endforeach
                     
                 @else
-                 <h5>No Record Found !!</h5>
+                 <tr><td colspan="8" class="price-list-empty">No price-list records found.</td></tr>
                     
                  @endif
                 </tbody>
             </table>
         </div>
-        <div class="card-footer text-muted">
+        <div class="price-list-footer text-muted">
             {{ $pricelist->links() }}
         
         </div>

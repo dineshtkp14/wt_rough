@@ -1,23 +1,29 @@
 @php($showActions = $showActions ?? false)
+@php($displayFirmName = $firmType === 'Malika & Nav Durga Traders' ? 'MALIKA AND NAWADURGA TRADERS' : strtoupper(str_replace('&', 'AND', $firmType)))
+@php($monogram = $firmType === 'Malika & Nav Durga Traders' ? 'MN' : 'DD')
 <div class="party-ledger">
     <div class="ledger-header">
-        <div class="firm-monogram">{{ $firmType === 'Malika & Nav Durga Traders' ? 'MN' : 'DD' }}</div>
+        <div class="firm-monogram">{{ $monogram }}</div>
         <div class="firm-heading">
-            <h1>{{ $firmType === 'Malika & Nav Durga Traders' ? 'MALIKA AND NAWADURGA TRADERS' : strtoupper(str_replace('&', 'AND', $firmType)) }}</h1>
+            <h1>{{ $displayFirmName }}</h1>
             <div class="heading-line"></div>
-            <div class="firm-address"><i class="fa-solid fa-location-dot"></i> Tikapur, Kailali</div>
-            <div class="firm-vat-number">VAT No: {{ $firmVatNo }}</div>
-            <div class="firm-contact-number">Contact No: {{ $firmContactNumbers }}</div>
+            <div class="firm-details">
+                <div>Tikapur, Kailali</div>
+                <div>VAT No: {{ $firmVatNo }}</div>
+                <div>Contact No: {{ $firmContactNumbers }}</div>
+            </div>
             <div class="ledger-title">PARTY LEDGER</div>
         </div>
     </div>
 
     <div class="party-meta">
         <div class="party-identity">
-            <span><strong>Party Name:</strong> {{ $customer->name }}{{ $customer->address ? '-' . $customer->address : '' }}</span>
+            <span><strong>Party Name:</strong> {{ $customer->name }}{{ $customer->address ? ' - ' . $customer->address : '' }}</span>
             <span><strong>Party VAT No:</strong> {{ $partyVatNo }}</span>
         </div>
-        <div class="party-currency"><strong>Currency</strong><span>:</span>NPR</div>
+        <div class="party-currency">
+            <strong>Currency</strong><span>:</span><span>NPR</span>
+        </div>
     </div>
 
     <table class="ledger-table">
@@ -83,9 +89,30 @@
 </div>
 
 <style>
-.party-ledger{background:#fff;border:1px solid #b8cee8;border-radius:8px;color:#102b50;overflow:hidden;padding:0 18px 18px}.ledger-header{align-items:center;border-bottom:2px solid #0b4b91;display:flex;gap:24px;justify-content:center;padding:14px 30px 9px}.firm-monogram{align-items:center;border:4px solid #0b4b91;border-radius:50%;color:#0b4b91;display:flex;font-size:29px;font-weight:900;height:88px;justify-content:center;letter-spacing:-4px;width:88px}.firm-heading{flex:1;max-width:780px;text-align:center}.firm-heading h1{color:#0b376d;font-family:Georgia,serif;font-size:34px;font-weight:900;margin:0}.heading-line{border-top:3px solid #0b4b91;margin:7px auto 5px;max-width:520px;position:relative}.firm-address{font-size:18px;font-weight:800}.firm-vat-number,.firm-contact-number{color:#0b376d;font-size:15px;font-weight:900;margin-top:2px}.ledger-title{background:#0b4b91;border-radius:6px;color:#fff;display:inline-block;font-size:20px;font-weight:900;letter-spacing:1px;margin-top:8px;padding:5px 55px}.party-meta{align-items:center;display:flex;font-size:15px;justify-content:space-between;padding:12px 32px 8px}.party-meta .party-identity{display:flex;flex-wrap:wrap;gap:8px 28px}.party-meta .party-currency{display:flex;gap:15px;white-space:nowrap}
-.party-ledger .ledger-table{border-collapse:separate!important;border-spacing:0!important;display:table!important;font-size:15px;margin:0!important;min-width:900px;table-layout:fixed!important;width:100%!important}.party-ledger .ledger-table thead{display:table-header-group!important;width:auto!important}.party-ledger .ledger-table tbody{display:table-row-group!important;width:auto!important}.party-ledger .ledger-table tfoot{display:table-footer-group!important;width:auto!important}.party-ledger .ledger-table tr{display:table-row!important;width:auto!important}.party-ledger .ledger-table th,.party-ledger .ledger-table td{border-bottom:1px solid #b8cee8!important;border-left:0!important;border-right:1px solid #b8cee8!important;padding:10px 12px;text-align:center;vertical-align:middle;white-space:normal}.party-ledger .ledger-table th:first-child,.party-ledger .ledger-table td:first-child{border-left:1px solid #b8cee8!important}.party-ledger .ledger-table thead th,.party-ledger .ledger-table tfoot th{background:#073e7c!important;color:#fff;font-weight:900;position:static;text-align:center}.party-ledger .ledger-table thead th:first-child{border-top-left-radius:6px}.party-ledger .ledger-table thead th:last-child{border-top-right-radius:6px}.party-ledger .ledger-table tbody tr:nth-child(even){background:#f0f5fa}.party-ledger .ledger-table .amount{text-align:right}.party-ledger .ledger-table .empty-row{padding:28px;text-align:center}.party-ledger .ledger-table tfoot th{font-size:16px}
+@page{size:A4 landscape;margin:9mm}
+body{background:#fff;margin:0}
+.party-ledger{background:#fff;border:1px solid #b8cee8;border-radius:7px;color:#001f4d;font-family:Georgia,"Times New Roman",serif;overflow:hidden;padding:20px 20px 20px}
+.ledger-header{border-bottom:2px solid #0b4b91;min-height:176px;padding:0 0 10px;position:relative;text-align:center}
+.firm-monogram{align-items:center;border:4px solid #0b4b91;border-radius:50%;color:#0b4b91;display:flex;font-size:28px;font-weight:900;height:98px;justify-content:center;left:100px;position:absolute;top:28px;width:98px}
+.firm-heading{margin:0 auto;max-width:820px;text-align:center}
+.firm-heading h1{color:#073e7c;font-size:38px;font-weight:900;letter-spacing:.3px;line-height:1.1;margin:0}
+.heading-line{border-top:3px solid #0b4b91;margin:8px auto 8px;max-width:585px}
+.firm-details{color:#001f4d;font-size:17px;font-weight:900;line-height:1.35}
+.ledger-title{background:#0b4b91;border-radius:6px;color:#fff;display:inline-block;font-size:22px;font-weight:900;letter-spacing:1px;margin-top:10px;padding:6px 62px;text-align:center}
+.party-meta{align-items:center;display:flex;font-size:18px;font-weight:900;justify-content:space-between;padding:13px 34px 9px}
+.party-identity{display:flex;gap:28px;min-width:0}
+.party-currency{display:flex;gap:14px;white-space:nowrap}
+.party-meta strong,.party-meta span{font-weight:900}
+.party-ledger .ledger-table{border-collapse:collapse!important;display:table!important;font-size:15px;margin:0!important;table-layout:fixed!important;width:100%!important}
+.party-ledger .ledger-table thead{display:table-header-group!important}.party-ledger .ledger-table tbody{display:table-row-group!important}.party-ledger .ledger-table tfoot{display:table-footer-group!important}.party-ledger .ledger-table tr{display:table-row!important}
+.party-ledger .ledger-table th,.party-ledger .ledger-table td{border:1px solid #b8cee8!important;padding:11px 12px;text-align:center;vertical-align:middle;white-space:normal}
+.party-ledger .ledger-table thead th{background:#073e7c!important;color:#fff;font-size:16px;font-weight:900}
+.party-ledger .ledger-table tbody tr:nth-child(even){background:#eef4fb}
+.party-ledger .ledger-table tbody td{color:#001f4d}
+.party-ledger .ledger-table .amount{text-align:right}
+.party-ledger .ledger-table .empty-row{padding:24px;text-align:center}
+.party-ledger .ledger-table tfoot th{background:#073e7c!important;color:#fff;font-size:17px;font-weight:900;padding:12px}
 .party-ledger .ledger-actions{white-space:nowrap}.party-ledger .ledger-actions form{display:inline}.party-ledger .ledger-edit-btn,.party-ledger .ledger-delete-btn{border:0;border-radius:5px;color:#fff!important;display:inline-block;font-size:11px;font-weight:900;margin:2px;padding:6px 7px;text-decoration:none}.party-ledger .ledger-edit-btn{background:#d97706}.party-ledger .ledger-delete-btn{background:#dc2626;cursor:pointer}
-@media(max-width:800px){.ledger-header{padding-left:5px;padding-right:5px}.firm-monogram{display:none}.firm-heading h1{font-size:23px}.party-ledger{overflow-x:auto;padding:0 5px 10px}.party-meta{align-items:flex-start;flex-direction:column;gap:6px;padding-left:5px}.party-ledger .ledger-table{min-width:800px}}
-@media print{.party-ledger{border:0;padding:0}.firm-heading h1{font-size:28px}.party-ledger .ledger-table{min-width:0}.party-ledger .ledger-table th,.party-ledger .ledger-table td{padding:8px}}
+@media(max-width:800px){.firm-monogram{display:none}.firm-heading h1{font-size:23px}.ledger-header{min-height:0}.party-ledger{overflow-x:auto;padding:10px}.party-meta{align-items:flex-start;flex-direction:column;gap:6px;padding-left:5px}.party-identity{display:block}.party-ledger .ledger-table{min-width:760px}}
+@media print{.party-ledger{padding:0}.firm-heading h1{font-size:34px}.party-ledger .ledger-table th,.party-ledger .ledger-table td{padding:9px 10px}}
 </style>

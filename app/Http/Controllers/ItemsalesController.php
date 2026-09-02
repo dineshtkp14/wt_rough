@@ -182,6 +182,12 @@ class ItemsalesController extends Controller
             }
 
             $data->price = $value->price;
+            $data->list_price = property_exists($value, 'list_price') && $value->list_price !== ''
+                ? $value->list_price
+                : null;
+            $data->discount_percent = property_exists($value, 'discount_percent') && $value->discount_percent !== ''
+                ? $value->discount_percent
+                : null;
             // $data->discount = $value->discount == "" ? 0.00 : $value->discount;
             $data->subtotal = $value->subtotal;
             $data->added_by = session('user_email');

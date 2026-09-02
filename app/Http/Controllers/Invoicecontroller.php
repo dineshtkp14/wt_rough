@@ -143,6 +143,8 @@ class Invoicecontroller extends Controller
             'quantity' => (string) $row->quantity,
             'unit' => $row->unit ?? '',
             'price' => (string) $row->price,
+            'list_price' => $row->list_price !== null ? (string) $row->list_price : '',
+            'discount_percent' => $row->discount_percent !== null ? (string) $row->discount_percent : '',
             'subtotal' => (string) $row->subtotal,
             'max_quantity' => $itemInfo ? ((float) $itemInfo->quantity + $currentQuantity) : null,
         ];
@@ -257,6 +259,12 @@ public function update($id, Request $req)
                     $data->quantity = $value->quantity;
                     $data->unit = $value->unit;
                     $data->price = $value->price;
+                    $data->list_price = property_exists($value, 'list_price') && $value->list_price !== ''
+                        ? $value->list_price
+                        : null;
+                    $data->discount_percent = property_exists($value, 'discount_percent') && $value->discount_percent !== ''
+                        ? $value->discount_percent
+                        : null;
                     $data->subtotal = $value->subtotal;
                     $data->added_by = session('user_email');
                     $data->save();

@@ -289,7 +289,7 @@
                         <td>{{$i->itemid}}</td>
                         
 
-                        <td>{{$i->mrp}}</td>
+                        <td>{{ $i->list_price ?? $i->mrp ?? '-' }}</td>
                         <td>{{$i->quantity}}</td>
                         <td>{{$i->unit}}</td>
                         <td>{{$i->price}}</td>

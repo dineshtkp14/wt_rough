@@ -20,6 +20,7 @@
         @php
             $oldPriceItems = old('items', [[
                 'itemname' => '',
+                'unit' => '',
                 'costprice' => '',
                 'saleprice' => '',
                 'wholesaleprice' => '',
@@ -43,6 +44,7 @@
                         <colgroup>
                             <col style="width: 72px;">
                             <col>
+                            <col style="width: 140px;">
                             <col style="width: 170px;">
                             <col style="width: 170px;">
                             <col style="width: 190px;">
@@ -59,8 +61,14 @@
                                     </div>
                                 </th>
                                 <th>Item Name</th>
+                                <th>
+                                    <div class="price-unit-head">
+                                        <span>Unit</span>
+                                        <button type="button" class="price-default-unit-btn" id="defaultPriceListUnitBtn" title="Set blank rows to pcs">pcs</button>
+                                    </div>
+                                </th>
                                 <th>Cost Price</th>
-                                <th>Sale Price</th>
+                                <th>MRP</th>
                                 <th>Wholesale Price</th>
                                 <th>Note</th>
                             </tr>
@@ -108,6 +116,7 @@
             row.innerHTML = [
                 '<td><span class="price-row-number"></span><button type="button" class="price-remove-btn" title="Remove row"><i class="fa-solid fa-trash"></i></button></td>',
                 '<td><input type="text" class="form-control" data-field="itemname" required autocomplete="off"></td>',
+                '<td><select class="form-select" data-field="unit" required><option value="">select</option><option value="pcs">pcs</option><option value="kg">kg</option><option value="feet">feet</option><option value="mtr">mtr</option></select></td>',
                 '<td><input type="number" step="0.01" min="0" class="form-control" data-field="costprice" required></td>',
                 '<td><input type="number" step="0.01" min="0" class="form-control" data-field="saleprice" required></td>',
                 '<td><input type="number" step="0.01" min="0" class="form-control" data-field="wholesaleprice"></td>',
@@ -126,6 +135,14 @@
 
         addBtn.addEventListener('click', function () {
             addRow({});
+        });
+
+        document.getElementById('defaultPriceListUnitBtn').addEventListener('click', function () {
+            tbody.querySelectorAll('[data-field="unit"]').forEach(function (unitSelect) {
+                if (!unitSelect.value) {
+                    unitSelect.value = 'pcs';
+                }
+            });
         });
 
         tbody.addEventListener('click', function (event) {
@@ -240,6 +257,28 @@
         height: 42px;
         width: 44px;
         font-size: 18px;
+    }
+
+    .price-unit-head {
+        align-items: center;
+        display: inline-flex;
+        gap: 6px;
+    }
+
+    .price-default-unit-btn {
+        background: #0891b2;
+        border: 0;
+        border-radius: 6px;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 900;
+        line-height: 1;
+        padding: 5px 8px;
+        text-transform: uppercase;
+    }
+
+    .price-default-unit-btn:hover {
+        background: #0e7490;
     }
 
     .price-create-page table.price-entry-table thead {

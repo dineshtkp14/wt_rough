@@ -45,6 +45,11 @@
         <div class="container-fluid invoice-create-page">
 
         <div class="invoice-quick-actions">
+            <button type="button" class="percent-system-toggle" id="percentSystemToggle" aria-pressed="false">
+                <i class="fa-solid fa-percent"></i>
+                <span>% System</span>
+                <strong>OFF</strong>
+            </button>
             <button type="button" class="btn btn-primary m" data-bs-toggle="modal" data-bs-target="#quickCustomerModal">
                 <i class="fa-solid fa-plus"></i> Add New Customer
             </button>
@@ -114,7 +119,7 @@
                     </div>
 
                     
-                    <div class="invoice-control date-control invoice-step-after-customer">
+                    <div class="invoice-control date-control">
                         <label class="invoice-field-label" for="salesDate">Date</label>
                         <div class="input-group mb-1">
                             <span class="input-group-text">Date:</span>
@@ -147,7 +152,19 @@
                                 <th>Item</th>
                                 <th class="unstockedth">Unstocked Item</th>
                                 <th>Quantity</th>
-                                <th>Unit (pcs/kg) </th>
+                                <th>
+                                    <div class="unit-header-control">
+                                        <span>Unit (pcs/kg)</span>
+                                        <button type="button" class="default-unit-btn" id="defaultPcsUnitBtn">pcs</button>
+                                    </div>
+                                </th>
+                                <th class="percent-system-col">MRP</th>
+                                <th class="percent-system-col">
+                                    <div class="discount-header-control">
+                                        <span>Discount %</span>
+                                        <button type="button" class="default-discount-btn" id="applyBulkDiscountBtn" title="Set discount for all rows">Set %</button>
+                                    </div>
+                                </th>
                                 <th>Price</th>
                                 <th>Subtotal</th>
                             </tr>
@@ -668,6 +685,174 @@ $(document).ready(function () {
             padding: 8px 10px;
         }
 
+        .price-list-result-box {
+            align-items: center;
+            background: #050505;
+            border: 1px solid #27272a;
+            border-left: 5px solid #22c55e;
+            border-radius: 8px;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, .08);
+            display: grid;
+            gap: 12px;
+            grid-template-columns: 42px minmax(0, 1fr);
+            margin: 8px 0;
+            padding: 12px;
+            transition: background .15s ease, border-color .15s ease, transform .15s ease;
+        }
+
+        .price-list-result-box:hover {
+            background: #111827;
+            border-color: #22c55e;
+            transform: translateY(-1px);
+        }
+
+        .price-list-result-icon {
+            align-items: center;
+            background: #22c55e;
+            border-radius: 8px;
+            color: #052e16;
+            display: flex;
+            font-size: 18px;
+            height: 42px;
+            justify-content: center;
+            width: 42px;
+        }
+
+        .price-list-result-main {
+            min-width: 0;
+        }
+
+        .price-list-result-top {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-bottom: 5px;
+        }
+
+        .price-list-result-badge {
+            background: #22c55e;
+            border: 1px solid #86efac;
+            border-radius: 999px;
+            color: #052e16;
+            font-size: 11px;
+            font-weight: 900;
+            line-height: 1;
+            padding: 5px 8px;
+            text-transform: uppercase;
+        }
+
+        .price-list-result-top strong {
+            color: #d1d5db;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .price-list-result-box h1 {
+            color: #ffffff;
+            font-size: 17px !important;
+            font-weight: 900;
+            line-height: 1.15;
+            margin: 0 0 6px !important;
+            overflow-wrap: anywhere;
+        }
+
+        .price-list-result-meta {
+            align-items: center;
+            color: #e5e7eb;
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 13px;
+            font-weight: 800;
+            gap: 8px;
+        }
+
+        .price-list-result-sale {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .stock-result-box {
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #dbe3ef;
+            border-left: 5px solid #2563eb;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, .07);
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 46px minmax(0, 1fr) 24px;
+            margin: 8px 0;
+            padding: 11px 12px;
+            transition: background .15s ease, border-color .15s ease, transform .15s ease;
+        }
+
+        .stock-result-box:hover {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            transform: translateY(-1px);
+        }
+
+        .stock-result-id {
+            align-items: center;
+            background: #dbeafe;
+            border-radius: 8px;
+            color: #1d4ed8;
+            display: flex;
+            font-size: 14px;
+            font-weight: 900;
+            height: 40px;
+            justify-content: center;
+            width: 46px;
+        }
+
+        .stock-result-main {
+            min-width: 0;
+        }
+
+        .stock-result-box h1 {
+            color: #111827;
+            font-size: 16px !important;
+            font-weight: 900;
+            line-height: 1.18;
+            margin: 0 0 7px !important;
+            overflow-wrap: anywhere;
+        }
+
+        .stock-result-meta {
+            align-items: center;
+            color: #475569;
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 12px;
+            font-weight: 800;
+            gap: 7px;
+        }
+
+        .stock-result-meta span {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 999px;
+            line-height: 1;
+            padding: 5px 8px;
+        }
+
+        .stock-result-qty {
+            background: #fee2e2 !important;
+            border-color: #fecaca !important;
+            color: #b91c1c;
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .stock-result-action {
+            color: #94a3b8;
+            font-size: 15px;
+            text-align: center;
+        }
+
         .invoice-action-btn {
             align-items: center;
             display: inline-flex;
@@ -712,6 +897,41 @@ $(document).ready(function () {
             gap: 7px;
             min-height: 42px;
             white-space: nowrap;
+        }
+
+        .percent-system-toggle {
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            color: #334155;
+            display: inline-flex;
+            font-size: 15px;
+            font-weight: 900;
+            gap: 8px;
+            min-height: 42px;
+            padding: 0 13px;
+            white-space: nowrap;
+        }
+
+        .percent-system-toggle strong {
+            background: #e2e8f0;
+            border-radius: 6px;
+            color: #475569;
+            font-size: 12px;
+            line-height: 1;
+            padding: 5px 7px;
+        }
+
+        .percent-system-toggle.is-on {
+            background: #0f766e;
+            border-color: #0f766e;
+            color: #ffffff;
+        }
+
+        .percent-system-toggle.is-on strong {
+            background: #ccfbf1;
+            color: #115e59;
         }
 
         .invoice-top-controls {
@@ -820,6 +1040,65 @@ $(document).ready(function () {
             font-weight: 700;
         }
 
+        .unit-header-control {
+            align-items: center;
+            display: inline-flex;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .discount-header-control {
+            align-items: center;
+            display: inline-flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .default-unit-btn {
+            background: #0891b2;
+            border: 0;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 900;
+            line-height: 1;
+            padding: 5px 8px;
+            text-transform: uppercase;
+        }
+
+        .default-unit-btn:hover {
+            background: #0e7490;
+        }
+
+        .default-discount-btn {
+            background: #0891b2;
+            border: 0;
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 900;
+            line-height: 1;
+            padding: 5px 5px;
+        }
+
+        .default-discount-btn:hover {
+            background: #0e7490;
+        }
+
+        .row-discount-reset-btn {
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-size: 11px;
+            font-weight: 900;
+            line-height: 1;
+            padding: 0 6px;
+        }
+
+        .row-discount-reset-btn:hover {
+            background: #cbd5e1;
+        }
+
         .invoice-table-shell {
             background: #ffffff;
             border: 1px solid #d5deea;
@@ -845,6 +1124,19 @@ $(document).ready(function () {
             width: 100%;
             margin: 0;
             table-layout: auto;
+        }
+
+        /* Keep the invoice rows tied to the full table width. The shared
+         * stylesheet makes tbody a block, which leaves an empty strip after
+         * the last cell when the table is wider than its content. */
+        .invoice-create-page .invoicetable tbody {
+            display: table-row-group;
+            width: auto;
+        }
+
+        .invoice-create-page .invoicetable tbody tr {
+            display: table-row;
+            width: auto;
         }
 
         .invoicetable th,
@@ -898,14 +1190,50 @@ $(document).ready(function () {
 
         .invoice-create-page .invoicetable th:nth-child(7),
         .invoice-create-page .invoicetable td:nth-child(7) {
-            min-width: 260px;
-            width: 260px;
+            min-width: 180px;
+            width: 180px;
         }
 
         .invoice-create-page .invoicetable th:nth-child(8),
         .invoice-create-page .invoicetable td:nth-child(8) {
-            min-width: 210px;
-            width: 210px;
+            min-width: 150px;
+            width: 150px;
+        }
+
+        .invoice-create-page .invoicetable th:nth-child(9),
+        .invoice-create-page .invoicetable td:nth-child(9) {
+            min-width: 190px;
+            width: 190px;
+        }
+
+        .invoice-create-page .invoicetable th:nth-child(10),
+        .invoice-create-page .invoicetable td:nth-child(10) {
+            min-width: 180px;
+            width: 180px;
+        }
+
+        .invoice-create-page .invoicetable #priceInput,
+        .invoice-create-page .invoicetable #subTotalInput {
+            min-width: 0;
+            width: 100%;
+        }
+
+        .percent-system-col {
+            display: none;
+        }
+
+        .percent-system-on .percent-system-col {
+            display: table-cell;
+        }
+
+        .percent-list-price-input,
+        .percent-discount-input {
+            min-width: 110px;
+            text-align: right;
+        }
+
+        .percent-system-on .price-cell #priceInput {
+            background: #f8fafc;
         }
 
         .invoicetable .form-control,
@@ -1060,7 +1388,7 @@ $(document).ready(function () {
             align-items: start;
             display: grid;
             gap: 18px;
-            grid-template-columns: minmax(0, 1fr) minmax(340px, 390px);
+            grid-template-columns: minmax(0, 1fr) minmax(320px, 350px);
             margin: 22px 0 24px;
         }
 

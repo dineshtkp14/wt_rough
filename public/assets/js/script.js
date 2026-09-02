@@ -26,6 +26,7 @@ let currentIndex = null;
 let currentID = null;
 
 let counter = 0;
+let percentSystemEnabled = false;
 let salesData = [];
 let finalData = [
     {
@@ -138,7 +139,6 @@ function updateInvoiceStepVisibility() {
         selectedCustomerCreditLimitDays = null;
         selectedCustomerDefaultCreditLimitDays = null;
         $("#invoice_type").val("");
-        $("#salesDate").closest(".date-control").hide();
         updateCreditDaysVisibility();
         resetInvoiceVerification();
         return;
@@ -244,18 +244,58 @@ function selectCustomerForInvoice(data) {
 }
 
 function productResultHTML(value) {
+    const encodedValue = encodeURIComponent(JSON.stringify(value));
+    const isPriceList = value.source_type === "price_list";
+
+    if (isPriceList) {
+        const listPrice = value.list_price !== null && value.list_price !== undefined
+            ? escapeHTML(value.list_price)
+            : escapeHTML(value.mrp || "0");
+        const unitText = value.unit
+            ? `<span>Unit ${escapeHTML(value.unit)}</span>`
+            : "";
+        const wholesalePrice = value.price_list_wholesaleprice !== null && value.price_list_wholesaleprice !== undefined
+            ? `<span>Wholesale Rs. ${escapeHTML(value.price_list_wholesaleprice)}</span>`
+            : "";
+
+        return `
+        <div class="result-box product-result-box price-list-result-box" data-value="${encodedValue}">
+            <div class="price-list-result-icon">
+                <i class="fa-solid fa-tags"></i>
+            </div>
+            <div class="price-list-result-main">
+                <div class="price-list-result-top">
+                    <span class="price-list-result-badge">Price List</span>
+                    <strong>Use as unstocked item</strong>
+                </div>
+                <h1>${escapeHTML(value.itemsname)}</h1>
+                <div class="price-list-result-meta">
+                    <span class="price-list-result-sale">List Rs. ${listPrice}</span>
+                    ${unitText}
+                    ${wholesalePrice}
+                </div>
+            </div>
+        </div>`;
+    }
+
+    const listPriceText = value.list_price !== null && value.list_price !== undefined
+        ? `<span>List Rs. ${escapeHTML(value.list_price)}</span>`
+        : "";
+
     return `
-     <div class="result-box d-flex justify-content-start align-items-center product-result-box" data-value='${JSON.stringify(
-         value
-     )}'> 
-
-     <span style="color: blue;font-size:22px; font-weight:bold;">${
-         value.id
-     }</span> <i class="fa-solid fa-boxes-stacked"> </i>
-
-     <h1 class="m-0 px-2">${value.itemsname}   &nbsp; &nbsp; (
-        <span style="color: red;font-size:24px;">${value.quantity}</span>
-        )</h1> 
+     <div class="result-box product-result-box stock-result-box" data-value="${encodedValue}">
+        <div class="stock-result-id">#${escapeHTML(value.id)}</div>
+        <div class="stock-result-main">
+            <h1>${escapeHTML(value.itemsname)}</h1>
+            <div class="stock-result-meta">
+                <span class="stock-result-qty">Stock ${escapeHTML(value.quantity)}</span>
+                <span>${escapeHTML(value.unit || "unit")}</span>
+                ${listPriceText}
+            </div>
+        </div>
+        <div class="stock-result-action">
+            <i class="fa-solid fa-chevron-right"></i>
+        </div>
      </div>`;
 }
 
@@ -392,6 +432,21 @@ function inputHTML(counter) {
 
                 
 
+                <td class="percent-system-col list-price-cell">
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">Rs.</span>
+                        <input autocomplete="off" type="text" placeholder="MRP" class="form-control percent-list-price-input" id="listPriceInput" value="" data-id="${counter}" data-name="list_price" disabled>
+                    </div>
+                </td>
+
+                <td class="percent-system-col discount-percent-cell">
+                    <div class="input-group">
+                        <input autocomplete="off" type="text" placeholder="0" class="form-control sales-input percent-discount-input" id="discountPercentInput" value="" data-id="${counter}" data-name="discount_percent">
+                        <span class="input-group-text" id="basic-addon1">%</span>
+                        <button type="button" class="row-discount-reset-btn" title="Set this row discount to 0%">0</button>
+                    </div>
+                </td>
+
                 <td class="price-cell">
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">Rs.</span>
@@ -466,6 +521,8 @@ function appendInputRow(rowData = null) {
         unit: rowData && rowData.unit ? `${rowData.unit}` : "",
         price: rowData && rowData.price ? `${rowData.price}` : "",
         discount: "",
+        list_price: rowData && rowData.list_price ? `${rowData.list_price}` : "",
+        discount_percent: rowData && rowData.discount_percent ? `${rowData.discount_percent}` : "",
         subtotal: rowData && rowData.subtotal ? `${rowData.subtotal}` : "",
     };
 
@@ -475,6 +532,8 @@ function appendInputRow(rowData = null) {
         const rowEl = $(`#inputRow${counter}`);
         rowEl.find("#quantityInput").val(row.quantity);
         rowEl.find("#priceInput").val(row.price);
+        rowEl.find("#listPriceInput").val(row.list_price);
+        rowEl.find("#discountPercentInput").val(row.discount_percent);
         rowEl.find("#subTotalInput").val(row.subtotal);
         rowEl.find("#unstockedInput").attr("title", row.unstocked);
         rowEl.find("#priceInput").attr("title", row.price);
@@ -497,6 +556,10 @@ function appendInputRow(rowData = null) {
             rowEl.find("#unstockedInput").val(row.unstocked);
         }
 
+    }
+
+    if (percentSystemEnabled) {
+        setPercentSystemState(true);
     }
 
     triggerRemoveEvent();
@@ -545,6 +608,27 @@ function getRowCalculations(quantity, price, discount) {
     return finalDiscount.toFixed(2);
 }
 
+function calculatePercentSellingPrice(listPrice, discountPercent) {
+    listPrice = `${listPrice || ""}`.trim() === "" ? 0 : listPrice;
+    discountPercent = `${discountPercent || ""}`.trim() === "" ? 0 : discountPercent;
+
+    const mrp = parseFloat(listPrice) || 0;
+    const discount = Math.min(parseFloat(discountPercent) || 0, 100);
+
+    return (mrp - (mrp * discount / 100)).toFixed(2);
+}
+
+function updatePercentRowPricing(index, dataId) {
+    const row = salesData[index];
+
+    if (!percentSystemEnabled || !row || `${row.list_price || ""}`.trim() === "") {
+        return;
+    }
+
+    row.price = calculatePercentSellingPrice(row.list_price, row.discount_percent);
+    $(`#inputRow${dataId} #priceInput`).val(row.price).attr("title", row.price);
+}
+
 function getFinalCalculations() {
     let finalSubTotal = 0;
     $.each(salesData, function (index, value) {
@@ -579,19 +663,24 @@ function addInputValue(index, inputId, dataId, dataName, value) {
                 color: "#afafaf",
             });
             unitInput.prop("disabled", false); // Enable unit input
+            salesData[index]["list_price"] = "";
+            $(`#inputRow${dataId} #listPriceInput`).val("");
+            $(`#inputRow${dataId} #priceInput`).prop("readonly", false);
         } else {
             unitInput.prop("disabled", true); // Enable unit input
             $(`#inputRow${dataId} #selectProductLink`).css({
                 "pointer-events": "all",
                 color: "#0d6efd",
             });
+            $(`#inputRow${dataId} #selectProductLink p`).text("or select Items");
         }
     }
 
     if (
         dataName === "quantity" ||
         dataName === "price" ||
-        dataName === "discount"
+        dataName === "discount" ||
+        dataName === "discount_percent"
     ) {
         $("#totalAmountWords").text("Calculating...");
         // trim
@@ -604,7 +693,15 @@ function addInputValue(index, inputId, dataId, dataName, value) {
             salesData[index][dataName] = newValue;
         }
 
-        if (dataName === "discount") {
+        if (dataName === "discount_percent") {
+            if (percentSystemEnabled) {
+                const discountPercent = Math.min(parseFloat(newValue) || 0, 100);
+                const cleanPercent = newValue === "" ? "" : `${discountPercent}`;
+                $(`#inputRow${dataId} #${inputId}`).val(cleanPercent);
+                salesData[index][dataName] = cleanPercent;
+                updatePercentRowPricing(index, dataId);
+            }
+        } else if (dataName === "discount") {
             if (
                 newValue >
                 parseFloat(
@@ -641,6 +738,10 @@ function addInputValue(index, inputId, dataId, dataName, value) {
         }
     }
 
+    if (dataName === "quantity") {
+        updatePercentRowPricing(index, dataId);
+    }
+
     // calculation
     salesData[index]["subtotal"] = getRowCalculations(
         salesData[index]["quantity"],
@@ -658,7 +759,9 @@ function addInputValue(index, inputId, dataId, dataName, value) {
 }
 
 function handleInputChange() {
-    $(".sales-input").on("change", function (e) {
+    $(".sales-input")
+        .off("input.invoice change.invoice")
+        .on("input.invoice change.invoice", function (e) {
         // Change event instead of input event for select dropdowns
         const target = e.target;
         const inputId = $(target).attr("id");
@@ -696,7 +799,78 @@ function handleInputChange() {
     });
 }
 
+function setPercentSystemState(enabled) {
+    percentSystemEnabled = enabled;
+    $(".invoice-create-page").toggleClass("percent-system-on", enabled);
+    $("#percentSystemToggle")
+        .toggleClass("is-on", enabled)
+        .attr("aria-pressed", enabled ? "true" : "false")
+        .find("strong")
+        .text(enabled ? "ON" : "OFF");
+
+    salesData.forEach(function (row) {
+        const index = salesData.findIndex((item) => item.id === row.id);
+        const rowEl = $(`#inputRow${row.id}`);
+
+        if (enabled && `${row.list_price || ""}`.trim() !== "") {
+            updatePercentRowPricing(index, row.id);
+            rowEl.find("#priceInput").prop("readonly", true);
+        } else {
+            rowEl.find("#priceInput").prop("readonly", false);
+        }
+
+        row.subtotal = getRowCalculations(row.quantity, row.price, row.discount);
+        rowEl.find("#subTotalInput").val(row.subtotal).attr("title", row.subtotal);
+    });
+
+    getFinalCalculations();
+    resetInvoiceVerification();
+}
+
+$(document)
+    .off("click.defaultPcsUnit")
+    .on("click.defaultPcsUnit", "#defaultPcsUnitBtn", function () {
+        $("select#unitInput").each(function () {
+            const currentValue = ($(this).val() || "").trim();
+
+            if (!$(this).prop("disabled") && (currentValue === "" || currentValue === "choose")) {
+                $(this).val("pcs").trigger("change");
+            }
+        });
+    });
+
 let oldPriceTimers = {};
+
+$(document)
+    .off("click.bulkDiscount")
+    .on("click.bulkDiscount", "#applyBulkDiscountBtn", function () {
+        const rawValue = window.prompt("Enter discount percentage for all rows (0-100):", "0");
+        if (rawValue === null) {
+            return;
+        }
+
+        const cleanValue = rawValue.trim();
+        const discount = parseFloat(cleanValue);
+
+        if (cleanValue === "" || !Number.isFinite(discount) || discount < 0 || discount > 100) {
+            window.alert("Please enter a discount between 0 and 100%.");
+            return;
+        }
+
+        const value = discount.toFixed(2).replace(/\.00$/, "");
+
+    $("input#discountPercentInput").each(function () {
+            $(this).val(value).trigger("input");
+        });
+    });
+
+$(document)
+    .off("click.rowDiscountReset")
+    .on("click.rowDiscountReset", ".row-discount-reset-btn", function () {
+        $(this).closest(".discount-percent-cell").find("#discountPercentInput")
+            .val("0")
+            .trigger("input");
+    });
 
 function hideOldPriceBoxes() {
     $(".old-price-result-box").hide().empty();
@@ -912,21 +1086,52 @@ function triggerProductResultClick() {
     $(".product-result-box")
         .off()
         .on("click", function () {
-            const json = $(this).attr("data-value");
-            const data = JSON.parse(json);
+            const data = JSON.parse(decodeURIComponent($(this).attr("data-value")));
+            const isPriceList = data.source_type === "price_list";
 
             $(currentLink).data("query", data.itemsname);
-            $(currentLink).find("h6").text(data.itemsname);
-            salesData[currentIndex]["product"] = `${data.id}`;
+            $(currentLink).find("h6").text(isPriceList ? "" : data.itemsname);
+            $(currentLink).find("p").text(isPriceList ? "Price List" : "or select Items");
+            salesData[currentIndex]["product"] = isPriceList ? "" : `${data.id}`;
 
-            $(`#inputRow${currentID} #priceInput`).val(data.mrp);
-            salesData[currentIndex]["price"] = `${data.mrp}`;
+            const listPrice = data.list_price !== null && data.list_price !== undefined && `${data.list_price}` !== ""
+                ? `${data.list_price}`
+                : "";
+            salesData[currentIndex]["list_price"] = listPrice;
+            $(`#inputRow${currentID} #listPriceInput`).val(listPrice);
+
+            const sellingPrice = percentSystemEnabled && listPrice !== ""
+                ? calculatePercentSellingPrice(listPrice, salesData[currentIndex]["discount_percent"])
+                : `${data.mrp}`;
+
+            const rowEl = $(`#inputRow${currentID}`);
+            const unstockedValue = isPriceList ? data.itemsname : "";
+
+            $(`#inputRow${currentID} #priceInput`)
+                .val(sellingPrice)
+                .prop("readonly", percentSystemEnabled && listPrice !== "");
+            salesData[currentIndex]["price"] = sellingPrice;
+            salesData[currentIndex]["unstocked"] = unstockedValue;
+            rowEl.find("#unstockedInput")
+                .val(unstockedValue)
+                .attr("title", unstockedValue)
+                .prop("disabled", !isPriceList);
 
             //mywork
-            $(`#inputRow${currentID} #unitInput`).val(data.unit);
-            salesData[currentIndex]["unit"] = `${data.unit}`;
+            if (isPriceList) {
+                const priceListUnit = data.unit || "choose";
+                $(`#inputRow${currentID} #unitInput`)
+                    .val(priceListUnit)
+                    .prop("disabled", false);
+                salesData[currentIndex]["unit"] = priceListUnit === "choose" ? "" : `${priceListUnit}`;
+            } else {
+                $(`#inputRow${currentID} #unitInput`)
+                    .val(data.unit)
+                    .prop("disabled", true);
+                salesData[currentIndex]["unit"] = `${data.unit}`;
+            }
 
-            if (currentUrl.indexOf("creditnotes/create") === -1) {
+            if (!isPriceList && currentUrl.indexOf("creditnotes/create") === -1) {
                 $(`#inputRow${currentID} #quantityInput`).attr(
                     "placeholder",
                     `Quantity (Max: ${data.quantity})`
@@ -935,14 +1140,33 @@ function triggerProductResultClick() {
                     "data-max",
                     data.quantity
                 );
+            } else {
+                $(`#inputRow${currentID} #quantityInput`)
+                    .attr("placeholder", "Quantity")
+                    .removeAttr("data-max");
             }
 
             $(`#inputRow${currentID} #quantityInput`).val("");
             salesData[currentIndex]["quantity"] = "";
 
-            $(`#inputRow${currentID} #unstockedInput`).attr("disabled", "true");
+            if (isPriceList) {
+                $(`#inputRow${currentID} #selectProductLink`).css({
+                    "pointer-events": "none",
+                    color: "#afafaf",
+                });
+            } else {
+                $(`#inputRow${currentID} #selectProductLink`).css({
+                    "pointer-events": "all",
+                    color: "#0d6efd",
+                });
+            }
 
-            $(`#inputRow${currentID} #unitInput`).attr("disabled", "true");
+            salesData[currentIndex]["subtotal"] = getRowCalculations(
+                salesData[currentIndex]["quantity"],
+                salesData[currentIndex]["price"],
+                salesData[currentIndex]["discount"]
+            );
+            $(`#inputRow${currentID} #subTotalInput`).val(salesData[currentIndex]["subtotal"]);
 
             $("#searchProductInput").val(data.itemsname);
             $("#productResultWrapper").slideUp();
@@ -1132,6 +1356,10 @@ $(window).on("load", function () {
         appendInputRow();
     });
 
+    $("#percentSystemToggle").on("click", function () {
+        setPercentSystemState(!percentSystemEnabled);
+    });
+
     $(document).on("keydown", function (e) {
         if (e.key === "F1" && $("#addRowBtn").length) {
             e.preventDefault();
@@ -1185,6 +1413,14 @@ $(window).on("load", function () {
                     setInvoiceError("Please enter valid quantity.", row.find("#quantityInput"));
                     hasError = true;
                     return false; // Exit the loop early since there's an error
+                } else if (
+                    percentSystemEnabled &&
+                    value.product.trim() !== "" &&
+                    `${value.list_price || ""}`.trim() === ""
+                ) {
+                    setInvoiceError("Price List MRP/List Price was not found for this item.", row.find("#listPriceInput"));
+                    hasError = true;
+                    return false;
                 } else if (value.price.trim() === "") {
                     setInvoiceError("Please enter valid price.", row.find("#priceInput"));
                     hasError = true;

@@ -35,8 +35,9 @@
 
     /* Header */
     .letterhead{ color:#000; padding:0 20px 8px; text-align:center; }
-    .letterhead h1{ margin:0 0 4px; font-size:30px; text-decoration:underline; line-height:1.04; }
+    .letterhead h1{ margin:0 0 4px; font-size:38px; font-weight:900; letter-spacing:1px; line-height:1.04; }
     .letterhead h1.memo-title{ font-size:24px; margin-top:30px; }
+    .business-name{ font-size:24px; font-weight:900; letter-spacing:1px; margin-top:5px; }
 
     .address-info{ font-size:13px; text-align:center; margin-top:6px; }
     .address-info p{ margin:1px 0; }
@@ -64,6 +65,30 @@
     table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:18px; }
     th,td{ border:1px solid #000; padding:0 3px; height:20px; line-height:1.08; vertical-align:middle; text-align:center; }
     th{ font-weight:700; }
+    .percent-pricing-table{ font-size:13px; table-layout:fixed; }
+    .percent-pricing-table th,
+    .percent-pricing-table td{ padding:2px 3px; }
+    .percent-pricing-table th{ font-size:13px; line-height:1.05; padding:3px 2px; }
+    .percent-pricing-table .item-name-cell{ text-align:left; padding-left:6px; }
+    .percent-pricing-table .numeric-cell{ text-align:right; padding-right:6px; white-space:nowrap; }
+    .percent-pricing-table .center-cell{ text-align:center; white-space:nowrap; }
+    .summary-label{
+      background:#f7f7f7;
+      font-size:13px;
+      font-weight:800;
+      line-height:1.05;
+      padding:3px 6px 3px 3px;
+      text-align:right;
+      white-space:nowrap;
+    }
+    .summary-value{
+      font-size:14px;
+      font-weight:700;
+      padding-right:6px;
+      text-align:right;
+      white-space:nowrap;
+    }
+    .amount-words-cell{ font-size:13px; text-align:left; }
 
     .text-right{ text-align:right; }
     .notes{ margin-top:8px; font-size:13px; line-height:1.12; }
@@ -82,6 +107,9 @@
 @php
   $invoice = $allinvoices ? $allinvoices->first() : null;
   $items = collect($allcusbyid ?? []);
+  $showPercentPricing = $items->contains(function ($item) {
+    return $item->list_price !== null || $item->discount_percent !== null;
+  });
   $itemPages = $items->chunk(13);
   if ($itemPages->isEmpty()) {
     $itemPages = collect([collect()]);
@@ -91,10 +119,13 @@
     ? \Carbon\Carbon::parse($invoice->created_at)->format('H:i:s')
     : '';
   $customer = collect($cinfodetails ?? [])->first();
-  $isShopCustomer = strtolower((string) ($customer->type ?? '')) === 'shop';
+  $customerType = strtolower(trim((string) ($customer->type ?? '')));
+  // Older customer records may not have a type yet; treat those as regular
+  // customers so credit/cash memo headings are still shown.
+  $isShopCustomer = in_array($customerType, ['', 'shop', 'customer'], true);
   $memoType = strtoupper((string) ($forinvoicetype->invoicetype ?? $invoice->inv_type ?? 'cash')) === 'CREDIT'
     ? 'QUOTATION/CREDIT MEMO'
-    : 'CASH MEMO';
+    : 'QUOTATION/CASH MEMO';
 
   $amountToWords = function ($num) use (&$amountToWords) {
     $num = (int) floor($num);
@@ -116,21 +147,26 @@
   @php
     $isLastPage = $loop->last;
     $serialNo = ($pageIndex * 13) + 1;
+    $summaryLeftColspan = $showPercentPricing ? 6 : 4;
+    $summaryTotalColspan = $showPercentPricing ? 9 : 7;
   @endphp
 
   <div class="page invoice-page">
     <div class="watermark">OHT</div>
 
     <div class="letterhead">
-      <h1 class="{{ $isShopCustomer ? 'memo-title' : '' }}">{{ $isShopCustomer ? $memoType : 'OM HARI TRADELINK' }}</h1>
+      <h1 class="{{ $isShopCustomer ? 'memo-title' : '' }}">{{ $isShopCustomer ? $memoType : 'OHT' }}</h1>
+      @if($customerType === 'customer')
+        <div class="business-name">OHT</div>
+      @endif
     </div>
 
-    @unless($isShopCustomer)
+    @if($customerType !== 'shop')
       <div class="address-info">
-        <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
-        <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
+        <p><strong>Address:</strong> Tikapur, Kailali (in front of Tikapur Police Station)</p>
+        <p><strong>Mobile No:</strong> 9860378262, 9848448624, 9812656284</p>
       </div>
-    @endunless
+    @endif
 
     <div class="invoice-info clearfix">
       <div class="firstdiv">
@@ -151,9 +187,6 @@
 
       <div class="forbillandpan">
         <div class="invoice-no">INVOICE NO: <span class="num">{{ $invoiceid }}</span></div>
-        @if (!$isShopCustomer && $invoice && $invoice->total < 19900)
-          <div class="pan-line">PAN No. 608641838</div>
-        @endif
       </div>
 
       <div class="seconddiv forfontsizebll">
@@ -175,58 +208,79 @@
     <div class="page-count">Page {{ $pageIndex + 1 }} of {{ $totalPages }}</div>
 
     <div class="table-container">
-      <table>
+      <table class="{{ $showPercentPricing ? 'percent-pricing-table' : '' }}">
+        @if($showPercentPricing)
+          <colgroup>
+            <col style="width:4%;">
+            <col style="width:6%;">
+            <col style="width:30%;">
+            <col style="width:11%;">
+            <col style="width:10%;">
+            <col style="width:8%;">
+            <col style="width:6%;">
+            <col style="width:12%;">
+            <col style="width:13%;">
+          </colgroup>
+        @endif
         <thead>
           <tr>
             <th>#</th>
             <th>ITEM ID</th>
             <th>ITEM Name</th>
+            @if($showPercentPricing)
+              <th>MRP</th>
+              <th>Discount</th>
+            @endif
             <th>Quantity</th>
             <th>Unit</th>
-            <th>Sold Price</th>
+            <th>{{ $showPercentPricing ? 'Net Price' : 'Sold Price' }}</th>
             <th>Amount</th>
           </tr>
         </thead>
         <tbody>
           @foreach($pageItems as $i)
             <tr>
-              <td>{{ $serialNo++ }}</td>
-              <td>{{ $i->itemidorg }}</td>
-              <td>{{ $i->itemid }}</td>
-              <td>{{ $i->quantity }}</td>
-              <td class="nep">{{ $i->unit }}</td>
-              <td>{{ $i->price }}</td>
-              <td>{{ $i->subtotal }}</td>
+              <td class="center-cell">{{ $serialNo++ }}</td>
+              <td class="center-cell">{{ $i->itemidorg }}</td>
+              <td class="{{ $showPercentPricing ? 'item-name-cell' : '' }}">{{ $i->itemid }}</td>
+              @if($showPercentPricing)
+                <td class="numeric-cell">{{ $i->list_price ?? $i->mrp ?? '' }}</td>
+                <td class="numeric-cell">{{ number_format((float) ($i->discount_percent ?? 0), 2) }} %</td>
+              @endif
+              <td class="center-cell">{{ $i->quantity }}</td>
+              <td class="nep center-cell">{{ $i->unit }}</td>
+              <td class="numeric-cell">{{ $i->price }}</td>
+              <td class="numeric-cell">{{ $i->subtotal }}</td>
             </tr>
           @endforeach
 
           @if($isLastPage && $invoice)
             <tr>
-              <td colspan="5"></td>
-              <td class="text-right"><b>Sub-Total:</b></td>
-              <td><b>{{ $invoice->subtotal }}</b></td>
+              <td colspan="{{ $summaryLeftColspan }}"></td>
+              <td colspan="2" class="summary-label">Sub-Total:</td>
+              <td class="summary-value"><b>{{ $invoice->subtotal }}</b></td>
             </tr>
             <tr>
-              <td colspan="5">
+              <td colspan="{{ $summaryLeftColspan }}">
                 <p style="font-size:13px;text-align:left;"># Goods once sold won't be returned</p>
               </td>
-              <td class="text-right">E-Discount:</td>
-              <td>{{ $invoice->discount }}</td>
+              <td colspan="2" class="summary-label">E-Discount:</td>
+              <td class="summary-value">{{ $invoice->discount }}</td>
             </tr>
             <tr>
-              <td colspan="5" style="font-size:14px;text-align:left;">
+              <td colspan="{{ $summaryLeftColspan }}" class="amount-words-cell">
                 <b>Amount in Words: </b>
                 {{ $amountToWords($invoice->total) }} only/-
               </td>
-              <td class="text-right"><b>Total Amount:</b></td>
-              <td>{{ $invoice->total }}</td>
+              <td colspan="2" class="summary-label">Total Amount:</td>
+              <td class="summary-value">{{ $invoice->total }}</td>
             </tr>
             <tr>
-              <td colspan="7" class="notes" style="text-align:left"><b>Notes:</b> {{ $invoice->notes }}</td>
+              <td colspan="{{ $summaryTotalColspan }}" class="notes" style="text-align:left"><b>Notes:</b> {{ $invoice->notes }}</td>
             </tr>
           @elseif(!$isLastPage)
             <tr>
-              <td colspan="7" class="continuation-note">Continued on next page...</td>
+              <td colspan="{{ $summaryTotalColspan }}" class="continuation-note">Continued on next page...</td>
             </tr>
           @endif
         </tbody>
