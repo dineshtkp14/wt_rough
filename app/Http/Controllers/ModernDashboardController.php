@@ -165,6 +165,9 @@ class ModernDashboardController extends Controller
             if (empty($mode)) {
                 $mode = 'Cash';
             }
+            if (str_contains(strtolower($mode), 'fonepay')) {
+                $mode = 'FonePay Payment';
+            }
 
             $recentPayments[] = [
                 'payment_id' => $pay->id,
@@ -633,6 +636,9 @@ class ModernDashboardController extends Controller
             }
             if (empty($mode)) {
                 $mode = 'Cash';
+            }
+            if (str_contains(strtolower($mode), 'fonepay')) {
+                $mode = 'FonePay Payment';
             }
 
             $recentPayments[] = [
