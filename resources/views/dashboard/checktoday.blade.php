@@ -401,6 +401,7 @@
                             str_contains($modeKey, 'counter') => 'mode-counter',
                             default => 'mode-default',
                         };
+                        $modeLabel = str_contains($modeKey, 'fonepay') ? 'FonePay Payment' : $pay['mode'];
                     @endphp
                     <tr class="today-row">
                         <td>
@@ -412,7 +413,7 @@
                         <td>Rs {{ number_format($pay['amount'], 2) }}</td>
                         <td>
                             <span class="mode-badge {{ $modeClass }}">
-                                {{ $pay['mode'] }}
+                                {{ $modeLabel }}
                             </span>
                         </td>
                         <td>{{ $pay['date'] }}<br><small>{{ $pay['time'] }}</small></td>
