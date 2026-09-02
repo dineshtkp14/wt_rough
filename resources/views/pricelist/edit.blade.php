@@ -14,10 +14,6 @@
 <form class="price-edit-card" action="{{route('pricelists.update',$pricelistdata->id)}}" method="post">
                 @csrf
                 @method('put')
-                <div class="price-edit-header">
-                    <div class="price-edit-icon"><i class="fa-solid fa-pen-to-square"></i></div>
-                    <div><small>Inventory pricing</small><h2>Edit price details</h2><p>Update the item information and pricing below.</p></div>
-                </div>
                 <div class="price-edit-fields">
                 <div class="col-md-6">
                     <label for="itemname" class="form-label">Item Name</label>
@@ -111,13 +107,18 @@
     .price-update-btn { background: #2563eb; border: 0; color: #fff; }
     .price-update-btn:hover { background: #1d4ed8; color: #fff; }
     @media (min-width: 701px) {
-        .price-edit-container { max-width: none !important; width: calc(100% - 32px) !important; }
+        .price-edit-container { max-width: none !important; width: calc(100vw - 332px) !important; margin-left: 0 !important; margin-right: 0 !important; }
         .price-edit-card { width: 100%; }
         .price-edit-header { padding: 28px 34px; }
         .price-edit-fields { gap: 24px 42px; padding: 34px; }
-        .price-edit-fields .form-control, .price-edit-fields .form-select { font-size: 16px; min-height: 50px; }
-        .price-edit-actions { padding: 20px 34px; }
-        .price-cancel-btn, .price-update-btn { font-size: 15px; min-height: 48px; padding: 12px 24px; }
+        .price-edit-fields .form-label { font-size: 16px; font-weight: 900; }
+        .price-edit-fields .form-control, .price-edit-fields .form-select { font-size: 18px; font-weight: 700; min-height: 54px; }
+        .price-edit-input span { font-size: 16px; font-weight: 900; }
+        .price-edit-header h2 { font-size: 28px; font-weight: 900; }
+        .price-edit-header p { font-size: 15px; }
+        .price-edit-actions { justify-content: center; padding: 24px 34px; position: relative; }
+        .price-cancel-btn { font-size: 17px; font-weight: 900; min-height: 52px; padding: 12px 26px; position: absolute; right: 34px; }
+        .price-update-btn { font-size: 24px; font-weight: 900; min-height: 76px; min-width: 440px; padding: 18px 42px; }
     }
     @media (max-width: 700px) { .price-edit-container { padding: 0 12px; } .price-edit-fields { grid-template-columns: 1fr; padding: 18px; } .price-edit-actions { flex-direction: column-reverse; } .price-cancel-btn, .price-update-btn { text-align: center; width: 100%; } }
 </style>

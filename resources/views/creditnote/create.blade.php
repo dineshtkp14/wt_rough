@@ -433,7 +433,27 @@ $(document).ready(function () {
 
         .cn-return-table {
             border: 1px solid #fb923c;
+            display: table !important;
             overflow: hidden;
+            table-layout: auto;
+            width: 100%;
+        }
+
+        .cn-return-table tbody {
+            display: table-row-group !important;
+            width: auto;
+        }
+
+        .cn-return-table tr {
+            display: table-row !important;
+            width: auto !important;
+        }
+
+        /* Credit notes do not use the invoice % pricing system. The shared
+           row script still renders these cells, so hide them to keep the
+           header and item row aligned. */
+        .cn-create-page .cn-return-table .percent-system-col {
+            display: none !important;
         }
 
         .cn-return-table th {

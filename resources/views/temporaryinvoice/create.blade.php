@@ -20,6 +20,7 @@
 
             <form action="{{ route('temporaryinvoice.store') }}" method="post" id="temporaryInvoiceForm">
                 @csrf
+                <input type="hidden" name="percent_system_enabled" id="temporaryPercentEnabled" value="0">
 
                 <div class="temporary-panel mb-4">
                     <div class="temporary-panel-header">
@@ -71,6 +72,9 @@
                                 data-bs-target="#fixedSetModal" title="Fixed item set">
                                 <i class="fa-solid fa-layer-group"></i>
                             </button>
+                            <button class="temporary-percent-toggle" type="button" id="temporaryPercentToggle" aria-pressed="false">
+                                <i class="fa-solid fa-percent"></i> % Discount <strong>OFF</strong>
+                            </button>
                             <button class="temporary-tool-btn success" type="button" id="addTempRowBtn" title="Add row">
                                 <i class="fa-solid fa-plus"></i>
                             </button>
@@ -80,25 +84,27 @@
                         <div class="table-responsive">
                             <table class="table table-bordered align-middle temporary-invoice-table">
                                 <colgroup>
-                                    <col style="width: 100px;">
+                                    <col style="width: 74px;">
+                                    <col style="width: 86px;">
                                     <col>
                                     <col style="width: 150px;">
-                                    <col style="width: 130px;">
-                                    <col style="width: 150px;">
-                                    <col style="width: 190px;">
+                                    <col style="width: 145px;">
+                                    <col style="width: 150px;" class="temporary-percent-col">
+                                    <col style="width: 145px;" class="temporary-percent-col">
+                                    <col style="width: 170px;">
                                     <col style="width: 170px;">
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th>
-                                            #
-                                        </th>
-                                        <th>Item Name</th>
+                                        <th>#</th>
+                                        <th><button type="button" class="temporary-row-add" id="addTempRowTableBtn"><i class="fa-solid fa-plus"></i></button></th>
+                                        <th>Unstocked Item</th>
                                         <th>Quantity</th>
-                                        <th>Unit</th>
-                                        <th>Rate</th>
-                                        <th>Discount</th>
-                                        <th>Amount</th>
+                                        <th><span>Unit (pcs/kg)</span><button type="button" class="temporary-default-unit" id="temporaryDefaultUnitBtn">pcs</button></th>
+                                        <th class="temporary-percent-col">MRP</th>
+                                        <th class="temporary-percent-col">Discount %</th>
+                                        <th>Price</th>
+                                        <th>Subtotal</th>
                                     </tr>
                                 </thead>
                                 <tbody id="temporaryInvoiceRows"></tbody>
@@ -205,7 +211,12 @@
         (function () {
             var tbody = document.getElementById('temporaryInvoiceRows');
             var addBtn = document.getElementById('addTempRowBtn');
+            var tableAddBtn = document.getElementById('addTempRowTableBtn');
+            var defaultUnitBtn = document.getElementById('temporaryDefaultUnitBtn');
             var discountInput = document.getElementById('tempDiscount');
+            var percentToggle = document.getElementById('temporaryPercentToggle');
+            var percentEnabledInput = document.getElementById('temporaryPercentEnabled');
+            var percentEnabled = false;
             var fixedSetSearch = document.getElementById('fixedSetSearch');
             var fixedSetResults = document.getElementById('fixedSetResults');
             var fixedSetCode = document.getElementById('fixedSetCode');
@@ -256,7 +267,7 @@
             function renumberRows() {
                 tbody.querySelectorAll('tr').forEach(function (row, index) {
                     row.querySelector('.row-number').textContent = index + 1;
-                    row.querySelectorAll('input').forEach(function (input) {
+                    row.querySelectorAll('input, select').forEach(function (input) {
                         var field = input.getAttribute('data-field');
                         if (field) {
                             input.name = 'items[' + index + '][' + field + ']';
@@ -271,11 +282,11 @@
                 tbody.querySelectorAll('tr').forEach(function (row) {
                     var qty = parseFloat(row.querySelector('[data-field="quantity"]').value) || 0;
                     var price = parseFloat(row.querySelector('[data-field="price"]').value) || 0;
-                    var discountPercent = parseFloat(row.querySelector('[data-field="discount_percent"]').value) || 0;
+                    var listPrice = parseFloat(row.querySelector('[data-field="list_price"]').value) || 0;
+                    var discountPercent = percentEnabled ? (parseFloat(row.querySelector('[data-field="discount_percent"]').value) || 0) : 0;
                     var gross = qty * price;
-                    var discountAmount = Math.max(0, gross * discountPercent / 100);
-                    var amount = Math.max(0, gross - discountAmount);
-                    row.querySelector('.discount-amount-display').value = money(discountAmount);
+                    var discountAmount = percentEnabled ? Math.max(0, qty * (listPrice - price)) : 0;
+                    var amount = Math.max(0, gross);
                     row.querySelector('.amount-display').value = money(amount);
                     discountAmountTotal += discountAmount;
                     subtotal += amount;
@@ -289,6 +300,43 @@
                 document.getElementById('tempAmountWords').textContent = amountWords(total);
             }
 
+            function setPercentSystemState(enabled) {
+                percentEnabled = enabled;
+                document.querySelector('.temporary-invoice-create').classList.toggle('temporary-percent-on', enabled);
+                percentEnabledInput.value = enabled ? '1' : '0';
+                percentToggle.classList.toggle('is-on', enabled);
+                percentToggle.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+                percentToggle.querySelector('strong').textContent = enabled ? 'ON' : 'OFF';
+
+                if (!enabled) {
+                    tbody.querySelectorAll('[data-field="discount_percent"]').forEach(function (input) {
+                        input.value = '';
+                    });
+                    tbody.querySelectorAll('[data-field="list_price"]').forEach(function (input) {
+                        input.value = '';
+                    });
+                    tbody.querySelectorAll('[data-field="price"]').forEach(function (input) {
+                        input.readOnly = false;
+                    });
+                } else {
+                    tbody.querySelectorAll('tr').forEach(function (row) {
+                        updatePercentPrice(row);
+                        var hasMrp = parseFloat(row.querySelector('[data-field="list_price"]').value) > 0;
+                        row.querySelector('[data-field="price"]').readOnly = hasMrp;
+                    });
+                }
+                calculateTotals();
+            }
+
+            function updatePercentPrice(row) {
+                if (!percentEnabled) return;
+                var listPrice = parseFloat(row.querySelector('[data-field="list_price"]').value) || 0;
+                var discountPercent = Math.min(100, Math.max(0, parseFloat(row.querySelector('[data-field="discount_percent"]').value) || 0));
+                if (listPrice > 0) {
+                    row.querySelector('[data-field="price"]').value = money(listPrice * (1 - discountPercent / 100));
+                }
+            }
+
             function closePriceListResults() {
                 tbody.querySelectorAll('.temporary-price-results').forEach(function (results) {
                     results.style.display = 'none';
@@ -298,12 +346,14 @@
             function addRow(values) {
                 var row = document.createElement('tr');
                 row.innerHTML = [
-                    '<td><span class="row-number"></span><button type="button" class="btn btn-outline-danger btn-sm remove-temp-row ms-2"><i class="fa-solid fa-trash"></i></button></td>',
-                    '<td><div class="temporary-price-search"><input type="text" class="form-control" data-field="item_name" required autocomplete="off"><div class="temporary-price-results" style="display: none;"></div></div></td>',
+                    '<td><span class="row-number"></span></td>',
+                    '<td><button type="button" class="btn btn-outline-danger btn-sm remove-temp-row"><i class="fa-solid fa-trash"></i></button></td>',
+                    '<td><div class="temporary-price-search"><input type="text" class="form-control" data-field="item_name" placeholder="Unstocked Name" required autocomplete="off"><div class="temporary-price-results" style="display: none;"></div></div></td>',
                     '<td><input type="number" step="0.01" min="0" class="form-control temp-calc" data-field="quantity" required></td>',
-                    '<td><input type="text" class="form-control" data-field="unit" autocomplete="off"></td>',
-                    '<td><input type="number" step="0.01" min="0" class="form-control temp-calc" data-field="price" required></td>',
-                    '<td><div class="temporary-discount-cell"><input type="number" step="0.01" min="0" max="100" class="form-control temp-calc" data-field="discount_percent" placeholder="%"><input type="text" class="form-control discount-amount-display" readonly title="Discount amount"></div></td>',
+                    '<td><select class="form-select" data-field="unit"><option value="">select</option><option value="pcs">pcs</option><option value="kg">kg</option><option value="feet">feet</option><option value="mtr">mtr</option></select></td>',
+                    '<td class="temporary-percent-col"><div class="input-group"><span class="input-group-text">Rs.</span><input type="number" step="0.01" min="0" class="form-control temp-calc" data-field="list_price" placeholder="MRP"></div></td>',
+                    '<td class="temporary-percent-col"><input type="number" step="0.01" min="0" max="100" class="form-control temp-calc" data-field="discount_percent" placeholder="0"></td>',
+                    '<td><div class="input-group"><span class="input-group-text">Rs.</span><input type="number" step="0.01" min="0" class="form-control temp-calc" data-field="price" required placeholder="Price"></div></td>',
                     '<td><input type="text" class="form-control amount-display" readonly></td>'
                 ].join('');
 
@@ -340,7 +390,9 @@
                     btn.addEventListener('mousedown', function (event) {
                         event.preventDefault();
                         row.querySelector('[data-field="item_name"]').value = item.item_name;
+                        row.querySelector('[data-field="list_price"]').value = item.sale_price;
                         row.querySelector('[data-field="price"]').value = item.sale_price;
+                        row.querySelector('[data-field="price"]').readOnly = percentEnabled;
                         if (!row.querySelector('[data-field="quantity"]').value) {
                             row.querySelector('[data-field="quantity"]').value = 1;
                         }
@@ -404,7 +456,7 @@
                         quantity: row.querySelector('[data-field="quantity"]').value || 0,
                         unit: row.querySelector('[data-field="unit"]').value.trim(),
                         price: row.querySelector('[data-field="price"]').value || 0,
-                        discount_percent: row.querySelector('[data-field="discount_percent"]').value || 0
+                        discount_percent: percentEnabled ? (row.querySelector('[data-field="discount_percent"]').value || 0) : 0
                     };
                 }).filter(function (item) {
                     return item.item_name !== '';
@@ -511,9 +563,18 @@
             addBtn.addEventListener('click', function () {
                 addRow();
             });
+            tableAddBtn.addEventListener('click', function () { addRow(); });
+            defaultUnitBtn.addEventListener('click', function () {
+                tbody.querySelectorAll('[data-field="unit"]').forEach(function (input) {
+                    if (!input.value) input.value = 'pcs';
+                });
+            });
 
             tbody.addEventListener('input', function (event) {
                 if (event.target.classList.contains('temp-calc')) {
+                    if (event.target.matches('[data-field="list_price"], [data-field="discount_percent"]')) {
+                        updatePercentPrice(event.target.closest('tr'));
+                    }
                     calculateTotals();
                 }
 
@@ -548,6 +609,9 @@
             });
 
             discountInput.addEventListener('input', calculateTotals);
+            percentToggle.addEventListener('click', function () {
+                setPercentSystemState(!percentEnabled);
+            });
             fixedSetSearch.addEventListener('input', function () {
                 clearTimeout(fixedSetSearchTimer);
                 fixedSetSearchTimer = setTimeout(function () {
@@ -814,6 +878,13 @@
             white-space: nowrap;
         }
 
+        .temporary-invoice-table th {
+            background: #f1f5f9;
+            color: #111827;
+            font-size: 13px;
+            font-weight: 900;
+        }
+
         .temporary-invoice-table .form-control {
             min-height: 34px;
             padding: 4px 8px;
@@ -847,6 +918,43 @@
             padding: 0;
             width: 34px;
         }
+
+        .temporary-row-add {
+            align-items: center;
+            background: #0f8b62;
+            border: 0;
+            border-radius: 8px;
+            color: #ffffff;
+            display: inline-flex;
+            font-size: 18px;
+            height: 36px;
+            justify-content: center;
+            width: 38px;
+        }
+
+        .temporary-default-unit {
+            background: #0891b2;
+            border: 0;
+            border-radius: 6px;
+            color: #ffffff;
+            float: right;
+            font-size: 12px;
+            font-weight: 900;
+            line-height: 1;
+            padding: 5px 8px;
+            text-transform: uppercase;
+        }
+
+        .temporary-invoice-table .form-select {
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            min-height: 34px;
+            padding: 4px 8px;
+        }
+
+        .temporary-invoice-table .input-group { flex-wrap: nowrap; }
+        .temporary-invoice-table .input-group-text { font-weight: 900; padding: 4px 8px; }
 
         .temporary-price-search {
             position: relative;
@@ -988,6 +1096,43 @@
             position: sticky;
             z-index: 20;
         }
+
+        .temporary-percent-toggle {
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            color: #334155;
+            display: inline-flex;
+            font-size: 13px;
+            font-weight: 900;
+            gap: 7px;
+            min-height: 42px;
+            padding: 0 11px;
+            white-space: nowrap;
+        }
+
+        .temporary-percent-toggle strong {
+            background: #e2e8f0;
+            border-radius: 5px;
+            color: #475569;
+            font-size: 11px;
+            padding: 4px 6px;
+        }
+
+        .temporary-percent-toggle.is-on {
+            background: #0f766e;
+            border-color: #0f766e;
+            color: #ffffff;
+        }
+
+        .temporary-percent-toggle.is-on strong {
+            background: #ccfbf1;
+            color: #115e59;
+        }
+
+        .temporary-invoice-table .temporary-percent-col { display: none !important; }
+        .temporary-invoice-create.temporary-percent-on .temporary-percent-col { display: table-cell !important; }
 
         @media (max-width: 760px) {
             .temporary-create-head,

@@ -801,6 +801,7 @@ function handleInputChange() {
 
 function setPercentSystemState(enabled) {
     percentSystemEnabled = enabled;
+    $("#percentSystemEnabledInput").val(enabled ? "1" : "0");
     $(".invoice-create-page").toggleClass("percent-system-on", enabled);
     $("#percentSystemToggle")
         .toggleClass("is-on", enabled)
@@ -816,6 +817,13 @@ function setPercentSystemState(enabled) {
             updatePercentRowPricing(index, row.id);
             rowEl.find("#priceInput").prop("readonly", true);
         } else {
+            if (!enabled) {
+                // Do not submit stale MRP/percentage values after the user
+                // turns the percent-pricing system off.
+                row.list_price = "";
+                row.discount_percent = "";
+                rowEl.find("#listPriceInput, #discountPercentInput").val("");
+            }
             rowEl.find("#priceInput").prop("readonly", false);
         }
 

@@ -26,7 +26,7 @@ class Invoicecontroller extends Controller
             return true;
         }
 
-        return $invoice->created_at && $invoice->created_at->gte(now()->subMinute());
+        return $invoice->created_at && $invoice->created_at->gte(now()->subMinutes(5));
     }
 
     private function customerCreditLimitDays($customerid)
@@ -126,7 +126,7 @@ class Invoicecontroller extends Controller
 
     if (!$this->canEditInvoice($invoices)) {
         return redirect()->route('onlyviewbillafterbill', ['invoiceid' => $invoices->id])
-            ->with('error', 'Invoice edit is allowed only within 1 minute after creation.');
+                ->with('error', 'Invoice edit is allowed only within 5 minutes after creation.');
     }
 
     $customer = customerinfo::find($invoices->customerid);
@@ -224,7 +224,7 @@ public function update($id, Request $req)
             $existingInvoice = invoice::findOrFail($id);
             if (!$this->canEditInvoice($existingInvoice)) {
                 return redirect()->route('onlyviewbillafterbill', ['invoiceid' => $existingInvoice->id])
-                    ->with('error', 'Invoice edit is allowed only within 1 minute after creation.');
+                    ->with('error', 'Invoice edit is allowed only within 5 minutes after creation.');
             }
 
             $invoice = DB::transaction(function () use ($id, $req, $salesArr, $finalArr, $creditLimitDays) {

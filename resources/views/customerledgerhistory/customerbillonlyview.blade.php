@@ -210,7 +210,7 @@
                 && $invoiceForEdit
                 && (
                     auth()->user()->email === 'dineshtkp14@gmail.com'
-                    || ($invoiceForEdit->created_at && \Carbon\Carbon::parse($invoiceForEdit->created_at)->gte(now()->subMinute()))
+                    || ($invoiceForEdit->created_at && \Carbon\Carbon::parse($invoiceForEdit->created_at)->gte(now()->subMinutes(5)))
                 );
         @endphp
 

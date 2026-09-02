@@ -139,6 +139,7 @@
                 </div>
                 <input type="hidden" id="salesArrInput" name="sales_arr" value="" />
                 <input type="hidden" id="finalArrInput" name="final_arr" value="" />
+                <input type="hidden" id="percentSystemEnabledInput" name="percent_system_enabled" value="0" />
                 <div class="invoice-table-shell invoice-work-field">
                     <table class="invoicetable table-responsive bg-white">
                         <tbody id="invoiceTableBody" style="max-height: none;">

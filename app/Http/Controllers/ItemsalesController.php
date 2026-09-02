@@ -108,6 +108,7 @@ class ItemsalesController extends Controller
            
         $sales_arr = json_decode($req->sales_arr); //rowdetails
         $final_arr = json_decode($req->final_arr); //finaltotalinvoice
+        $percentSystemEnabled = $req->boolean('percent_system_enabled');
 
         if (!is_array($sales_arr) || empty($sales_arr) || !is_array($final_arr) || empty($final_arr)) {
             return redirect()->route('itemsales.create')->with('error', 'Please verify invoice details before saving.');
@@ -182,10 +183,10 @@ class ItemsalesController extends Controller
             }
 
             $data->price = $value->price;
-            $data->list_price = property_exists($value, 'list_price') && $value->list_price !== ''
+            $data->list_price = $percentSystemEnabled && property_exists($value, 'list_price') && $value->list_price !== ''
                 ? $value->list_price
                 : null;
-            $data->discount_percent = property_exists($value, 'discount_percent') && $value->discount_percent !== ''
+            $data->discount_percent = $percentSystemEnabled && property_exists($value, 'discount_percent') && $value->discount_percent !== ''
                 ? $value->discount_percent
                 : null;
             // $data->discount = $value->discount == "" ? 0.00 : $value->discount;

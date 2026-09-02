@@ -279,6 +279,7 @@ class TemporaryInvoiceController extends Controller
             'customer_name' => 'required|string|max:255',
             'customer_address' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',
+            'percent_system_enabled' => 'nullable|boolean',
             'discount' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
             'items' => 'required|array|min:1',
@@ -291,9 +292,7 @@ class TemporaryInvoiceController extends Controller
 
         $temporaryInvoice = DB::transaction(function () use ($validated) {
             $subtotal = collect($validated['items'])->sum(function ($item) {
-                $rowTotal = (float) $item['quantity'] * (float) $item['price'];
-                $discountPercent = (float) ($item['discount_percent'] ?? 0);
-                return max(0, $rowTotal - ($rowTotal * $discountPercent / 100));
+                return max(0, (float) $item['quantity'] * (float) $item['price']);
             });
             $discount = (float) ($validated['discount'] ?? 0);
             $total = max(0, $subtotal - $discount);
@@ -321,7 +320,7 @@ class TemporaryInvoiceController extends Controller
                     'quantity' => $item['quantity'],
                     'unit' => $item['unit'] ?? null,
                     'price' => $item['price'],
-                    'subtotal' => max(0, ((float) $item['quantity'] * (float) $item['price']) * (1 - ((float) ($item['discount_percent'] ?? 0) / 100))),
+                    'subtotal' => max(0, (float) $item['quantity'] * (float) $item['price']),
                 ]);
             }
 
