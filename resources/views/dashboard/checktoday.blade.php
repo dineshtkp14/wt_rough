@@ -401,7 +401,10 @@
                             str_contains($modeKey, 'counter') => 'mode-counter',
                             default => 'mode-default',
                         };
-                        $modeLabel = str_contains($modeKey, 'fonepay') ? 'FonePay Payment' : $pay['mode'];
+                        $modeLabel = trim($pay['mode']);
+                        if (!str_contains(strtolower($modeLabel), 'payment')) {
+                            $modeLabel .= ' Payment';
+                        }
                     @endphp
                     <tr class="today-row">
                         <td>
