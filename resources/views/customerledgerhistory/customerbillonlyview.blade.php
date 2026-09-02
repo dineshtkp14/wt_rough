@@ -17,7 +17,7 @@
                 {{ Session::get('vat_success') }}
             </div>
         @endif
-
+{{-- ok --}}
         @if (Session::has('error'))
             <div class="alert alert-danger bg-danger text-white w-50">
                 {{ Session::get('error') }}
