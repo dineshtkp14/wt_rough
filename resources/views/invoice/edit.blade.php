@@ -77,11 +77,24 @@
                             <th class="unstockedth">Unstocked Item</th>
                             <th>Quantity</th>
                             <th>Unit (pcs/kg)</th>
+                            <th class="percent-system-col">MRP</th>
+                            <th class="percent-system-col">Discount %</th>
                             <th>Price</th>
                             <th>Subtotal</th>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="invoice-row-pager invoice-work-field" id="invoiceRowPager" style="display: none;">
+                <button type="button" class="invoice-row-page-btn" id="invoiceRowsPrevBtn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    Previous Page
+                </button>
+                <strong id="invoiceRowsPageText">Page 1 of 1</strong>
+                <button type="button" class="invoice-row-page-btn" id="invoiceRowsNextBtn">
+                    Next Page
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
 
             <div class="invoice-bottom-grid row mt-5 mb-4 p-0">
@@ -313,6 +326,58 @@
 
     .invoice-total-box .form-control {
         text-align: right;
+    }
+
+    .invoice-row-pager {
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff, #f1f5ff);
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        box-shadow: 0 5px 16px rgba(30, 64, 175, .12);
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        margin: 12px 0 4px;
+        padding: 10px 14px;
+    }
+
+    .invoice-row-pager strong {
+        color: #172554;
+        font-size: 16px;
+        font-weight: 800;
+        min-width: 110px;
+        text-align: center;
+    }
+
+    .invoice-row-page-btn {
+        align-items: center;
+        background: #3150d8;
+        border: 0;
+        border-radius: 7px;
+        color: #ffffff;
+        cursor: pointer;
+        display: inline-flex;
+        font-size: 15px;
+        font-weight: 700;
+        gap: 8px;
+        min-height: 40px;
+        padding: 0 16px;
+        transition: background .2s ease, transform .2s ease;
+    }
+
+    .invoice-row-page-btn:hover:not(:disabled) {
+        background: #243bb5;
+        transform: translateY(-1px);
+    }
+
+    .invoice-row-page-btn:disabled {
+        background: #cbd5e1;
+        color: #64748b;
+        cursor: not-allowed;
+    }
+
+    .invoice-create-page:not(.percent-system-on) .percent-system-col {
+        display: none !important;
     }
 </style>
 @stop

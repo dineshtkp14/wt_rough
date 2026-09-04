@@ -50,9 +50,14 @@ class AuditLogObserver
     private function titleFor(Model $model, string $event): string
     {
         $shortName = class_basename($model);
+        $displayName = match (strtolower($shortName)) {
+            'customerledgerdetails', 'customerledgerdetail' => 'Payment',
+            'creditnotesinvoice' => 'Credit Note',
+            default => $shortName,
+        };
         $name = $model->name ?? $model->itemsname ?? $model->title ?? null;
 
-        return trim(ucfirst($event) . ' ' . $shortName . ($name ? ': ' . $name : ' #' . $model->getKey()));
+        return trim(ucfirst($event) . ' ' . $displayName . ($name ? ': ' . $name : ' #' . $model->getKey()));
     }
 
     private function cleanValues(array $values): array

@@ -23,6 +23,7 @@ use App\Models\CreditnotesInvoice;
 use App\Models\CreditnotesSalesitem;
 
 use App\Models\BackupCustomerLedgerDetails;
+use App\Models\AuditLog;
 
 
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB; //
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
@@ -515,6 +517,25 @@ class CustomerLedgerHistroy extends Controller
                 'updated_by' => $user_email,
                 'notes' => 'Invoice Id: ' . $billno . ' is deleted by ' . $user_email
             ]);
+
+            // Query-builder deletes do not trigger the Eloquent audit observer.
+            // Record the deletion explicitly so it appears in Smart Tools.
+            if (Schema::hasTable('audit_logs')) {
+                AuditLog::create([
+                    'auditable_type' => invoice::class,
+                    'auditable_id' => $billno,
+                    'event' => 'deleted',
+                    'title' => 'Deleted Invoice #' . $billno,
+                    'old_values' => (array) $invoice,
+                    'new_values' => [],
+                    'url' => $req->fullUrl(),
+                    'ip_address' => $req->ip(),
+                    'user_agent' => substr((string) $req->userAgent(), 0, 500),
+                    'user_id' => Auth::id(),
+                    'user_name' => $user_email ?: (Auth::user()->email ?? 'System'),
+                ]);
+            }
+
             return redirect()->route($redirectRoute)->with('deletesuccess', 'Deleted Successfully !!');
         } else {
             return redirect()->route($redirectRoute)->with('error', 'No records found for the provided invoiceid');

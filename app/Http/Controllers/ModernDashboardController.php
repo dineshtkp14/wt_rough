@@ -18,6 +18,7 @@ use App\Models\customerledgerdetails;
 use App\Models\salesitem;
 use App\Models\BackupInvoice;
 use App\Models\BackupSalesItem;
+use App\Models\Trackinvoice;
 use App\Support\NepaliDate;
 
 class ModernDashboardController extends Controller
@@ -127,7 +128,7 @@ class ModernDashboardController extends Controller
         $stockStatus = ['labels' => ['In Stock', 'Low Stock', 'Out of Stock'], 'data' => [$inStock, $lowStock, $outOfStock]];
 
         $recentInvoicesRaw = invoice::join('customerinfos', 'invoices.customerid', '=', 'customerinfos.id')
-            ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'customerinfos.name as customer')
+            ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'invoices.added_by', 'customerinfos.name as customer')
             ->orderByDesc('invoices.inv_date')
             ->orderByDesc('invoices.id')
             ->limit(100)
@@ -145,11 +146,12 @@ class ModernDashboardController extends Controller
                 'date'     => NepaliDate::adToBsString($inv->date, 'en'),
                 'is_today' => $inv->date && date('Y-m-d', strtotime($inv->date)) === $today,
                 'status'   => $isPaid ? 'paid' : 'pending',
+                'created_by' => $inv->added_by ?? '-',
             ];
         }
 
         $recentPaymentsRaw = customerledgerdetails::join('customerinfos', 'customerledgerdetails.customerid', '=', 'customerinfos.id')
-            ->select('customerinfos.name as customer', 'customerledgerdetails.credit as amount', 'customerledgerdetails.date', 'customerledgerdetails.id', 'customerledgerdetails.bank_deposit', 'customerledgerdetails.counter_deposit', 'customerledgerdetails.particulars', 'customerledgerdetails.voucher_type')
+            ->select('customerinfos.name as customer', 'customerledgerdetails.credit as amount', 'customerledgerdetails.date', 'customerledgerdetails.id', 'customerledgerdetails.added_by', 'customerledgerdetails.bank_deposit', 'customerledgerdetails.counter_deposit', 'customerledgerdetails.particulars', 'customerledgerdetails.voucher_type')
             ->where('customerledgerdetails.invoicetype', 'payment')
             ->orderByDesc('customerledgerdetails.date')
             ->orderByDesc('customerledgerdetails.id')
@@ -177,11 +179,12 @@ class ModernDashboardController extends Controller
                 'date'     => NepaliDate::adToBsString($pay->date, 'en'),
                 'is_today' => $pay->date && date('Y-m-d', strtotime($pay->date)) === $today,
                 'receipt'  => 'RCP-' . $pay->id,
+                'created_by' => $pay->added_by ?? '-',
             ];
         }
 
         $recentCreditNotesRaw = CreditnotesInvoice::leftJoin('customerinfos', 'creditnotes_invoices.customerid', '=', 'customerinfos.id')
-            ->select('creditnotes_invoices.id', 'creditnotes_invoices.total as amount', 'creditnotes_invoices.inv_date as date', 'customerinfos.name as customer')
+            ->select('creditnotes_invoices.id', 'creditnotes_invoices.total as amount', 'creditnotes_invoices.inv_date as date', 'creditnotes_invoices.added_by', 'customerinfos.name as customer')
             ->orderByDesc('creditnotes_invoices.inv_date')
             ->orderByDesc('creditnotes_invoices.id')
             ->limit(100)
@@ -196,15 +199,23 @@ class ModernDashboardController extends Controller
                 'amount' => (float) $note->amount,
                 'date' => $note->date ? NepaliDate::adToBsString($note->date, 'en') : '-',
                 'is_today' => $note->date && date('Y-m-d', strtotime($note->date)) === $today,
+                'created_by' => $note->added_by ?? '-',
             ];
         }
 
         $recentDeletedInvoicesRaw = BackupInvoice::leftJoin('customerinfos', 'backup_invoices.customerid', '=', 'customerinfos.id')
-            ->select('backup_invoices.id', 'backup_invoices.invoice_id', 'backup_invoices.total as amount', 'backup_invoices.inv_type as type', 'backup_invoices.inv_date as date', 'backup_invoices.created_at', 'customerinfos.name as customer')
+            ->select('backup_invoices.id', 'backup_invoices.invoice_id', 'backup_invoices.total as amount', 'backup_invoices.inv_type as type', 'backup_invoices.inv_date as date', 'backup_invoices.created_at', 'backup_invoices.added_by', 'customerinfos.name as customer')
             ->orderByDesc('backup_invoices.created_at')
             ->orderByDesc('backup_invoices.id')
             ->limit(100)
             ->get();
+
+        $deletionActors = Trackinvoice::where('title', 'invoice_deleted')
+            ->whereIn('bill_no', $recentDeletedInvoicesRaw->pluck('invoice_id')->all())
+            ->orderByDesc('id')
+            ->get()
+            ->unique('bill_no')
+            ->pluck('updated_by', 'bill_no');
 
         $recentDeletedInvoices = [];
         foreach ($recentDeletedInvoicesRaw as $deleted) {
@@ -218,6 +229,7 @@ class ModernDashboardController extends Controller
                 'date' => $deleted->date ? NepaliDate::adToBsString($deleted->date, 'en') : '-',
                 'deleted_at' => $deleted->created_at ? \Carbon\Carbon::parse($deleted->created_at)->format('Y-m-d H:i') : '-',
                 'is_today' => $deleted->date && date('Y-m-d', strtotime($deleted->date)) === $today,
+                'deleted_by' => $deletionActors[$deleted->invoice_id] ?? ($deleted->added_by ?? '-'),
             ];
         }
 

@@ -10,6 +10,6 @@ class Trackinvoice extends Model
     use HasFactory;
     protected $table = 'trackinvoice';
     public $timestamps = true; // Ensure this property is set to true
-    protected $fillable = ['title', 'updated_by', 'notes']; // Add 'title' to the $fillable array
+    protected $fillable = ['bill_no', 'title', 'updated_by', 'notes'];
 
 }

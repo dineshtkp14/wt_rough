@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 
@@ -48,12 +49,7 @@ class Employee_controller extends Controller
     {
         if(Auth::check()){
         $validator=Validator::make($req->all(),[
-
-            // 'name'=>'required',
-            // 'address'=>'required',
-            // 'phoneno'=>'required', 
-           
-               
+            'password' => 'nullable|min:6',
         ]);
     
         if($validator->passes()){
@@ -61,9 +57,15 @@ class Employee_controller extends Controller
             $employinfo= User::find($id);
             $employinfo->name=$req->name;
            $employinfo->address=$req->address;
-            $employinfo->email=$req->email;
+           $employinfo->email=$req->email;
             $employinfo->phoneno=$req->phoneno;
            $employinfo->added_by = session('user_email');
+
+            // Passwords are stored as hashes, so only replace it when a new
+            // password was explicitly provided.
+            if ($req->filled('password')) {
+                $employinfo->password = Hash::make($req->password);
+            }
 
             $employinfo->save();
   

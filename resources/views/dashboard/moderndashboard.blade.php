@@ -201,6 +201,113 @@
             gap: 1rem;
         }
 
+        .feature-launcher {
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-launcher-hd {
+            align-items: center;
+            background: linear-gradient(135deg, #fff7ed, #ecfeff);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+        }
+
+        .feature-launcher-hd h5 {
+            color: var(--dark);
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .feature-launcher-hd span {
+            color: var(--gray);
+            font-size: .85rem;
+        }
+
+        .feature-groups {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            padding: 1.25rem;
+        }
+
+        .feature-group {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: .7rem;
+            padding: .9rem;
+        }
+
+        .feature-group h6 {
+            align-items: center;
+            color: var(--dark);
+            display: flex;
+            font-size: .95rem;
+            font-weight: 800;
+            gap: .5rem;
+            margin: 0 0 .65rem;
+        }
+
+        .feature-group h6 i {
+            color: var(--primary);
+            width: 18px;
+        }
+
+        .feature-links {
+            display: grid;
+            gap: .45rem;
+        }
+
+        .feature-link {
+            align-items: center;
+            background: #fff;
+            border: 1px solid transparent;
+            border-radius: .45rem;
+            color: #374151;
+            display: flex;
+            font-size: .86rem;
+            gap: .55rem;
+            padding: .55rem .65rem;
+            text-decoration: none;
+            transition: all .18s ease;
+        }
+
+        .feature-link:hover {
+            background: #fff7ed;
+            border-color: #fdba74;
+            color: var(--primary-dark);
+            transform: translateX(2px);
+        }
+
+        .feature-link i {
+            color: var(--secondary);
+            font-size: .8rem;
+            width: 16px;
+        }
+
+        .activity-by {
+            color: #9ca3af;
+            display: inline-block;
+            font-size: 10px;
+            line-height: 1.2;
+            margin-top: 3px;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            .feature-launcher-hd {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: .35rem;
+            }
+        }
+
         /* Tables - FIXED HEADER COLORS */
         .table-modern {
             width: 100%;
@@ -1429,6 +1536,104 @@
         @endforeach
     </div>
 
+    <!-- All Admin Features -->
+    <div class="card feature-launcher">
+        <div class="feature-launcher-hd">
+            <h5><i class="fas fa-th-large"></i> All Features</h5>
+            <span>Quick access to every admin tool</span>
+        </div>
+        <div class="feature-groups">
+            <div class="feature-group">
+                <h6><i class="fas fa-file-invoice"></i> Sales</h6>
+                <div class="feature-links">
+                    <a class="feature-link" href="{{ route('itemsales.create') }}"><i class="fas fa-plus"></i>Add New Bill</a>
+                    <a class="feature-link" href="{{ route('itemsales.index') }}"><i class="fas fa-list"></i>View Sales</a>
+                    <a class="feature-link" href="{{ route('invoice.index') }}"><i class="fas fa-file-invoice"></i>View Invoices</a>
+                    <a class="feature-link" href="{{ route('customer.billno') }}"><i class="fas fa-search"></i>Search Invoice</a>
+                    <a class="feature-link" href="{{ route('deletedcustomer.deletebillno') }}"><i class="fas fa-trash"></i>Deleted Bills</a>
+                </div>
+            </div>
+
+            <div class="feature-group">
+                <h6><i class="fas fa-rotate-left"></i> Credit Notes</h6>
+                <div class="feature-links">
+                    <a class="feature-link" href="{{ route('creditnotes.create') }}"><i class="fas fa-plus"></i>Add Credit Note</a>
+                    <a class="feature-link" href="{{ route('creditnotes.index') }}"><i class="fas fa-list"></i>View Credit Notes</a>
+                    <a class="feature-link" href="{{ route('creditnotescustomer.billno') }}"><i class="fas fa-search"></i>Search Credit Note</a>
+                    <a class="feature-link" href="{{ route('deletedcncustomer.deletebillno') }}"><i class="fas fa-trash"></i>Deleted Credit Notes</a>
+                </div>
+            </div>
+
+            <div class="feature-group">
+                <h6><i class="fas fa-route"></i> Track</h6>
+                <div class="feature-links">
+                    <a class="feature-link" href="{{ route('trackinvoice.index') }}"><i class="fas fa-file-invoice"></i>Track Invoice</a>
+                    <a class="feature-link" href="{{ route('trackcreditnotes.index') }}"><i class="fas fa-rotate-left"></i>Track Credit Notes</a>
+                    <a class="feature-link" href="{{ route('trackitemstable.index') }}"><i class="fas fa-box"></i>Track Items</a>
+                    <a class="feature-link" href="{{ route('trackcustomerledger.index') }}"><i class="fas fa-users"></i>Track Customer Ledger</a>
+                    <a class="feature-link" href="{{ route('Trackcompanyledger.index') }}"><i class="fas fa-building"></i>Track Company Ledger</a>
+                </div>
+            </div>
+
+            <div class="feature-group">
+                <h6><i class="fas fa-boxes-stacked"></i> Inventory</h6>
+                <div class="feature-links">
+                    <a class="feature-link" href="{{ route('items.create') }}"><i class="fas fa-plus"></i>Add Item</a>
+                    <a class="feature-link" href="{{ route('items.index') }}"><i class="fas fa-list"></i>View Items</a>
+                    <a class="feature-link" href="{{ route('stocks.index') }}"><i class="fas fa-boxes-stacked"></i>View Stock</a>
+                    <a class="feature-link" href="{{ route('adminstocks.index') }}"><i class="fas fa-shield-halved"></i>Admin Stock</a>
+                    <a class="feature-link" href="{{ route('pricelists.index') }}"><i class="fas fa-tags"></i>Price Lists</a>
+                </div>
+            </div>
+
+            <div class="feature-group">
+                <h6><i class="fas fa-users"></i> Customers & Payments</h6>
+                <div class="feature-links">
+                    <a class="feature-link" href="{{ route('customerinfos.create') }}"><i class="fas fa-plus"></i>Add Customer</a>
+                    <a class="feature-link" href="{{ route('customerinfos.index') }}"><i class="fas fa-list"></i>View Customers</a>
+                    <a class="feature-link" href="{{ route('cpayments.create') }}"><i class="fas fa-money-bill"></i>Add Payment</a>
+                    <a class="feature-link" href="{{ route('cpayments.index') }}"><i class="fas fa-receipt"></i>Payment History</a>
+                    <a class="feature-link" href="{{ route('clhs.returnchoosendatehistroy') }}"><i class="fas fa-book"></i>Customer Ledger</a>
+                    <a class="feature-link" href="{{ route('cashreceipt.search') }}"><i class="fas fa-receipt"></i>Cash Receipts</a>
+                </div>
+            </div>
+
+            <div class="feature-group">
+                <h6><i class="fas fa-building"></i> Companies & Purchases</h6>
+                <div class="feature-links">
+                    <a class="feature-link" href="{{ route('companys.create') }}"><i class="fas fa-plus"></i>Add Company</a>
+                    <a class="feature-link" href="{{ route('companys.index') }}"><i class="fas fa-list"></i>View Companies</a>
+                    <a class="feature-link" href="{{ route('purorder.create') }}"><i class="fas fa-plus"></i>Add Purchase Order</a>
+                    <a class="feature-link" href="{{ route('purorder.index') }}"><i class="fas fa-list"></i>View Purchase Orders</a>
+                    <a class="feature-link" href="{{ route('companybillentry.create') }}"><i class="fas fa-file-invoice"></i>Add Company Bill</a>
+                    <a class="feature-link" href="{{ route('companybillentry.index') }}"><i class="fas fa-list"></i>Company Bills</a>
+                </div>
+            </div>
+
+            <div class="feature-group">
+                <h6><i class="fas fa-chart-line"></i> Finance & Reports</h6>
+                <div class="feature-links">
+                    <a class="feature-link" href="{{ route('daybooks.create') }}"><i class="fas fa-plus"></i>Add Daybook Entry</a>
+                    <a class="feature-link" href="{{ route('daybooks.index') }}"><i class="fas fa-book"></i>View Daybook</a>
+                    <a class="feature-link" href="{{ route('banks.index') }}"><i class="fas fa-building-columns"></i>Bank Deposits</a>
+                    <a class="feature-link" href="{{ route('expenses.index') }}"><i class="fas fa-receipt"></i>Expenses</a>
+                    <a class="feature-link" href="{{ route('profit') }}"><i class="fas fa-chart-line"></i>Calculate Profit</a>
+                    <a class="feature-link" href="{{ route('totalsales.index') }}"><i class="fas fa-chart-bar"></i>Total Sales</a>
+                </div>
+            </div>
+
+            <div class="feature-group">
+                <h6><i class="fas fa-user-shield"></i> Administration</h6>
+                <div class="feature-links">
+                    <a class="feature-link" href="{{ route('employees.index') }}"><i class="fas fa-users"></i>Employees</a>
+                    <a class="feature-link" href="{{ route('myfirm.index') }}"><i class="fas fa-building"></i>My Firm</a>
+                    <a class="feature-link" href="{{ route('smarttools.index') }}"><i class="fas fa-wand-magic-sparkles"></i>Smart Tools</a>
+                    <a class="feature-link" href="{{ route('change-password') }}"><i class="fas fa-key"></i>Change Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Charts Row -->
     <div class="charts-row">
         <div class="card">
@@ -1491,6 +1696,7 @@
                                         <strong>{{ $inv['id'] }}</strong>
                                     </a><br>
                                     <small style="color:#9ca3af">{{ $inv['date'] }}</small>
+                                    <small class="activity-by">Created by: {{ $inv['created_by'] }}</small>
                                 </td>
                                 <td>{{ $inv['customer'] }}</td>
                                 <td>Rs {{ number_format($inv['amount'], 2) }}</td>
@@ -1555,6 +1761,7 @@
                                         <strong>{{ $pay['receipt'] }}</strong>
                                     </a><br>
                                     <small style="color:#9ca3af">{{ $pay['date'] }}</small>
+                                    <small class="activity-by">Created by: {{ $pay['created_by'] }}</small>
                                 </td>
                                 <td>{{ $pay['customer'] }}</td>
                                 <td>
@@ -1622,6 +1829,7 @@
                                         <strong>{{ $note['id'] }}</strong>
                                     </a><br>
                                     <small style="color:#9ca3af">{{ $note['date'] }}</small>
+                                    <small class="activity-by">Created by: {{ $note['created_by'] }}</small>
                                 </td>
                                 <td>{{ $note['customer'] }}</td>
                                 <td>Rs {{ number_format($note['amount'], 2) }}</td>
@@ -1677,6 +1885,7 @@
                                         <strong>{{ $deleted['id'] }}</strong>
                                     </a><br>
                                     <small style="color:#9ca3af">{{ $deleted['date'] }} | {{ $deleted['type'] }}</small>
+                                    <small class="activity-by">Deleted by: {{ $deleted['deleted_by'] }}</small>
                                 </td>
                                 <td>{{ $deleted['customer'] }}</td>
                                 <td>Rs {{ number_format($deleted['amount'], 2) }}</td>

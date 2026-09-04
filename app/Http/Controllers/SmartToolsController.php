@@ -12,6 +12,7 @@ use App\Models\customerledgerdetails;
 use App\Models\Expense;
 use App\Models\invoice;
 use App\Models\item;
+use App\Models\Trackinvoice;
 use App\Support\NepaliDate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,32 @@ class SmartToolsController extends Controller
     public function index(Request $request)
     {
         $query = trim((string) $request->query('q', ''));
+        $this->syncDeletedInvoiceTrackers();
+        $auditLogs = collect();
+        if (Schema::hasTable('audit_logs')) {
+            // Keep deletions visible even when many new create/update records
+            // would otherwise push them below the latest-80 limit.
+            $auditLogs = AuditLog::where('event', 'deleted')
+                ->latest()
+                ->limit(20)
+                ->get()
+                ->merge(
+                    AuditLog::where('event', '!=', 'deleted')
+                        ->latest()
+                        ->limit(60)
+                        ->get()
+                )
+                ->sortByDesc('created_at')
+                ->values();
+        }
+        $todayAuditCounts = [
+            'updated' => Schema::hasTable('audit_logs')
+                ? AuditLog::whereDate('created_at', now()->toDateString())->where('event', 'updated')->count()
+                : 0,
+            'deleted' => Schema::hasTable('audit_logs')
+                ? AuditLog::whereDate('created_at', now()->toDateString())->where('event', 'deleted')->count()
+                : 0,
+        ];
 
         return view('smarttools.index', [
             'breadcrumb' => [
@@ -33,8 +60,66 @@ class SmartToolsController extends Controller
             'searchResults' => $this->globalSearch($query),
             'dailySummary' => $this->dailySummary(),
             'stockPredictions' => $this->stockPredictions(),
-            'auditLogs' => Schema::hasTable('audit_logs') ? AuditLog::latest()->limit(80)->get() : collect(),
+            'auditLogs' => $auditLogs,
+            'todayAuditCounts' => $todayAuditCounts,
         ]);
+    }
+
+    /**
+     * Older invoice deletions were recorded only in trackinvoice because
+     * their records were removed through the query builder. Mirror any
+     * missing deletion entries into the Audit Log for a complete history.
+     */
+    private function syncDeletedInvoiceTrackers(): void
+    {
+        if (!Schema::hasTable('audit_logs') || !Schema::hasTable('trackinvoice')) {
+            return;
+        }
+
+        Trackinvoice::where('title', 'invoice_deleted')
+            ->orderBy('id')
+            ->get()
+            ->each(function (Trackinvoice $trackedDeletion): void {
+                $billNo = $trackedDeletion->bill_no;
+                if (!$billNo && preg_match('/Invoice Id:\s*(\d+)/i', (string) $trackedDeletion->notes, $matches)) {
+                    $billNo = (int) $matches[1];
+                }
+
+                if (!$billNo) {
+                    return;
+                }
+
+                if (!$trackedDeletion->bill_no) {
+                    $trackedDeletion->bill_no = $billNo;
+                    $trackedDeletion->saveQuietly();
+                }
+
+                $alreadyLogged = AuditLog::where('auditable_type', invoice::class)
+                    ->where('auditable_id', $billNo)
+                    ->where('event', 'deleted')
+                    ->exists();
+
+                if ($alreadyLogged) {
+                    return;
+                }
+
+                $audit = new AuditLog();
+                $audit->auditable_type = invoice::class;
+                $audit->auditable_id = $billNo;
+                $audit->event = 'deleted';
+                $audit->title = 'Deleted Invoice #' . $billNo;
+                $audit->old_values = [
+                    'invoice_id' => $billNo,
+                    'notes' => $trackedDeletion->notes,
+                ];
+                $audit->new_values = [];
+                $audit->url = route('trackinvoice.index');
+                $audit->user_id = null;
+                $audit->user_name = $trackedDeletion->updated_by ?: 'System';
+                $audit->created_at = $trackedDeletion->created_at;
+                $audit->updated_at = $trackedDeletion->updated_at;
+                $audit->save();
+            });
     }
 
     private function globalSearch(string $query): array

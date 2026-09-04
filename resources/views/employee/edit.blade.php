@@ -51,6 +51,20 @@
                     @enderror
             </div>
 
+            <div class="col-md-6">
+                    <label for="password" class="form-label">New Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control @error('password') is-invalid @enderror"
+                            id="password" name="password" minlength="6"
+                            placeholder="Leave blank to keep current password">
+                        <button type="button" class="btn btn-outline-secondary" id="togglePassword"
+                            aria-label="Show password">Show</button>
+                    </div>
+                    @error('password')
+                        <p class="invalid-feedback d-block">{{ $message }}</p>
+                    @enderror
+            </div>
+
            
 
            
@@ -61,7 +75,16 @@
 </form>
 </div>
 
+<script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const password = document.getElementById('password');
+        const isHidden = password.type === 'password';
+        password.type = isHidden ? 'text' : 'password';
+        this.textContent = isHidden ? 'Hide' : 'Show';
+        this.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+    });
+</script>
+
 </div>
 
 @stop
-

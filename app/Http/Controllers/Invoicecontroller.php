@@ -149,6 +149,9 @@ class Invoicecontroller extends Controller
             'max_quantity' => $itemInfo ? ((float) $itemInfo->quantity + $currentQuantity) : null,
         ];
     })->values();
+    $percentSystemEnabled = $salesRows->contains(function ($row) {
+        return $row->list_price !== null || $row->discount_percent !== null;
+    });
 
     $editData = [
         'customer' => (string) $invoices->customerid,
@@ -166,6 +169,7 @@ class Invoicecontroller extends Controller
         'customer_default_credit_limit_days' => !$this->customerCreditLimitDays($invoices->customerid) && $this->customerHasAccountOrDue($invoices->customerid)
             ? 30
             : null,
+        'percent_system_enabled' => $percentSystemEnabled,
         'rows' => $editRows,
     ];
 

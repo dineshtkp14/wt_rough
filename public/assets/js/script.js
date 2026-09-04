@@ -1261,6 +1261,15 @@ $(window).on("load", function () {
             appendInputRow(row);
         });
 
+        setPercentSystemState(Boolean(window.INVOICE_EDIT_DATA.percent_system_enabled));
+
+        // Existing invoice rows are loaded one by one. appendInputRow()
+        // selects the last page after each append, which otherwise leaves
+        // only the final rows visible when an invoice has more than 13 rows.
+        // Start editing from the first page so every row can be reached.
+        currentInvoiceRowsPage = 1;
+        renderInvoiceRowsPage();
+
         if (salesData.length === 0) {
             appendInputRow();
         }
