@@ -181,12 +181,12 @@
             </div>
 
             <div class="item-savebar">
+                <button type="submit" id="saveItemsBtn" class="item-save-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Items
+                </button>
                 <a href="{{ route('items.index') }}" class="item-secondary-btn">
                     <i class="fa-solid fa-list"></i> View Items
                 </a>
-                <button type="submit" id="submitBtn" class="item-save-btn">
-                    <i class="fa-solid fa-floppy-disk"></i> Save Items
-                </button>
             </div>
         </form>
     </div>
@@ -286,7 +286,7 @@
         });
 
         document.getElementById('itemBulkForm').addEventListener('submit', function () {
-            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('saveItemsBtn').disabled = true;
         });
 
         oldItems.slice(0, maxRows).forEach(function (item) {
@@ -534,8 +534,9 @@
         bottom: 0;
         box-shadow: 0 -8px 24px rgba(15, 23, 42, .08);
         display: flex;
+        flex-wrap: wrap;
         gap: 12px;
-        justify-content: flex-end;
+        justify-content: flex-start;
         margin-top: 14px;
         padding: 10px;
         position: sticky;
