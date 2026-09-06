@@ -78,6 +78,7 @@ use App\Http\Controllers\SmartToolsController;
 use App\Http\Controllers\VatBillController;
 use App\Http\Controllers\SupplierVatBillController;
 use App\Http\Controllers\CustomerVatSaleController;
+use App\Http\Controllers\BankReconciliationController;
 
 
 
@@ -94,6 +95,12 @@ Route::get('/companydash',[UserdashboardController::class,'companydash'])->name(
 Route::get('/purchaseorderdash',[UserdashboardController::class,'purchaseorderdash'])->name('purchaseorderdash');
 Route::get('/customerdash',[UserdashboardController::class,'customerdash'])->name('customerdash');
 Route::get('/bankdash',[UserdashboardController::class,'bankdash'])->name('bankdash');
+Route::get('/bank-reconciliation', [BankReconciliationController::class, 'index'])->name('bank-reconciliation.index');
+Route::post('/bank-reconciliation/accounts', [BankReconciliationController::class, 'storeAccount'])->name('bank-reconciliation.accounts.store');
+Route::post('/bank-reconciliation/import', [BankReconciliationController::class, 'import'])->name('bank-reconciliation.import');
+Route::post('/bank-reconciliation/{transaction}/match', [BankReconciliationController::class, 'match'])->name('bank-reconciliation.match');
+Route::post('/bank-reconciliation/{transaction}/unmatch', [BankReconciliationController::class, 'unmatch'])->name('bank-reconciliation.unmatch');
+Route::post('/bank-reconciliation/adjustments', [BankReconciliationController::class, 'adjustment'])->name('bank-reconciliation.adjustments.store');
 Route::get('/invoicedash',[UserdashboardController::class,'invoicedash'])->name('invoicedash');
 Route::get('/cndash',[UserdashboardController::class,'cndash'])->name('cndash');
 

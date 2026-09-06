@@ -102,20 +102,28 @@ class Creditnotes_controller extends Controller
         foreach ($sales_arr as $value) {
             $data = new CreditnotesSalesitem();
             $data->invoiceid = $invoice_data->id;
-            $data->itemid = $value->product == "" ? null : $value->product;
+            $submittedItemId = $value->product ?? null;
+            $stockItem = is_numeric($submittedItemId)
+                ? item::find((int) $submittedItemId)
+                : null;
+
+            // If the browser submitted the selected product as an
+            // unstocked row, recover the matching inventory item by name.
+            // This keeps returned stock working even when itemid is missing.
+            if (!$stockItem && !empty($value->unstocked)) {
+                $stockItem = item::where('itemsname', trim($value->unstocked))->first();
+            }
+
+            $data->itemid = $stockItem?->id;
             $data->date = $req->date;
             $data->unit = $value->unit;
 
 
-            $data->unstockedname = $value->unstocked;
+            $data->unstockedname = $stockItem ? null : $value->unstocked;
             $data->quantity = $value->quantity;
 
-            if ($data->itemid) {
-              
-
-                DB::table('items')->where('id', $data->itemid)->increment('quantity', $value->quantity);
-
-
+            if ($stockItem) {
+                $stockItem->increment('quantity', (float) $value->quantity);
             }
 
             $data->price = $value->price;

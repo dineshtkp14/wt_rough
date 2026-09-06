@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Models\item;
 use App\Models\customerinfo;
@@ -48,6 +49,23 @@ class ModernDashboardController extends Controller
             'bank_balance'         => (float) Bank::sum('amount'),
             'month_expenses'       => (float) Expense::whereMonth('date', $month)->whereYear('date', $year)->sum('amount'),
             'pending_payments'     => max(0, (float) (customerledgerdetails::sum('debit') - customerledgerdetails::sum('credit'))),
+        ];
+
+        $todaySales = (float) invoice::whereDate('inv_date', $today)->sum('total');
+        $todayCashSales = (float) invoice::whereDate('inv_date', $today)->where('inv_type', 'cash')->sum('total');
+        $todayPayments = (float) customerledgerdetails::whereDate('date', $today)
+            ->where('invoicetype', 'payment')->sum('credit');
+        $todayExpenses = (float) Expense::whereDate('date', $today)->sum('amount');
+        $unmatchedBankTransactions = Schema::hasTable('bank_statement_transactions')
+            ? DB::table('bank_statement_transactions')->where('status', 'unmatched')->count()
+            : 0;
+        $todayPulse = [
+            'sales' => $todaySales,
+            'collected' => $todayCashSales + $todayPayments,
+            'expenses' => $todayExpenses,
+            'net_cash' => $todayCashSales + $todayPayments - $todayExpenses,
+            'outstanding' => $stats['pending_payments'],
+            'bank_unmatched' => $unmatchedBankTransactions,
         ];
 
         $startDate = now()->subDays(29)->startOfDay();
@@ -265,6 +283,7 @@ class ModernDashboardController extends Controller
             'recentDeletedInvoices',
             'lowStockAlerts',
             'topSellingItems'
+            ,'todayPulse'
         ));
     }
 

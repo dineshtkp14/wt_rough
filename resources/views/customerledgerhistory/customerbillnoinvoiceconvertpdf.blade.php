@@ -100,6 +100,9 @@
       transform:rotate(-45deg);
       font-size:120px; opacity:.1; color:gray; pointer-events:none;
     }
+    .invoice-qr{ float:right; text-align:center; margin:0 6px 0 18px; width:96px; }
+    .invoice-qr img{ width:78px; height:78px; display:block; margin:0 auto 3px; }
+    .invoice-qr span{ font-size:9px; white-space:nowrap; }
     .clearfix::after{ content:""; display:block; clear:both; }
   </style>
 </head>
@@ -289,6 +292,12 @@
 
     @if($isLastPage && $invoice)
       <br>
+      @if(!empty($qrCodeDataUri))
+        <div class="invoice-qr">
+          <img src="{{ $qrCodeDataUri }}" alt="Invoice QR code">
+          <span>Scan invoice details</span>
+        </div>
+      @endif
       <p>Bill Created_by: {{ $invoice->added_by }}</p>
       <p style="font-size:13px;">Printed Time and Date:
         <span style="color:#4b4b4b;">{{ date('Y-m-d H:i:s') }}</span>

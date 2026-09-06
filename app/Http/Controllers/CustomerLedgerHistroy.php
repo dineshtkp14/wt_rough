@@ -13,6 +13,7 @@ use App\Services\SmsService;
 use App\Services\CustomerLedgerBalance;
 use App\Helpers\InvoiceSmsHelper;
 use App\Support\NepaliDate;
+use App\Support\InvoiceQrCode;
 
 use App\Models\salesitem;
 
@@ -1050,6 +1051,10 @@ class CustomerLedgerHistroy extends Controller
                     $customerinfodetails = customerinfo::where('id', $data->customerid)->get();
                 }
             }
+
+            $qrCodeDataUri = $allInvoices->isNotEmpty()
+                ? InvoiceQrCode::dataUri($allInvoices->first(), ($customerinfodetails ?? collect())->first()->name ?? null)
+                : null;
     
             $pdf = FacadePdf::setOptions([
                 'dpi' => 150,
@@ -1065,6 +1070,7 @@ class CustomerLedgerHistroy extends Controller
                 'invoiceid'      => $invoiceid,
                 'cinfodetails'   => $customerinfodetails ?? collect(),
                 'forinvoicetype' => $forinvoicetype ?? null,
+                'qrCodeDataUri'  => $qrCodeDataUri,
             ])
             ->setPaper('A5', 'portrait');
         

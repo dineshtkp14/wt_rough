@@ -54,6 +54,45 @@
             gap: 0.4rem;
         }
 
+        .business-pulse {
+            display: grid;
+            grid-template-columns: 1.2fr 1.8fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pulse-card, .quick-actions-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: .9rem;
+            padding: 1.1rem 1.25rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+        }
+
+        .pulse-title, .quick-actions-title {
+            color: var(--dark);
+            font-size: .92rem;
+            font-weight: 800;
+            margin-bottom: .9rem;
+        }
+
+        .pulse-values { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+        .pulse-value small { display: block; color: var(--gray); font-size: .76rem; }
+        .pulse-value strong { color: var(--dark); font-size: 1.08rem; }
+        .pulse-value.positive strong { color: #15803d; }
+        .pulse-value.negative strong { color: #dc2626; }
+        .action-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: .65rem; }
+        .action-button {
+            text-decoration: none; color: var(--dark); background: #f8fafc; border: 1px solid var(--border);
+            border-radius: .65rem; padding: .75rem .5rem; text-align: center; font-size: .78rem; font-weight: 700;
+            transition: .2s;
+        }
+        .action-button i { display: block; color: var(--primary); font-size: 1.1rem; margin-bottom: .35rem; }
+        .action-button:hover { color: var(--primary-dark); border-color: var(--primary); transform: translateY(-2px); }
+        .pulse-alerts { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .9rem; }
+        .pulse-alert { border-radius: 999px; padding: .25rem .55rem; font-size: .72rem; font-weight: 700; background: #fff7ed; color: #c2410c; }
+        .pulse-alert.danger { background: #fef2f2; color: #b91c1c; }
+
         /* Stats Grid */
         .stat-grid {
             display: grid;
@@ -598,6 +637,8 @@
             .alerts-row {
                 grid-template-columns: 1fr;
             }
+
+            .business-pulse { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 640px) {
@@ -608,6 +649,8 @@
             .modern-dash {
                 padding: 1rem;
             }
+
+            .action-buttons { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </div>
@@ -1450,6 +1493,33 @@
         <span class="dt-badge">
             <i class="far fa-calendar"></i> {{ \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en') }}
         </span>
+    </div>
+
+    <div class="business-pulse">
+        <div class="pulse-card">
+            <div class="pulse-title"><i class="fas fa-chart-line me-1"></i> Today at a glance</div>
+            <div class="pulse-values">
+                <div class="pulse-value"><small>Sales</small><strong>Rs {{ number_format($todayPulse['sales'], 2) }}</strong></div>
+                <div class="pulse-value positive"><small>Cash collected</small><strong>Rs {{ number_format($todayPulse['collected'], 2) }}</strong></div>
+                <div class="pulse-value negative"><small>Expenses</small><strong>Rs {{ number_format($todayPulse['expenses'], 2) }}</strong></div>
+                <div class="pulse-value {{ $todayPulse['net_cash'] >= 0 ? 'positive' : 'negative' }}"><small>Net cash</small><strong>Rs {{ number_format($todayPulse['net_cash'], 2) }}</strong></div>
+            </div>
+            <div class="pulse-alerts">
+                @if($stats['low_stock_items'] + $stats['out_of_stock_items'] > 0)<span class="pulse-alert danger">{{ $stats['low_stock_items'] + $stats['out_of_stock_items'] }} stock alert(s)</span>@endif
+                @if($todayPulse['outstanding'] > 0)<span class="pulse-alert">Rs {{ number_format($todayPulse['outstanding'], 2) }} outstanding</span>@endif
+                @if($todayPulse['bank_unmatched'] > 0)<span class="pulse-alert danger">{{ $todayPulse['bank_unmatched'] }} bank item(s) unmatched</span>@endif
+                @if($stats['low_stock_items'] + $stats['out_of_stock_items'] === 0 && $todayPulse['outstanding'] <= 0 && $todayPulse['bank_unmatched'] === 0)<span class="pulse-alert">No urgent alerts</span>@endif
+            </div>
+        </div>
+        <div class="quick-actions-card">
+            <div class="quick-actions-title"><i class="fas fa-bolt me-1"></i> Quick actions</div>
+            <div class="action-buttons">
+                <a class="action-button" href="{{ route('itemsales.create') }}"><i class="fas fa-file-circle-plus"></i>New bill</a>
+                <a class="action-button" href="{{ route('cpayments.create') }}"><i class="fas fa-hand-holding-dollar"></i>Receive payment</a>
+                <a class="action-button" href="{{ route('expenses.create') }}"><i class="fas fa-receipt"></i>Add expense</a>
+                <a class="action-button" href="{{ route('bank-reconciliation.index') }}"><i class="fas fa-building-columns"></i>Reconcile bank</a>
+            </div>
+        </div>
     </div>
 
     <!-- Stats Cards -->

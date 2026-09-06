@@ -405,6 +405,7 @@
                                         Amount</a></li>
                                 <li><a href="{{ route('banks.index') }}"><i class="fa-solid fa-eye"></i>View Deposits</a>
                                 </li>
+                                <li><a href="{{ route('bank-reconciliation.index') }}"><i class="fa-solid fa-arrows-rotate"></i>Bank Reconciliation</a></li>
                             </ul>
                         </div>
                     </li>
