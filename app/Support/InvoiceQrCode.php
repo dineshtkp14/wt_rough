@@ -11,6 +11,13 @@ class InvoiceQrCode
 {
     public static function dataUri(invoice $invoice, ?string $customerName = null): string
     {
+        // Keep invoice PDF generation available during deployments where the
+        // Composer package has not been installed yet. Once dependencies are
+        // installed, this automatically returns the real QR data URI.
+        if (!class_exists(QRCode::class)) {
+            return '';
+        }
+
         $payload = implode("\n", array_filter([
             'INVOICE: INV-' . $invoice->id,
             'DATE: ' . ($invoice->inv_date ?? ''),

@@ -526,7 +526,7 @@
             border-radius: 8px;
             background: #ffffff;
             color: #111827;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 800;
             outline: none;
         }
@@ -651,7 +651,7 @@
             color: #ffffff;
             background: #3348d4;
             border: 1px solid #2637a3;
-            font-size: 15px;
+            font-size: 16px !important;
             font-weight: 900;
             text-align: left;
             text-transform: uppercase;
@@ -660,7 +660,22 @@
         .credit-list-table td {
             padding: 14px;
             border: 1px solid #d5deea;
-            font-size: 17px;
+            font-size: 18px !important;
+        }
+
+        .credit-list-table td strong {
+            font-size: 18px !important;
+        }
+
+        .credit-list-table .customer-id,
+        .credit-list-table .muted-line,
+        .credit-list-table .reminder-line {
+            font-size: 13px !important;
+        }
+
+        .credit-list-table .status-badge,
+        .credit-list-table .action-btn {
+            font-size: 13px !important;
         }
 
         .credit-list-table tbody tr:nth-child(even) td {
