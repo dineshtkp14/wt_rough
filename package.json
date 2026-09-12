@@ -8,5 +8,9 @@
         "axios": "^1.1.2",
         "laravel-vite-plugin": "^0.7.2",
         "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "pdfjs-dist": "^4.10.38",
+        "tesseract.js": "^6.0.1"
     }
 }

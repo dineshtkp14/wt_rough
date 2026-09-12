@@ -291,8 +291,8 @@
                                     <span class="quick-customer-error" data-error-for="email"></span>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Customer Type</label>
-                                    <select class="form-select" name="type" id="quickCustomerType">
+                                    <label class="form-label">Customer Type <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="type" id="quickCustomerType" required>
                                         <option value="">-- Select Type --</option>
                                         <option value="shop">Shop</option>
                                         <option value="customer">Customer</option>

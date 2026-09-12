@@ -119,6 +119,48 @@ class CustomerLedgerHistroy extends Controller
     {
         return (new CustomerLedgerBalance())->totalDue((int) $customerid);
     }
+
+    private function invoiceRemainingAmount($customerid, $invoiceid)
+    {
+        $invoiceAmount = (float) customerledgerdetails::where('customerid', $customerid)
+            ->where('invoiceid', $invoiceid)
+            ->where('invoicetype', 'credit')
+            ->sum('debit');
+
+        $paidAmount = (float) customerledgerdetails::where('customerid', $customerid)
+            ->where('invoiceid', $invoiceid)
+            ->where('invoicetype', 'payment')
+            ->sum('credit');
+
+        // Combined payments store their invoice list in invoiceids. Since the
+        // combined amount is based on each invoice's remaining balance, use
+        // the invoice's share to determine how much was allocated to it.
+        $bulkPayments = customerledgerdetails::where('customerid', $customerid)
+            ->where('invoicetype', 'payment')
+            ->whereNotNull('invoiceids')
+            ->get(['credit', 'invoiceids']);
+
+        foreach ($bulkPayments as $payment) {
+            $invoiceIds = collect(explode(',', (string) $payment->invoiceids))
+                ->map(fn ($id) => trim($id))
+                ->filter(fn ($id) => ctype_digit($id));
+
+            if (!$invoiceIds->contains((string) $invoiceid)) {
+                continue;
+            }
+
+            $combinedInvoiceAmount = (float) customerledgerdetails::where('customerid', $customerid)
+                ->where('invoicetype', 'credit')
+                ->whereIn('invoiceid', $invoiceIds->all())
+                ->sum('debit');
+
+            if ($combinedInvoiceAmount > 0) {
+                $paidAmount += (float) $payment->credit * ($invoiceAmount / $combinedInvoiceAmount);
+            }
+        }
+
+        return max(0, round($invoiceAmount - $paidAmount, 2));
+    }
     
 
     public function returncusbills(Request $req){
@@ -158,7 +200,9 @@ class CustomerLedgerHistroy extends Controller
          $credittotalsumwithdate = null;
  
          $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();  
-        $customeridonly=$req->customerid;
+         $customeridonly=$req->customerid;
+
+         $invoiceRemainingAmounts = collect();
 
          if($from == "" || $to == "") {
              $cusledgertails = Customerledgerdetails::where('customerid', $req->customerid)
@@ -219,6 +263,10 @@ class CustomerLedgerHistroy extends Controller
 
          $cusledgertails = $this->sortLedgerRows($cusledgertails->concat($creditNoteRows ?? collect()));
          $credittotalsumwithdate += ($creditNoteRows ?? collect())->sum('credit');
+
+         $invoiceRemainingAmounts = $cusledgertails
+             ->filter(fn ($row) => $row->invoicetype === 'credit' && !empty($row->invoiceid))
+             ->mapWithKeys(fn ($row) => [$row->invoiceid => $this->invoiceRemainingAmount($req->customerid, $row->invoiceid)]);
  
          return view('customerledgerhistory.list', [
              'all' => $cusledgertails,
@@ -230,6 +278,7 @@ class CustomerLedgerHistroy extends Controller
              'todate' => $to,
              'customeridonly' => $customeridonly,
              'cusinfobyid' => $afn,
+             'invoiceRemainingAmounts' => $invoiceRemainingAmounts,
 
          ]);      
      }
@@ -266,9 +315,14 @@ class CustomerLedgerHistroy extends Controller
      $from = $request->input('date1');
      $to = $request->input('date2');
 
+     // Treat the two fields as the boundaries of a range. This lets users
+     // enter the later date first while keeping all range queries ordered.
      if ($from && $to && $to < $from) {
-         throw ValidationException::withMessages([
-             'date2_bs' => 'The End Date (B.S.) must be the same as or later than the Start Date.',
+         $request->merge([
+             'date1' => $to,
+             'date2' => $from,
+             'date1_bs' => $request->query('date2_bs'),
+             'date2_bs' => $request->query('date1_bs'),
          ]);
      }
  }

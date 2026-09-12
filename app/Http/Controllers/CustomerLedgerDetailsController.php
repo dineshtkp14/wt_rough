@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use App\Models\customerinfo;
+use App\Models\invoice;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CreditnotesInvoice;
 use App\Services\CustomerSmsNotifier;
@@ -75,6 +76,8 @@ public function store(Request $req)
         'customerid' => 'required',
         'date' => 'required',
         'amount' => 'required',
+        'invoiceid' => 'nullable|integer',
+        'invoiceids' => 'nullable|string',
         'particulars' => 'required_without:disableFields', // Only required if disableFields is not present
         'vt' => 'required_without:disableFields', // Only required if disableFields is not present
         // 'cninvoiceid' => 'required_without:disableFields', // Only required if disableFields is not present
@@ -82,6 +85,52 @@ public function store(Request $req)
 
     if ($validator->fails()) {
         return redirect()->route('cpayments.create')->withErrors($validator)->withInput();
+    }
+
+    if ($req->filled('invoiceid')) {
+        $invoice = invoice::where('id', $req->invoiceid)
+            ->where('customerid', $req->customerid)
+            ->first();
+
+        if (!$invoice) {
+            return redirect()->route('cpayments.create')
+                ->with('error', 'The selected invoice was not found for this customer.')
+                ->withInput();
+        }
+
+        $invoiceAmount = (float) customerledgerdetails::where('customerid', $req->customerid)
+            ->where('invoiceid', $req->invoiceid)
+            ->where('invoicetype', 'credit')
+            ->sum('debit');
+        $paidAmount = (float) customerledgerdetails::where('customerid', $req->customerid)
+            ->where('invoiceid', $req->invoiceid)
+            ->where('invoicetype', 'payment')
+            ->sum('credit');
+        $remainingAmount = max(0, round($invoiceAmount - $paidAmount, 2));
+
+        if ((float) $req->amount > $remainingAmount + 0.01) {
+            return redirect()->route('cpayments.create')
+                ->with('error', 'Payment cannot be greater than the remaining invoice balance of Rs. ' . number_format($remainingAmount, 2) . '.')
+                ->withInput();
+        }
+    }
+
+    $invoiceIds = collect(explode(',', (string) $req->input('invoiceids')))
+        ->map(fn ($id) => trim($id))
+        ->filter(fn ($id) => ctype_digit($id))
+        ->unique()
+        ->values();
+
+    if ($invoiceIds->isNotEmpty()) {
+        $validInvoiceCount = invoice::where('customerid', $req->customerid)
+            ->whereIn('id', $invoiceIds->all())
+            ->count();
+
+        if ($validInvoiceCount !== $invoiceIds->count()) {
+            return redirect()->route('cpayments.create')
+                ->with('error', 'One or more selected invoices were not found for this customer.')
+                ->withInput();
+        }
     }
 
     if ($req->has('disableFields')) { // Replace 'your_checkbox_name' with the name of your checkbox input
@@ -120,6 +169,8 @@ public function store(Request $req)
         $cl = new customerledgerdetails();
         $cl->customerid = $req->customerid;
         $cl->date = $req->date;
+        $cl->invoiceid = $req->invoiceid ?? null;
+        $cl->invoiceids = $req->invoiceids ?? null;
         $cl->particulars = $req->has('disableFields') ? "salesreturn" : ($req->particulars ?? '');
         $cl->voucher_type = $req->has('disableFields') ? "return" : ($req->vt ?? '');
         $cl->cninvoiceid = $req->cninvoiceid ?? null;

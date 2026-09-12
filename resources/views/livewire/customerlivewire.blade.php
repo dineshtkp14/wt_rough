@@ -56,11 +56,10 @@
 
                                         
                                         <td style="width: 160px;" class="text-center">
+                                             <a href="{{ Route('customerinfos.edit', $i->id) }}" class="btn" rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
 
                                              @if (auth()->user()->email != 'dineshtkp14@gmail.com')
                                                  @if (Session::has('success') && $i->id == session('lastInsertedId'))
-                                                     <!-- Actions for all users except dineshtkp14@gmail.com if session success and last inserted id match -->
-                                                     <a href="{{ Route('customerinfos.edit', $i->id) }}" class="btn" rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
                                                      <a href="#" onclick="delfunctionusers({{ $i->id }})" class="btn btn-danger" rel="noopener noreferrer">Delete</a>
                                                      <form id="eea{{ $i->id }}" action="{{ route('customerinfos.destroy', $i->id) }}" method="post">
                                                          @csrf
@@ -68,17 +67,13 @@
                                                      </form>
                                                  @endif
                                              @else
-                                                 <!-- Actions for dineshtkp14@gmail.com -->
-                                                 <a href="{{ Route('customerinfos.edit', $i->id) }}" class="btn" rel="noopener noreferrer" style="background:#389AF5;color:white;">EDIT</a>
                                                  <a href="#" onclick="delfunctionusers({{ $i->id }})" class="btn btn-danger" rel="noopener noreferrer">Delete</a>
                                                  <form id="eea{{ $i->id }}" action="{{ route('customerinfos.destroy', $i->id) }}" method="post">
                                                      @csrf
                                                      @method('delete')
                                                  </form>
                                              @endif
-                                             
-                                             </td>
-                                             
+
                                         </td>
                                   </tr>
                              @endforeach

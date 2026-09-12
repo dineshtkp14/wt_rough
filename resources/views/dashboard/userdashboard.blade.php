@@ -93,18 +93,9 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <a href="{{ route('vat-bills.index') }}" class="btn btn-success btn-block btn-super-duper-bigger">
-                <i class="fa fa-book-open"></i> VAT PARTY LEDGER
-            </a>
+            <a href="{{ route('vat-system.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-receipt"></i> VAT SYSTEM</a>
         </div>
 
-        <div class="col-md-4 mb-3">
-            <a href="{{ route('supplier-vat-bills.index') }}" class="btn btn-warning btn-block btn-super-duper-bigger">
-                <i class="fa fa-receipt"></i> VAT SYSTEM
-            </a>
-        </div>
-       
-       
     </div>
 
 </div>

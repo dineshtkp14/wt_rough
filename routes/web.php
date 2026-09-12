@@ -22,7 +22,6 @@ use App\Http\Controllers\Employee_controller;
 use App\Http\Controllers\ViewwholeitembillController;
 use App\Http\Controllers\AdminstockController;
 use App\Http\Controllers\TrackitemstableController;
-use App\Http\Controllers\MyfirmController;
 use App\Http\Controllers\TransferGoodsController;
 use App\Http\Controllers\TrackcompanyledgerController;
 use App\Http\Controllers\CashReceiptController;
@@ -75,10 +74,12 @@ use App\Http\Controllers\trackCreditnotesController;
 use App\Http\Controllers\ModernDashboardController;
 use App\Http\Controllers\TemporaryInvoiceController;
 use App\Http\Controllers\SmartToolsController;
-use App\Http\Controllers\VatBillController;
-use App\Http\Controllers\SupplierVatBillController;
-use App\Http\Controllers\CustomerVatSaleController;
 use App\Http\Controllers\BankReconciliationController;
+use App\Http\Controllers\VatCustomerController;
+use App\Http\Controllers\VatSystemBillController;
+use App\Http\Controllers\CompanyBillController;
+use App\Http\Controllers\VatStockController;
+use App\Http\Controllers\VatReportController;
 
 
 
@@ -105,51 +106,36 @@ Route::get('/invoicedash',[UserdashboardController::class,'invoicedash'])->name(
 Route::get('/cndash',[UserdashboardController::class,'cndash'])->name('cndash');
 
 Route::get('/userdash',[UserdashboardController::class,'index'])->name('userdash');
+Route::get('/vat-system', function () {
+    abort_unless(auth()->check(), 403);
 
-Route::get('/supplier-vat-bills', [SupplierVatBillController::class, 'index'])->name('supplier-vat-bills.index');
-Route::get('/supplier-vat-bills/create', [SupplierVatBillController::class, 'create'])->name('supplier-vat-bills.create');
-Route::post('/supplier-vat-bills', [SupplierVatBillController::class, 'store'])->name('supplier-vat-bills.store');
-Route::get('/supplier-vat-bills/{supplierVatBill}', [SupplierVatBillController::class, 'show'])->name('supplier-vat-bills.show');
-Route::get('/supplier-vat-bills/{supplierVatBill}/edit', [SupplierVatBillController::class, 'edit'])->name('supplier-vat-bills.edit');
-Route::put('/supplier-vat-bills/{supplierVatBill}', [SupplierVatBillController::class, 'update'])->name('supplier-vat-bills.update');
-Route::delete('/supplier-vat-bills/{supplierVatBill}', [SupplierVatBillController::class, 'destroy'])->name('supplier-vat-bills.destroy');
-
-Route::get('/customer-vat-sales/stock-items', [CustomerVatSaleController::class, 'stockItems'])->name('customer-vat-sales.stock-items');
-Route::get('/customer-vat-sales/stock', [CustomerVatSaleController::class, 'stock'])->name('customer-vat-sales.stock');
-Route::get('/customer-vat-sales/monthly-book', [CustomerVatSaleController::class, 'monthlyBook'])->name('customer-vat-sales.monthly-book');
-Route::get('/customer-vat-sales/stock/create', [CustomerVatSaleController::class, 'stockCreate'])->name('customer-vat-sales.stock.create');
-Route::post('/customer-vat-sales/stock', [CustomerVatSaleController::class, 'stockStore'])->name('customer-vat-sales.stock.store');
-Route::get('/customer-vat-sales/stock/{vatStockItem}/edit', [CustomerVatSaleController::class, 'stockEdit'])->name('customer-vat-sales.stock.edit');
-Route::put('/customer-vat-sales/stock/{vatStockItem}', [CustomerVatSaleController::class, 'stockUpdate'])->name('customer-vat-sales.stock.update');
-Route::delete('/customer-vat-sales/stock/{vatStockItem}', [CustomerVatSaleController::class, 'stockDestroy'])->name('customer-vat-sales.stock.destroy');
-Route::get('/customer-vat-sales', [CustomerVatSaleController::class, 'index'])->name('customer-vat-sales.index');
-Route::get('/customer-vat-sales/create', [CustomerVatSaleController::class, 'create'])->name('customer-vat-sales.create');
-Route::post('/customer-vat-sales', [CustomerVatSaleController::class, 'store'])->name('customer-vat-sales.store');
-Route::get('/customer-vat-sales/{customerVatSale}', [CustomerVatSaleController::class, 'show'])->name('customer-vat-sales.show');
-Route::get('/customer-vat-sales/{customerVatSale}/edit', [CustomerVatSaleController::class, 'edit'])->name('customer-vat-sales.edit');
-Route::put('/customer-vat-sales/{customerVatSale}', [CustomerVatSaleController::class, 'update'])->name('customer-vat-sales.update');
-Route::delete('/customer-vat-sales/{customerVatSale}', [CustomerVatSaleController::class, 'destroy'])->name('customer-vat-sales.destroy');
+    return view('vat-system.index');
+})->name('vat-system.index');
+  Route::get('/vat-system/create', [VatSystemBillController::class, 'create'])->name('vat-system.create');
+  Route::get('/vat-system/items/suggestions', [VatSystemBillController::class, 'itemSuggestions'])->name('vat-system.items.suggestions');
+  Route::post('/vat-system/bills', [VatSystemBillController::class, 'store'])->name('vat-system.bills.store');
+  Route::get('/vat-system/bills', [VatSystemBillController::class, 'index'])->name('vat-system.bills.index');
+  Route::get('/vat-system/bills/{bill}/edit', [VatSystemBillController::class, 'edit'])->name('vat-system.bills.edit');
+  Route::put('/vat-system/bills/{bill}', [VatSystemBillController::class, 'update'])->name('vat-system.bills.update');
+  Route::delete('/vat-system/bills/{bill}', [VatSystemBillController::class, 'destroy'])->name('vat-system.bills.destroy');
+  Route::get('/vat-system/bills/{bill}', [VatSystemBillController::class, 'show'])->name('vat-system.bills.show');
+  Route::resource('/vat-system/company-bills', CompanyBillController::class)->names('vat-system.company-bills');
+  Route::get('/vat-system/stock', [VatStockController::class, 'index'])->name('vat-system.stock.index');
+  Route::post('/vat-system/stock/{stock}/adjust', [VatStockController::class, 'adjust'])->name('vat-system.stock.adjust');
+  Route::get('/vat-system/party-ledger', [VatReportController::class, 'customers'])->name('vat-system.party-ledger.customers');
+  Route::get('/vat-system/party-ledger/{customer}', [VatReportController::class, 'ledger'])->name('vat-system.party-ledger');
+  Route::get('/vat-system/balance-confirmation/{customer}', [VatReportController::class, 'confirmation'])->name('vat-system.balance-confirmation');
+Route::get('/vat-system/customers', [VatCustomerController::class, 'index'])->name('vat-system.customers.index');
+Route::get('/vat-system/customers/create', [VatCustomerController::class, 'create'])->name('vat-system.customers.create');
+Route::post('/vat-system/customers', [VatCustomerController::class, 'store'])->name('vat-system.customers.store');
+Route::get('/vat-system/customers/{customer}/edit', [VatCustomerController::class, 'edit'])->name('vat-system.customers.edit');
+Route::put('/vat-system/customers/{customer}', [VatCustomerController::class, 'update'])->name('vat-system.customers.update');
+Route::delete('/vat-system/customers/{customer}', [VatCustomerController::class, 'destroy'])->name('vat-system.customers.destroy');
 
 
 Route::get('/convertdate',[DateConversionController::class,'convertdate'])->name('convertdate');
 
 Route::get('/smart-tools',[SmartToolsController::class,'index'])->name('smarttools.index');
-Route::get('/vat-party-ledgers', [VatBillController::class, 'index'])->name('vat-bills.index');
-Route::get('/vat-bills/create-standalone', [VatBillController::class, 'standaloneCreate'])->name('vat-bills.standalone.create');
-Route::post('/vat-bills/create-standalone', [VatBillController::class, 'standaloneStore'])->name('vat-bills.standalone.store');
-Route::get('/vat-bills/{vatBill}/edit-entry', [VatBillController::class, 'entryEdit'])->name('vat-bills.entry.edit');
-Route::put('/vat-bills/{vatBill}/edit-entry', [VatBillController::class, 'entryUpdate'])->name('vat-bills.entry.update');
-Route::delete('/vat-bills/{vatBill}/delete-entry', [VatBillController::class, 'entryDestroy'])->name('vat-bills.entry.destroy');
-Route::get('/vat-party-ledgers/bill/{vatBill}', [VatBillController::class, 'partyShow'])->name('vat-party-ledgers.show');
-Route::get('/vat-party-ledgers/bill/{vatBill}/pdf', [VatBillController::class, 'partyPdf'])->name('vat-party-ledgers.pdf');
-Route::get('/vat-party-ledgers/bill/{vatBill}/confirmation', [VatBillController::class, 'partyConfirmation'])->name('vat-party-ledgers.confirmation');
-Route::get('/vat-party-ledgers/bill/{vatBill}/confirmation/pdf', [VatBillController::class, 'partyConfirmationPdf'])->name('vat-party-ledgers.confirmation.pdf');
-Route::post('/vat-party-ledgers/bill/{vatBill}/confirmation-details', [VatBillController::class, 'saveConfirmationDetails'])->name('vat-party-ledgers.confirmation-details');
-Route::post('/vat-party-ledgers/bill/{vatBill}/add', [VatBillController::class, 'storeFromPartyLedger'])->name('vat-party-ledgers.add');
-Route::get('/vat-party-ledgers/missing', [VatBillController::class, 'missing'])->name('vat-bills.missing');
-Route::get('/vat-party-ledgers/print-all', [VatBillController::class, 'printAllLedgers'])->name('vat-bills.print-all');
-Route::get('/vat-party-ledgers/print-all-confirmations', [VatBillController::class, 'printAllConfirmations'])->name('vat-bills.print-all-confirmations');
-
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
 Route::get('/itemsales/old-price-search',[ItemsalesController::class,'oldPriceSearch'])->name('itemsales.old-price-search');
@@ -255,16 +241,6 @@ Route::get('/customerinfos/{customerinfo}/edit',[CustomerinfoController::class,'
 Route::put('/customerinfos/{customerinfo}',[CustomerinfoController::class,'update'])->name('customerinfos.update');
 Route::delete('/customerinfos/{customerinfo}',[CustomerinfoController::class,'destroy'])->name('customerinfos.destroy');
 
-//myfirmcontroller
-Route::get('/myfirm',[MyfirmController::class,'index'])->name('myfirm.index');
-Route::get('/myfirm/create',[MyfirmController::class,'create'])->name('myfirm.create');
-Route::post('/myfirm',[MyfirmController::class,'store'])->name('myfirm.store');
-Route::get('/myfirm/{myfirm}/edit',[MyfirmController::class,'edit'])->name('myfirm.edit');
-Route::put('/myfirm/{myfirm}',[MyfirmController::class,'update'])->name('myfirm.update');
-Route::delete('/myfirm/{myfirm}',[MyfirmController::class,'destroy'])->name('myfirm.destroy');
-
-
-//myfirmcontroller
 Route::get('/transfergoods',[TransferGoodsController::class,'index'])->name('transfergoods.index');
 Route::get('/transfergoods/create',[TransferGoodsController::class,'create'])->name('transfergoods.create');
 Route::post('/transfergoods',[TransferGoodsController::class,'store'])->name('transfergoods.store');
@@ -428,16 +404,6 @@ Route::put('/billno/updatecusname', [CustomerLedgerHistroy::class, 'updatecustom
 Route::get('/onlyviewbill',[CustomerLedgerHistroy::class,'onlyviewbillafterbill'])->name('onlyviewbillafterbill');
 Route::delete('/onlyviewbill/{invoiceid}', [CustomerLedgerHistroy::class, 'deletebillfromdatabasefor_user'])->name('customer.deletebillnoforuser');
 Route::post('/invoice/{invoiceid}/send-sms', [CustomerLedgerHistroy::class, 'sendInvoiceSms'])->name('invoice.send-sms');
-Route::get('/invoice/{invoice}/vat-bill/create', [VatBillController::class, 'create'])->name('vat-bills.create');
-Route::get('/invoice/{invoice}/vat-bill/edit', [VatBillController::class, 'edit'])->name('vat-bills.edit');
-Route::get('/invoice/{invoice}/vat-bill/pdf', [VatBillController::class, 'pdf'])->name('vat-bills.ledger.pdf');
-Route::get('/invoice/{invoice}/vat-bill/confirmation', [VatBillController::class, 'confirmation'])->name('vat-bills.confirmation');
-Route::get('/invoice/{invoice}/vat-bill/confirmation/pdf', [VatBillController::class, 'confirmationPdf'])->name('vat-bills.confirmation.pdf');
-Route::get('/invoice/{invoice}/vat-bill', [VatBillController::class, 'show'])->name('vat-bills.show');
-Route::post('/invoice/{invoice}/vat-bill', [VatBillController::class, 'store'])->name('vat-bills.store');
-Route::put('/invoice/{invoice}/vat-bill', [VatBillController::class, 'update'])->name('vat-bills.update');
-Route::delete('/invoice/{invoice}/vat-bill', [VatBillController::class, 'destroy'])->name('vat-bills.destroy');
-
 Route::get('/billno/pdf/convert/',[CustomerLedgerHistroy::class,'showPDF_InvoiveBillByBillno'])->name('invoicebillno.convert');
 
 //trackinvoice

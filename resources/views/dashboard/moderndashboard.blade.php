@@ -1696,7 +1696,6 @@
                 <h6><i class="fas fa-user-shield"></i> Administration</h6>
                 <div class="feature-links">
                     <a class="feature-link" href="{{ route('employees.index') }}"><i class="fas fa-users"></i>Employees</a>
-                    <a class="feature-link" href="{{ route('myfirm.index') }}"><i class="fas fa-building"></i>My Firm</a>
                     <a class="feature-link" href="{{ route('smarttools.index') }}"><i class="fas fa-wand-magic-sparkles"></i>Smart Tools</a>
                     <a class="feature-link" href="{{ route('change-password') }}"><i class="fas fa-key"></i>Change Password</a>
                 </div>

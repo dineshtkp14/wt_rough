@@ -62,7 +62,9 @@
                 <div style="width: 200px">
                     <div class="input-group mb-1">
                         <div class="search-box">
-                            <input id="customerIdInput" name="customerid" hidden>
+                            <input id="customerIdInput" name="customerid" value="{{ old('customerid', request('customerid')) }}" hidden>
+                            <input id="invoiceIdInput" name="invoiceid" value="{{ old('invoiceid', request('invoiceid')) }}" hidden>
+                            <input id="invoiceIdsInput" name="invoiceids" value="{{ old('invoiceids', request('invoiceids')) }}" hidden>
                             <input type="text" class="search-input @error('customerid') is-invalid @enderror" placeholder="Search Customer" id="searchCustomerInput" data-api="customer_search" autocomplete="off">
                             @error('customerid')
                             <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
@@ -158,7 +160,7 @@
                     Amount <span style="color: red;">*</span>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( Old due amount: <span id="totaldueamountfornotclear" class="text-danger fw-bold"></span> )
                 </label>                
-                <input autocomplete="off" id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" style="font-weight: bold;font-size: 20px;"  >
+                <input autocomplete="off" id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount', request('amount')) }}" style="font-weight: bold;font-size: 20px;"  >
                 @error('amount')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
@@ -216,6 +218,11 @@
         if (customerId) {
             document.getElementById('customerIdInput').value = customerId;
             // Optional: You can pre-fill search input or fetch customer info here
+        }
+
+        const invoiceId = urlParams.get('invoiceid');
+        if (invoiceId) {
+            document.getElementById('invoiceIdInput').value = invoiceId;
         }
 
         if (particulars) {

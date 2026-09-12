@@ -71,7 +71,7 @@
             <label class="form-label">
                 Customer Type <span style="color: red;">*</span>
             </label>
-        <select name="type" id="customerTypeSelect" class="form-control @error('type') is-invalid @enderror">
+        <select name="type" id="customerTypeSelect" class="form-control @error('type') is-invalid @enderror" required>
             <option value="">-- Select Type --</option>
         
             <option value="shop"
@@ -84,6 +84,9 @@
                 Customer
             </option>
         </select>
+        @error('type')
+            <p class="invalid-feedback">{{ $message }}</p>
+        @enderror
         </div>
 
         <div class="col-md-6" id="customerVatNoBox" style="display: none;">

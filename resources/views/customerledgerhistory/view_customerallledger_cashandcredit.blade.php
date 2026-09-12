@@ -55,13 +55,14 @@
 
                     <form action="{{ route('returnchoosendatehistroycashandcredit') }}" method="get" id="chosendatepdfform">
                         <div class="search-box clhs-customer-search">
-                            <input id="customerIdInput" name="customerid" hidden>
+                            <input id="customerIdInput" name="customerid" value="{{ $cid ?? '' }}" hidden>
                             <input type="text"
                                 class="search-input @error('customerid') is-invalid @enderror"
                                 placeholder="Search Customer"
                                 id="searchCustomerInput"
                                 data-api="customer_search"
-                                autocomplete="off">
+                                autocomplete="off"
+                                value="{{ $customer->name ?? '' }}">
                             @error('customerid')
                                 <p class="invalid-feedback m-0">{{ $message }}</p>
                             @enderror

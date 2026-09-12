@@ -12,8 +12,23 @@ use App\Models\User;
 
 class Employee_controller extends Controller
 {
+    private function requireAdmin()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $user = Auth::user();
+        if (($user->role ?? null) !== 'admin' && $user->email !== 'dineshtkp14@gmail.com') {
+            abort(403, 'Only an administrator can manage user passwords.');
+        }
+
+        return null;
+    }
+
     public function index()
     {
+        if ($redirect = $this->requireAdmin()) return $redirect;
         if (Auth::check()) {
             $breadcrumb = [
                 'subtitle' => 'View',
@@ -31,6 +46,7 @@ class Employee_controller extends Controller
     public function edit($id)
 
     {
+        if ($redirect = $this->requireAdmin()) return $redirect;
         if(Auth::check()){
         $breadcrumb= [
             'subtitle'=>'Edit',
@@ -47,6 +63,7 @@ class Employee_controller extends Controller
  }
     public function update($id, Request $req)
     {
+        if ($redirect = $this->requireAdmin()) return $redirect;
         if(Auth::check()){
         $validator=Validator::make($req->all(),[
             'password' => 'nullable|min:6',
@@ -85,6 +102,7 @@ class Employee_controller extends Controller
  }
     public function destroy($id,Request $req){
 
+        if ($redirect = $this->requireAdmin()) return $redirect;
 
         $cusiddelete=User::findOrFail($id);
         $cusiddelete->delete();

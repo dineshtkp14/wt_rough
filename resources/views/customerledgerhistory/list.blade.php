@@ -56,13 +56,14 @@
 
                     <form action="{{ route('clhs.returnchoosendatehistroy') }}" method="get" id="chosendatepdfform">
                         <div class="search-box clhs-customer-search">
-                            <input id="customerIdInput" name="customerid" hidden>
+                            <input id="customerIdInput" name="customerid" value="{{ $customeridonly ?? '' }}" hidden>
                             <input type="text"
                                 class="search-input @error('customerid') is-invalid @enderror"
                                 placeholder="Search Customer"
                                 id="searchCustomerInput"
                                 data-api="customer_search"
-                                autocomplete="off">
+                                autocomplete="off"
+                                value="{{ $customer->name ?? '' }}">
                             @error('customerid')
                                 <p class="invalid-feedback m-0">{{ $message }}</p>
                             @enderror
@@ -168,6 +169,12 @@
                     <h4>Ledger Entries</h4>
                     <span>{{ $hasRows ? count($all) . ' records found' : 'No records found' }}</span>
                 </div>
+                @if($hasRows)
+                    <button type="button" id="paySelectedInvoicesBtn" class="clhs-pay-selected-btn" disabled>
+                        <i class="fas fa-money-bill-wave"></i> Pay Selected Invoices
+                        <span id="selectedInvoiceTotal"></span>
+                    </button>
+                @endif
                 @if($customeridonly)
                     <div class="clhs-toolbar-actions">
                         <a href="{{ url('/customer-ledger-dispute') . '?' . http_build_query(['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
@@ -279,20 +286,42 @@
                                     </td>
                                     <td>
                                         @if(!empty($i->invoiceid))
-                                            <span class="clhs-invoice-number">{{ $isCreditNote ? 'CN-' : '' }}{{ $i->invoiceid }}</span>
-                                            @if($isCreditNote)
-                                                <button type="button"
-                                                    onclick="openCreditNoteModal({{ $i->invoiceid }})"
-                                                    class="clhs-view-invoice-btn">
-                                                    View
-                                                </button>
-                                            @else
-                                                <button type="button"
-                                                    onclick="openInvoiceModal({{ $i->invoiceid }})"
-                                                    class="clhs-view-invoice-btn">
-                                                    View
-                                                </button>
-                                            @endif
+                                            @php
+                                                $invoiceAgeDays = max(0, (int) \Carbon\Carbon::parse($i->date)->diffInDays(now()));
+                                            @endphp
+                                            <div class="clhs-invoice-cell">
+                                                <div class="clhs-invoice-heading">
+                                                    @if(!$isPayment && !$isSettlement && !$isCreditNote)
+                                                        @php $remainingInvoiceAmount = (float) ($invoiceRemainingAmounts[$i->invoiceid] ?? $i->debit); @endphp
+                                                        @if($remainingInvoiceAmount > 0.01)
+                                                            <input type="checkbox" class="invoice-select-checkbox" value="{{ $i->invoiceid }}" data-amount="{{ $remainingInvoiceAmount }}" aria-label="Select invoice {{ $i->invoiceid }}">
+                                                        @endif
+                                                    @endif
+                                                    <span class="clhs-invoice-number">{{ $isCreditNote ? 'CN-' : '' }}{{ $i->invoiceid }}</span>
+                                                </div>
+                                                <small class="clhs-invoice-age">{{ $invoiceAgeDays }} {{ $invoiceAgeDays === 1 ? 'day' : 'days' }} ago</small>
+                                                <div class="clhs-invoice-actions">
+                                                    @if($isCreditNote)
+                                                        <button type="button"
+                                                            onclick="openCreditNoteModal({{ $i->invoiceid }})"
+                                                            class="clhs-view-invoice-btn">
+                                                            View
+                                                        </button>
+                                                    @else
+                                                        <button type="button"
+                                                            onclick="openInvoiceModal({{ $i->invoiceid }})"
+                                                            class="clhs-view-invoice-btn">
+                                                            View
+                                                        </button>
+                                                        @if(!$isPayment && !$isSettlement && $remainingInvoiceAmount > 0.01)
+                                                            <a href="{{ route('cpayments.create', ['customerid' => $customeridonly, 'invoiceid' => $i->invoiceid, 'amount' => $remainingInvoiceAmount, 'particulars' => 'Payment for Invoice No. ' . $i->invoiceid, 'voucher_type' => 'Receipt', 'totaldueamountfornotclear' => $remainingInvoiceAmount, 'cname' => $customer ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? '')) : null]) }}"
+                                                                class="clhs-pay-invoice-btn">
+                                                                Pay
+                                                            </a>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                            </div>
                                         @else
                                             -
                                         @endif
@@ -1279,9 +1308,37 @@
         }
 
         .clhs-invoice-number {
+            color: #0f172a;
             display: inline-block;
             font-weight: 800;
-            margin-right: 8px;
+            line-height: 1.1;
+        }
+
+        .clhs-invoice-cell {
+            min-width: 105px;
+        }
+
+        .clhs-invoice-heading {
+            align-items: center;
+            display: flex;
+            gap: 4px;
+        }
+
+        .clhs-invoice-actions {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 5px;
+        }
+
+        .clhs-invoice-age {
+            color: #64748b;
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 24px;
+            margin-top: 3px;
         }
 
         .clhs-view-invoice-btn {
@@ -1296,6 +1353,51 @@
 
         .clhs-view-invoice-btn:hover {
             background: #0891b2;
+        }
+
+        .clhs-pay-selected-btn {
+            background: #16a34a;
+            border: 0;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 800;
+            padding: 12px 16px;
+        }
+
+        .clhs-pay-selected-btn #selectedInvoiceTotal {
+            color: #ffffff !important;
+            font-size: 15px;
+            font-weight: 900;
+            margin-left: 4px;
+        }
+
+        .clhs-pay-selected-btn:disabled {
+            cursor: not-allowed;
+            opacity: .5;
+        }
+
+        .invoice-select-checkbox {
+            accent-color: #16a34a;
+            height: 18px;
+            margin-right: 6px;
+            width: 18px;
+        }
+
+        .clhs-pay-invoice-btn {
+            background: #16a34a;
+            border-radius: 5px;
+            color: #ffffff;
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 6px 10px;
+            text-decoration: none;
+        }
+
+        .clhs-pay-invoice-btn:hover {
+            background: #15803d;
+            color: #ffffff;
         }
 
         .clhs-view-payment-btn {
@@ -1739,6 +1841,36 @@
             input.dispatchEvent(new Event('change', { bubbles: true }));
             input.focus();
         };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const button = document.getElementById('paySelectedInvoicesBtn');
+            const totalLabel = document.getElementById('selectedInvoiceTotal');
+            const checkboxes = Array.from(document.querySelectorAll('.invoice-select-checkbox'));
+            if (!button) return;
+
+            function refreshSelectedInvoices() {
+                const selected = checkboxes.filter((checkbox) => checkbox.checked);
+                const total = selected.reduce((sum, checkbox) => sum + Number(checkbox.dataset.amount || 0), 0);
+                button.disabled = selected.length === 0;
+                totalLabel.textContent = selected.length ? ' (Rs. ' + total.toFixed(2) + ')' : '';
+            }
+
+            checkboxes.forEach((checkbox) => checkbox.addEventListener('change', refreshSelectedInvoices));
+            button.addEventListener('click', function () {
+                const selected = checkboxes.filter((checkbox) => checkbox.checked);
+                const total = selected.reduce((sum, checkbox) => sum + Number(checkbox.dataset.amount || 0), 0);
+                const params = new URLSearchParams({
+                    customerid: @json($customeridonly),
+                    invoiceids: selected.map((checkbox) => checkbox.value).join(','),
+                    amount: total.toFixed(2),
+                    particulars: 'Payment for invoices ' + selected.map((checkbox) => checkbox.value).join(', '),
+                    voucher_type: 'Receipt',
+                    totaldueamountfornotclear: total.toFixed(2),
+                    cname: @json($customer ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? '')) : ''),
+                });
+                window.location.href = '{{ route('cpayments.create') }}?' + params.toString();
+            });
+        });
 
         $(document).on('customer:selected', function () {
             const form = document.getElementById('chosendatepdfform');

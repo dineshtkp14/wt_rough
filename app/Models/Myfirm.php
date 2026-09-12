@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Myfirm extends Model
 {
     use HasFactory;
-   
 
-    protected $table = 'myfirm'; // Specify the actual table name if it's different
-
+    protected $table = 'myfirm';
 }

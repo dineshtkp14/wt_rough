@@ -74,7 +74,7 @@ return redirect('/login');
             'phoneno' => 'required|size:10|unique:customerinfos,phoneno',
             'alternate_phoneno' => 'nullable',
             'email' => 'nullable|email',
-            'type' => 'nullable',
+            'type' => 'required|in:shop,customer',
             'vat_no' => 'nullable|max:50',
             'remarks' => 'nullable',
         ]);
@@ -200,6 +200,7 @@ return redirect('/login');
             'name'=>'required',
             'address'=>'required',
             'phoneno'=>'required', 
+            'type'=>'required|in:shop,customer',
             'vat_no' => 'nullable|max:50',
            
                

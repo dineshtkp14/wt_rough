@@ -204,8 +204,6 @@
             $isShopInvoice = $invoiceForEdit
                 && $paymentCustomer
                 && strtolower((string) $paymentCustomer->type) === 'shop';
-            $canUseVatBill = $invoiceForEdit
-                && ($isShopInvoice || $invoiceForEdit->inv_type === 'cash');
             $canEditInvoice = auth()->check()
                 && $invoiceForEdit
                 && (
@@ -213,24 +211,6 @@
                     || ($invoiceForEdit->created_at && \Carbon\Carbon::parse($invoiceForEdit->created_at)->gte(now()->subMinutes(5)))
                 );
         @endphp
-
-        @if ($canUseVatBill && !$invoiceForEdit->vatBill)
-            <a href="{{ route('vat-bills.create', $invoiceForEdit) }}"
-                class="btn btn-success btn-lg me-4"
-                style="font-weight: 800;">
-                <i class="fa-solid fa-receipt"></i>
-                Add VAT Bill
-            </a>
-        @endif
-
-        @if ($invoiceForEdit && $invoiceForEdit->vatBill)
-            <a href="{{ route('vat-bills.show', $invoiceForEdit) }}"
-                class="btn btn-success btn-lg me-4"
-                style="font-weight: 800;">
-                <i class="fa-solid fa-book"></i>
-                VAT Party Ledger
-            </a>
-        @endif
 
         @if (!empty($invoiceid) && $canEditInvoice)
             <a href="{{ route('invoice.edit', $invoiceid) }}"

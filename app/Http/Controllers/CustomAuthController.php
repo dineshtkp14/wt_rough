@@ -96,6 +96,9 @@ class CustomAuthcontroller extends Controller
     public function changePassword()
     {
         if (Auth::check()) {
+            if ((auth()->user()->role ?? null) !== 'admin' && auth()->user()->email !== 'dineshtkp14@gmail.com') {
+                abort(403, 'Only an administrator can change passwords.');
+            }
             $breadcrumb= [
                 'subtitle'=>'Password',
                 'title'=>'Change Password',
@@ -112,6 +115,10 @@ class CustomAuthcontroller extends Controller
 
     public function updatePassword(Request $request)
     {
+        if (!Auth::check() || ((auth()->user()->role ?? null) !== 'admin' && auth()->user()->email !== 'dineshtkp14@gmail.com')) {
+            abort(403, 'Only an administrator can change passwords.');
+        }
+
         # Validation
         $request->validate([
             'old_password' => 'required',
