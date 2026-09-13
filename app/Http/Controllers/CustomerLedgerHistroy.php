@@ -1888,7 +1888,9 @@ public function oldpricecheck(Request $req)
             $itemsname = item::where('id', $req->customerid)->get();
             $invoiceid = $req->invoiceid;
         
-            $allInvoices = invoice::with('vatBill')->where('id', $req->invoiceid)->get();
+            // Legacy invoices do not have a vatBill relationship. VAT-system bills
+            // are stored separately, so load the legacy invoice by itself here.
+            $allInvoices = invoice::where('id', $req->invoiceid)->get();
         
             $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
             $customerinfodetails = null;
