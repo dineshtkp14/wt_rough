@@ -21,6 +21,7 @@ use App\Models\BackupInvoice;
 use App\Models\BackupSalesItem;
 use App\Models\Trackinvoice;
 use App\Support\NepaliDate;
+use App\Models\User;
 
 class ModernDashboardController extends Controller
 {
@@ -50,6 +51,9 @@ class ModernDashboardController extends Controller
             'month_expenses'       => (float) Expense::whereMonth('date', $month)->whereYear('date', $year)->sum('amount'),
             'pending_payments'     => max(0, (float) (customerledgerdetails::sum('debit') - customerledgerdetails::sum('credit'))),
         ];
+        $onlineUsers = User::where('last_activity_at', '>=', now()->subMinutes(5))
+            ->orderBy('email')->get(['name', 'email', 'last_activity_at', 'last_login_at', 'last_logout_at']);
+        $stats['online_users'] = $onlineUsers->count();
 
         $todaySales = (float) invoice::whereDate('inv_date', $today)->sum('total');
         $todayCashSales = (float) invoice::whereDate('inv_date', $today)->where('inv_type', 'cash')->sum('total');
@@ -283,7 +287,7 @@ class ModernDashboardController extends Controller
             'recentDeletedInvoices',
             'lowStockAlerts',
             'topSellingItems'
-            ,'todayPulse'
+            ,'todayPulse', 'onlineUsers'
         ));
     }
 

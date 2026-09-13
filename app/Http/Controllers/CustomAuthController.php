@@ -43,6 +43,7 @@ class CustomAuthcontroller extends Controller
     public function forlogin()
     {
         if (Auth::check()) {
+            Auth::user()->forceFill(['last_logout_at' => now()])->saveQuietly();
             Auth::logout(); // Log out the user
             Session::flush(); // Clear all session data
             return redirect()->route('login'); // Redirect back to /login
@@ -62,6 +63,8 @@ class CustomAuthcontroller extends Controller
 
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
+
+            Auth::user()->forceFill(['last_login_at' => now(), 'last_activity_at' => now()])->saveQuietly();
 
             $request->session()->put('user_email', $request->email);
 
@@ -348,7 +351,9 @@ class CustomAuthcontroller extends Controller
 
     public function signOut(Request $request)
     {
-       
+        if (Auth::check()) {
+            Auth::user()->forceFill(['last_logout_at' => now(), 'last_activity_at' => null])->saveQuietly();
+        }
 
         FacadesSession::flush();
         Auth::logout();

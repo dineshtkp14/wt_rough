@@ -1543,6 +1543,15 @@
                     'u' => true,
                 ],
                 [
+                    'i' => 'fas fa-circle-dot',
+                    'c' => 'green',
+                    'v' => number_format($stats['online_users']),
+                    'l' => 'Online Users',
+                    'd' => 'Active in the last 5 minutes',
+                    'u' => true,
+                    'id' => 'onlineUsersCard',
+                ],
+                [
                     'i' => 'fas fa-building',
                     'c' => 'green',
                     'v' => number_format($stats['total_companies']),
@@ -1593,7 +1602,7 @@
             ];
         @endphp
         @foreach ($cards as $card)
-            <div class="stat-card">
+            <div class="stat-card {{ ($card['id'] ?? '') === 'onlineUsersCard' ? 'online-users-card' : '' }}" @if(($card['id'] ?? '') === 'onlineUsersCard') id="onlineUsersCard" role="button" tabindex="0" @endif>
                 <div class="stat-icon {{ $card['c'] }}">
                     <i class="{{ $card['i'] }}"></i>
                 </div>
@@ -1605,6 +1614,17 @@
             </div>
         @endforeach
     </div>
+
+    <div id="onlineUsersPanel" class="online-users-panel" hidden>
+        <div class="online-users-panel-head"><div><strong>Online Users</strong><small>Active within the last 5 minutes</small></div><button type="button" id="closeOnlineUsers">&times;</button></div>
+        @forelse($onlineUsers as $onlineUser)
+            <div class="online-user-row"><span class="online-dot"></span><div><strong>{{ $onlineUser->name ?: 'User' }}</strong><small>{{ $onlineUser->email }}</small><small>Last login: {{ $onlineUser->last_login_at?->format('Y-m-d h:i A') ?: 'Before tracking started' }} | Last activity: {{ $onlineUser->last_activity_at?->format('Y-m-d h:i A') ?: 'Before tracking started' }}<br>Last logout: {{ $onlineUser->last_logout_at?->format('Y-m-d h:i A') ?: 'No logout since last login' }}</small></div></div>
+        @empty
+            <div class="online-user-empty">No other users are currently active.</div>
+        @endforelse
+    </div>
+    <style>.online-users-card{cursor:pointer}.online-users-card:hover{transform:translateY(-3px)}.online-users-panel{position:fixed;z-index:1050;top:110px;right:28px;width:360px;max-width:calc(100vw - 40px);background:#fff;border:1px solid #dbe5f2;border-radius:16px;box-shadow:0 18px 45px #173b7230;padding:18px}.online-users-panel-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #e7edf5;padding-bottom:12px;margin-bottom:6px}.online-users-panel-head small,.online-user-row small{display:block;color:#6a7d97;margin-top:3px}.online-users-panel-head button{border:0;background:#eef3f9;border-radius:8px;font-size:22px;line-height:1;width:30px;height:30px;color:#405675}.online-user-row{display:flex;gap:10px;align-items:center;padding:11px 2px;border-bottom:1px solid #eef2f7}.online-dot{width:10px;height:10px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 4px #dcfce7}.online-user-empty{color:#6a7d97;padding:18px 0}</style>
+    <script>document.addEventListener('DOMContentLoaded',function(){const card=document.getElementById('onlineUsersCard'),panel=document.getElementById('onlineUsersPanel'),close=document.getElementById('closeOnlineUsers');if(!card||!panel)return;const open=()=>panel.hidden=false;card.addEventListener('click',open);card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')open()});if(close)close.addEventListener('click',()=>panel.hidden=true);document.addEventListener('click',e=>{if(!panel.hidden&&!panel.contains(e.target)&&!card.contains(e.target))panel.hidden=true})});</script>
 
     <!-- All Admin Features -->
     <div class="card feature-launcher">

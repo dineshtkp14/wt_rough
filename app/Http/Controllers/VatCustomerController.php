@@ -15,9 +15,17 @@ class VatCustomerController extends Controller
     public function index(Request $request)
     {
         $search = trim((string) $request->query('search'));
+        if ($request->expectsJson()) {
+            return response()->json(VatCustomer::query()
+                ->when($search !== '', fn ($query) => $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")->orWhere('address', 'like', "%{$search}%")
+                        ->orWhere('pan_no', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%");
+                }))->latest()->limit(100)->get(['id', 'name', 'address', 'pan_no', 'phone']));
+        }
         $customers = VatCustomer::query()
             ->when($search !== '', fn ($query) => $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('address', 'like', "%{$search}%")
                     ->orWhere('pan_no', 'like', "%{$search}%")
                     ->orWhere('phone', 'like', "%{$search}%");
             }))
