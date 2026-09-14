@@ -1,6 +1,8 @@
 /.phpunit.cache
 /node_modules
-/public/build
+# Keep the production Vite build in deployments that use shared hosting.
+# The cPanel server does not run Vite automatically after `git pull`.
+# /public/build
 /public/hot
 /public/storage
 /storage/*.key
