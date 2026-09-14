@@ -43,7 +43,7 @@ class CustomAuthcontroller extends Controller
     public function forlogin()
     {
         if (Auth::check()) {
-            Auth::user()->forceFill(['last_logout_at' => now()])->saveQuietly();
+            if (Schema::hasColumn('users', 'last_logout_at')) Auth::user()->forceFill(['last_logout_at' => now()])->saveQuietly();
             Auth::logout(); // Log out the user
             Session::flush(); // Clear all session data
             return redirect()->route('login'); // Redirect back to /login
@@ -64,7 +64,7 @@ class CustomAuthcontroller extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
 
-            Auth::user()->forceFill(['last_login_at' => now(), 'last_activity_at' => now()])->saveQuietly();
+            if (Schema::hasColumn('users', 'last_login_at') && Schema::hasColumn('users', 'last_activity_at')) Auth::user()->forceFill(['last_login_at' => now(), 'last_activity_at' => now()])->saveQuietly();
 
             $request->session()->put('user_email', $request->email);
 
@@ -86,7 +86,7 @@ class CustomAuthcontroller extends Controller
 
     public function signup()
     {
-        if (Auth::check()) {
+        if (Auth::check() && Schema::hasColumn('users', 'last_logout_at')) {
 
             return view('registration');
         }

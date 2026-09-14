@@ -7,7 +7,8 @@
         <div class="d-flex gap-2"><a href="{{ route('vat-system.index') }}" class="btn btn-outline-secondary">Back</a><a href="{{ route('vat-system.customers.create') }}" class="btn btn-primary"><i class="fa fa-plus me-1"></i>Add Customer</a></div>
     </div>
     @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
-    <form class="mb-3" method="get" id="vatCustomerSearchForm"><div class="input-group"><input name="search" value="{{ $search }}" class="form-control" id="vatCustomerSearch" placeholder="Search by name, PAN, address or phone"><button class="btn btn-outline-primary">Search</button></div></form>
+    @if(session('error'))<div class="alert alert-warning">{{ session('error') }}</div>@endif
+    <form class="mb-3" method="get" id="vatCustomerSearchForm"><input name="search" value="{{ $search }}" class="form-control" id="vatCustomerSearch" placeholder="Search by name, PAN, address or phone"></form>
     <div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table align-middle mb-0"><thead class="table-dark"><tr><th>#</th><th>Name</th><th>Address</th><th>PAN/VAT No.</th><th>Phone</th><th class="text-end">Actions</th></tr></thead><tbody id="vatCustomerRows">
         @forelse($customers as $customer)
             <tr><td>{{ $customers->firstItem() + $loop->index }}</td><td class="fw-bold">{{ $customer->name }}</td><td>{{ $customer->address ?: '-' }}</td><td>{{ $customer->pan_no ?: '-' }}</td><td>{{ $customer->phone ?: '-' }}</td><td class="text-end"><a href="{{ route('vat-system.customers.edit', $customer) }}" class="btn btn-sm btn-warning"><i class="fa fa-pen"></i></a> <form class="d-inline" method="post" action="{{ route('vat-system.customers.destroy', $customer) }}" onsubmit="return confirm('Delete this VAT customer?');">@csrf @method('DELETE')<button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></form></td></tr>

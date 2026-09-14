@@ -5,4 +5,5 @@ class CompanyBillItem extends Model
 {
     protected $fillable = ['item_name','hs_code','unit','quantity','rate','is_taxable'];
     protected $casts = ['quantity' => 'decimal:3', 'rate' => 'decimal:2', 'is_taxable' => 'boolean'];
+    public function companyBill() { return $this->belongsTo(CompanyBill::class); }
 }

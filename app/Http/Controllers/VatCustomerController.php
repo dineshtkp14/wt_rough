@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\VatCustomer;
+use App\Models\VatFirm;
 use Illuminate\Http\Request;
 
 class VatCustomerController extends Controller
@@ -43,7 +44,7 @@ class VatCustomerController extends Controller
 
     public function store(Request $request)
     {
-        $customer = VatCustomer::create($this->validated($request) + [
+        $customer = VatCustomer::create($this->validated($request) + ['firm_id' => null,
             'added_by' => session('user_email') ?: auth()->user()?->email,
         ]);
 
@@ -64,6 +65,10 @@ class VatCustomerController extends Controller
 
     public function destroy(VatCustomer $customer)
     {
+        if ($customer->salesInvoices()->exists()) {
+            return redirect()->route('vat-system.customers.index')->with('error', 'This customer cannot be deleted because sales invoices are saved against them. Delete those invoices first.');
+        }
+
         $customer->delete();
 
         return redirect()->route('vat-system.customers.index')->with('success', 'VAT customer deleted successfully.');

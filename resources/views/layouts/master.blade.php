@@ -234,11 +234,29 @@
                 min-width: 760px;
             }
         }
+
+        /* Shared VAT workspace theme */
+        body.vat-system-shell { background: #eef4fb; color: #172554; }
+        .vat-system-shell .main-content { min-height: calc(100vh - 70px); background: #eef4fb; }
+        .vat-system-shell h1, .vat-system-shell h2, .vat-system-shell h3, .vat-system-shell h4 { color: #102f63; letter-spacing: -.02em; }
+        .vat-system-shell label, .vat-system-shell .form-label { color: #173b72; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
+        .vat-system-shell .form-control, .vat-system-shell .form-select { min-height: 42px; border: 1px solid #c8d6e8; border-radius: 9px; color: #173b72; background: #fff; transition: border-color .18s, box-shadow .18s; }
+        .vat-system-shell .form-control:focus, .vat-system-shell .form-select:focus { border-color: #2563eb; box-shadow: 0 0 0 4px rgba(37,99,235,.13); }
+        .vat-system-shell .btn { border-radius: 9px; font-weight: 800; transition: transform .15s, box-shadow .15s; }
+        .vat-system-shell .btn:hover { transform: translateY(-1px); box-shadow: 0 5px 12px rgba(23,59,114,.14); }
+        .vat-system-shell .alert { border-radius: 10px; border-width: 1px; font-weight: 600; }
+        .vat-system-shell .table-responsive { border-radius: 0 0 14px 14px; }
+        .vat-system-shell .pagination { margin: 0; gap: 4px; flex-wrap: wrap; }
+        .vat-system-shell .pagination .page-link { border: 0; border-radius: 8px; color: #173b72; font-weight: 700; }
+        .vat-system-shell .pagination .active .page-link { background: #2563eb; color: #fff; }
+        .vat-system-shell .page-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 24px; }
+        .vat-system-shell .page-title p { color: #64748b; margin: 4px 0 0; }
+        @media (max-width: 768px) { .vat-system-shell .container, .vat-system-shell .container-fluid { padding-left: 14px !important; padding-right: 14px !important; } .vat-system-shell .page-title > div:last-child { width: 100%; } .vat-system-shell .page-title .btn { width: 100%; margin: 3px 0 !important; } }
     </style>
 
 </head>
 
-<body>
+<body class="{{ request()->is('vat-system*') ? 'vat-system-shell' : '' }}">
     <button type="button" class="sidebar-collapse-btn" id="sidebarCollapseBtn" aria-label="Toggle navigation">
         <i class="fa-solid fa-bars"></i>
     </button>

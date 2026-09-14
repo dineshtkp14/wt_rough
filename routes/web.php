@@ -80,6 +80,7 @@ use App\Http\Controllers\VatSystemBillController;
 use App\Http\Controllers\CompanyBillController;
 use App\Http\Controllers\VatStockController;
 use App\Http\Controllers\VatReportController;
+use App\Http\Controllers\VatSupplierController;
 
 
 
@@ -108,10 +109,14 @@ Route::get('/cndash',[UserdashboardController::class,'cndash'])->name('cndash');
 Route::get('/userdash',[UserdashboardController::class,'index'])->name('userdash');
 Route::get('/vat-system', function () {
     abort_unless(auth()->check(), 403);
-
-    return view('vat-system.index');
+    if (!session('vat_firm_id') || !session('vat_workspace_ready')) return redirect()->route('vat-system.firm.select', ['next' => 'workspace']);
+    $firm = \App\Models\VatFirm::find(session('vat_firm_id'));
+    return view('vat-system.index', compact('firm'));
 })->name('vat-system.index');
-  Route::get('/vat-system/create', [VatSystemBillController::class, 'create'])->name('vat-system.create');
+Route::get('/vat-system/create', [VatSystemBillController::class, 'create'])->name('vat-system.create');
+Route::get('/vat-system/select-firm', [VatSystemBillController::class, 'selectFirm'])->name('vat-system.firm.select');
+Route::post('/vat-system/select-firm', [VatSystemBillController::class, 'setFirm'])->name('vat-system.firm.set');
+Route::get('/vat-system/change-firm', [VatSystemBillController::class, 'switchFirm'])->name('vat-system.firm.switch');
   Route::get('/vat-system/items/suggestions', [VatSystemBillController::class, 'itemSuggestions'])->name('vat-system.items.suggestions');
   Route::post('/vat-system/bills', [VatSystemBillController::class, 'store'])->name('vat-system.bills.store');
   Route::get('/vat-system/bills', [VatSystemBillController::class, 'index'])->name('vat-system.bills.index');
@@ -120,9 +125,14 @@ Route::get('/vat-system', function () {
   Route::delete('/vat-system/bills/{bill}', [VatSystemBillController::class, 'destroy'])->name('vat-system.bills.destroy');
   Route::get('/vat-system/bills/{bill}', [VatSystemBillController::class, 'show'])->name('vat-system.bills.show');
   Route::resource('/vat-system/company-bills', CompanyBillController::class)->names('vat-system.company-bills');
+  Route::resource('/vat-system/suppliers', VatSupplierController::class)->except(['show'])->names('vat-system.suppliers');
   Route::get('/vat-system/stock', [VatStockController::class, 'index'])->name('vat-system.stock.index');
+  Route::get('/vat-system/stock/export/pdf', [VatStockController::class, 'exportPdf'])->name('vat-system.stock.export.pdf');
+  Route::get('/vat-system/stock/export/excel', [VatStockController::class, 'exportExcel'])->name('vat-system.stock.export.excel');
   Route::post('/vat-system/stock/{stock}/adjust', [VatStockController::class, 'adjust'])->name('vat-system.stock.adjust');
+  Route::get('/vat-system/stock/{stock}/history', [VatStockController::class, 'history'])->name('vat-system.stock.history');
   Route::get('/vat-system/party-ledger', [VatReportController::class, 'customers'])->name('vat-system.party-ledger.customers');
+  Route::get('/vat-system/party-ledger/print-all', [VatReportController::class, 'printAll'])->name('vat-system.party-ledger.print-all');
   Route::get('/vat-system/party-ledger/{customer}', [VatReportController::class, 'ledger'])->name('vat-system.party-ledger');
   Route::get('/vat-system/balance-confirmation/{customer}', [VatReportController::class, 'confirmation'])->name('vat-system.balance-confirmation');
 Route::get('/vat-system/customers', [VatCustomerController::class, 'index'])->name('vat-system.customers.index');

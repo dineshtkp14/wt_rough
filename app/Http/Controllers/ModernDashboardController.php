@@ -51,8 +51,9 @@ class ModernDashboardController extends Controller
             'month_expenses'       => (float) Expense::whereMonth('date', $month)->whereYear('date', $year)->sum('amount'),
             'pending_payments'     => max(0, (float) (customerledgerdetails::sum('debit') - customerledgerdetails::sum('credit'))),
         ];
-        $onlineUsers = User::where('last_activity_at', '>=', now()->subMinutes(5))
-            ->orderBy('email')->get(['name', 'email', 'last_activity_at', 'last_login_at', 'last_logout_at']);
+        $onlineUsers = Schema::hasColumn('users', 'last_activity_at')
+            ? User::where('last_activity_at', '>=', now()->subMinutes(5))->orderBy('email')->get(['name', 'email', 'last_activity_at', 'last_login_at', 'last_logout_at'])
+            : collect();
         $stats['online_users'] = $onlineUsers->count();
 
         $todaySales = (float) invoice::whereDate('inv_date', $today)->sum('total');
