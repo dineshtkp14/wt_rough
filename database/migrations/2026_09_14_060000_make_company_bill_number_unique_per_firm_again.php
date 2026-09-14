@@ -29,13 +29,18 @@ return new class extends Migration {
             }
         }
 
-        Schema::table('company_bills', function (Blueprint $table) {
+        $hasFirmForeignKey = $this->foreignKeyExists('company_bills', 'company_bills_firm_id_foreign');
+        $hasSupplierForeignKey = $this->foreignKeyExists('company_bills', 'company_bills_supplier_id_foreign');
+        $hasSupplierUnique = $this->indexExists('company_bills', 'company_bills_supplier_bill_no_unique');
+        $hasFirmUnique = $this->indexExists('company_bills', 'company_bills_firm_bill_no_unique');
+
+        Schema::table('company_bills', function (Blueprint $table) use ($hasFirmForeignKey, $hasSupplierForeignKey, $hasSupplierUnique, $hasFirmUnique) {
             // These indexes/foreign keys may already exist when a previous
             // deployment stopped after executing part of the DDL statement.
-            $table->dropForeign(['firm_id']);
-            $table->dropForeign(['supplier_id']);
-            $table->dropUnique('company_bills_supplier_bill_no_unique');
-            $table->dropUnique('company_bills_firm_bill_no_unique');
+            if ($hasFirmForeignKey) $table->dropForeign(['firm_id']);
+            if ($hasSupplierForeignKey) $table->dropForeign(['supplier_id']);
+            if ($hasSupplierUnique) $table->dropUnique('company_bills_supplier_bill_no_unique');
+            if ($hasFirmUnique) $table->dropUnique('company_bills_firm_bill_no_unique');
             $table->unique(['firm_id', 'bill_no'], 'company_bills_firm_bill_no_unique');
             $table->foreign('firm_id')->references('id')->on('vat_firms')->cascadeOnDelete();
             $table->foreign('supplier_id')->references('id')->on('vat_suppliers')->nullOnDelete();
@@ -48,5 +53,22 @@ return new class extends Migration {
             $table->dropUnique('company_bills_firm_bill_no_unique');
             $table->unique(['supplier_id', 'bill_no'], 'company_bills_supplier_bill_no_unique');
         });
+    }
+
+    private function indexExists(string $table, string $index): bool
+    {
+        foreach (DB::select('SHOW INDEX FROM `' . str_replace('`', '``', $table) . '`') as $existingIndex) {
+            if (($existingIndex->Key_name ?? null) === $index) return true;
+        }
+
+        return false;
+    }
+
+    private function foreignKeyExists(string $table, string $foreignKey): bool
+    {
+        $row = DB::selectOne('SHOW CREATE TABLE `' . str_replace('`', '``', $table) . '`');
+        if (!$row) return false;
+
+        return str_contains(implode(' ', array_values((array) $row)), 'CONSTRAINT `' . $foreignKey . '`');
     }
 };
