@@ -30,9 +30,14 @@ return new class extends Migration {
         }
 
         Schema::table('company_bills', function (Blueprint $table) {
+            // These indexes/foreign keys may already exist when a previous
+            // deployment stopped after executing part of the DDL statement.
+            $table->dropForeign(['firm_id']);
             $table->dropForeign(['supplier_id']);
             $table->dropUnique('company_bills_supplier_bill_no_unique');
+            $table->dropUnique('company_bills_firm_bill_no_unique');
             $table->unique(['firm_id', 'bill_no'], 'company_bills_firm_bill_no_unique');
+            $table->foreign('firm_id')->references('id')->on('vat_firms')->cascadeOnDelete();
             $table->foreign('supplier_id')->references('id')->on('vat_suppliers')->nullOnDelete();
         });
     }
