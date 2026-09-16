@@ -18,6 +18,9 @@
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#173b72">
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/logo.png') }}">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon_white.png') }}" type="image/x-icon">
     <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/modern-sidebar.css') }}" rel="stylesheet">
@@ -943,6 +946,37 @@
     </script>
 
     <script src="{{ asset('assets/js/script.js') }}?v={{ filemtime(public_path('assets/js/script.js')) }}"></script>
+    <style>
+        .pwa-install-button{position:fixed;right:18px;bottom:18px;z-index:3000;border:0;border-radius:10px;padding:11px 16px;background:#173b72;color:#fff;font-weight:800;box-shadow:0 8px 20px #173b7240;display:none}
+        .pwa-install-button:hover{background:#2563eb}
+    </style>
+    <button type="button" class="pwa-install-button" id="pwaInstallButton"><i class="fa fa-download me-1"></i>Install App</button>
+    <script>
+        (function () {
+            if (!('serviceWorker' in navigator)) return;
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('{{ asset('sw.js') }}', {scope: '{{ url('/') }}/'})
+                    .catch(function (error) { console.warn('PWA service worker registration failed', error); });
+            });
+            let installPrompt;
+            const installButton = document.getElementById('pwaInstallButton');
+            window.addEventListener('beforeinstallprompt', function (event) {
+                event.preventDefault();
+                installPrompt = event;
+                if (installButton) installButton.style.display = 'block';
+            });
+            installButton?.addEventListener('click', async function () {
+                if (!installPrompt) return;
+                installPrompt.prompt();
+                await installPrompt.userChoice;
+                installPrompt = null;
+                installButton.style.display = 'none';
+            });
+            window.addEventListener('appinstalled', function () {
+                if (installButton) installButton.style.display = 'none';
+            });
+        })();
+    </script>
     {{-- <script src="{{ asset('assets/js/game.js') }}"></script> --}}
 
 </body>
