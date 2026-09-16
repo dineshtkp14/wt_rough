@@ -63,6 +63,7 @@
                 <col class="col-contact">
                 <col class="col-date">
                 <col class="col-amount">
+                <col class="col-notes">
                 <col class="col-actions">
             </colgroup>
             <thead>
@@ -74,6 +75,7 @@
                     <th>Contact No</th>
                     <th>Last Activity</th>
                     <th>Total Due Amount</th>
+                    <th>Credit List Note</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -132,6 +134,24 @@
                         <td class="amount {{ $dueAmount < 0 ? 'advance-amount' : '' }}">
                             Rs {{ number_format($dueAmount, 2) }}
                         </td>
+                        <td class="customer-note-cell">
+                            <textarea
+                                wire:model.defer="customerNotes.{{ $customer->id }}"
+                                class="customer-note-input"
+                                rows="2"
+                                maxlength="1000"
+                                placeholder="Phone wrong, call not received..."
+                            ></textarea>
+                            @error('customerNotes.' . $customer->id)
+                                <small class="customer-note-error">{{ $message }}</small>
+                            @enderror
+                            <button type="button" class="customer-note-save" wire:click="saveCustomerNote({{ $customer->id }})">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                            @if($noteSaved === $customer->id)
+                                <small class="customer-note-success">Saved</small>
+                            @endif
+                        </td>
                         <td>
                             <div class="row-actions">
                                 <a href="{{ route('clhs.returnchoosendatehistroy', ['customerid' => $customer->id]) }}" class="action-btn neutral" title="View ledger">
@@ -162,7 +182,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="empty-row">No credit customers found.</td>
+                        <td colspan="9" class="empty-row">No credit customers found.</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -236,6 +256,19 @@
                     @if(!empty($customer->credit_limit_days))
                         <span class="status-badge neutral">Limit {{ $customer->credit_limit_days }} days</span>
                     @endif
+                </div>
+
+                <div class="mobile-customer-note">
+                    <label>Credit List Note</label>
+                    <textarea
+                        wire:model.defer="customerNotes.{{ $customer->id }}"
+                        rows="2"
+                        maxlength="1000"
+                        placeholder="Add a note about this customer..."
+                    ></textarea>
+                    <button type="button" class="customer-note-save" wire:click="saveCustomerNote({{ $customer->id }})">
+                        <i class="fas fa-save"></i> Save Note
+                    </button>
                 </div>
 
                 <div class="mobile-card-actions">
@@ -619,6 +652,7 @@
         .credit-list-table .col-contact { width: 180px; }
         .credit-list-table .col-date { width: 190px; }
         .credit-list-table .col-amount { width: 190px; }
+        .credit-list-table .col-notes { width: 280px; }
         .credit-list-table .col-actions { width: 230px; }
 
         .credit-list-table thead {
@@ -710,6 +744,73 @@
             font-weight: 900;
             text-align: right;
             white-space: nowrap;
+        }
+
+        .customer-note-cell {
+            min-width: 280px;
+            background: #fffdf5;
+        }
+
+        .customer-note-input,
+        .mobile-customer-note textarea {
+            width: 100%;
+            min-height: 58px;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .customer-note-input:focus,
+        .mobile-customer-note textarea:focus {
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, .14);
+            outline: none;
+        }
+
+        .customer-note-save {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 7px;
+            padding: 6px 10px;
+            border: 0;
+            border-radius: 6px;
+            background: #0f766e;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .customer-note-save:hover {
+            background: #115e59;
+        }
+
+        .customer-note-error,
+        .customer-note-success {
+            display: block;
+            margin-top: 4px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .customer-note-error { color: #dc2626; }
+        .customer-note-success { color: #15803d; }
+
+        .mobile-customer-note {
+            padding: 0 14px 12px;
+        }
+
+        .mobile-customer-note label {
+            display: block;
+            margin-bottom: 5px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
         }
 
         .advance-amount {

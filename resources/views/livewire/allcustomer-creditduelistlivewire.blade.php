@@ -1,3 +1,24 @@
+<style>
+    .customer-note-cell {
+        min-width: 280px;
+        vertical-align: top;
+        background: #fffdf5;
+    }
+
+    .customer-note-cell textarea {
+        min-height: 58px;
+        resize: vertical;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: .9rem;
+    }
+
+    .customer-note-cell textarea:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15);
+    }
+</style>
+
 <div class="container">
     <button class="button mb-2 btn btn-primary" wire:click="generateallcustomerPDF">
         <i class="fas fa-file-pdf icon"></i> DOWNLOAD PDF
@@ -31,6 +52,12 @@
                     placeholder="Search customer name, id or phone"
                 >
             </div>
+
+            @if($noteSaved)
+                <div class="alert alert-success py-2 mb-0" role="status">
+                    Customer note saved successfully.
+                </div>
+            @endif
             
             <!-- Filter dropdown for sorting -->
             <select class="form-select float-end border-warning border border-5" style="width: 300px;" wire:model="sortBy">
@@ -58,6 +85,7 @@
                         <th>Customer Name </th>
                         <th>Total Due Amount</th>
                         <th>Date</th>
+                        <th style="min-width: 280px;">Customer Notes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,7 +104,7 @@
                                     @php
                                          $isOld = \Carbon\Carbon::parse($item->latest_date)->lte(now()->subYear());
                                      @endphp
-                                <tr>
+                                <tr wire:key="credit-customer-{{ $item->customerid }}">
                                     <td>{{ $sn++ }}</td>
                                     {{-- <td data-label="Customer Id"><b>{{ $item->customerid }}</b></td> --}}
                                     <td data-label="Customer Id">
@@ -125,12 +153,34 @@
                                         </small>
                                 </b></td>
 
+                                    <td data-label="Customer Notes" class="customer-note-cell">
+                                        <textarea
+                                            wire:model.defer="customerNotes.{{ $item->customerid }}"
+                                            class="form-control form-control-sm"
+                                            rows="2"
+                                            maxlength="1000"
+                                            placeholder="Add a note about this customer..."
+                                        ></textarea>
+                                        @if($errors->has('customerNotes.' . $item->customerid))
+                                            <small class="text-danger d-block mt-1">
+                                                {{ $errors->first('customerNotes.' . $item->customerid) }}
+                                            </small>
+                                        @endif
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-primary mt-2"
+                                            wire:click="saveCustomerNote({{ $item->customerid }})"
+                                        >
+                                            <i class="fas fa-save me-1"></i> Save Note
+                                        </button>
+                                    </td>
+
                                 </tr>
                             @endif
                         @endforeach
                     @else
                         <tr>
-                            <td colspan="4"><h3>No Record Found !!!!</h3></td>
+                            <td colspan="6"><h3>No Record Found !!!!</h3></td>
                         </tr>
                     @endif
                 </tbody>

@@ -371,7 +371,81 @@
     <script>
 
 $(document).ready(function () {
-        $('.invoice-create-page form').on('submit', function () {
+        $('.invoice-create-page form').on('submit', function (event) {
+            const invalidRow = salesData.find(function (row) {
+                const rowElement = $("#inputRow" + row.id);
+                const product = String(row.product || "").trim();
+                const unstocked = String(rowElement.find("#unstockedInput").val() || row.unstocked || "").trim();
+                const quantity = String(rowElement.find("#quantityInput").val() || row.quantity || "").trim();
+                const price = String(rowElement.find("#priceInput").val() || row.price || "").trim();
+                const unit = String(rowElement.find("#unitInput").val() || row.unit || "").trim().toLowerCase();
+
+                row.unstocked = unstocked;
+                row.quantity = quantity;
+                row.price = price;
+                row.unit = unit;
+
+                return (product === "" && unstocked === "")
+                    || quantity === ""
+                    || !Number.isFinite(Number(quantity))
+                    || Number(quantity) <= 0
+                    || price === ""
+                    || !Number.isFinite(Number(price))
+                    || Number(price) < 0
+                    || unit === ""
+                    || unit === "choose"
+                    || unit === "select";
+            });
+
+            if (invalidRow) {
+                event.preventDefault();
+                const rowElement = $("#inputRow" + invalidRow.id);
+                const product = String(invalidRow.product || "").trim();
+                const unstocked = String(rowElement.find("#unstockedInput").val() || "").trim();
+                const quantity = String(rowElement.find("#quantityInput").val() || "").trim();
+                const price = String(rowElement.find("#priceInput").val() || "").trim();
+                const unit = String(rowElement.find("#unitInput").val() || "").trim().toLowerCase();
+                let field = rowElement.find("#unstockedInput");
+                let message = "Please select an item or enter an unstocked item before saving.";
+
+                if (product === "" && unstocked === "") {
+                    field = rowElement.find("#unstockedInput");
+                } else if (quantity === "" || !Number.isFinite(Number(quantity)) || Number(quantity) <= 0) {
+                    field = rowElement.find("#quantityInput");
+                    message = "Please enter a valid quantity before saving.";
+                } else if (price === "" || !Number.isFinite(Number(price)) || Number(price) < 0) {
+                    field = rowElement.find("#priceInput");
+                    message = "Please enter a valid price before saving.";
+                } else if (unit === "" || unit === "choose" || unit === "select") {
+                    field = rowElement.find("#unitInput");
+                    message = "Please select a unit before saving.";
+                }
+
+                setInvoiceError(message, field);
+                field.focus();
+                return;
+            }
+
+            const invalidUnitRow = salesData.find(function (row) {
+                const unit = String(row.unit || "").trim().toLowerCase();
+                return unit === "" || unit === "choose" || unit === "select";
+            });
+
+            if (invalidUnitRow) {
+                event.preventDefault();
+                const invalidField = $("#inputRow" + invalidUnitRow.id + " #unitInput");
+                setInvoiceError("Please select a unit before saving.", invalidField);
+                invalidField.focus();
+                $("#submitBtn").prop("disabled", false);
+                return;
+            }
+
+            // Keep the hidden JSON fields synchronized with the latest rows.
+            // This prevents an item selected after Verify from being omitted.
+            $("#salesArrInput").val(JSON.stringify(salesData));
+            finalData[0]["note"] = $("#noteInput").val().trim();
+            $("#finalArrInput").val(JSON.stringify(finalData));
+
             $('#invoiceSubmitOverlay').css('display', 'flex');
             $('#submitBtn')
                 .prop('disabled', true)
@@ -1613,6 +1687,46 @@ $(document).ready(function () {
             }
         }
         
+        /* Keep the item picker large and close to the row that opened it. */
+        #modalContainer {
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        #modalContainer .modal-box {
+            width: min(600px, calc(100vw - 32px));
+            min-width: 0;
+            padding: 26px 28px 30px;
+            border: 1px solid #dbe4f0;
+            border-radius: 12px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, .24);
+        }
+
+        #modalContainer .modal-box .title {
+            margin-bottom: 18px !important;
+        }
+
+        #modalContainer .modal-box .title h1 {
+            color: #172033;
+            font-size: 22px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        #searchProductInput {
+            height: 50px;
+            padding-left: 42px;
+            border: 1px solid #94a3b8;
+            border-radius: 8px;
+            font-size: 17px;
+        }
+
+        @media (max-width: 700px) {
+            #modalContainer .modal-box {
+                width: calc(100vw - 28px);
+                padding: 22px 18px 24px;
+            }
+        }
     </style>
 
 @stop

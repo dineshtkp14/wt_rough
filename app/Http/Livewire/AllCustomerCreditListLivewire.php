@@ -4,6 +4,8 @@ namespace App\Http\Livewire;
 
 use App\Helpers\InvoiceSmsHelper;
 use App\Models\customerledgerdetails;
+use App\Models\customerinfo;
+use App\Models\Trackcustomerinfos;
 use App\Models\TrackCustomerLedger;
 use App\Services\CustomerSmsNotifier;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
@@ -33,6 +35,8 @@ class AllCustomerCreditListLivewire extends Component
     public $quickPaymentMode = 'CASH';
     public $quickPaymentNotes = '';
     public $quickPaymentNilAccount = false;
+    public $customerNotes = [];
+    public $noteSaved = null;
 
     public function updatingSearchTerm()
     {
@@ -194,6 +198,12 @@ class AllCustomerCreditListLivewire extends Component
 
         $customers = $query->paginate(100);
 
+        foreach ($customers as $customer) {
+            if (!array_key_exists($customer->id, $this->customerNotes)) {
+                $this->customerNotes[$customer->id] = (string) ($customer->credit_list_note ?? '');
+            }
+        }
+
         [$ledgerTotalsForTotal, $creditNoteTotalsForTotal] = $this->creditSummarySubqueries();
         $totalQuery = $this->buildCustomerCreditQuery($ledgerTotalsForTotal, $creditNoteTotalsForTotal);
         $this->applyFilters($totalQuery);
@@ -351,6 +361,12 @@ class AllCustomerCreditListLivewire extends Component
             $selectColumns[] = 'c.last_credit_reminder_sent_at';
         }
 
+        // Keep the page readable during deployment before the note migration
+        // has been executed on the server.
+        if (Schema::hasColumn('customerinfos', 'credit_list_note')) {
+            $selectColumns[] = 'c.credit_list_note';
+        }
+
         return DB::table('customerinfos as c')
             ->leftJoinSub($ledgerTotals, 'lt', function ($join) {
                 $join->on('lt.customerid', '=', 'c.id');
@@ -359,6 +375,41 @@ class AllCustomerCreditListLivewire extends Component
                 $join->on('cnt.customerid', '=', 'c.id');
             })
             ->select($selectColumns);
+    }
+
+    public function saveCustomerNote(int $customerId): void
+    {
+        if (!Auth::check()) {
+            return;
+        }
+
+        if (!Schema::hasColumn('customerinfos', 'credit_list_note')) {
+            $this->addError('customerNotes.' . $customerId, 'Run the latest database migration before saving notes.');
+            return;
+        }
+
+        $note = (string) ($this->customerNotes[$customerId] ?? '');
+        $this->validate([
+            'customerNotes.' . $customerId => 'nullable|string|max:1000',
+        ]);
+
+        $customer = customerinfo::findOrFail($customerId);
+        $oldNote = (string) ($customer->credit_list_note ?? '');
+
+        if ($oldNote !== $note) {
+            $customer->credit_list_note = $note !== '' ? $note : null;
+            $customer->save();
+
+            Trackcustomerinfos::create([
+                'title' => 'Customer note updated',
+                'updated_by' => session('user_email') ?: Auth::user()->email,
+                'notes' => "Customer ID: {$customer->id} ({$customer->name}). Old note: "
+                    . ($oldNote !== '' ? $oldNote : '[empty]')
+                    . '. New note: ' . ($note !== '' ? $note : '[empty]'),
+            ]);
+        }
+
+        $this->noteSaved = $customerId;
     }
 
     private function applyFilters($query)

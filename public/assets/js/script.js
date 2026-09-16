@@ -1037,6 +1037,34 @@ function selectProduct() {
         getProductData();
 
         $("#modalWrapper").show();
+
+        // Put the cursor in the item search immediately when the picker opens.
+        // A short delay lets the modal become visible before focusing it.
+        window.setTimeout(function () {
+            const modalBox = $("#modalContainer .modal-box")[0];
+            const anchorRect = currentLink && currentLink.getBoundingClientRect
+                ? currentLink.getBoundingClientRect()
+                : null;
+
+            if (modalBox && anchorRect && window.innerWidth > 700) {
+                const gap = 10;
+                const boxRect = modalBox.getBoundingClientRect();
+                const top = Math.min(
+                    Math.max(anchorRect.bottom + gap, 16),
+                    window.innerHeight - boxRect.height - 16
+                );
+                const left = Math.min(
+                    Math.max(anchorRect.left, 16),
+                    window.innerWidth - boxRect.width - 16
+                );
+
+                modalBox.style.position = "fixed";
+                modalBox.style.top = top + "px";
+                modalBox.style.left = left + "px";
+            }
+
+            $("#searchProductInput").trigger("focus").select();
+        }, 50);
     });
 }
 
@@ -1371,6 +1399,8 @@ $(window).on("load", function () {
     $("#addRowBtn").on("click", function (e) {
         e.preventDefault();
         appendInputRow();
+        // A new row invalidates the previous verification.
+        resetInvoiceVerification();
     });
 
     $("#percentSystemToggle").on("click", function () {
@@ -1416,6 +1446,18 @@ $(window).on("load", function () {
         } else {
             $.each(salesData, function (index, value) {
                 const row = $(`#inputRow${value.id}`);
+                const selectedUnit = String(row.find("#unitInput").val() || "").trim();
+
+                // Read the actual dropdown value again so validation cannot
+                // use stale salesData after a row is added or edited.
+                if (selectedUnit !== "") {
+                    value.unit = selectedUnit;
+                }
+
+                if (selectedUnit !== "" && selectedUnit !== "choose" && selectedUnit !== "select") {
+                    row.find("#unitInput").removeClass("invoice-field-invalid");
+                    row.find("#unitInput").next(".field-error-text").remove();
+                }
                 if (
                     value.product.trim() === "" &&
                     value.unstocked.trim() === ""

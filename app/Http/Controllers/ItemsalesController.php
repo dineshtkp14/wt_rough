@@ -114,6 +114,38 @@ class ItemsalesController extends Controller
             return redirect()->route('itemsales.create')->with('error', 'Please verify invoice details before saving.');
         }
 
+        foreach ($sales_arr as $row) {
+            $product = trim((string) ($row->product ?? ''));
+            $unstocked = trim((string) ($row->unstocked ?? ''));
+            $quantity = $row->quantity ?? null;
+            $price = $row->price ?? null;
+            $unit = strtolower(trim((string) ($row->unit ?? '')));
+
+            if ($product === '' && $unstocked === '') {
+                return redirect()->route('itemsales.create')
+                    ->with('error', 'Please select an item or enter an unstocked item before saving.')
+                    ->withInput();
+            }
+
+            if (!is_numeric($quantity) || (float) $quantity <= 0) {
+                return redirect()->route('itemsales.create')
+                    ->with('error', 'Please enter a valid quantity for every invoice item.')
+                    ->withInput();
+            }
+
+            if (!is_numeric($price) || (float) $price < 0) {
+                return redirect()->route('itemsales.create')
+                    ->with('error', 'Please enter a valid price for every invoice item.')
+                    ->withInput();
+            }
+
+            if ($unit === '' || in_array($unit, ['choose', 'select'], true)) {
+                return redirect()->route('itemsales.create')
+                    ->with('error', 'Please select a unit for every invoice item before saving.')
+                    ->withInput();
+            }
+        }
+
         $customerId = $final_arr[0]->customer ?? null;
         $creditLimitDays = null;
 

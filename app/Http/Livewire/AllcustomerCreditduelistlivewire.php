@@ -4,6 +4,8 @@
 namespace App\Http\Livewire;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use App\Models\customerledgerdetails;
 use App\Models\customerinfo;
 use Livewire\Component;
@@ -16,6 +18,8 @@ class AllcustomerCreditduelistlivewire extends Component
     protected $paginationTheme = 'bootstrap';
     public $searchTerm = "";
     public $sortBy = '';
+    public $customerNotes = [];
+    public $noteSaved = null;
 
     public function updatingSearchTerm()
     {
@@ -110,6 +114,12 @@ return $item->debit_credit_difference < 0;
         // Paginate the results
         $allResults = $query->paginate(1000);
 
+        foreach ($allResults as $result) {
+            if (!array_key_exists($result->customerid, $this->customerNotes)) {
+                $this->customerNotes[$result->customerid] = (string) ($result->remarks ?? '');
+            }
+        }
+
     
 
 
@@ -186,6 +196,7 @@ return $item->debit_credit_difference >= 0; // Only consider positive or zero va
                 'c.phoneno as cphoneno',
                 'c.address',
                 'c.type as ctype',
+                'c.remarks',
                 'lt.latest_date',
                 'lt.latest_credit_date',
                 'lt.credit_limit_days',
@@ -195,6 +206,42 @@ return $item->debit_credit_difference >= 0; // Only consider positive or zero va
                 DB::raw('(COALESCE(lt.total_debit, 0) - COALESCE(lt.total_credit, 0) - COALESCE(cnt.credit_note_credit, 0)) as debit_credit_difference')
             )
             ->havingRaw('ABS(debit_credit_difference) > 0.004');
+    }
+
+    public function saveCustomerNote(int $customerId): void
+    {
+        if (!Auth::check()) {
+            return;
+        }
+
+        $note = (string) ($this->customerNotes[$customerId] ?? '');
+        $validator = Validator::make(['note' => $note], [
+            'note' => 'nullable|string|max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            $this->addError('customerNotes.' . $customerId, $validator->errors()->first('note'));
+            return;
+        }
+
+        $customer = customerinfo::findOrFail($customerId);
+        $oldNote = (string) ($customer->remarks ?? '');
+
+        if ($oldNote !== $note) {
+            $customer->remarks = $note !== '' ? $note : null;
+            $customer->save();
+
+            \App\Models\Trackcustomerinfos::create([
+                'title' => 'Customer note updated',
+                'updated_by' => session('user_email') ?: Auth::user()->email,
+                'notes' => "Customer ID: {$customer->id} ({$customer->name}). Old note: "
+                    . ($oldNote !== '' ? $oldNote : '[empty]')
+                    . '. New note: ' . ($note !== '' ? $note : '[empty]'),
+            ]);
+        }
+
+        $this->noteSaved = $customerId;
+        $this->dispatchBrowserEvent('customer-note-saved', ['customerId' => $customerId]);
     }
 
     private function applySearch($query)

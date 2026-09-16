@@ -1,8 +1,17 @@
 @extends('layouts.master')
 @section('content')
-@php($editing = isset($bill))
-@php($activeFirm = $activeFirm ?? null)
-@php($selectedFirm = old('firm_id', $bill->firm_id ?? ($activeFirm?->id ?? '')))
+@php
+    $editing = isset($bill);
+    $activeFirm = $activeFirm ?? null;
+    $selectedFirm = old('firm_id', isset($bill) ? $bill->firm_id : ($activeFirm?->id ?? ''));
+    $initialBsDate = old('bill_date_bs');
+    if (!$initialBsDate) {
+        $initialBsDate = isset($bill)
+            ? \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'), 'en')
+            : \App\Support\NepaliDate::adToBsString(now()->format('Y-m-d'), 'en');
+    }
+    $initialBillDateMode = old('bill_date_mode', 'bs');
+@endphp
 <style>
 #vatBillForm>.firm-display{display:flex!important;width:100%;margin:0 0 14px!important;justify-content:center!important;text-align:center!important;position:relative!important}
 #vatBillForm>.firm-display i{position:absolute!important;left:18px!important}
@@ -156,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
 .vat-create .is-invalid:focus{border-color:#dc3545!important;box-shadow:0 0 0 3px rgba(220,53,69,.18)!important}
 .vat-create label.field-invalid{color:#dc3545!important}
 .customer-search-wrap.is-invalid{border:2px solid #dc3545!important;box-shadow:0 0 0 3px rgba(220,53,69,.12)!important}
+.vat-create .client-validation-error{display:block;color:#dc3545;font-size:11px;font-weight:700;margin-top:4px}
 </style>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -165,9 +175,58 @@ document.addEventListener('DOMContentLoaded', function () {
     const customerWrap = form.querySelector('.customer-search-wrap');
     const customerInput = customerWrap?.querySelector('input[type="search"]');
 
-    const markField = function (field) {
-        field.classList.toggle('is-invalid', !field.checkValidity());
-        field.closest('[class*="col-"]')?.querySelector('label')?.classList.toggle('field-invalid', !field.checkValidity());
+    const errorText = function (field) {
+        if (field.name === 'bill_date_bs') return 'Enter a valid Nepali date (YYYY-MM-DD).';
+        if (field.name?.includes('[unit]')) return 'Unit is required.';
+        if (field.name?.includes('[quantity]')) return 'Enter a quantity greater than 0.';
+        if (field.name?.includes('[rate]')) return 'Enter a valid rate.';
+        return field.validationMessage || 'This field is required.';
+    };
+
+    const showError = function (field, message) {
+        field.classList.add('is-invalid');
+        field.closest('[class*="col-"]')?.querySelector('label')?.classList.add('field-invalid');
+        let error = field.nextElementSibling;
+        if (!error?.classList.contains('client-validation-error')) {
+            error = document.createElement('small');
+            error.className = 'client-validation-error';
+            field.after(error);
+        }
+        error.textContent = message || errorText(field);
+    };
+
+    const clearError = function (field) {
+        field.classList.remove('is-invalid');
+        field.closest('[class*="col-"]')?.querySelector('label')?.classList.remove('field-invalid');
+        if (field.nextElementSibling?.classList.contains('client-validation-error')) {
+            field.nextElementSibling.remove();
+        }
+    };
+
+    const validBsDate = function (value) {
+        const match = String(value || '').trim().match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        if (!match) return false;
+        const year = Number(match[1]);
+        const month = Number(match[2]);
+        const day = Number(match[3]);
+        return year >= 1970 && year <= 2200 && month >= 1 && month <= 12 && day >= 1 && day <= 32;
+    };
+
+    const validateField = function (field) {
+        if (field.name === 'bill_date_bs' && form.querySelector('[name="bill_date_mode"]')?.value === 'bs') {
+            if (!validBsDate(field.value)) {
+                showError(field);
+                return false;
+            }
+            clearError(field);
+            return true;
+        }
+        if (!field.checkValidity()) {
+            showError(field);
+            return false;
+        }
+        clearError(field);
+        return true;
     };
 
     form.addEventListener('submit', function (event) {
@@ -179,11 +238,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 .find(option => (option.dataset.name || '').trim().toLowerCase() === typed);
             if (exact) customerSelect.value = exact.dataset.id || '';
         }
+        const bsInput = form.querySelector('[name="bill_date_bs"]');
         const fields = Array.from(form.querySelectorAll('input[required], select[required], textarea[required]'));
+        if (bsInput && form.querySelector('[name="bill_date_mode"]')?.value === 'bs') fields.push(bsInput);
         let firstInvalid = null;
         fields.forEach(function (field) {
-            markField(field);
-            if (!field.checkValidity() && !firstInvalid) firstInvalid = field;
+            if (!validateField(field) && !firstInvalid) firstInvalid = field;
         });
         if (!firstInvalid) return;
         event.preventDefault();
@@ -195,8 +255,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     form.addEventListener('input', function (event) {
         if (!event.target.matches('input, select, textarea')) return;
-        markField(event.target);
+        validateField(event.target);
         if (event.target === customerInput && customerSelect?.value) customerWrap?.classList.remove('is-invalid');
+    });
+
+    form.addEventListener('change', function (event) {
+        if (event.target.matches('input, select, textarea')) validateField(event.target);
     });
 });
 </script>
@@ -227,6 +291,63 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+<style>
+    .vat-date-mode-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .vat-date-mode-row select{max-width:145px;flex:0 0 145px}
+    .vat-date-mode-row input{flex:1 1 180px;min-width:0}
+    .vat-date-mode-row .client-validation-error{flex:0 0 100%;margin-left:153px;margin-top:-3px}
+    .vat-date-help{display:block;margin-top:5px;color:#52719a;font-size:11px;font-weight:700}
+    @media(max-width:600px){.vat-date-mode-row{display:block}.vat-date-mode-row select{max-width:none;width:100%;margin-bottom:7px}.vat-date-mode-row input{width:100%}.vat-date-mode-row .client-validation-error{margin-left:0}}
+</style>
 <style>.vat-create input[name="payment_mode"]{display:none!important}</style>
 <script>document.addEventListener('DOMContentLoaded',function(){const field=document.querySelector('.vat-create [name="payment_mode"]');const group=field?.closest('[class*="col-"]');if(group)group.style.display='none';});</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const adInput = document.querySelector('.vat-create [name="bill_date"]');
+    if (!adInput) return;
+
+    const dateGroup = adInput.closest('[class*="col-"]');
+    if (!dateGroup || dateGroup.querySelector('.vat-date-mode-row')) return;
+
+    const initialBsDate = @json($initialBsDate);
+    const initialMode = @json($initialBillDateMode);
+    const modeSelect = document.createElement('select');
+    modeSelect.name = 'bill_date_mode';
+    modeSelect.className = 'form-select';
+    modeSelect.innerHTML = '<option value="ad">English (A.D.)</option><option value="bs">Nepali (B.S.)</option>';
+
+    const bsInput = document.createElement('input');
+    bsInput.type = 'text';
+    bsInput.name = 'bill_date_bs';
+    bsInput.className = 'form-control';
+    bsInput.placeholder = 'YYYY-MM-DD (e.g. 2083-06-31)';
+    bsInput.inputMode = 'numeric';
+    bsInput.maxLength = 10;
+    bsInput.value = initialBsDate;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'vat-date-mode-row';
+    adInput.parentNode.insertBefore(wrapper, adInput);
+    wrapper.appendChild(modeSelect);
+    wrapper.appendChild(adInput);
+    wrapper.appendChild(bsInput);
+
+    const help = document.createElement('small');
+    help.className = 'vat-date-help';
+    dateGroup.appendChild(help);
+
+    function syncDateMode() {
+        const nepali = modeSelect.value === 'bs';
+        adInput.style.display = nepali ? 'none' : '';
+        bsInput.style.display = nepali ? '' : 'none';
+        help.textContent = nepali
+            ? 'Enter Nepali date (B.S.). It will be converted automatically when saved.'
+            : 'Date is saved internally in English (A.D.) format.';
+    }
+
+    modeSelect.value = initialMode === 'bs' ? 'bs' : 'ad';
+    modeSelect.addEventListener('change', syncDateMode);
+    syncDateMode();
+});
+</script>
 @endsection

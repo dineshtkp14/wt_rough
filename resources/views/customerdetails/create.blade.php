@@ -160,7 +160,7 @@
                     Amount <span style="color: red;">*</span>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( Old due amount: <span id="totaldueamountfornotclear" class="text-danger fw-bold"></span> )
                 </label>                
-                <input autocomplete="off" id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount', request('amount')) }}" style="font-weight: bold;font-size: 20px;"  >
+                <input autocomplete="off" id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" placeholder="Enter payment amount" style="font-weight: bold;font-size: 20px;"  >
                 @error('amount')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror

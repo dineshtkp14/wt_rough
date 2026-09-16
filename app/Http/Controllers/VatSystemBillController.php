@@ -102,6 +102,7 @@ class VatSystemBillController extends Controller
     {
         $firm = $this->firmOrRedirect('sales');
         $request->merge(['firm_id' => $firm->id]);
+        $this->normalizeBillDate($request);
         $data = $request->validate([
             'customer_id' => ['required', 'exists:vat_customers,id'],
             'firm_id' => ['required', Rule::exists('vat_firms', 'id')->where(fn ($query) => $query->where('is_active', true))],
@@ -146,6 +147,7 @@ class VatSystemBillController extends Controller
     {
         abort_unless((int) $bill->firm_id === (int) session('vat_firm_id'), 404);
         $request->merge(['firm_id' => $this->firmOrRedirect('sales')->id]);
+        $this->normalizeBillDate($request);
         $data = $this->validatedBill($request, [Rule::unique('vat_system_bills', 'bill_no')->where(fn($query) => $query->where('firm_id', session('vat_firm_id')))->ignore($bill->id)]);
 
         DB::transaction(function () use ($data, $bill) {
@@ -181,6 +183,30 @@ class VatSystemBillController extends Controller
             'items.*.quantity' => ['required', 'numeric', 'gt:0'], 'items.*.rate' => ['required', 'numeric', 'min:0'],
             'items.*.is_taxable' => ['nullable', 'boolean'],
         ]);
+    }
+
+    private function normalizeBillDate(Request $request): void
+    {
+        if ($request->input('bill_date_mode') !== 'bs') {
+            return;
+        }
+
+        $bsDate = trim((string) $request->input('bill_date_bs'));
+        if (!preg_match('/^(\\d{4})-(\\d{1,2})-(\\d{1,2})$/', $bsDate, $matches)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'bill_date_bs' => 'Enter a valid Nepali date in YYYY-MM-DD format.',
+            ]);
+        }
+
+        try {
+            $request->merge([
+                'bill_date' => NepaliDate::bsToAdString((int) $matches[1], (int) $matches[2], (int) $matches[3]),
+            ]);
+        } catch (\Throwable $exception) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'bill_date_bs' => 'The selected Nepali date is not valid.',
+            ]);
+        }
     }
 
     private function firmOrRedirect(string $next): VatFirm
