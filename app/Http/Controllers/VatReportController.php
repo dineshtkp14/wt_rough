@@ -7,6 +7,7 @@ use App\Models\VatFirm;
 use App\Support\NepaliDate;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class VatReportController extends Controller
 {
@@ -44,6 +45,8 @@ class VatReportController extends Controller
         $periodFrom = $request->date_from ?: optional($bills->min('bill_date'))->format('Y-m-d');
         $periodTo = $request->date_to ?: optional($bills->max('bill_date'))->format('Y-m-d');
         [$periodFrom, $periodTo] = $this->fiscalDates($request->query('fiscal_year', $this->currentFiscalYear()));
+        $periodFromBs = NepaliDate::adToBsString($periodFrom, 'en');
+        $periodToBs = NepaliDate::adToBsString($periodTo, 'en');
         $bsDate = NepaliDate::adToBsString(now()->toDateString(), 'en');
         $balanceSessionKey = 'vat_confirmation_balance_'.$customer->id;
         $savedBalances = session($balanceSessionKey, []);
@@ -59,7 +62,14 @@ class VatReportController extends Controller
         $openingBalance = $savedBalances['opening'] ?? 0;
         $closingBalance = $savedBalances['closing'] ?? $total;
         $fiscalYear = $request->query('fiscal_year', session('vat_report_fiscal_year', $this->currentFiscalYear()));
-        return view('vat-system.reports.confirmation', compact('customer','bills','total','firm','taxableSales','nonTaxableSales','vatAmount','periodFrom','periodTo','bsDate','openingBalance','closingBalance','fiscalYear'));
+        return view('vat-system.reports.confirmation', compact('customer','bills','total','firm','taxableSales','nonTaxableSales','vatAmount','periodFrom','periodTo','periodFromBs','periodToBs','bsDate','openingBalance','closingBalance','fiscalYear'));
+    }
+    public function confirmationPdf(Request $request, VatCustomer $customer) {
+        $view = $this->confirmation($request, $customer);
+        return Pdf::setOptions(['dpi' => 150, 'defaultFont' => 'DejaVu Sans'])
+            ->loadView('vat-system.reports.confirmation-pdf', $view->getData())
+            ->setPaper('a4', 'portrait')
+            ->download('balance-confirmation-'.$customer->id.'.pdf');
     }
     private function bills(Request $request,VatCustomer $customer){[$from,$to]=$this->fiscalDates($request->query('fiscal_year',session('vat_report_fiscal_year',$this->currentFiscalYear())));return VatSystemBill::with('items')->where('customer_id',$customer->id)->when(session('vat_firm_id'),fn($q,$firmId)=>$q->where('firm_id',$firmId))->whereDate('bill_date','>=',$from)->whereDate('bill_date','<=',$to)->latest('bill_date')->latest('id');}
     private function currentFiscalYear(): string { $bs=explode('-',NepaliDate::adToBsString(now()->toDateString(),'en')); $year=(int)$bs[0]; return sprintf('%d/%02d',$bs[1] >= 4 ? $year : $year-1, ($bs[1] >= 4 ? $year+1 : $year)%100); }

@@ -436,6 +436,10 @@ class CustomerLedgerHistroy extends Controller
          $pdf = FacadePdf::setOptions(['dpi' => 150, 'defaultFont' => 'dejavu serif'])
              ->loadHtml($pdfview)
              ->setPaper('a4', 'landscape');
+
+         $customerName = optional($afn->first())->name ?: 'customer';
+         $customerFilename = trim((string) preg_replace('/[^A-Za-z0-9]+/', '-', $customerName), '-');
+         $customerFilename = ($customerFilename ?: 'customer') . '-customer-ledger-statement.pdf';
  
          // Save the PDF to a temporary file
          $pdfFile = tempnam(sys_get_temp_dir(), 'invoice');
@@ -444,7 +448,7 @@ class CustomerLedgerHistroy extends Controller
          // Send headers to instruct the browser to open the PDF in a new tab
          return response()->file($pdfFile, [
              'Content-Type' => 'application/pdf',
-             'Content-Disposition' => 'inline; filename="onlycreditinvoice.pdf"',
+             'Content-Disposition' => 'inline; filename="'.$customerFilename.'"',
          ]);
      }
  
@@ -1127,8 +1131,11 @@ class CustomerLedgerHistroy extends Controller
                 'qrCodeDataUri'  => $qrCodeDataUri,
             ])
             ->setPaper('A5', 'portrait');
-        
-        return $pdf->stream('invoice.pdf');
+
+        $customerName = optional(($customerinfodetails ?? collect())->first())->name ?: 'customer';
+        $customerFilename = trim((string) preg_replace('/[^A-Za-z0-9]+/', '-', $customerName), '-');
+        $customerFilename = ($customerFilename ?: 'customer') . '-invoice-' . $invoiceid . '.pdf';
+        return $pdf->stream($customerFilename);
 
             }
     }

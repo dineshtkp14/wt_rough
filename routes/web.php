@@ -135,6 +135,7 @@ Route::get('/vat-system/change-firm', [VatSystemBillController::class, 'switchFi
   Route::get('/vat-system/party-ledger/print-all', [VatReportController::class, 'printAll'])->name('vat-system.party-ledger.print-all');
   Route::get('/vat-system/party-ledger/{customer}', [VatReportController::class, 'ledger'])->name('vat-system.party-ledger');
   Route::get('/vat-system/balance-confirmation/{customer}', [VatReportController::class, 'confirmation'])->name('vat-system.balance-confirmation');
+  Route::get('/vat-system/balance-confirmation/{customer}/pdf', [VatReportController::class, 'confirmationPdf'])->name('vat-system.balance-confirmation.pdf');
 Route::get('/vat-system/customers', [VatCustomerController::class, 'index'])->name('vat-system.customers.index');
 Route::get('/vat-system/customers/create', [VatCustomerController::class, 'create'])->name('vat-system.customers.create');
 Route::post('/vat-system/customers', [VatCustomerController::class, 'store'])->name('vat-system.customers.store');
