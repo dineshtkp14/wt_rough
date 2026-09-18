@@ -39,12 +39,12 @@ if (!function_exists('convertNumberToWords')) {
         }
 
         if ($num >= 20) {
-            $words .= $tens[floor($num / 10)] . " ";
+            $words .= $tens[(int) floor($num / 10)] . " ";
             $num %= 10;
         }
 
         if ($num > 0) {
-            $words .= $ones[$num] . " ";
+            $words .= $ones[(int) $num] . " ";
         }
 
         return $words;

@@ -98,11 +98,8 @@
     .watermark{
       position:fixed; top:45%; left:35%;
       transform:rotate(-45deg);
-      font-size:120px; opacity:.1; color:gray; pointer-events:none;
+      font-size:120px; opacity:.05; color:#8ea3bb; letter-spacing:10px; pointer-events:none;
     }
-    .invoice-qr{ float:right; text-align:center; margin:0 6px 0 18px; width:96px; }
-    .invoice-qr img{ width:78px; height:78px; display:block; margin:0 auto 3px; }
-    .invoice-qr span{ font-size:9px; white-space:nowrap; }
     .clearfix::after{ content:""; display:block; clear:both; }
   </style>
 </head>
@@ -164,22 +161,12 @@
       @endif
     </div>
 
-    @if($customerType !== 'shop')
-      <div class="address-info">
-        <p><strong>Address:</strong> Tikapur, Kailali (in front of Tikapur Police Station)</p>
-        <p><strong>Mobile No:</strong> 9860378262, 9848448624, 9812656284</p>
-      </div>
-    @endif
-
     <div class="invoice-info clearfix">
       <div class="firstdiv">
         @if(isset($forinvoicetype) && !empty($forinvoicetype))
-          @if($forinvoicetype->invoicetype == 'credit')
-            <p style="background:#000;color:#fff;padding:6px 10px;font-size:16px;">Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
-          @else
-            <p>Invoice Type: {{ $forinvoicetype->invoicetype }}</p>
+          @if(strtolower((string) $forinvoicetype->invoicetype) === 'credit')
+            <p style="background:#000;color:#fff;padding:6px 10px;font-size:16px;">CR</p>
           @endif
-
           <p class="date-line">Date: {{ $forinvoicetype->date }} {{ $invoiceTime }}</p>
 
           <p class="label-nep miti-line">
@@ -292,13 +279,6 @@
 
     @if($isLastPage && $invoice)
       <br>
-      @if(!empty($qrCodeDataUri))
-        <div class="invoice-qr">
-          <img src="{{ $qrCodeDataUri }}" alt="Invoice QR code">
-          <span>Scan invoice details</span>
-        </div>
-      @endif
-      <p>Bill Created_by: {{ $invoice->added_by }}</p>
       <p style="font-size:13px;">Printed Time and Date:
         <span style="color:#4b4b4b;">{{ date('Y-m-d H:i:s') }}</span>
       </p>

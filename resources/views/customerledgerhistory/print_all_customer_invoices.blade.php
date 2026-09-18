@@ -273,7 +273,6 @@
         </table>
         
         <div class="footer-info">
-            <p>Bill Created_by: {{ $data['invoice']->added_by ?? 'System' }}</p>
             <p style="font-size: 9px; color: #666;">Printed Time and Date: {{ date('Y-m-d H:i:s') }}</p>
         </div>
     </div>
