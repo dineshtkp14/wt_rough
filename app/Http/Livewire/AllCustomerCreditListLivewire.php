@@ -451,6 +451,10 @@ class AllCustomerCreditListLivewire extends Component
             $query->whereDate('lt.latest_date', '<=', now()->subDays(45)->toDateString());
         }
 
+        if ($this->sortBy === 'more_than_90_days') {
+            $query->whereDate('lt.latest_date', '<=', now()->subDays(90)->toDateString());
+        }
+
         if ($this->sortBy === 'credit_time_expired') {
             $query->whereNotNull('lt.latest_credit_date')
                 ->whereNotNull('lt.credit_limit_days')
@@ -493,6 +497,7 @@ class AllCustomerCreditListLivewire extends Component
             'customer' => 'Customer Only',
             'advance_deposit' => 'Advance Deposit Only',
             'more_than_45_days' => 'More Than 45 Days',
+            'more_than_90_days' => 'More Than 90 Days',
             'newest' => 'Newest',
             'oldest' => 'Oldest',
         ][$this->sortBy] ?? 'High to Low';
