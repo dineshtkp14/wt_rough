@@ -13,18 +13,18 @@
     .metric strong{display:block;color:#172554;font-size:24px}
     .search-panel{padding:18px}
     .search-panel .form-control{height:48px;border-radius:10px}
-    .main-content .stock-table{margin:0;table-layout:fixed !important;width:100%;min-width:1100px}
+    .main-content .stock-table{margin:0;table-layout:fixed !important;width:100%;min-width:1460px}
     .stock-table th{background:#243dba;color:#fff;border:0;font-size:11px;letter-spacing:.3px;padding:15px 12px;white-space:normal;line-height:1.2}
-    .stock-table td{padding:16px 14px;vertical-align:middle;color:#233b61;border-color:#e4eaf3}
+    .stock-table td{padding:16px 14px;vertical-align:middle;color:#233b61;border-color:#e4eaf3;white-space:nowrap;overflow:hidden}
     .stock-table th:nth-child(1){width:22%}.stock-table th:nth-child(2){width:8%}.stock-table th:nth-child(3){width:13%}.stock-table th:nth-child(4),.stock-table th:nth-child(5){width:12%}.stock-table th:nth-child(6),.stock-table th:nth-child(7){width:10%}.stock-table th:nth-child(8){width:13%}
     .main-content .stock-table th:nth-child(1),.main-content .stock-table td:nth-child(1){width:20% !important}.main-content .stock-table th:nth-child(2),.main-content .stock-table td:nth-child(2){width:8% !important}.main-content .stock-table th:nth-child(3),.main-content .stock-table td:nth-child(3){width:13% !important}.main-content .stock-table th:nth-child(4),.main-content .stock-table td:nth-child(4){width:12% !important}.main-content .stock-table th:nth-child(5),.main-content .stock-table td:nth-child(5){width:12% !important}.main-content .stock-table th:nth-child(6),.main-content .stock-table td:nth-child(6){width:10% !important}.main-content .stock-table th:nth-child(7),.main-content .stock-table td:nth-child(7){width:10% !important}.main-content .stock-table th:nth-child(8),.main-content .stock-table td:nth-child(8){width:15% !important}
-    .item-name{font-weight:800;color:#172554}.item-unit{font-size:11px;color:#7a8ba3}
+    .item-name{font-weight:800;color:#172554;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;white-space:normal;line-height:1.25;overflow-wrap:anywhere}.item-unit{font-size:11px;color:#7a8ba3;line-height:1.25;margin-top:3px}
     .status-badge{display:inline-flex;align-items:center;gap:6px;border-radius:30px;padding:7px 11px;font-size:11px;font-weight:800;white-space:nowrap}
     .status-ok{background:#dcfce7;color:#15803d}.status-low{background:#fef3c7;color:#a16207}.status-out{background:#fee2e2;color:#b91c1c}
-    .adjust-form{display:flex;gap:4px;align-items:center;width:100%;white-space:nowrap}.adjust-form select{flex:0 0 52px;width:52px}.adjust-form input{flex:1 1 auto;width:1px;min-width:0}.adjust-form .form-control,.adjust-form .form-select{font-size:11px;height:34px;padding:5px}.adjust-form button{flex:0 0 56px;height:34px;min-width:0;font-size:10px;font-weight:800;padding:5px 4px}
+    .adjust-form{display:flex;gap:6px;align-items:center;width:100%;white-space:nowrap}.adjust-form select{flex:0 0 58px;width:58px}.adjust-form input{flex:1 1 auto;width:1px;min-width:0}.adjust-form .form-control,.adjust-form .form-select{font-size:11px;height:38px;padding:5px 7px}.adjust-form button{flex:0 0 66px;height:38px;min-width:0;font-size:11px;font-weight:800;padding:5px 6px}.stock-table td:last-child .btn-outline-primary{height:38px;padding-top:9px;padding-bottom:9px;font-size:11px;font-weight:700}
     .stock-table td:last-child{padding-left:8px;padding-right:8px}
-    @media(max-width:1100px){.stock-table{min-width:920px}.table-scroll{overflow-x:auto}.stock-hero{padding:22px}.metric strong{font-size:20px}}
-    @media(max-width:600px){.stock-hero .actions{margin-top:18px}.metric{padding:15px}.metric-icon{width:40px;height:40px}.stock-table{min-width:900px}}
+    @media(max-width:1100px){.stock-table{min-width:1460px}.table-scroll{overflow-x:auto}.stock-hero{padding:22px}.metric strong{font-size:20px}}
+    @media(max-width:600px){.stock-hero .actions{margin-top:18px}.metric{padding:15px}.metric-icon{width:40px;height:40px}.stock-table{min-width:1460px}}
 </style>
 <div class="main-content vat-stock-page">
     <div class="container-fluid p-3 p-md-4">
