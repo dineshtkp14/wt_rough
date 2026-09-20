@@ -1,5 +1,6 @@
 <div class="container">
     <div class="card ">
+		<a href="{{ route('customerinfos.pdf') }}" class="float-end btn btn-danger mb-3"><i class="fas fa-file-pdf me-2"></i>Download PDF</a>
          <div class="card-header">
             <a href="{{route('customerinfos.create')}}"><img src="https://img.icons8.com/glyph-neue/50/40C057/plus-2-math.png"/></a>
              Total No Of Customer {{ $all->total() }}         <a href="{{ route('itemsales.create') }}" class="btn btn-primary ms-5" style="background-color: #FF0066; border-color: #0be813; color: white; transition: background-color 0.3s, border-color 0.3s;"> <i class="fas fa-file-invoice"></i> ADD NEW INVOICE</a>

@@ -136,6 +136,11 @@ Route::get('/vat-system/change-firm', [VatSystemBillController::class, 'switchFi
   Route::get('/vat-system/party-ledger', [VatReportController::class, 'customers'])->name('vat-system.party-ledger.customers');
   Route::get('/vat-system/party-ledger/print-all', [VatReportController::class, 'printAll'])->name('vat-system.party-ledger.print-all');
   Route::get('/vat-system/party-ledger/{customer}', [VatReportController::class, 'ledger'])->name('vat-system.party-ledger');
+  Route::get('/vat-system/purchase-party-ledger', [VatReportController::class, 'purchaseCompanies'])->name('vat-system.purchase-party-ledger.companies');
+  Route::get('/vat-system/purchase-party-ledger/print-all', [VatReportController::class, 'purchasePrintAll'])->name('vat-system.purchase-party-ledger.print-all');
+  Route::get('/vat-system/purchase-party-ledger/{company}', [VatReportController::class, 'purchaseLedger'])->name('vat-system.purchase-party-ledger');
+  Route::get('/vat-system/purchase-balance-confirmation/{company}', [VatReportController::class, 'purchaseConfirmation'])->name('vat-system.purchase-balance-confirmation');
+  Route::get('/vat-system/purchase-balance-confirmation/{company}/pdf', [VatReportController::class, 'purchaseConfirmationPdf'])->name('vat-system.purchase-balance-confirmation.pdf');
   Route::get('/vat-system/balance-confirmation/{customer}', [VatReportController::class, 'confirmation'])->name('vat-system.balance-confirmation');
   Route::get('/vat-system/balance-confirmation/{customer}/pdf', [VatReportController::class, 'confirmationPdf'])->name('vat-system.balance-confirmation.pdf');
 Route::get('/vat-system/customers', [VatCustomerController::class, 'index'])->name('vat-system.customers.index');
@@ -247,6 +252,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 
 
 Route::get('/customerinfos',[CustomerinfoController::class,'index'])->name('customerinfos.index');
+Route::get('/customerinfos/pdf',[CustomerinfoController::class,'exportPdf'])->name('customerinfos.pdf');
 Route::get('/customerinfos/create',[CustomerinfoController::class,'create'])->name('customerinfos.create');
 Route::post('/customerinfos/quick-store',[CustomerinfoController::class,'quickStore'])->name('customerinfos.quick-store');
 Route::post('/customerinfos',[CustomerinfoController::class,'store'])->name('customerinfos.store');
@@ -309,6 +315,7 @@ Route::get('/wholebilllist/pdf/convert/',[ViewwholeitembillController::class,'PD
 // Route::get('/wholebilllist-page', [ViewWholeitemsBill::class, 'showwholebilllistpage'])->name('ViewWholeitemsBill.page');
 
 Route::get('/companys',[CompanyController::class,'index'])->name('companys.index');
+Route::get('/companys/pdf',[CompanyController::class,'exportPdf'])->name('companys.pdf');
 Route::get('/companys/create',[CompanyController::class,'create'])->name('companys.create');
 Route::post('/companys',[CompanyController::class,'store'])->name('companys.store');
 Route::get('/companys/{companys}/edit',[CompanyController::class,'edit'])->name('companys.edit');

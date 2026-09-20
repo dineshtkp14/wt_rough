@@ -6,8 +6,18 @@ use App\Models\company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 class CompanyController extends Controller
 {
+    public function exportPdf()
+    {
+        abort_unless(Auth::check(), 403);
+        $companies = company::orderBy('name')->get();
+        return FacadePdf::setOptions(['dpi' => 120, 'defaultFont' => 'dejavu serif'])
+            ->loadView('company.pdf', compact('companies'))
+            ->download('company-list.pdf');
+    }
+
     public function index()
     {
         if(Auth::check()){

@@ -1,6 +1,7 @@
 <div class="container">
 
 	<div class="card">
+		<a href="{{ route('companys.pdf') }}" class="float-end btn btn-danger mb-3"><i class="fas fa-file-pdf me-2"></i>Download PDF</a>
 		<a href="{{ route('items.create') }}" class="float-end btn btn-primary w-25 mb-3 border border-warning" target="" rel="noopener noreferrer">
 			<i class="fas fa-plus-circle me-2"></i> <!-- Font Awesome icon -->
 			Add New Items

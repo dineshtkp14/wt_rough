@@ -10,9 +10,18 @@ use App\Models\Trackcustomerinfos;
 use Illuminate\Support\Facades\DB; //
 
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class CustomerinfoController extends Controller
 {
+  public function exportPdf()
+  {
+    abort_unless(Auth::check(), 403);
+    $customers = customerinfo::orderBy('name')->get();
+    return FacadePdf::setOptions(['dpi' => 120, 'defaultFont' => 'dejavu serif'])
+        ->loadView('customerinfo.pdf', compact('customers'))
+        ->download('customer-list.pdf');
+  }
   
 
     public function index()
