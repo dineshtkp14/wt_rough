@@ -367,19 +367,22 @@
                     <th style="width: 8%;">Date</th>
                     <th style="width: 8%;">Miti</th>
                     <th style="width: 12%;">Created At</th>
-                    <th style="width: 17%;">Particulars</th>
+                    <th style="width: 18%;">Particulars</th>
                     <th style="width: 10%;">Voucher</th>
-                    <th style="width: 13%;">Invoice Type</th>
-                    <th style="width: 8%;">Invoice No</th>
-                    <th style="width: 10%;">Debit</th>
-                    <th style="width: 11%;">Credit</th>
+                    <th style="width: 12%;">Invoice Type</th>
+                    <th style="width: 9%;">Debit</th>
+                    <th style="width: 9%;">Credit</th>
+                    <th style="width: 9%;">Balance</th>
                 </tr>
             </thead>
             <tbody>
+                @php $pdfRunningBalance = $debitTotal - $creditTotal; @endphp
                 @foreach ($all as $i)
                     @php
                         $type = $i->invoicetype == 'settlement' ? 'Nil Account' : str_replace('_', ' ', $i->invoicetype);
                         $badgeClass = $i->invoicetype == 'credit' ? 'credit' : ($i->invoicetype == 'payment' ? 'payment' : ($i->invoicetype == 'credit_note' ? 'note' : 'nil'));
+                        $pdfRowBalance = $pdfRunningBalance;
+                        $pdfRunningBalance -= (float) ($i->debit ?? 0) - (float) ($i->credit ?? 0);
                     @endphp
                     <tr>
                         <td class="num">{{ $loop->iteration }}</td>
@@ -388,6 +391,9 @@
                         <td>{{ $i->created_at }}</td>
                         <td>
                             <div>{{ $i->particulars }}</div>
+                            @if(!empty($i->invoiceid))
+                                <div><strong>Invoice No: {{ $i->invoiceid }}</strong></div>
+                            @endif
                             @if($i->invoicetype == 'payment' && !empty($i->is_cheque) && !empty($i->cheque_bank))
                                 <div class="cheque-bank">Cheque Bank: {{ $i->cheque_bank }}</div>
                             @endif
@@ -399,15 +405,16 @@
                                 <strong>CR-({{ $i->id }})</strong>
                             @endif
                         </td>
-                        <td><strong>{{ $i->invoiceid ?? '-' }}</strong></td>
                         <td class="money">{{ number_format((float) ($i->debit ?? 0), 2) }}</td>
                         <td class="money">{{ number_format((float) ($i->credit ?? 0), 2) }}</td>
+                        <td class="money">{{ number_format($pdfRowBalance, 2) }}</td>
                     </tr>
                 @endforeach
                 <tr class="totals">
-                    <td colspan="8" class="money">Total</td>
+                    <td colspan="7" class="money">Total</td>
                     <td class="money">Rs {{ number_format($debitTotal, 2) }}</td>
                     <td class="money">Rs {{ number_format($creditTotal, 2) }}</td>
+                    <td class="money">Rs {{ number_format($debitTotal - $creditTotal, 2) }}</td>
                 </tr>
             </tbody>
         </table>

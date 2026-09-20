@@ -389,21 +389,25 @@
                     <th style="width: 3%;">#</th>
                     <th style="width: 8%;">Date</th>
                     <th style="width: 8%;">Miti</th>
-                    <th style="width: 17%;">Particulars</th>
+                    <th style="width: 13%;">Particulars</th>
                     <th style="width: 11%;">Voucher</th>
-                    <th style="width: 9%;">Invoice No</th>
-                    <th style="width: 9%;">CN No</th>
-                    <th style="width: 13%;">Type</th>
-                    <th style="width: 11%;">Debit</th>
-                    <th style="width: 11%;">Credit</th>
+                    <th style="width: 7%;">Invoice No</th>
+                    <th style="width: 7%;">CN No</th>
+                    <th style="width: 11%;">Type</th>
+                    <th style="width: 9%;">Debit</th>
+                    <th style="width: 9%;">Credit</th>
+                    <th style="width: 9%;">Balance</th>
                 </tr>
             </thead>
             <tbody>
+                @php $pdfRunningBalance = (float) $transactionTotal - (float) $creditTotal; @endphp
                 @foreach ($all as $i)
                     @php
                         $type = $i->invoicetype == 'settlement' ? 'Nil Account' : str_replace('_', ' ', $i->invoicetype);
                         $badgeClass = $i->invoicetype == 'cash' ? 'cash' : ($i->invoicetype == 'credit' ? 'credit' : ($i->invoicetype == 'payment' ? 'payment' : ($i->invoicetype == 'credit_note' ? 'note' : 'nil')));
                         $cnNo = $i->cninvoiceid ?? (($i->is_credit_note ?? false) ? $i->invoiceid : '-');
+                        $pdfRowBalance = $pdfRunningBalance;
+                        $pdfRunningBalance -= (float) ($i->debit ?? 0) - (float) ($i->credit ?? 0);
                     @endphp
                     <tr>
                         <td class="num">{{ $loop->iteration }}</td>
@@ -421,12 +425,14 @@
                         </td>
                         <td class="money">{{ number_format((float) ($i->debit ?? 0), 2) }}</td>
                         <td class="money">{{ number_format((float) ($i->credit ?? 0), 2) }}</td>
+                        <td class="money">{{ number_format($pdfRowBalance, 2) }}</td>
                     </tr>
                 @endforeach
                 <tr class="totals">
                     <td colspan="8" class="money">Total</td>
                     <td class="money">Rs {{ number_format($transactionTotal, 2) }}</td>
                     <td class="money">Rs {{ number_format($creditTotal, 2) }}</td>
+                    <td class="money">Rs {{ number_format((float) $transactionTotal - (float) $creditTotal, 2) }}</td>
                 </tr>
             </tbody>
         </table>

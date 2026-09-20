@@ -175,6 +175,9 @@
                         <span id="selectedInvoiceTotal"></span>
                     </button>
                 @endif
+                <button type="button" id="toggleLedgerColumnsBtn" class="clhs-column-toggle-btn" aria-pressed="true">
+                    <i class="fa-solid fa-eye-slash"></i> Hide Column
+                </button>
                 @if($customeridonly)
                     <div class="clhs-toolbar-actions">
                         <a href="{{ url('/customer-ledger-dispute') . '?' . http_build_query(['customerid' => $customeridonly, 'date1' => $fromdate, 'date2' => $todate]) }}"
@@ -239,23 +242,26 @@
                         <tr>
                             <th>#</th>
                             <th>Nepali Date</th>
-                            <th>Date</th>
+                            <th class="ledger-optional-column">Date</th>
                             <th>Particulars</th>
                             <th>Voucher Type</th>
                             <th>Invoice Type</th>
-                            <th>Invoice No</th>
                             <th class="text-end">Debit</th>
                             <th class="text-end">Credit</th>
-                            <th>Created At</th>
+                            <th class="text-end">Balance</th>
+                            <th class="ledger-optional-column">Created At</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if($hasRows)
+                            @php $runningBalance = (float) $dts - (float) $cts; @endphp
                             @foreach ($all as $i)
                                 @php
                                     $isPayment = $i->invoicetype == 'payment';
                                     $isSettlement = $i->invoicetype == 'settlement';
                                     $isCreditNote = $i->invoicetype == 'credit_note';
+                                    $rowBalance = $runningBalance;
+                                    $runningBalance -= (float) $i->debit - (float) $i->credit;
                                 @endphp
                                 <tr class="{{ $isPayment ? 'is-payment-row' : '' }} {{ $isSettlement ? 'is-settlement-row' : '' }} {{ \Carbon\Carbon::parse($i->date)->isToday() ? 'clhs-today-row' : '' }}">
                                     <td>{{ $loop->iteration }}</td>
@@ -266,35 +272,18 @@
                                             <button type="button" onclick="setLedgerDateFromRow('{{ \App\Support\NepaliDate::adToBsString($i->date, 'en') }}', 'date2_bs')" title="Use as end date">End</button>
                                         </div>
                                     </td>
-                                    <td>{{ $i->date }}</td>
+                                    <td class="ledger-optional-column">{{ $i->date }}</td>
                                     <td>
                                         <div>{{ $i->particulars }}</div>
                                         @if($isPayment && !empty($i->is_cheque) && !empty($i->cheque_bank))
                                             <small class="clhs-cheque-bank"><i class="fa-solid fa-building-columns"></i> Cheque Bank: {{ $i->cheque_bank }}</small>
                                         @endif
-                                    </td>
-                                    <td>{{ $i->voucher_type }}</td>
-                                    <td>
-                                        <span class="clhs-type-badge {{ $isPayment ? 'payment' : ($isSettlement ? 'settlement' : ($isCreditNote ? 'credit-note' : 'credit')) }}">
-                                            {{ $isSettlement ? 'Nil Account' : ($isCreditNote ? 'Credit Note' : $i->invoicetype) }}
-                                            @if($isPayment)
-                                                CR-({{ $i->id }})
-                                            @endif
-                                        </span>
                                         @if($isPayment)
-                                            <button type="button"
-                                                onclick="openPaymentModal({{ $i->id }})"
-                                                class="clhs-view-payment-btn">
-                                                View
-                                            </button>
+                                            <button type="button" onclick="openPaymentModal({{ $i->id }})" class="clhs-view-payment-btn">View</button>
                                         @endif
-                                    </td>
-                                    <td>
                                         @if(!empty($i->invoiceid))
-                                            @php
-                                                $invoiceAgeDays = max(0, (int) \Carbon\Carbon::parse($i->date)->diffInDays(now()));
-                                            @endphp
-                                            <div class="clhs-invoice-cell">
+                                            @php $invoiceAgeDays = max(0, (int) \Carbon\Carbon::parse($i->date)->diffInDays(now())); @endphp
+                                            <div class="clhs-invoice-cell clhs-invoice-in-particulars">
                                                 <div class="clhs-invoice-heading">
                                                     @if(!$isPayment && !$isSettlement && !$isCreditNote)
                                                         @php $remainingInvoiceAmount = (float) ($invoiceRemainingAmounts[$i->invoiceid] ?? $i->debit); @endphp
@@ -307,41 +296,39 @@
                                                 <small class="clhs-invoice-age">{{ $invoiceAgeDays }} {{ $invoiceAgeDays === 1 ? 'day' : 'days' }} ago</small>
                                                 <div class="clhs-invoice-actions">
                                                     @if($isCreditNote)
-                                                        <button type="button"
-                                                            onclick="openCreditNoteModal({{ $i->invoiceid }})"
-                                                            class="clhs-view-invoice-btn">
-                                                            View
-                                                        </button>
+                                                        <button type="button" onclick="openCreditNoteModal({{ $i->invoiceid }})" class="clhs-view-invoice-btn">View</button>
                                                     @else
-                                                        <button type="button"
-                                                            onclick="openInvoiceModal({{ $i->invoiceid }})"
-                                                            class="clhs-view-invoice-btn">
-                                                            View
-                                                        </button>
+                                                        <button type="button" onclick="openInvoiceModal({{ $i->invoiceid }})" class="clhs-view-invoice-btn">View</button>
                                                         @if(!$isPayment && !$isSettlement && $remainingInvoiceAmount > 0.01)
-                                                            <a href="{{ route('cpayments.create', ['customerid' => $customeridonly, 'invoiceid' => $i->invoiceid, 'amount' => $remainingInvoiceAmount, 'particulars' => 'Payment for Invoice No. ' . $i->invoiceid, 'voucher_type' => 'Receipt', 'totaldueamountfornotclear' => $remainingInvoiceAmount, 'cname' => $customer ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? '')) : null]) }}"
-                                                                class="clhs-pay-invoice-btn">
-                                                                Pay
-                                                            </a>
+                                                            <a href="{{ route('cpayments.create', ['customerid' => $customeridonly, 'invoiceid' => $i->invoiceid, 'amount' => $remainingInvoiceAmount, 'particulars' => 'Payment for Invoice No. ' . $i->invoiceid, 'voucher_type' => 'Receipt', 'totaldueamountfornotclear' => $remainingInvoiceAmount, 'cname' => $customer ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? '')) : null]) }}" class="clhs-pay-invoice-btn">Pay</a>
                                                         @endif
                                                     @endif
                                                 </div>
                                             </div>
-                                        @else
-                                            -
                                         @endif
+                                    </td>
+                                    <td>{{ $i->voucher_type }}</td>
+                                    <td>
+                                        <span class="clhs-type-badge {{ $isPayment ? 'payment' : ($isSettlement ? 'settlement' : ($isCreditNote ? 'credit-note' : 'credit')) }}">
+                                            {{ $isSettlement ? 'Nil Account' : ($isCreditNote ? 'Credit Note' : $i->invoicetype) }}
+                                            @if($isPayment)
+                                                CR-({{ $i->id }})
+                                            @endif
+                                        </span>
                                     </td>
                                     <td class="text-end">{{ number_format((float) $i->debit, 2) }}</td>
                                     <td class="text-end">{{ number_format((float) $i->credit, 2) }}</td>
-                                    <td>{{ $i->created_at }}</td>
+                                    <td class="text-end clhs-balance-cell">{{ number_format($rowBalance, 2) }}</td>
+                                    <td class="ledger-optional-column">{{ $i->created_at }}</td>
                                 </tr>
                             @endforeach
                             <tr class="clhs-total-row">
-                                <td colspan="7" class="text-end">Total</td>
-                                <td class="text-end total-amount">{{ number_format((float) $dts, 2) }}</td>
-                                <td class="text-end total-amount">{{ number_format((float) $cts, 2) }}</td>
-                                <td></td>
-                            </tr>
+                                <td colspan="6" class="text-end">Total</td>
+                                    <td class="text-end total-amount">{{ number_format((float) $dts, 2) }}</td>
+                                    <td class="text-end total-amount">{{ number_format((float) $cts, 2) }}</td>
+                                    <td class="text-end total-amount">{{ number_format((float) $dts - (float) $cts, 2) }}</td>
+                                    <td></td>
+                                </tr>
                         @else
                             <tr>
                                 <td colspan="10" class="clhs-empty-state">
@@ -1896,6 +1883,103 @@
             if (form && customerInput && customerInput.value) {
                 form.submit();
             }
+        });
+    </script>
+    <style>
+        /* Keep the ledger spread across the complete available workspace. */
+        .clhs-page,
+        .clhs-page > .container-fluid,
+        .clhs-table-wrap {
+            box-sizing: border-box;
+            max-width: none !important;
+            width: 100% !important;
+        }
+
+        .clhs-table-wrap {
+            display: block;
+        }
+
+        .clhs-table-wrap .clhs-table {
+            display: table !important;
+            min-width: max(1120px, 100%) !important;
+            table-layout: fixed;
+            width: 100% !important;
+        }
+
+        /* The optional Date/Created At columns are hidden by default, so
+           allocate their space to the columns that remain visible. */
+        .clhs-table.ledger-columns-hidden th:nth-child(1),
+        .clhs-table.ledger-columns-hidden td:nth-child(1) { width: 4%; }
+        .clhs-table.ledger-columns-hidden th:nth-child(2),
+        .clhs-table.ledger-columns-hidden td:nth-child(2) { width: 10%; }
+        .clhs-table.ledger-columns-hidden th:nth-child(4),
+        .clhs-table.ledger-columns-hidden td:nth-child(4) { width: 15%; }
+        .clhs-table.ledger-columns-hidden th:nth-child(5),
+        .clhs-table.ledger-columns-hidden td:nth-child(5) { width: 14%; }
+        .clhs-table.ledger-columns-hidden th:nth-child(6),
+        .clhs-table.ledger-columns-hidden td:nth-child(6) { width: 25%; }
+        .clhs-table.ledger-columns-hidden th:nth-child(7),
+        .clhs-table.ledger-columns-hidden td:nth-child(7),
+        .clhs-table.ledger-columns-hidden th:nth-child(8),
+        .clhs-table.ledger-columns-hidden td:nth-child(8),
+        .clhs-table.ledger-columns-hidden th:nth-child(9),
+        .clhs-table.ledger-columns-hidden td:nth-child(9) { width: 10.67%; }
+
+        /* Give every column a stable share when Date and Created At are shown. */
+        .clhs-table.ledger-columns-visible th:nth-child(1),
+        .clhs-table.ledger-columns-visible td:nth-child(1) { width: 4%; }
+        .clhs-table.ledger-columns-visible th:nth-child(2),
+        .clhs-table.ledger-columns-visible td:nth-child(2) { width: 10%; }
+        .clhs-table.ledger-columns-visible th:nth-child(3),
+        .clhs-table.ledger-columns-visible td:nth-child(3) { width: 10%; }
+        .clhs-table.ledger-columns-visible th:nth-child(4),
+        .clhs-table.ledger-columns-visible td:nth-child(4) { width: 14%; }
+        .clhs-table.ledger-columns-visible th:nth-child(5),
+        .clhs-table.ledger-columns-visible td:nth-child(5) { width: 13%; }
+        .clhs-table.ledger-columns-visible th:nth-child(6),
+        .clhs-table.ledger-columns-visible td:nth-child(6) { width: 15%; }
+        .clhs-table.ledger-columns-visible th:nth-child(7),
+        .clhs-table.ledger-columns-visible td:nth-child(7),
+        .clhs-table.ledger-columns-visible th:nth-child(8),
+        .clhs-table.ledger-columns-visible td:nth-child(8),
+        .clhs-table.ledger-columns-visible th:nth-child(9),
+        .clhs-table.ledger-columns-visible td:nth-child(9) { width: 8.5%; }
+        .clhs-table.ledger-columns-visible th:nth-child(9),
+        .clhs-table.ledger-columns-visible td:nth-child(9) { width: 8.5%; }
+        .clhs-table.ledger-columns-visible th:nth-child(10),
+        .clhs-table.ledger-columns-visible td:nth-child(10) { width: 11%; }
+
+        .clhs-table.ledger-columns-visible td:nth-child(2),
+        .clhs-table.ledger-columns-visible td:nth-child(3),
+        .clhs-table.ledger-columns-visible td:nth-child(9) {
+            white-space: nowrap;
+        }
+
+        .clhs-balance-cell {
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .clhs-column-toggle-btn { background:#eef2ff; border:1px solid #aab9ff; border-radius:8px; color:#253b9f; cursor:pointer; font-weight:800; padding:9px 13px; }
+        .clhs-column-toggle-btn:hover { background:#dbe4ff; }
+        .clhs-invoice-in-particulars { margin-top:7px; }
+        .ledger-columns-visible .ledger-optional-column { display:table-cell !important; }
+        .ledger-columns-hidden .ledger-optional-column { display:none !important; }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggle = document.getElementById('toggleLedgerColumnsBtn');
+            const table = document.querySelector('.clhs-table');
+            if (!toggle || !table) return;
+            table.classList.add('ledger-columns-hidden');
+            toggle.addEventListener('click', function () {
+                const hidden = table.classList.toggle('ledger-columns-hidden');
+                table.classList.toggle('ledger-columns-visible', !hidden);
+                toggle.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+                toggle.innerHTML = hidden
+                    ? '<i class="fa-solid fa-eye-slash"></i> Hide Column'
+                    : '<i class="fa-solid fa-eye"></i> Show Column';
+            });
         });
     </script>
 @stop
