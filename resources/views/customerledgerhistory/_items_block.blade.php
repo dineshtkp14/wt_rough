@@ -33,7 +33,7 @@
       <tbody>
         @if ($cus->isNotEmpty())
           @foreach ($cus as $item)
-            <tr class="{{ date('Y-m-d', strtotime($item->date)) === date('Y-m-d') ? 'old-price-today-row' : '' }}">
+            <tr data-item-id="{{ $item->id }}" class="{{ date('Y-m-d', strtotime($item->date)) === date('Y-m-d') ? 'old-price-today-row' : '' }}">
               <td>{{ ($cus->currentPage() - 1) * $cus->perPage() + $loop->iteration }}</td>
               @if(Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com')
                 <td>{{ $item->date }}</td>
@@ -155,6 +155,15 @@
 
     .old-price-table tbody tr:hover td {
       background: #ecfeff;
+    }
+
+    .old-price-table tbody tr.old-price-selected-row td {
+      background: #fef3c7 !important;
+      box-shadow: inset 0 2px 0 #f59e0b, inset 0 -2px 0 #f59e0b;
+    }
+
+    .old-price-table tbody tr:not(.old-price-today-row) {
+      cursor: pointer;
     }
 
     .old-price-table tbody tr.old-price-today-row td {

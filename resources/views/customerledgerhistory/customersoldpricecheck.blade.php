@@ -159,6 +159,20 @@
 
 <script>
 (function(){
+  const excludedIds = new Set();
+
+  $(document).on('click', '.old-price-table tbody tr', function(event){
+    if ($(event.target).closest('a, button, input, select, textarea').length) return;
+    const id = String(this.dataset.itemId || '');
+    if (!id) return;
+    if (excludedIds.has(id)) {
+      excludedIds.delete(id);
+    } else {
+      excludedIds.add(id);
+    }
+    fetchBlock(buildAjaxUrl(form.action));
+  });
+
   const input = document.getElementById('filtertext');
   const form  = document.getElementById('tableSearchForm');
   if (!input || !form) return;
@@ -166,7 +180,16 @@
   function buildAjaxUrl(base) {
     const params = new URLSearchParams(new FormData(form));
     params.set('ajax', '1');
+    if (excludedIds.size) params.set('exclude_ids', Array.from(excludedIds).join(','));
     return base + '?' + params.toString();
+  }
+
+  function restoreSelectedRows() {
+    document.querySelectorAll('.old-price-table tbody tr[data-item-id]').forEach(row => {
+      if (excludedIds.has(String(row.dataset.itemId))) {
+        row.classList.add('old-price-selected-row');
+      }
+    });
   }
 
   async function fetchBlock(url) {
@@ -176,6 +199,7 @@
       if (json.html) {
         const container = document.getElementById('itemsBlock');
         if (container) container.outerHTML = json.html;
+        restoreSelectedRows();
 
         const clean = new URL(url, window.location.origin);
         clean.searchParams.delete('ajax');
@@ -217,6 +241,7 @@
         const url = new URL(href, window.location.origin);
         const params = new URLSearchParams(new FormData(form));
         params.forEach((v,k) => url.searchParams.set(k, v));
+        if (excludedIds.size) url.searchParams.set('exclude_ids', Array.from(excludedIds).join(','));
         url.searchParams.set('ajax','1');
 
         fetchBlock(url.toString());

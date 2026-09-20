@@ -1770,6 +1770,11 @@ public function oldpricecheck(Request $req)
     $to         = $req->input('date2');
     $searchxx   = trim($req->input('searchxx', ''));
     $like       = "%{$searchxx}%";
+    $excludedIds = collect(explode(',', (string) $req->input('exclude_ids', '')))
+        ->filter(fn ($id) => ctype_digit(trim((string) $id)))
+        ->map(fn ($id) => (int) $id)
+        ->unique()
+        ->values();
 
     // only load data after any filter/search
     $searched = $req->filled('customerid') || $req->filled('searchxx') || $req->filled('date1') || $req->filled('date2');
@@ -1782,7 +1787,7 @@ public function oldpricecheck(Request $req)
 
     // defaults so Blade never errors
     $cus = new \Illuminate\Pagination\LengthAwarePaginator(
-        collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
+        collect(), 0, 100, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
     );
     $cid = null;
     // $allnotcash = 0; $cts = 0; $dts = 0;
@@ -1793,7 +1798,7 @@ public function oldpricecheck(Request $req)
 
     $debitnotcash = $betweendate->where('invoicetype', '!=', 'cash')->sum('debit');
     $all = new \Illuminate\Pagination\LengthAwarePaginator(
-        collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
+        collect(), 0, 100, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
     );
     $cusinfoforpdfok = collect();
     $itemQuantitySummary = collect();
@@ -1834,6 +1839,7 @@ public function oldpricecheck(Request $req)
                 ->leftJoin($tblInv.' as inv', 'inv.id', '=', 's.invoiceid')
                 ->when(!empty($customerid), fn ($query) => $query->where('inv.customerid', $customerid))
                 ->when(!empty($from) && !empty($to), fn ($query) => $query->whereBetween('s.date', [$from, $to]))
+                ->when($excludedIds->isNotEmpty(), fn ($query) => $query->whereNotIn('s.id', $excludedIds))
                 ->where(function ($query) use ($like) {
                     $query->where('it.itemsname', 'like', $like)
                         ->orWhere('s.unstockedname', 'like', $like);
@@ -1858,7 +1864,7 @@ public function oldpricecheck(Request $req)
                 'c.id as customeridx','c.name as customername',
                 'it.itemsname as itemname','it.mrp as itemprice','it.costprice as itemdlp',
             ])
-            ->paginate(20)
+            ->paginate(100)
             ->appends($req->only(['customerid','date1','date2','searchxx']));
     }
 
