@@ -410,7 +410,12 @@
                         <td class="num">{{ $loop->iteration }}</td>
                         <td>{{ $i->date }}</td>
                         <td>{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}</td>
-                        <td>{{ $i->particulars }}</td>
+                        <td>
+                            {{ $i->particulars }}
+                            @if(!empty($i->invoice_notes))
+                                <div>Notes: {{ $i->invoice_notes }}</div>
+                            @endif
+                        </td>
                         <td>{{ $i->voucher_type }}</td>
                         <td><strong>{{ ($i->is_credit_note ?? false) ? '-' : ($i->invoiceid ?? '-') }}</strong></td>
                         <td><strong>{{ $cnNo }}</strong></td>

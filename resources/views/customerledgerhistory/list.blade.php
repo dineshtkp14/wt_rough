@@ -293,6 +293,9 @@
                                                     @endif
                                                     <span class="clhs-invoice-number">{{ $isCreditNote ? 'CN-' : '' }}{{ $i->invoiceid }}</span>
                                                 </div>
+                                                @if(!empty($i->invoice_notes))
+                                                    <small class="clhs-invoice-note">{{ $i->invoice_notes }}</small>
+                                                @endif
                                                 <small class="clhs-invoice-age">{{ $invoiceAgeDays }} {{ $invoiceAgeDays === 1 ? 'day' : 'days' }} ago</small>
                                                 <div class="clhs-invoice-actions">
                                                     @if($isCreditNote)
@@ -1963,6 +1966,7 @@
         .clhs-column-toggle-btn { background:#eef2ff; border:1px solid #aab9ff; border-radius:8px; color:#253b9f; cursor:pointer; font-weight:800; padding:9px 13px; }
         .clhs-column-toggle-btn:hover { background:#dbe4ff; }
         .clhs-invoice-in-particulars { margin-top:7px; }
+        .clhs-invoice-note { color:#475569; display:block; font-size:11px; font-weight:700; margin-top:3px; }
         .ledger-columns-visible .ledger-optional-column { display:table-cell !important; }
         .ledger-columns-hidden .ledger-optional-column { display:none !important; }
     </style>

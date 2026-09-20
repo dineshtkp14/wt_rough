@@ -40,6 +40,19 @@ use Illuminate\Validation\ValidationException;
 
 class CustomerLedgerHistroy extends Controller
 {
+    private function attachInvoiceNotes($rows)
+    {
+        $invoiceIds = collect($rows)->pluck('invoiceid')->filter()->unique()->values();
+        $notes = $invoiceIds->isEmpty()
+            ? collect()
+            : invoice::whereIn('id', $invoiceIds)->pluck('notes', 'id');
+
+        return collect($rows)->map(function ($row) use ($notes) {
+            $row->invoice_notes = $notes->get($row->invoiceid);
+            return $row;
+        });
+    }
+
     private function creditNoteRowsForLedger($customerid, $from = null, $to = null)
     {
         $query = CreditnotesCustomerledgerdetail::where('customerid', $customerid);
@@ -261,6 +274,7 @@ class CustomerLedgerHistroy extends Controller
          }
 
          $cusledgertails = $this->sortLedgerRows($cusledgertails->concat($creditNoteRows ?? collect()));
+         $cusledgertails = $this->attachInvoiceNotes($cusledgertails);
          $credittotalsumwithdate += ($creditNoteRows ?? collect())->sum('credit');
 
          $invoiceRemainingAmounts = $cusledgertails
@@ -397,6 +411,7 @@ class CustomerLedgerHistroy extends Controller
         }
 
          $cusledgertails = $this->sortLedgerRows($cusledgertails->concat($creditNoteRows ?? collect()));
+         $cusledgertails = $this->attachInvoiceNotes($cusledgertails);
 
          if ($req->boolean('after_nil')) {
              $latestNilAccount = $cusledgertails
@@ -1698,6 +1713,7 @@ public function pdfreturnchoosendatehistroycashandcredit(Request $req)
         }
 
         $cusledgertails = $this->sortLedgerRows($cusledgertails->concat($creditNoteRows ?? collect()));
+        $cusledgertails = $this->attachInvoiceNotes($cusledgertails);
         $credittotalsumwithdate += ($creditNoteRows ?? collect())->sum('credit');
 
         // Generate PDF view

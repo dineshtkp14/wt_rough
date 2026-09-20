@@ -370,6 +370,62 @@
 
     <script>
 
+        function syncAutomaticInvoiceNotes() {
+            const noteField = $("#noteInput");
+            if (!noteField.length) return;
+
+            const items = [];
+            $("#invoiceTableBody tr[id^='inputRow']").each(function () {
+                const row = $(this);
+                const itemName = String(row.find("#selectProductLink h6").text() || row.find("#unstockedInput").val() || "").trim();
+                const quantity = String(row.find("#quantityInput").val() || "").trim();
+                const unit = String(row.find("#unitInput").val() || "").trim();
+
+                if (itemName && quantity && unit && unit.toLowerCase() !== "choose" && unit.toLowerCase() !== "select") {
+                    items.push(`${itemName} ${quantity}${unit}`.replace(/\s+/g, " ").trim().toUpperCase());
+                }
+            });
+
+            const maxNoteCharacters = 50;
+            let autoNote = "";
+            if (items.length) {
+                const selectedItems = [];
+                for (let index = 0; index < items.length; index++) {
+                    const remaining = items.length - index - 1;
+                    const suffix = remaining > 0 ? ` +${remaining} more` : "";
+                    const candidate = `${[...selectedItems, items[index]].join(", ")}${suffix}`;
+                    if (candidate.length <= maxNoteCharacters) {
+                        selectedItems.push(items[index]);
+                    } else {
+                        break;
+                    }
+                }
+
+                const remaining = items.length - selectedItems.length;
+                autoNote = selectedItems.join(", ");
+                if (remaining > 0) autoNote += ` +${remaining} more`;
+
+                // Keep the generated note within the hard 50-character limit
+                // even when one unusually long item name is entered.
+                if (autoNote.length > maxNoteCharacters) {
+                    autoNote = `${autoNote.slice(0, maxNoteCharacters - 3).trim()}...`;
+                }
+            }
+
+            const oldAutoNote = String(noteField.data("auto-note") || "").trim();
+            let manualNote = String(noteField.val() || "").trim();
+            if (oldAutoNote) {
+                manualNote = manualNote.replace(oldAutoNote, "").trim();
+            }
+
+            noteField.val([manualNote, autoNote].filter(Boolean).join("\n"));
+            noteField.data("auto-note", autoNote);
+        }
+
+        $(document).on("input change", "#invoiceTableBody input, #invoiceTableBody select", function () {
+            syncAutomaticInvoiceNotes();
+        });
+
 $(document).ready(function () {
         $('.invoice-create-page form').on('submit', function (event) {
             const invalidRow = salesData.find(function (row) {
@@ -442,6 +498,7 @@ $(document).ready(function () {
 
             // Keep the hidden JSON fields synchronized with the latest rows.
             // This prevents an item selected after Verify from being omitted.
+            syncAutomaticInvoiceNotes();
             $("#salesArrInput").val(JSON.stringify(salesData));
             finalData[0]["note"] = $("#noteInput").val().trim();
             $("#finalArrInput").val(JSON.stringify(finalData));

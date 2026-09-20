@@ -391,6 +391,9 @@
                             @if(!empty($i->invoiceid))
                                 <div><strong>Invoice No: {{ $i->invoiceid }}</strong></div>
                             @endif
+                            @if(!empty($i->invoice_notes))
+                                <div>Notes: {{ $i->invoice_notes }}</div>
+                            @endif
                             @if($i->invoicetype == 'payment' && !empty($i->is_cheque) && !empty($i->cheque_bank))
                                 <div class="cheque-bank">Cheque Bank: {{ $i->cheque_bank }}</div>
                             @endif
