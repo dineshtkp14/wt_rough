@@ -397,6 +397,9 @@
                             @if($i->invoicetype == 'payment' && !empty($i->is_cheque) && !empty($i->cheque_bank))
                                 <div class="cheque-bank">Cheque Bank: {{ $i->cheque_bank }}</div>
                             @endif
+                            @if($i->invoicetype == 'payment' && !empty($i->notes))
+                                <div>Note: {{ \Illuminate\Support\Str::limit((string) $i->notes, 60, '...') }}</div>
+                            @endif
                         </td>
                         <td>{{ $i->voucher_type }}</td>
                         <td>

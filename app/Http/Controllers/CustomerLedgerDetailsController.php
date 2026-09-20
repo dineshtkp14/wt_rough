@@ -81,6 +81,7 @@ public function store(Request $req)
         'cheque_bank' => 'required_if:is_cheque,1|nullable|string|max:150',
         'cheque_no' => 'required_if:is_cheque,1|nullable|string|max:50',
         'cheque_exchange_date_bs' => 'required_if:is_cheque,1|nullable|regex:/^\\d{4}-\\d{1,2}-\\d{1,2}$/',
+        'notes' => 'nullable|string|max:60',
         'invoiceid' => 'nullable|integer',
         'invoiceids' => 'nullable|string',
         'particulars' => 'required_without_all:disableFields,is_cheque',
@@ -285,6 +286,7 @@ public function update(Request $req, $id)
         'cheque_bank' => 'required_if:is_cheque,1|nullable|string|max:150',
         'cheque_no' => 'required_if:is_cheque,1|nullable|string|max:50',
         'cheque_exchange_date_bs' => 'required_if:is_cheque,1|nullable|regex:/^\\d{4}-\\d{1,2}-\\d{1,2}$/',
+        'notes' => 'nullable|string|max:60',
         'particulars' => 'required_without_all:disableFields,is_cheque',
         'vt' => 'required_without_all:disableFields,is_cheque',
         // 'cninvoiceid' => 'required_without:disableFields', // Only required if disableFields is not present

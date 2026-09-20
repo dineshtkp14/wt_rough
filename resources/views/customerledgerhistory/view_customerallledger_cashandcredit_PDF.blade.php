@@ -460,7 +460,12 @@
                     <tr>
                         <td class="num">{{ $loop->iteration }}</td>
                         <td>{{ $i->date ?? $i->created_at }}</td>
-                        <td>{{ $i->particulars }}</td>
+                        <td>
+                            {{ $i->particulars }}
+                            @if($i->invoicetype == 'payment' && !empty($i->notes))
+                                <div>Note: {{ \Illuminate\Support\Str::limit((string) $i->notes, 60, '...') }}</div>
+                            @endif
+                        </td>
                         <td>{{ $i->voucher_type }}</td>
                         <td><strong>{{ $i->invoiceid }}</strong></td>
                         <td class="money">{{ number_format((float) ($i->debit ?? $i->credit ?? 0), 2) }}</td>

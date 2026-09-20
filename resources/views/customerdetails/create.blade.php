@@ -186,7 +186,7 @@
 
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Notes</label>
-                <textarea autocomplete="off" class="form-control @error('notes') is-invalid @enderror" name="notes">{{ old('notes') }}</textarea>
+                <textarea autocomplete="off" maxlength="60" class="form-control @error('notes') is-invalid @enderror" name="notes" placeholder="Maximum 60 characters">{{ old('notes') }}</textarea>
                 @error('notes')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror

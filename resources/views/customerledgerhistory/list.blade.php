@@ -244,7 +244,7 @@
                             <th>Nepali Date</th>
                             <th class="ledger-optional-column">Date</th>
                             <th>Particulars</th>
-                            <th>Voucher Type</th>
+                            <th class="ledger-optional-column">Voucher Type</th>
                             <th>Invoice Type</th>
                             <th class="text-end">Debit</th>
                             <th class="text-end">Credit</th>
@@ -278,6 +278,9 @@
                                         @if($isPayment && !empty($i->is_cheque) && !empty($i->cheque_bank))
                                             <small class="clhs-cheque-bank"><i class="fa-solid fa-building-columns"></i> Cheque Bank: {{ $i->cheque_bank }}</small>
                                         @endif
+                                        @if($isPayment && !empty($i->notes))
+                                            <small class="clhs-payment-note"><i class="fa-solid fa-note-sticky"></i> {{ \Illuminate\Support\Str::limit((string) $i->notes, 60, '...') }}</small>
+                                        @endif
                                         @if($isPayment)
                                             <button type="button" onclick="openPaymentModal({{ $i->id }})" class="clhs-view-payment-btn">View</button>
                                         @endif
@@ -310,7 +313,7 @@
                                             </div>
                                         @endif
                                     </td>
-                                    <td>{{ $i->voucher_type }}</td>
+                                    <td class="ledger-optional-column">{{ $i->voucher_type }}</td>
                                     <td>
                                         <span class="clhs-type-badge {{ $isPayment ? 'payment' : ($isSettlement ? 'settlement' : ($isCreditNote ? 'credit-note' : 'credit')) }}">
                                             {{ $isSettlement ? 'Nil Account' : ($isCreditNote ? 'Credit Note' : $i->invoicetype) }}
@@ -1207,6 +1210,15 @@
             padding: 3px 7px;
         }
 
+        .clhs-payment-note {
+            color: #475569;
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-top: 4px;
+        }
+
         .clhs-table th:nth-child(8),
         .clhs-table th:nth-child(9),
         .clhs-table td:nth-child(8),
@@ -1267,6 +1279,7 @@
         .clhs-table tbody tr.clhs-today-row td {
             background: red !important;
             color: #ffffff !important;
+            box-shadow: none;
         }
 
         .clhs-table tbody tr.clhs-today-row:hover td {
@@ -1916,17 +1929,15 @@
         .clhs-table.ledger-columns-hidden th:nth-child(2),
         .clhs-table.ledger-columns-hidden td:nth-child(2) { width: 10%; }
         .clhs-table.ledger-columns-hidden th:nth-child(4),
-        .clhs-table.ledger-columns-hidden td:nth-child(4) { width: 15%; }
-        .clhs-table.ledger-columns-hidden th:nth-child(5),
-        .clhs-table.ledger-columns-hidden td:nth-child(5) { width: 14%; }
+        .clhs-table.ledger-columns-hidden td:nth-child(4) { width: 18%; }
         .clhs-table.ledger-columns-hidden th:nth-child(6),
-        .clhs-table.ledger-columns-hidden td:nth-child(6) { width: 25%; }
+        .clhs-table.ledger-columns-hidden td:nth-child(6) { width: 28%; }
         .clhs-table.ledger-columns-hidden th:nth-child(7),
         .clhs-table.ledger-columns-hidden td:nth-child(7),
         .clhs-table.ledger-columns-hidden th:nth-child(8),
         .clhs-table.ledger-columns-hidden td:nth-child(8),
         .clhs-table.ledger-columns-hidden th:nth-child(9),
-        .clhs-table.ledger-columns-hidden td:nth-child(9) { width: 10.67%; }
+        .clhs-table.ledger-columns-hidden td:nth-child(9) { width: 13.33%; }
 
         /* Give every column a stable share when Date and Created At are shown. */
         .clhs-table.ledger-columns-visible th:nth-child(1),
@@ -1961,6 +1972,73 @@
         .clhs-balance-cell {
             font-weight: 900;
             white-space: nowrap;
+        }
+
+        /* Cleaner, calmer ledger presentation. */
+        .clhs-toolbar {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            border-left-width: 4px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, .08);
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 13px 15px;
+        }
+
+        .clhs-toolbar > div:first-child {
+            min-width: 180px;
+        }
+
+        .clhs-toolbar h4 {
+            letter-spacing: -.02em;
+        }
+
+        .clhs-pay-selected-btn,
+        .clhs-column-toggle-btn,
+        .clhs-primary-action,
+        .clhs-reports-trigger {
+            border-radius: 10px;
+            min-height: 42px;
+            transition: box-shadow .18s ease, transform .18s ease, background .18s ease;
+        }
+
+        .clhs-pay-selected-btn:not(:disabled):hover,
+        .clhs-column-toggle-btn:hover,
+        .clhs-primary-action:hover,
+        .clhs-reports-trigger:hover {
+            box-shadow: 0 7px 16px rgba(37, 99, 235, .16);
+            transform: translateY(-1px);
+        }
+
+        .clhs-table-wrap {
+            border-color: #d7e1ee;
+            border-radius: 12px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, .06);
+        }
+
+        .clhs-table th {
+            background: linear-gradient(135deg, #3348d4, #4f46e5);
+            border-color: #2637a3 !important;
+            font-size: 13px;
+            letter-spacing: .02em;
+            padding: 13px 12px;
+        }
+
+        .clhs-table td {
+            font-size: 14px;
+            padding: 11px 12px;
+        }
+
+        .clhs-table tbody tr {
+            transition: background .16s ease, box-shadow .16s ease;
+        }
+
+        .clhs-table tbody tr:not(.clhs-today-row):hover td {
+            background: #eff6ff;
+        }
+
+        .clhs-table tbody tr.clhs-today-row .clhs-payment-note,
+        .clhs-table tbody tr.clhs-today-row .clhs-invoice-note {
+            color: #ffffff !important;
         }
 
         .clhs-column-toggle-btn { background:#eef2ff; border:1px solid #aab9ff; border-radius:8px; color:#253b9f; cursor:pointer; font-weight:800; padding:9px 13px; }
