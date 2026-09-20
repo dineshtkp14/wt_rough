@@ -55,6 +55,17 @@
             </div>
           </div>
 
+          <div class="old-price-date-range">
+            <label>
+              <span>From Date (B.S.)</span>
+              <input type="text" name="date1_bs" value="{{ request('date1_bs') }}" placeholder="YYYY-MM-DD" inputmode="numeric">
+            </label>
+            <label>
+              <span>To Date (B.S.)</span>
+              <input type="text" name="date2_bs" value="{{ request('date2_bs') }}" placeholder="YYYY-MM-DD" inputmode="numeric">
+            </label>
+          </div>
+
           <button type="submit" class="old-price-search-btn">
             <i class="fas fa-search"></i>
             Search Customer
@@ -115,7 +126,11 @@
       </div>
     </div>
 
-    @include('customerledgerhistory._items_block', ['cus' => $cus, 'searchxx' => $searchxx ?? ''])
+    @include('customerledgerhistory._items_block', [
+      'cus' => $cus,
+      'searchxx' => $searchxx ?? '',
+      'itemQuantitySummary' => $itemQuantitySummary ?? collect(),
+    ])
   </div>
 </div>
 
@@ -269,6 +284,32 @@
     padding-left: 46px;
     border-color: #cbd5e1;
     font-size: 20px;
+  }
+
+  .old-price-date-range {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 12px;
+  }
+
+  .old-price-date-range label {
+    color: #526783;
+    display: block;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .old-price-date-range input {
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    color: #173b72;
+    display: block;
+    font-size: 15px;
+    margin-top: 5px;
+    min-height: 42px;
+    padding: 8px 10px;
+    width: 100%;
   }
 
   .old-price-search-btn {

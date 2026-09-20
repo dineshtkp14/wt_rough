@@ -1,4 +1,18 @@
 <div id="itemsBlock">
+  @if(isset($itemQuantitySummary) && $itemQuantitySummary->isNotEmpty())
+    <div class="old-price-quantity-summary">
+      <div>
+        <strong>Total quantity for “{{ $searchxx }}”</strong>
+        <span>Based on the selected customer and date range</span>
+      </div>
+      <div class="old-price-quantity-values">
+        @foreach($itemQuantitySummary as $summary)
+          <b>{{ rtrim(rtrim(number_format((float) $summary->quantity, 3), '0'), '.') }} {{ strtoupper($summary->unit) }}</b>
+        @endforeach
+      </div>
+    </div>
+  @endif
+
   <div class="old-price-table-wrap">
     <table class="old-price-table">
       <thead>
@@ -52,6 +66,44 @@
       border: 1px solid #cbd5e1;
       border-radius: 8px;
       background: #ffffff;
+    }
+
+    .old-price-quantity-summary {
+      align-items: center;
+      background: #ecfdf5;
+      border: 1px solid #86efac;
+      border-radius: 10px;
+      color: #166534;
+      display: flex;
+      gap: 18px;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 13px 16px;
+    }
+
+    .old-price-quantity-summary strong,
+    .old-price-quantity-summary span {
+      display: block;
+    }
+
+    .old-price-quantity-summary span {
+      color: #15803d;
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .old-price-quantity-values {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .old-price-quantity-values b {
+      background: #15803d;
+      border-radius: 7px;
+      color: #ffffff;
+      padding: 8px 12px;
+      white-space: nowrap;
     }
 
     .old-price-table {

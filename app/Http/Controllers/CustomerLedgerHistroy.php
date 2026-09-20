@@ -1753,6 +1753,11 @@ public function oldpricecheck(Request $req)
 {
     if (!Auth::check()) return redirect()->route('login');
 
+    $this->convertBsLedgerDates($req, [
+        'date1_bs' => 'date1',
+        'date2_bs' => 'date2',
+    ]);
+
     $breadcrumb = [
         'subtitle' => '',
         'title'    => 'Check Old Price',
@@ -1791,6 +1796,7 @@ public function oldpricecheck(Request $req)
         collect(), 0, 50, $req->input('page', 1), ['path' => $req->url(), 'query' => $req->query()]
     );
     $cusinfoforpdfok = collect();
+    $itemQuantitySummary = collect();
 
     if ($searched) {
         $q = salesitem::from($tblSales.' as s')
@@ -1822,6 +1828,27 @@ public function oldpricecheck(Request $req)
                    ->orWhereRaw('CAST(s.price AS CHAR) LIKE ?',    [$like])
                    ->orWhereRaw('CAST(s.subtotal AS CHAR) LIKE ?', [$like]);
             });
+
+            $summaryRows = salesitem::from($tblSales.' as s')
+                ->leftJoin($tblItem.' as it', 'it.id', '=', 's.itemid')
+                ->leftJoin($tblInv.' as inv', 'inv.id', '=', 's.invoiceid')
+                ->when(!empty($customerid), fn ($query) => $query->where('inv.customerid', $customerid))
+                ->when(!empty($from) && !empty($to), fn ($query) => $query->whereBetween('s.date', [$from, $to]))
+                ->where(function ($query) use ($like) {
+                    $query->where('it.itemsname', 'like', $like)
+                        ->orWhere('s.unstockedname', 'like', $like);
+                })
+                ->select(['s.quantity', 's.unit'])
+                ->get();
+
+            $itemQuantitySummary = $summaryRows
+                ->groupBy(fn ($row) => strtolower(trim((string) ($row->unit ?: 'unit'))))
+                ->map(function ($rows, $unit) {
+                    return (object) [
+                        'unit' => $unit,
+                        'quantity' => $rows->sum(fn ($row) => (float) $row->quantity),
+                    ];
+                })->values();
         }
 
         $cus = $q->orderByDesc('s.id')
@@ -1838,8 +1865,9 @@ public function oldpricecheck(Request $req)
     // === AJAX branch: return only the HTML block for table+pagination ===
     if ($req->ajax() || $req->boolean('ajax')) {
         $html = view('customerledgerhistory._items_block', [
-            'cus'       => $cus,
-            'searchxx'  => $searchxx,
+            'cus'                  => $cus,
+            'searchxx'             => $searchxx,
+            'itemQuantitySummary' => $itemQuantitySummary,
         ])->render();
 
         return response()->json(['html' => $html]);
@@ -1860,6 +1888,7 @@ public function oldpricecheck(Request $req)
         'cusinfoforpdfok' => $cusinfoforpdfok,
         'searchxx'        => $searchxx,
         'searched'        => $searched,
+        'itemQuantitySummary' => $itemQuantitySummary,
     ]);
 }
 
