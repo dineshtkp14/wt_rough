@@ -196,7 +196,7 @@ class AllCustomerCreditListLivewire extends Component
         $this->applyFilters($query);
         $this->applySorting($query);
 
-        $customers = $query->paginate(100);
+        $customers = $query->paginate(200);
 
         foreach ($customers as $customer) {
             if (!array_key_exists($customer->id, $this->customerNotes)) {
