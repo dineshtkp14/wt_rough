@@ -298,10 +298,7 @@
     <div class="top-rule"></div>
 
     <div class="letterhead">
-        <h1>OM HARI TRADELINK</h1>
         <div class="subtitle">Customer Ledger Statement - Credit Only</div>
-        <p>Address: Tikapur, Kailali (in front of Tikapur Police Station)</p>
-        <p>Mobile No: 9860378262, 9848448624, 9812656284</p>
     </div>
 
     <table class="info-grid">
