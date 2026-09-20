@@ -88,14 +88,15 @@ class VatSystemBillController extends Controller
 
     private function catalogItems()
     {
-        $purchased = CompanyBillItem::query()->whereHas('companyBill', fn ($query) => $query->where('firm_id', session('vat_firm_id')))->select('item_name', 'hs_code', 'rate', 'unit')->get()->map(fn ($item) => (object) ['itemsname' => $item->item_name, 'mrp' => $item->rate, 'unit' => $item->unit, 'hs_code' => $item->hs_code]);
+        $purchased = CompanyBillItem::query()->whereHas('companyBill', fn ($query) => $query->where('firm_id', session('vat_firm_id')))->select('item_name', 'hs_code', 'rate', 'unit')->get()->map(fn ($item) => (object) ['itemsname' => $item->item_name, 'mrp' => $item->rate, 'unit' => $item->unit, 'hs_code' => $item->hs_code, 'stock_quantity' => null]);
+        $stock = VatStock::query()->where('firm_id', session('vat_firm_id'))->select('item_name', 'sale_rate', 'unit', 'quantity', 'hs_code')->get()->map(fn ($item) => (object) ['itemsname' => $item->item_name, 'mrp' => $item->sale_rate, 'unit' => $item->unit, 'hs_code' => $item->hs_code, 'stock_quantity' => (float)$item->quantity]);
 
-        return $purchased->unique(fn ($item) => strtolower(trim($item->itemsname)))->sortBy('itemsname')->values();
+        return $stock->concat($purchased)->unique(fn ($item) => strtolower(trim($item->itemsname).'|'.strtolower(trim($item->unit))))->sortBy('itemsname')->values();
     }
 
     private function catalogJson($catalogItems): string
     {
-        return $catalogItems->map(fn ($item) => ['name'=>$item->itemsname,'price'=>$item->mrp,'unit'=>$item->unit,'hs_code'=>$item->hs_code ?? null])->values()->toJson();
+        return $catalogItems->map(fn ($item) => ['name'=>$item->itemsname,'price'=>$item->mrp,'unit'=>$item->unit,'hs_code'=>$item->hs_code ?? null,'stock_quantity'=>$item->stock_quantity])->values()->toJson();
     }
 
     public function store(Request $request)
@@ -125,6 +126,7 @@ class VatSystemBillController extends Controller
             'items.*.rate' => ['required', 'numeric', 'min:0'],
             'items.*.is_taxable' => ['nullable', 'boolean'],
         ]);
+        $this->validateAvailableStock($data['items'], $firm->id);
 
         $bill = DB::transaction(function () use ($data) {
             $bill = VatSystemBill::create(collect($data)->except('items')->merge(['added_by' => session('user_email') ?: auth()->user()?->email])->all());
@@ -226,5 +228,22 @@ class VatSystemBillController extends Controller
         $after=$before+$quantity;
         $stock->update(['quantity'=>$after,'sale_rate'=>$rate]);
         $stock->movements()->create(['movement_type'=>$quantity < 0 ? 'sale' : 'sale_reversal','quantity'=>abs($quantity),'rate'=>$rate,'reference'=>$reference,'user_email'=>session('user_email')?:auth()->user()?->email,'quantity_before'=>$before,'quantity_after'=>$after]);
+    }
+
+    private function validateAvailableStock(array $items, int $firmId): void
+    {
+        $stocks = VatStock::where('firm_id', $firmId)->get()->keyBy(fn ($stock) => strtolower(trim($stock->item_name)).'|'.strtolower(trim($stock->unit)));
+        $errors = [];
+        foreach ($items as $index => $item) {
+            $key = strtolower(trim($item['item_name'])).'|'.strtolower(trim($item['unit']));
+            $stock = $stocks->get($key);
+            $quantity = (float) $item['quantity'];
+            if (!$stock) {
+                $errors["items.{$index}.item_name"] = 'This item is not available in VAT stock.';
+            } elseif ($quantity > (float) $stock->quantity) {
+                $errors["items.{$index}.quantity"] = 'Only '.number_format((float)$stock->quantity, 3).' available for '.$item['item_name'].'.';
+            }
+        }
+        if ($errors) throw \Illuminate\Validation\ValidationException::withMessages($errors);
     }
 }

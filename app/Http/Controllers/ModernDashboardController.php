@@ -60,6 +60,12 @@ class ModernDashboardController extends Controller
         $todayCashSales = (float) invoice::whereDate('inv_date', $today)->where('inv_type', 'cash')->sum('total');
         $todayPayments = (float) customerledgerdetails::whereDate('date', $today)
             ->where('invoicetype', 'payment')->sum('credit');
+        $chequesDueToday = customerledgerdetails::with('customer')
+            ->where('invoicetype', 'payment')
+            ->where('is_cheque', true)
+            ->whereDate('cheque_exchange_date', $today)
+            ->orderBy('id')
+            ->get();
         $todayExpenses = (float) Expense::whereDate('date', $today)->sum('amount');
         $unmatchedBankTransactions = Schema::hasTable('bank_statement_transactions')
             ? DB::table('bank_statement_transactions')->where('status', 'unmatched')->count()
@@ -288,7 +294,7 @@ class ModernDashboardController extends Controller
             'recentDeletedInvoices',
             'lowStockAlerts',
             'topSellingItems'
-            ,'todayPulse', 'onlineUsers'
+            ,'todayPulse', 'onlineUsers', 'chequesDueToday'
         ));
     }
 

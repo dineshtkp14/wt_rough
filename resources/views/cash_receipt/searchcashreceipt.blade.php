@@ -117,6 +117,13 @@
                                         @endif
                                         <p class="mb-1"><strong>Particulars:</strong> {{ $data->particulars ?? '' }}</p>
                                         <p class="mb-1"><strong>Voucher Type:</strong> {{ $data->voucher_type ?? '' }}</p>
+                                        @if($data->is_cheque)
+                                            <div class="cheque-receipt-details">
+                                                <p class="mb-1"><strong>Cheque Bank:</strong> {{ $data->cheque_bank ?? '' }}</p>
+                                                <p class="mb-1"><strong>Cheque No.:</strong> {{ $data->cheque_no ?? '' }}</p>
+                                                <p class="mb-1"><strong>Cheque Date (B.S.):</strong> {{ $data->cheque_exchange_date ? \App\Support\NepaliDate::adToBsString($data->cheque_exchange_date, 'en') : '' }}</p>
+                                            </div>
+                                        @endif
                                         <p class="mb-1"><strong>Amount:</strong> {{ $data->credit ?? '' }}  /- </p>
                                         <p class="mb-1"><strong>In Words:</strong>
                                                
@@ -358,6 +365,18 @@
         font-weight: 700;
         line-height: 1.35;
         margin: 0;
+    }
+
+    .cheque-receipt-details {
+        background: #fff8e6;
+        border: 1px solid #f2c96d;
+        border-radius: 8px;
+        margin: 10px 0;
+        padding: 8px 12px;
+    }
+
+    .cheque-receipt-details p {
+        color: #7a4b00;
     }
 
     @media (max-width: 700px) {

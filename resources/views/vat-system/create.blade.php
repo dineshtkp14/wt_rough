@@ -22,7 +22,7 @@
     .item-cell{position:relative}.item-suggestion-menu{position:fixed;z-index:9999;left:auto;right:auto;top:auto;width:320px;background:#102f63;border:1px solid #6ea8ff;border-radius:12px;box-shadow:0 12px 28px #102f6355;overflow:hidden;display:none}.item-suggestion-menu.show{display:block}.item-suggestion{display:block;width:100%;border:0;border-bottom:1px solid #31578d;background:#102f63;text-align:left;padding:10px 13px;color:#fff;font-size:12px;cursor:pointer}.item-suggestion:last-child{border-bottom:0}.item-suggestion:hover{background:#2563eb}.item-suggestion strong{display:block;font-size:13px;color:#fff}.item-suggestion small{color:#dbeafe}.item-suggestion-empty{padding:12px;color:#dbeafe;font-size:12px}</style>
 <style>.vat-create .card-header{padding:15px 20px;font-size:16px}.vat-create .card-body{padding:22px 18px}.vat-create .form-control,.vat-create .form-select{min-height:42px;background:#fbfdff}.vat-create .form-control:focus,.vat-create .form-select:focus{border-color:#2563eb;box-shadow:0 0 0 .2rem #2563eb20}.firm-display{min-height:66px;display:flex;align-items:center;gap:14px;padding:12px 18px;border:1px solid #a8c7ff;border-radius:12px;background:linear-gradient(100deg,#e6f0ff,#f8fbff);color:#102f63;font-weight:900;box-shadow:inset 4px 0 #2563eb}.firm-display i{color:#2563eb;font-size:22px}.firm-display span{font-size:19px;line-height:1.2}.firm-display small{display:block;font-size:10px;color:#52719a;font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px}.vat-create .bill-row:hover{background:#f4f8ff}.vat-create #billItems td{padding:12px 10px}.vat-create .total-box{box-shadow:inset 0 1px 0 #fff}.vat-create .card-footer .btn{border-radius:10px;font-weight:800;padding:13px}@media(max-width:700px){.firm-display span{font-size:15px}}</style>
 <div class="main-content vat-create"><div class="container-fluid p-3 p-md-4">
-<div class="d-flex justify-content-between align-items-center mb-4 create-page-heading"><div><h1 class="fw-bold mb-1">{{ $editing ? 'Edit Sales Invoice' : 'Create Sales Invoice' }}</h1><p class="text-muted mb-0">Create an invoice for goods sold to your customer.</p></div><div class="selected-firm-heading"><small>Selected Firm</small><strong>{{ $activeFirm?->name ?? 'Select a firm' }}</strong></div><a href="{{ route('vat-system.bills.index') }}" class="btn btn-outline-secondary">Back</a></div>
+<div class="d-flex justify-content-between align-items-center mb-4 create-page-heading"><div><h1 class="fw-bold mb-1">{{ $editing ? 'Edit Sales Invoice' : 'Create Sales Invoice' }}</h1><p class="text-muted mb-0">Create an invoice for goods sold to your customer.</p></div><div class="selected-firm-heading"><small>Selected Firm</small><strong>{{ $activeFirm?->name ?? 'Select a firm' }}</strong></div><div class="d-flex gap-2"><a href="{{ route('vat-system.stock.opening.create') }}" class="btn btn-warning fw-bold"><i class="fa fa-box-open me-1"></i>Opening Stock</a><a href="{{ route('vat-system.bills.index') }}" class="btn btn-outline-secondary">Back</a></div></div>
 @if($errors->any())<div class="alert alert-danger"><ul class="mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
 <form method="post" action="{{ $editing ? route('vat-system.bills.update', $bill) : route('vat-system.bills.store') }}" id="vatBillForm" novalidate>@csrf @if($editing) @method('PUT') @endif
 <div class="card mb-4"><div class="card-header">Bill and Party Information</div><div class="card-body"><div class="row g-3">
@@ -245,6 +245,23 @@ document.addEventListener('DOMContentLoaded', function () {
         fields.forEach(function (field) {
             if (!validateField(field) && !firstInvalid) firstInvalid = field;
         });
+        const catalog = window.vatCatalog || [];
+        form.querySelectorAll('#billItems .bill-row').forEach(function (row) {
+            const itemField = row.querySelector('.item-name');
+            const unitField = row.querySelector('input[name$="[unit]"]');
+            const quantityField = row.querySelector('.qty');
+            if (!itemField || !unitField || !quantityField) return;
+            const itemName = itemField.value.trim().toLowerCase();
+            const unit = unitField.value.trim().toLowerCase();
+            const match = catalog.find(item => item.name.trim().toLowerCase() === itemName && item.unit.trim().toLowerCase() === unit);
+            if (!match) {
+                showError(itemField, 'Select an item from the VAT stock list.');
+                if (!firstInvalid) firstInvalid = itemField;
+            } else if (match.stock_quantity !== null && Number(quantityField.value) > Number(match.stock_quantity)) {
+                showError(quantityField, 'Only ' + Number(match.stock_quantity).toFixed(3) + ' available in stock.');
+                if (!firstInvalid) firstInvalid = quantityField;
+            }
+        });
         if (!firstInvalid) return;
         event.preventDefault();
         const focusTarget = firstInvalid === customerSelect ? customerInput : firstInvalid;
@@ -350,4 +367,5 @@ document.addEventListener('DOMContentLoaded', function () {
     syncDateMode();
 });
 </script>
+<script>window.vatCatalog={!! $catalogJson !!};document.addEventListener('DOMContentLoaded',function(){const observer=new MutationObserver(function(){document.querySelectorAll('.item-suggestion').forEach(function(button){if(button.dataset.stockShown)return;const item=window.vatCatalog[Number(button.dataset.index)];if(!item)return;const small=button.querySelector('small');if(!small)return;small.textContent='Available: '+(item.stock_quantity===null?'Not tracked':Number(item.stock_quantity).toFixed(3))+'  |  Rate: '+(item.price??'N/A')+'  |  Unit: '+(item.unit||'N/A')+'  |  H.S. Code: '+(item.hs_code||'N/A');button.dataset.stockShown='1'})});observer.observe(document.body,{subtree:true,childList:true})});</script>
 @endsection

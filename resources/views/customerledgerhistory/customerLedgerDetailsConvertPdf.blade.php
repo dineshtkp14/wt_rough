@@ -98,6 +98,13 @@
             text-transform: uppercase;
         }
 
+        .cheque-bank {
+            color: #8a5a00;
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
         .line {
             margin: 2px 0;
             font-size: 13px;
@@ -379,7 +386,12 @@
                         <td>{{ $i->date }}</td>
                         <td>{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}</td>
                         <td>{{ $i->created_at }}</td>
-                        <td>{{ $i->particulars }}</td>
+                        <td>
+                            <div>{{ $i->particulars }}</div>
+                            @if($i->invoicetype == 'payment' && !empty($i->is_cheque) && !empty($i->cheque_bank))
+                                <div class="cheque-bank">Cheque Bank: {{ $i->cheque_bank }}</div>
+                            @endif
+                        </td>
                         <td>{{ $i->voucher_type }}</td>
                         <td>
                             <span class="badge {{ $badgeClass }}">{{ $type }}</span>

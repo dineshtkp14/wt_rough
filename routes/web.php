@@ -126,6 +126,8 @@ Route::get('/vat-system/change-firm', [VatSystemBillController::class, 'switchFi
   Route::get('/vat-system/bills/{bill}', [VatSystemBillController::class, 'show'])->name('vat-system.bills.show');
   Route::resource('/vat-system/company-bills', CompanyBillController::class)->names('vat-system.company-bills');
   Route::resource('/vat-system/suppliers', VatSupplierController::class)->except(['show'])->names('vat-system.suppliers');
+  Route::get('/vat-system/stock/opening', [VatStockController::class, 'openingCreate'])->name('vat-system.stock.opening.create');
+  Route::post('/vat-system/stock/opening', [VatStockController::class, 'openingStore'])->name('vat-system.stock.opening.store');
   Route::get('/vat-system/stock', [VatStockController::class, 'index'])->name('vat-system.stock.index');
   Route::get('/vat-system/stock/export/pdf', [VatStockController::class, 'exportPdf'])->name('vat-system.stock.export.pdf');
   Route::get('/vat-system/stock/export/excel', [VatStockController::class, 'exportExcel'])->name('vat-system.stock.export.excel');

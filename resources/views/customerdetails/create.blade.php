@@ -110,6 +110,13 @@
                 </div>
             </div>
 
+            <div class="col-md-3">
+                <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input me-2" type="checkbox" id="isCheque" name="is_cheque" value="1" style="width: 30px; height: 30px;" {{ old('is_cheque') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="isCheque">If Cheque</label>
+                </div>
+            </div>
+
             <div class="col-md-2">
                 <div class="form-check d-flex align-items-center">
                     <input class="form-check-input me-2" type="checkbox" id="forautoinputfonepay" name="forautoinputfonepay" style="width: 30px; height: 30px;">
@@ -131,6 +138,15 @@
                 </div>
             </div>
 
+            <div class="w-100 payment-row-break"></div>
+
+            <div class="col-md-12 row g-3" id="chequeDetails" style="display: {{ old('is_cheque') ? 'flex' : 'none' }};">
+                <div class="col-md-4"><label>Cheque Bank *</label><input name="cheque_bank" id="chequeBank" class="form-control" value="{{ old('cheque_bank') }}" placeholder="Bank of ..."></div>
+                <div class="col-md-4"><label>Cheque No. *</label><input name="cheque_no" id="chequeNo" class="form-control" value="{{ old('cheque_no') }}" placeholder="Cheque number"></div>
+                <div class="col-md-4"><label>Cheque Date (B.S.) *</label><input type="text" name="cheque_exchange_date_bs" id="chequeExchangeDate" class="form-control" value="{{ old('cheque_exchange_date_bs', \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en')) }}" placeholder="YYYY-MM-DD" inputmode="numeric" pattern="[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}"><small class="text-muted d-block mt-1">Enter Nepali date, e.g. 2083-06-02</small></div>
+            </div>
+            <div class="w-100 payment-row-break"></div>
+
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label"> Particulars <span class="text-success fw-bold"> (Bank Name / Fone Pay / Payment) </span> <span style="color: red;">*</span></label>
                 <input autocomplete="off" id="particulars" type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars') }}" >
@@ -148,6 +164,8 @@
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
+
+            <div class="w-100 payment-row-break"></div>
 
             <!-- Your existing HTML code -->
             <div class="col-md-6" id="additionalFieldContainer" style="display: none;">
@@ -256,7 +274,43 @@
 </script>
 
 <script>
-    //modefonepayandcash
+document.addEventListener('DOMContentLoaded',function(){const check=document.getElementById('isCheque'),details=document.getElementById('chequeDetails'),date=document.getElementById('chequeExchangeDate'),cash=document.getElementById('forautoinputcash'),fonepay=document.getElementById('forautoinputfonepay');if(!check||!details)return;const fields=details.querySelectorAll('input');const toggle=()=>{details.style.display=check.checked?'flex':'none';fields.forEach(field=>field.required=check.checked);if(!check.checked)fields.forEach(field=>field.value='')};const formatBsDate=()=>{if(!date)return;let digits=date.value.replace(/\D/g,'').slice(0,8);if(digits.length>6)digits=digits.slice(0,4)+'-'+digits.slice(4,6)+'-'+digits.slice(6);else if(digits.length>4)digits=digits.slice(0,4)+'-'+digits.slice(4);date.value=digits};check.addEventListener('change',function(){if(this.checked){if(cash)cash.checked=false;if(fonepay)fonepay.checked=false}toggle()});if(cash)cash.addEventListener('change',function(){if(this.checked){check.checked=false;if(fonepay)fonepay.checked=false;toggle()}});if(fonepay)fonepay.addEventListener('change',function(){if(this.checked){check.checked=false;if(cash)cash.checked=false;toggle()}});if(check.checked){if(cash)cash.checked=false;if(fonepay)fonepay.checked=false}else if(cash&&fonepay&&cash.checked&&fonepay.checked){fonepay.checked=false}if(date)date.addEventListener('input',formatBsDate);toggle();formatBsDate();});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const cheque = document.getElementById('isCheque');
+    const bank = document.getElementById('chequeBank');
+    const particulars = document.getElementById('particulars');
+    const hiddenParticulars = document.getElementById('hiddenParticulars');
+    const voucherType = document.getElementById('vt');
+    const hiddenVoucherType = document.getElementById('hiddenVt');
+    if (!cheque || !bank || !particulars || !voucherType) return;
+
+    const syncChequePayment = () => {
+        if (cheque.checked) {
+            const bankName = bank.value.trim();
+            const particularsValue = bankName ? 'CHEQUE DEPOSIT - ' + bankName : 'CHEQUE DEPOSIT';
+            particulars.value = particularsValue;
+            voucherType.value = 'CHEQUE DEPOSIT';
+            if (hiddenParticulars) hiddenParticulars.value = particularsValue;
+            if (hiddenVoucherType) hiddenVoucherType.value = 'CHEQUE DEPOSIT';
+        } else if (particulars.value.indexOf('CHEQUE DEPOSIT') === 0) {
+            particulars.value = '';
+            voucherType.value = '';
+            if (hiddenParticulars) hiddenParticulars.value = '';
+            if (hiddenVoucherType) hiddenVoucherType.value = '';
+        }
+    };
+
+    cheque.addEventListener('change', syncChequePayment);
+    bank.addEventListener('input', syncChequePayment);
+    syncChequePayment();
+});
+</script>
+
+<script>
+//modefonepayandcash
     document.addEventListener('DOMContentLoaded', function () {
         const cashCheckbox = document.getElementById('forautoinputcash');
         const fonepayCheckbox = document.getElementById('forautoinputfonepay');
@@ -556,5 +610,31 @@ $(document).ready(function () {
             transform: translateX(5px);
         }
     }
+</style>
+<style>
+    .main-content:has(form[action*="cpayments"]){background:#eef4fb;min-height:calc(100vh - 70px);padding-bottom:50px}
+    .main-content:has(form[action*="cpayments"])>.container{max-width:none!important;width:100%!important;padding-left:24px!important;padding-right:24px!important}
+    form[action*="cpayments"]{max-width:none;width:100%;margin:28px 0 0!important;padding:28px 32px!important;background:#fff;border:1px solid #dce6f2;border-radius:18px;box-shadow:0 12px 32px rgba(23,59,114,.10)!important;align-items:stretch!important}
+    form[action*="cpayments"] .py-4{padding:0 0 24px!important;margin-bottom:8px;border-bottom:1px solid #e4ebf4}
+    form[action*="cpayments"] .py-4>div:first-child{width:340px!important}.search-input{height:46px!important;border:1px solid #c9d7e8!important;border-radius:10px!important;padding-left:42px!important}.search-icon{top:14px!important}
+    form[action*="cpayments"] .py-4>div:last-child{width:250px!important}.input-group-text{background:#f8fbff!important;border-color:#c9d7e8!important;color:#526987;font-weight:700}
+    form[action*="cpayments"]>.col-md-2,form[action*="cpayments"]>.col-md-3,form[action*="cpayments"]>.col-md-4{padding:14px 16px;border:1px solid #e2eaf4;border-radius:12px;background:#f8fbff;display:flex;align-items:center;min-height:66px}
+    form[action*="cpayments"]>.col-md-2,form[action*="cpayments"]>.col-md-3,form[action*="cpayments"]>.col-md-4{flex:1 1 0!important;width:auto!important;max-width:none!important}
+    form[action*="cpayments"]>.col-md-6{flex:0 0 50%!important;width:50%!important;max-width:50%!important}
+    form[action*="cpayments"]>.col-md-6:has(#particulars){flex:0 0 50%!important;width:50%!important;max-width:50%!important;margin-top:4px}
+    form[action*="cpayments"]>.col-md-2 .form-check,form[action*="cpayments"]>.col-md-3 .form-check,form[action*="cpayments"]>.col-md-4 .form-check{width:100%;margin:0}
+    form[action*="cpayments"] .form-check-input{width:22px!important;height:22px!important;margin-top:0!important;accent-color:#2563eb}
+    form[action*="cpayments"] .form-check-label{font-weight:800;color:#173b72;font-size:15px}
+    form[action*="cpayments"] label:not(.form-check-label){display:block;margin-bottom:7px;color:#405675;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.25px}
+    form[action*="cpayments"] .form-control{min-height:46px;border:1px solid #c9d7e8;border-radius:9px;background:#fbfdff;font-size:15px}
+    form[action*="cpayments"] textarea.form-control{min-height:110px}
+    form[action*="cpayments"] #chequeDetails{display:none;align-items:stretch!important;padding:18px!important;margin:4px 0!important;border:1px solid #f4d58b;border-radius:14px;background:linear-gradient(135deg,#fff9e8,#fffdf6)}
+    form[action*="cpayments"] #chequeDetails>div{padding:0 8px!important;border:0;background:transparent;display:block;min-height:0}
+    form[action*="cpayments"] #chequeDetails label{color:#8a5a00}
+    form[action*="cpayments"] #chequeDetails input{background:#fff;border-color:#e7c979}
+    form[action*="cpayments"] #amount{font-size:20px!important;font-weight:800!important;color:#173b72}
+    form[action*="cpayments"] #paymentSubmitBtn{height:54px;border:0;border-radius:11px;background:linear-gradient(135deg,#2563eb,#1744a0);font-size:17px;font-weight:900;box-shadow:0 8px 18px #2563eb35}
+    form[action*="cpayments"] #paymentSubmitBtn:hover{transform:translateY(-1px);box-shadow:0 10px 22px #2563eb45}
+    @media(max-width:768px){form[action*="cpayments"]{padding:18px!important;margin-top:18px!important}form[action*="cpayments"] .py-4{display:block!important}form[action*="cpayments"] .py-4>div{width:100%!important;margin:12px 0}form[action*="cpayments"]>.col-md-2,form[action*="cpayments"]>.col-md-3,form[action*="cpayments"]>.col-md-4,form[action*="cpayments"]>.col-md-6{flex:0 0 100%!important;width:100%!important;max-width:100%!important}.main-content:has(form[action*="cpayments"])>.container{padding-left:12px!important;padding-right:12px!important}}
 </style>
 @stop

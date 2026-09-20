@@ -200,6 +200,11 @@
         @foreach ($alldetails as $data)
             <p><strong>Particulars:</strong> {{$data->particulars}}</p>
             <p><strong>Voucher Type:</strong> {{$data->voucher_type}}</p>
+            @if($data->is_cheque)
+                <p><strong>Cheque Bank:</strong> {{$data->cheque_bank ?? ''}}</p>
+                <p><strong>Cheque No.:</strong> {{$data->cheque_no ?? ''}}</p>
+                <p><strong>Cheque Date (B.S.):</strong> {{ $data->cheque_exchange_date ? \App\Support\NepaliDate::adToBsString($data->cheque_exchange_date, 'en') : '' }}</p>
+            @endif
             <p><strong>Amount:</strong> {{$data->credit}}/-</p>
             <p><strong>Amount In Words:</strong>
 

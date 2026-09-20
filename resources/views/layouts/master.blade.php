@@ -251,6 +251,19 @@
         .vat-system-shell .pagination .active .page-link { background: #2563eb; color: #fff; }
         .vat-system-shell .page-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 24px; }
         .vat-system-shell .page-title p { color: #64748b; margin: 4px 0 0; }
+        .vat-top-nav { align-items: center; background: #fff; border-bottom: 1px solid #dbe5f2; box-shadow: 0 5px 18px rgba(23,59,114,.08); display: flex; gap: 18px; left: 300px; min-height: 68px; padding: 10px 24px; position: fixed; right: 0; top: 0; z-index: 900; }
+        .vat-system-shell .main-content { padding-top: 68px !important; }
+        .vat-top-nav-brand { align-items: center; color: #173b72; display: flex; flex: 0 0 auto; font-size: 17px; font-weight: 900; gap: 9px; white-space: nowrap; }
+        .vat-top-nav-brand i { align-items: center; background: #dbeafe; border-radius: 10px; color: #2563eb; display: inline-flex; height: 36px; justify-content: center; width: 36px; }
+        .vat-top-nav-links { align-items: center; display: flex; flex: 1 1 auto; gap: 5px; min-width: 0; }
+        .vat-top-nav-links a, .vat-top-nav-firm { align-items: center; border-radius: 9px; color: #526783; display: inline-flex; font-size: 13px; font-weight: 800; gap: 7px; padding: 11px 12px; text-decoration: none; white-space: nowrap; }
+        .vat-top-nav-links a:hover, .vat-top-nav-links a.active { background: #eaf2ff; color: #155bd7; }
+        .vat-top-nav-links a.active { box-shadow: inset 0 -2px #2563eb; }
+        .vat-top-nav-firm { background: #f8fafc; border: 1px solid #cbd9ea; color: #173b72; flex: 0 0 auto; }
+        .vat-top-nav-firm:hover { background: #eff6ff; color: #155bd7; }
+        body.sidebar-collapsed .vat-top-nav { left: 80px; }
+        @media (max-width: 1100px) { .vat-top-nav { align-items: stretch; flex-wrap: wrap; gap: 7px; padding: 9px 14px; } .vat-top-nav-brand { width: 100%; } .vat-top-nav-links { overflow-x: auto; order: 2; } .vat-top-nav-firm { order: 1; position: absolute; right: 14px; top: 9px; } }
+        @media (max-width: 600px) { .vat-top-nav { left: 0; padding-left: 12px; } body.sidebar-collapsed .vat-top-nav { left: 0; } .vat-top-nav-links a { font-size: 12px; padding: 9px 10px; } .vat-top-nav-links a span { display: none; } .vat-top-nav-firm span { display: none; } }
         @media (max-width: 768px) { .vat-system-shell .container, .vat-system-shell .container-fluid { padding-left: 14px !important; padding-right: 14px !important; } .vat-system-shell .page-title > div:last-child { width: 100%; } .vat-system-shell .page-title .btn { width: 100%; margin: 3px 0 !important; } }
     </style>
 
@@ -817,6 +830,10 @@
             </script>
         @endauth
     </aside>
+
+    @if (request()->is('vat-system*'))
+        @include('vat-system._top-nav')
+    @endif
 
     @yield('content')
 

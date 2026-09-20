@@ -267,7 +267,12 @@
                                         </div>
                                     </td>
                                     <td>{{ $i->date }}</td>
-                                    <td>{{ $i->particulars }}</td>
+                                    <td>
+                                        <div>{{ $i->particulars }}</div>
+                                        @if($isPayment && !empty($i->is_cheque) && !empty($i->cheque_bank))
+                                            <small class="clhs-cheque-bank"><i class="fa-solid fa-building-columns"></i> Cheque Bank: {{ $i->cheque_bank }}</small>
+                                        @endif
+                                    </td>
                                     <td>{{ $i->voucher_type }}</td>
                                     <td>
                                         <span class="clhs-type-badge {{ $isPayment ? 'payment' : ($isSettlement ? 'settlement' : ($isCreditNote ? 'credit-note' : 'credit')) }}">
@@ -1198,6 +1203,18 @@
             font-size: 16px;
             padding: 12px 10px;
             vertical-align: middle;
+        }
+
+        .clhs-cheque-bank {
+            background: #fff7df;
+            border: 1px solid #f2cf78;
+            border-radius: 5px;
+            color: #8a5a00;
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 800;
+            margin-top: 5px;
+            padding: 3px 7px;
         }
 
         .clhs-table th:nth-child(8),

@@ -1521,6 +1521,12 @@
             </div>
         </div>
     </div>
+    @if($chequesDueToday->isNotEmpty())
+        <div class="alert alert-warning border-0 shadow-sm mt-3 d-flex align-items-start gap-3">
+            <i class="fas fa-money-check-dollar fa-2x mt-1"></i>
+            <div><strong>Cheque exchange reminder</strong><div>Today please go to the bank and exchange these customer cheque(s):</div><ul class="mb-0 mt-1">@foreach($chequesDueToday as $cheque)<li><strong>{{ $cheque->customer?->name ?? 'Unknown customer' }}</strong> — Rs {{ number_format((float)$cheque->credit, 2) }} — {{ $cheque->cheque_bank }} — Cheque No. {{ $cheque->cheque_no }}</li>@endforeach</ul></div>
+        </div>
+    @endif
 
     <!-- Stats Cards -->
     <div class="stat-grid">

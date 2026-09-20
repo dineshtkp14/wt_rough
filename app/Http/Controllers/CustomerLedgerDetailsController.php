@@ -17,6 +17,7 @@ use App\Models\invoice;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CreditnotesInvoice;
 use App\Services\CustomerSmsNotifier;
+use App\Support\NepaliDate;
 
 
 
@@ -76,10 +77,14 @@ public function store(Request $req)
         'customerid' => 'required',
         'date' => 'required',
         'amount' => 'required',
+        'is_cheque' => 'nullable|boolean',
+        'cheque_bank' => 'required_if:is_cheque,1|nullable|string|max:150',
+        'cheque_no' => 'required_if:is_cheque,1|nullable|string|max:50',
+        'cheque_exchange_date_bs' => 'required_if:is_cheque,1|nullable|regex:/^\\d{4}-\\d{1,2}-\\d{1,2}$/',
         'invoiceid' => 'nullable|integer',
         'invoiceids' => 'nullable|string',
-        'particulars' => 'required_without:disableFields', // Only required if disableFields is not present
-        'vt' => 'required_without:disableFields', // Only required if disableFields is not present
+        'particulars' => 'required_without_all:disableFields,is_cheque',
+        'vt' => 'required_without_all:disableFields,is_cheque',
         // 'cninvoiceid' => 'required_without:disableFields', // Only required if disableFields is not present
     ]);
 
@@ -163,20 +168,25 @@ public function store(Request $req)
 
     $nextUserId = DB::select("SHOW TABLE STATUS LIKE 'customerledgerdetails'")[0]->Auto_increment;
 
+    $chequeExchangeDate = $this->chequeExchangeDate($req);
     $payment = null;
 
-    DB::transaction(function () use ($req, &$payment) {
+    DB::transaction(function () use ($req, $chequeExchangeDate, &$payment) {
         $cl = new customerledgerdetails();
         $cl->customerid = $req->customerid;
         $cl->date = $req->date;
         $cl->invoiceid = $req->invoiceid ?? null;
         $cl->invoiceids = $req->invoiceids ?? null;
-        $cl->particulars = $req->has('disableFields') ? "salesreturn" : ($req->particulars ?? '');
-        $cl->voucher_type = $req->has('disableFields') ? "return" : ($req->vt ?? '');
+        $cl->particulars = $req->has('disableFields') ? "salesreturn" : ($req->particulars ?: ($req->boolean('is_cheque') ? 'CHEQUE DEPOSIT - '.$req->input('cheque_bank') : ''));
+        $cl->voucher_type = $req->has('disableFields') ? "return" : ($req->vt ?: ($req->boolean('is_cheque') ? 'CHEQUE DEPOSIT' : ''));
         $cl->cninvoiceid = $req->cninvoiceid ?? null;
         $cl->invoicetype = "payment";
         $cl->credit = $req->amount;
         $cl->notes = $req->notes;
+        $cl->is_cheque = $req->boolean('is_cheque');
+        $cl->cheque_bank = $req->input('cheque_bank');
+        $cl->cheque_no = $req->input('cheque_no');
+        $cl->cheque_exchange_date = $chequeExchangeDate;
         $cl->added_by = session('user_email');
         $cl->save();
         $payment = $cl;
@@ -271,8 +281,12 @@ public function update(Request $req, $id)
         'customerid' => 'required',
         'date' => 'required',
         'amount' => 'required',
-        'particulars' => 'required_without:disableFields', // Only required if disableFields is not present
-        'vt' => 'required_without:disableFields', // Only required if disableFields is not present
+        'is_cheque' => 'nullable|boolean',
+        'cheque_bank' => 'required_if:is_cheque,1|nullable|string|max:150',
+        'cheque_no' => 'required_if:is_cheque,1|nullable|string|max:50',
+        'cheque_exchange_date_bs' => 'required_if:is_cheque,1|nullable|regex:/^\\d{4}-\\d{1,2}-\\d{1,2}$/',
+        'particulars' => 'required_without_all:disableFields,is_cheque',
+        'vt' => 'required_without_all:disableFields,is_cheque',
         // 'cninvoiceid' => 'required_without:disableFields', // Only required if disableFields is not present
     ]);
 
@@ -308,17 +322,23 @@ public function update(Request $req, $id)
         }
     }
 
+    $chequeExchangeDate = $this->chequeExchangeDate($req);
+
     // Retrieve the record to be updated
     $cl = customerledgerdetails::findOrFail($id);
     
     // Update record fields
     $cl->customerid = $req->customerid;
     $cl->date = $req->date;
-    $cl->particulars = $req->has('disableFields') ? "salesreturn" : ($req->particulars ?? '');
-    $cl->voucher_type = $req->has('disableFields') ? "return" : ($req->vt ?? '');
+    $cl->particulars = $req->has('disableFields') ? "salesreturn" : ($req->particulars ?: ($req->boolean('is_cheque') ? 'CHEQUE DEPOSIT - '.$req->input('cheque_bank') : ''));
+    $cl->voucher_type = $req->has('disableFields') ? "return" : ($req->vt ?: ($req->boolean('is_cheque') ? 'CHEQUE DEPOSIT' : ''));
     $cl->cninvoiceid = $req->cninvoiceid ?? null;
     $cl->credit = $req->amount;
     $cl->notes = $req->notes;
+    $cl->is_cheque = $req->boolean('is_cheque');
+    $cl->cheque_bank = $req->input('cheque_bank');
+    $cl->cheque_no = $req->input('cheque_no');
+    $cl->cheque_exchange_date = $chequeExchangeDate;
     $cl->added_by = session('user_email');
     $cl->save();
     dd("success");
@@ -368,6 +388,20 @@ public function destroy($id, Request $req)
     } else {
         // If invoice type is not "payment", return with an error message
         return redirect()->route($redirectRoute)->with('error', 'Cannot delete this record as invoice type is not "payment".');
+    }
+}
+
+private function chequeExchangeDate(Request $request): ?string
+{
+    if (!$request->boolean('is_cheque')) return null;
+    $value = trim((string) $request->input('cheque_exchange_date_bs'));
+    if (!preg_match('/^(\\d{4})-(\\d{1,2})-(\\d{1,2})$/', $value, $parts)) {
+        throw \Illuminate\Validation\ValidationException::withMessages(['cheque_exchange_date_bs' => 'Enter the cheque date in B.S. format YYYY-MM-DD.']);
+    }
+    try {
+        return NepaliDate::bsToAdString((int)$parts[1], (int)$parts[2], (int)$parts[3]);
+    } catch (\Throwable $exception) {
+        throw \Illuminate\Validation\ValidationException::withMessages(['cheque_exchange_date_bs' => 'The cheque B.S. date is not valid.']);
     }
 }
 
