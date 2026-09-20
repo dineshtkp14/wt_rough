@@ -17,7 +17,7 @@ class SmsService
     public function __construct()
     {
         $this->username = config('services.sms.username') ?: 'om_hari';
-        $this->apiKey = config('services.sms.api_key') ?: 'DE932FD6F0E9C395DCED38SXV07IEDCAF4';
+        $this->apiKey = config('services.sms.api_key');
         $this->password = config('services.sms.password') ?: 'Nepal12345#';
         $this->campaign = config('services.sms.campaign', 'Default');
         $this->routeId = config('services.sms.route_id', 'SI_Alert');
@@ -60,7 +60,9 @@ class SmsService
                 $payload['time'] = $scheduledTime;
             }
 
-            $response = Http::asForm()
+            $response = Http::withToken($this->apiKey)
+                ->acceptJson()
+                ->asForm()
                 ->timeout(20)
                 ->retry(1, 500)
                 ->post($this->apiUrl, $payload);
@@ -132,7 +134,9 @@ class SmsService
                 $payload['time'] = $scheduledTime;
             }
 
-            $response = Http::asForm()
+            $response = Http::withToken($this->apiKey)
+                ->acceptJson()
+                ->asForm()
                 ->timeout(20)
                 ->retry(1, 500)
                 ->post($this->apiUrl, $payload);
