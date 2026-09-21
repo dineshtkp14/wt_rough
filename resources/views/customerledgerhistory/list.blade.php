@@ -1929,9 +1929,9 @@
         .clhs-table.ledger-columns-hidden th:nth-child(2),
         .clhs-table.ledger-columns-hidden td:nth-child(2) { width: 10%; }
         .clhs-table.ledger-columns-hidden th:nth-child(4),
-        .clhs-table.ledger-columns-hidden td:nth-child(4) { width: 18%; }
+        .clhs-table.ledger-columns-hidden td:nth-child(4) { width: 28%; }
         .clhs-table.ledger-columns-hidden th:nth-child(6),
-        .clhs-table.ledger-columns-hidden td:nth-child(6) { width: 28%; }
+        .clhs-table.ledger-columns-hidden td:nth-child(6) { width: 18%; }
         .clhs-table.ledger-columns-hidden th:nth-child(7),
         .clhs-table.ledger-columns-hidden td:nth-child(7),
         .clhs-table.ledger-columns-hidden th:nth-child(8),
