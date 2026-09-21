@@ -27,7 +27,7 @@ if (!function_exists('convertNumberToWords')) {
             $words .= convertNumberToWords(floor($num / 100000)) . " Lakh ";
             $num %= 100000;
         }
-
+//dont know
         if ($num >= 1000) {
             $words .= convertNumberToWords(floor($num / 1000)) . " Thousand ";
             $num %= 1000;
