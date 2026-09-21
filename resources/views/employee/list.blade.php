@@ -2,7 +2,36 @@
 @include('layouts.breadcrumb')
 
 @section('content')
-<div class="main-content"> 
+@section('page-css')
+<style>
+    .employee-full-page {
+        width: 100%;
+        max-width: none;
+    }
+
+    .employee-full-page > .container {
+        width: 100%;
+        max-width: none;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .employee-full-page .card {
+        width: 100%;
+    }
+
+    .employee-full-page .card-body {
+        overflow-x: auto;
+    }
+
+    .employee-full-page table {
+        width: 100%;
+        min-width: 1050px;
+    }
+</style>
+@endsection
+
+<div class="main-content employee-full-page">
 
         @yield('breadcrumb')
 

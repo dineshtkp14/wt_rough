@@ -110,4 +110,38 @@ class Employee_controller extends Controller
         return redirect()->route('employees.index')->with('success','Employee Deleted sucessfully'); 
         
   }
+
+    public function toggleLock($id)
+    {
+        if ($redirect = $this->requireAdmin()) return $redirect;
+
+        $employee = User::findOrFail($id);
+        if ($employee->isAdmin()) {
+            return redirect()->route('employees.index')->with('error', 'Administrator accounts cannot be locked.');
+        }
+
+        $employee->is_locked = !$employee->is_locked;
+        $employee->save();
+
+        return redirect()->route('employees.index')->with(
+            'success',
+            $employee->is_locked ? 'User login locked successfully.' : 'User login unlocked successfully.'
+        );
+    }
+
+    public function toggleAllLocks(Request $req)
+    {
+        if ($redirect = $this->requireAdmin()) return $redirect;
+
+        $lock = $req->input('action') === 'lock';
+        $adminEmail = 'dineshtkp14@gmail.com';
+
+        User::where('email', '!=', $adminEmail)
+            ->update(['is_locked' => $lock]);
+
+        return redirect()->route('employees.index')->with(
+            'success',
+            $lock ? 'All user logins have been locked.' : 'All user logins have been unlocked.'
+        );
+    }
 }

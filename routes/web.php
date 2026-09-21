@@ -327,6 +327,8 @@ Route::delete('/companys/{companys}',[CompanyController::class,'destroy'])->name
     Route::get('/employees/{employees}/edit',[Employee_controller::class,'edit'])->name('employees.edit');
     Route::put('/employees/{employees}',[Employee_controller::class,'update'])->name('employees.update');
     Route::delete('/employees/{employees}',[Employee_controller::class,'destroy'])->name('employees.destroy');
+    Route::post('/employees/{employees}/toggle-lock',[Employee_controller::class,'toggleLock'])->name('employees.toggle-lock');
+    Route::post('/employees/toggle-all-locks',[Employee_controller::class,'toggleAllLocks'])->name('employees.toggle-all-locks');
 
 
 Route::get('/purorder',[Purchse_controller::class,'index'])->name('purorder.index');

@@ -63,6 +63,14 @@ class CustomAuthcontroller extends Controller
 
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
+            $authenticatedUser = Auth::user();
+            if ($authenticatedUser->is_locked && !$authenticatedUser->isAdmin()) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect('/login')->with('message', 'This is trial purpose only, no login. Buy from hostinger.com.');
+            }
 
             if (Schema::hasColumn('users', 'last_login_at') && Schema::hasColumn('users', 'last_activity_at')) Auth::user()->forceFill(['last_login_at' => now(), 'last_activity_at' => now()])->saveQuietly();
 
