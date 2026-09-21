@@ -143,7 +143,7 @@
             <div class="col-md-12 row g-3" id="chequeDetails" style="display: {{ old('is_cheque') ? 'flex' : 'none' }};">
                 <div class="col-md-4"><label>Cheque Bank *</label><input name="cheque_bank" id="chequeBank" class="form-control" value="{{ old('cheque_bank') }}" placeholder="Bank of ..."></div>
                 <div class="col-md-4"><label>Cheque No. *</label><input name="cheque_no" id="chequeNo" class="form-control" value="{{ old('cheque_no') }}" placeholder="Cheque number"></div>
-                <div class="col-md-4"><label>Cheque Date (B.S.) *</label><input type="text" name="cheque_exchange_date_bs" id="chequeExchangeDate" class="form-control" value="{{ old('cheque_exchange_date_bs', \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en')) }}" placeholder="YYYY-MM-DD" inputmode="numeric" pattern="[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}"><small class="text-muted d-block mt-1">Enter Nepali date, e.g. 2083-06-02</small></div>
+            <div class="col-md-4"><label>Cheque Date (B.S.) *</label><input type="text" name="cheque_exchange_date_bs" id="chequeExchangeDate" class="form-control @error('cheque_exchange_date_bs') is-invalid @enderror" value="{{ old('cheque_exchange_date_bs', \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en')) }}" placeholder="YYYY-MM-DD" inputmode="numeric" pattern="[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}"><small class="text-muted d-block mt-1">Enter Nepali date, e.g. 2083-06-02</small>@error('cheque_exchange_date_bs')<small class="text-danger d-block">{{ $message }}</small>@enderror</div>
             </div>
             <div class="w-100 payment-row-break"></div>
 
@@ -472,12 +472,25 @@ $(document).ready(function () {
             const voucherType = document.getElementById('vt');
             const amount = document.getElementById('amount');
             const submitBtn = document.getElementById('paymentSubmitBtn');
+            const cheque = document.getElementById('isCheque');
+            const chequeDate = document.getElementById('chequeExchangeDate');
+
+            function validateChequeDate() {
+                if (!cheque || !cheque.checked || !chequeDate) return true;
+                const match = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(chequeDate.value.trim());
+                const valid = match && Number(match[1]) >= 2000 && Number(match[1]) <= 2200
+                    && Number(match[2]) >= 1 && Number(match[2]) <= 12
+                    && Number(match[3]) >= 1 && Number(match[3]) <= 32;
+                chequeDate.setCustomValidity(valid ? '' : 'Enter a valid Nepali date, for example 2083-06-02.');
+                return Boolean(valid);
+            }
         
             function validateForm() {
                 const isValid =
                     particulars.value.trim() !== '' &&
                     voucherType.value.trim() !== '' &&
-                    amount.value.trim() !== '';
+                    amount.value.trim() !== '' &&
+                    validateChequeDate();
         
                 submitBtn.disabled = !isValid;
             }
@@ -486,6 +499,17 @@ $(document).ready(function () {
             particulars.addEventListener('input', validateForm);
             voucherType.addEventListener('input', validateForm);
             amount.addEventListener('input', validateForm);
+            if (chequeDate) chequeDate.addEventListener('input', validateForm);
+            if (cheque) cheque.addEventListener('change', validateForm);
+
+            const paymentForm = submitBtn ? submitBtn.closest('form') : null;
+            if (paymentForm) paymentForm.addEventListener('submit', function (event) {
+                if (!validateChequeDate()) {
+                    event.preventDefault();
+                    chequeDate.focus();
+                    chequeDate.reportValidity();
+                }
+            });
         
             // Also trigger validation when checkboxes change (auto-fill cases)
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => {

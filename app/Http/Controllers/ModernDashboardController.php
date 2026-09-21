@@ -63,6 +63,7 @@ class ModernDashboardController extends Controller
         $chequesDueToday = customerledgerdetails::with('customer')
             ->where('invoicetype', 'payment')
             ->where('is_cheque', true)
+            ->where('cheque_exchanged', false)
             ->whereDate('cheque_exchange_date', $today)
             ->orderBy('id')
             ->get();
@@ -697,12 +698,27 @@ class ModernDashboardController extends Controller
         $todayInvoiceTotal = collect($recentInvoices)->sum('amount');
         $todayPaymentTotal = collect($recentPayments)->sum('amount');
 
+        // Cheque exchange dates are stored in A.D. after converting the
+        // B.S. date entered on the payment form. Keep the comparison date-only
+        // and use the Kathmandu application date so the B.S. day does not
+        // shift around midnight/server timezone boundaries.
+        $today = now('Asia/Kathmandu')->toDateString();
+        $chequesDueToday = customerledgerdetails::with('customer')
+            ->where('invoicetype', 'payment')
+            ->where('is_cheque', true)
+            ->where('cheque_exchanged', false)
+            ->whereNotNull('cheque_exchange_date')
+            ->whereDate('cheque_exchange_date', '<=', $today)
+            ->orderBy('id')
+            ->get();
+
         return view('dashboard.checktoday', compact(
             'breadcrumb',
             'recentInvoices',
             'recentPayments',
             'todayInvoiceTotal',
-            'todayPaymentTotal'
+            'todayPaymentTotal',
+            'chequesDueToday'
         ));
     }
 }

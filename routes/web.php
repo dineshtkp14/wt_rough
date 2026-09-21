@@ -356,6 +356,7 @@ Route::post('/cpayments',[CustomerLedgerDetailsController::class,'store'])->name
 Route::get('/cpayments/{cpayments}/edit',[CustomerLedgerDetailsController::class,'edit'])->name('cpayments.edit');
 Route::put('/cpayments/{cpayments}',[CustomerLedgerDetailsController::class,'update'])->name('cpayments.update');
 Route::delete('/cpayments/{cpayments}',[CustomerLedgerDetailsController::class,'destroy'])->name('cpayments.destroy');
+Route::post('/cpayments/{cpayments}/mark-cheque-exchanged',[CustomerLedgerDetailsController::class,'markChequeExchanged'])->name('cpayments.mark-cheque-exchanged');
 
 
 

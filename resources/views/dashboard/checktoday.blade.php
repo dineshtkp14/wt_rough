@@ -18,6 +18,54 @@
         border-bottom: 2px solid #e5e7eb;
     }
 
+    .cheque-exchange-alert {
+        align-items: flex-start;
+        background: #fff7ed;
+        border: 2px solid #fb923c;
+        border-left: 7px solid #ea580c;
+        border-radius: 12px;
+        box-shadow: 0 5px 18px rgba(234, 88, 12, .12);
+        color: #7c2d12;
+        display: flex;
+        gap: 14px;
+        margin: 0 0 24px;
+        padding: 16px 18px;
+    }
+
+    .cheque-exchange-alert-icon {
+        align-items: center;
+        background: #ea580c;
+        border-radius: 10px;
+        color: #ffffff;
+        display: flex;
+        flex: 0 0 42px;
+        font-size: 20px;
+        height: 42px;
+        justify-content: center;
+    }
+
+    .cheque-exchange-alert h3 {
+        color: #9a3412;
+        font-size: 18px;
+        font-weight: 900;
+        margin: 0 0 4px;
+    }
+
+    .cheque-exchange-alert p {
+        margin: 0 0 8px;
+    }
+
+    .cheque-exchange-list {
+        display: grid;
+        gap: 6px;
+        margin: 0;
+        padding-left: 18px;
+    }
+
+    .cheque-exchange-list strong {
+        color: #7c2d12;
+    }
+
     .card {
         background: #fff;
         border-radius: 12px;
@@ -309,6 +357,32 @@
             </div>
         </div>
     </div>
+
+    @if($chequesDueToday->isNotEmpty())
+      <div class="cheque-exchange-alert" role="alert">
+            <div class="cheque-exchange-alert-icon"><i class="fas fa-money-check-dollar"></i></div>
+            <div>
+                <h3>Cheque exchange reminder</h3>
+                <p>These unexchanged customer cheques are due today or overdue. Please exchange them at the bank.</p>
+                <ul class="cheque-exchange-list">
+                    @foreach($chequesDueToday as $cheque)
+                <li>
+                            <strong>{{ $cheque->customer?->name ?? 'Unknown customer' }}</strong>
+                            — Rs {{ number_format((float) $cheque->credit, 2) }}
+                            — {{ $cheque->cheque_bank ?: 'Bank not specified' }}
+                            — Cheque No. {{ $cheque->cheque_no ?: '-' }}
+                            — B.S. {{ \App\Support\NepaliDate::adToBsString(substr((string) $cheque->cheque_exchange_date, 0, 10), 'en') }}
+                    <form method="POST" action="{{ route('cpayments.mark-cheque-exchanged', $cheque->id) }}" class="d-inline ms-2" onsubmit="return confirm('Mark this cheque as exchanged?');">
+                      @csrf
+                      <button type="submit" class="btn btn-sm btn-success">Mark exchanged</button>
+                    </form>
+                  </li>
+                    @endforeach
+                </ul>
+            </div>
+      </div>
+    @endif
+
 
     <!-- Today's Invoices -->
     <div class="card">

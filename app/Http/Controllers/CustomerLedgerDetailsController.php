@@ -348,8 +348,8 @@ public function update(Request $req, $id)
     return redirect()->route('cashreceipt.search', ['receiptno' => $id])->with('success', 'Invoice Updated Successfully !!');
 }
 
-public function destroy($id, Request $req)
-{
+    public function destroy($id, Request $req)
+    {
     $redirectRoute = $req->input('redirect_to') === 'modern.dashboard'
         ? 'modern.dashboard'
         : 'cpayments.index';
@@ -391,7 +391,19 @@ public function destroy($id, Request $req)
         // If invoice type is not "payment", return with an error message
         return redirect()->route($redirectRoute)->with('error', 'Cannot delete this record as invoice type is not "payment".');
     }
-}
+    }
+
+    public function markChequeExchanged($id)
+    {
+        $payment = customerledgerdetails::where('invoicetype', 'payment')
+            ->where('is_cheque', true)
+            ->findOrFail($id);
+
+        $payment->cheque_exchanged = true;
+        $payment->save();
+
+        return back()->with('success', 'Cheque marked as exchanged.');
+    }
 
 private function chequeExchangeDate(Request $request): ?string
 {
