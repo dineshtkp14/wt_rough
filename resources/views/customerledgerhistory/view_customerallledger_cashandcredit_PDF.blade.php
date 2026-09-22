@@ -417,12 +417,12 @@
                             @endif
                         </td>
                         <td>{{ $i->voucher_type }}</td>
-                        <td><strong>{{ ($i->is_credit_note ?? false) ? '-' : ($i->invoiceid ?? '-') }}</strong></td>
+                        <td><strong>{{ ($i->is_credit_note ?? false) ? '-' : ($i->invoice?->visible_invoice_no ?? $i->invoiceid ?? '-') }}</strong></td>
                         <td><strong>{{ $cnNo }}</strong></td>
                         <td>
                             <span class="badge {{ $badgeClass }}">{{ $type }}</span>
                             @if($i->invoicetype == 'payment')
-                                <strong>CR-({{ $i->id }})</strong>
+                                <strong>({{ $i->display_receipt_no }})</strong>
                             @endif
                         </td>
                         <td class="money">{{ number_format((float) ($i->debit ?? 0), 2) }}</td>
@@ -467,7 +467,7 @@
                             @endif
                         </td>
                         <td>{{ $i->voucher_type }}</td>
-                        <td><strong>{{ $i->invoiceid }}</strong></td>
+                        <td><strong>{{ $i->invoice?->visible_invoice_no ?? $i->invoiceid }}</strong></td>
                         <td class="money">{{ number_format((float) ($i->debit ?? $i->credit ?? 0), 2) }}</td>
                     </tr>
                 @endforeach

@@ -40,7 +40,7 @@ class DashboardController extends Controller
             $isPaid = ($inv->type === 'cash') || customerledgerdetails::where('invoiceid', $inv->id)->where('credit', '>', 0)->exists();
             $recentInvoices[] = [
                 'invoice_id' => $inv->id,
-                'id'       => 'INV-' . $inv->id,
+                'id'       => invoice::find($inv->id)?->visible_invoice_no ?? $inv->id,
                 'customer' => $inv->customer,
                 'amount'   => (float) $inv->amount,
                 'type'     => ucfirst($inv->type),
@@ -75,7 +75,7 @@ class DashboardController extends Controller
                 'amount'   => (float) $pay->amount,
                 'mode'     => $mode,
                 'date'     => NepaliDate::adToBsString($pay->date, 'en'),
-                'receipt'  => 'RCP-' . $pay->id,
+                'receipt'  => customerledgerdetails::find($pay->id)?->display_receipt_no ?? $pay->id,
             ];
         }
 

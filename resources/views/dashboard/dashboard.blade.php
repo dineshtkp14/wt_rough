@@ -647,7 +647,7 @@ function openInvoiceModal(invoiceId) {
 
         let html = '<div class="invoice-display">';
         html += '<div class="inv-meta">';
-        html += '<div><strong>INVOICE NO: ' + data.invoice_id + '</strong><br>';
+        html += '<div><strong>INVOICE NO: ' + (data.invoice_no || data.invoice_id) + '</strong><br>';
         html += '<strong>Name:</strong> ' + (data.customer.name || 'N/A') + '<br>';
         html += '<strong>Address:</strong> ' + (data.customer.address || 'N/A') + '<br>';
         if (data.customer.phoneno) html += '<strong>Contact:</strong> ' + data.customer.phoneno + '<br>';

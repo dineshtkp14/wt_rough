@@ -46,9 +46,10 @@ class ItemSaleslivewire extends Component
 
                 //this line is new start
                 if ($data->invoiceid) {
-                    $forcidfrominv = invoice::where('id', $data->invoiceid)->select('customerid','inv_type')->first();
+                    $forcidfrominv = invoice::where('id', $data->invoiceid)->first();
                    
                     if ($forcidfrominv) {
+                        $data->display_invoice_no = $forcidfrominv->visible_invoice_no;
                         $customerid = $forcidfrominv->customerid;
                         $data->inv_type = $forcidfrominv->inv_type;
 
@@ -102,9 +103,10 @@ class ItemSaleslivewire extends Component
 
             //this line is new start
             if ($data->invoiceid) {
-                $forcidfrominv = invoice::where('id', $data->invoiceid)->select('customerid','inv_type')->first();
+                $forcidfrominv = invoice::where('id', $data->invoiceid)->first();
                
                 if ($forcidfrominv) {
+                    $data->display_invoice_no = $forcidfrominv->visible_invoice_no;
                     $customerid = $forcidfrominv->customerid;
                     $data->inv_type = $forcidfrominv->inv_type;
 

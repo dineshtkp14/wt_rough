@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\CreditnotesInvoice;
 use App\Services\CustomerSmsNotifier;
 use App\Support\NepaliDate;
+use App\Support\FiscalNumber;
 
 
 
@@ -65,7 +66,22 @@ class CustomerLedgerDetailsController extends Controller
 
         $statement  = DB::select("SHOW TABLE STATUS LIKE 'customerledgerdetails'");
         $nextUserId = $statement[0]->Auto_increment;       
-        return view('customerdetails.create',['all'=>$cus,'breadcrumb'=>$breadcrumb,'nextUserId'=>$nextUserId]);   ;
+        $nextReceiptSequence = customerledgerdetails::where('invoicetype', 'payment')
+            ->where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)
+            ->count() + 1;
+        $displayReceiptNo = FiscalNumber::shouldShowFiscalToCurrentUser()
+            ? FiscalNumber::format(
+                FiscalNumber::fiscalYearForDate(now()),
+                $nextReceiptSequence,
+                'CR'
+            )
+            : (string) $nextUserId;
+        return view('customerdetails.create', [
+            'all' => $cus,
+            'breadcrumb' => $breadcrumb,
+            'nextUserId' => $nextUserId,
+            'displayReceiptNo' => $displayReceiptNo,
+        ]);   ;
     }
     return redirect('/login');
 }

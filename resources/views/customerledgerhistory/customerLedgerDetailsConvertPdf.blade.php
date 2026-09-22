@@ -389,7 +389,7 @@
                         <td>
                             <div>{{ $i->particulars }}</div>
                             @if(!empty($i->invoiceid))
-                                <div><strong>Invoice No: {{ $i->invoiceid }}</strong></div>
+                                <div><strong>Invoice No: {{ $i->display_invoice_no ?? $i->invoiceid }}</strong></div>
                             @endif
                             @if(!empty($i->invoice_notes))
                                 <div>Notes: {{ $i->invoice_notes }}</div>
@@ -405,7 +405,7 @@
                         <td>
                             <span class="badge {{ $badgeClass }}">{{ $type }}</span>
                             @if($i->invoicetype == 'payment')
-                                <strong>CR-({{ $i->id }})</strong>
+                                <strong>({{ $i->display_receipt_no }})</strong>
                             @endif
                         </td>
                         <td class="money">{{ number_format((float) ($i->debit ?? 0), 2) }}</td>

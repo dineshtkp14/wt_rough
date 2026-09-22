@@ -27,6 +27,7 @@ use App\Http\Controllers\TrackcompanyledgerController;
 use App\Http\Controllers\CashReceiptController;
 use App\Http\Controllers\ChequeDepositController;
 use App\Http\Controllers\DateConversionController;
+use App\Http\Controllers\FiscalDisplaySettingsController;
 
 
 
@@ -414,6 +415,9 @@ Route::get('/deletedinvoice',[CustomerLedgerHistroy::class,'returndeletedinvoice
 Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])
     ->middleware('auth')
     ->name('customer.billno');
+Route::post('/admin/fiscal-display-mode', [FiscalDisplaySettingsController::class, 'update'])
+    ->middleware('auth')
+    ->name('admin.fiscal-display-mode');
 Route::get('/api/invoice-data',[ModernDashboardController::class,'getInvoiceData'])->name('api.invoice.data');
 Route::get('/api/payment-data',[ModernDashboardController::class,'getPaymentData'])->name('api.payment.data');
 Route::get('/api/credit-note-data',[ModernDashboardController::class,'getCreditNoteData'])->name('api.creditnote.data');

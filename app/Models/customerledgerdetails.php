@@ -10,24 +10,31 @@ class customerledgerdetails extends Model
 {
     use HasFactory;
 
-    protected static function booted(): void
+    public function getFiscalDisplayReceiptNoAttribute(): string
     {
-        static::creating(function (self $ledger) {
-            if ($ledger->invoicetype === 'payment' && !$ledger->fiscal_receipt_no) {
-                $fiscalYear = FiscalNumber::fiscalYearForDate($ledger->date ?: now());
-                $last = static::where('invoicetype', 'payment')
-                    ->where('fiscal_receipt_no', 'like', 'CR-' . $fiscalYear . '-%')
-                    ->orderByDesc('fiscal_receipt_no')
-                    ->value('fiscal_receipt_no');
-                $sequence = $last ? ((int) substr($last, strrpos($last, '-') + 1) + 1) : 1;
-                $ledger->fiscal_receipt_no = FiscalNumber::format($fiscalYear, $sequence, 'CR');
-            }
-        });
+        if (!FiscalNumber::isAfterDisplayCutover($this->created_at)) {
+            return (string) $this->id;
+        }
+
+        $sequence = static::where('invoicetype', 'payment')
+            ->where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)
+            ->where('id', '<=', $this->id)
+            ->count();
+
+        return FiscalNumber::format(
+            FiscalNumber::fiscalYearForDate($this->date ?: $this->created_at),
+            $sequence,
+            'CR'
+        );
     }
 
     public function getDisplayReceiptNoAttribute(): string
     {
-        return $this->fiscal_receipt_no ?: (string) $this->id;
+        if (!FiscalNumber::shouldShowFiscalToCurrentUser()) {
+            return (string) $this->id;
+        }
+
+        return $this->fiscal_display_receipt_no;
     }
         //added after
     public function customerinfo()
@@ -38,5 +45,10 @@ class customerledgerdetails extends Model
     public function customer()
     {
         return $this->belongsTo(customerinfo::class, 'customerid');
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo(invoice::class, 'invoiceid');
     }
 }

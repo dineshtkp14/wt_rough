@@ -46,15 +46,33 @@ class CustomerLedgerHistroy extends Controller
         if ($value === '') return null;
 
         $query = invoice::query();
+        $hasFiscalInvoiceColumn = Schema::hasColumn('invoices', 'fiscal_invoice_no');
         if (ctype_digit($value)) {
-            $query->where(function ($q) use ($value) {
-                $q->where('id', (int) $value)->orWhere('fiscal_invoice_no', $value);
+            $query->where(function ($q) use ($value, $hasFiscalInvoiceColumn) {
+                $q->where('id', (int) $value);
+                if ($hasFiscalInvoiceColumn) {
+                    $q->orWhere('fiscal_invoice_no', $value);
+                }
             });
-        } else {
+            return $query->value('id');
+        } elseif ($hasFiscalInvoiceColumn) {
             $query->where('fiscal_invoice_no', $value);
+            $storedId = $query->value('id');
+            if ($storedId) {
+                return $storedId;
+            }
+
+            $query = invoice::query();
         }
 
-        return $query->value('id');
+        // Backward-compatible lookup for databases that do not yet have the
+        // optional fiscal invoice column. This is read-only.
+        return $query
+            ->where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)
+            ->orderBy('id')
+            ->get()
+            ->first(fn ($invoice) => $invoice->fiscal_display_invoice_no === $value)
+            ?->id;
     }
 
     private function attachInvoiceNotes($rows)
@@ -63,9 +81,14 @@ class CustomerLedgerHistroy extends Controller
         $notes = $invoiceIds->isEmpty()
             ? collect()
             : invoice::whereIn('id', $invoiceIds)->pluck('notes', 'id');
+        $invoiceNumbers = $invoiceIds->isEmpty()
+            ? collect()
+            : invoice::whereIn('id', $invoiceIds)->get()->keyBy('id');
 
-        return collect($rows)->map(function ($row) use ($notes) {
+        return collect($rows)->map(function ($row) use ($notes, $invoiceNumbers) {
             $row->invoice_notes = $notes->get($row->invoiceid);
+            $row->display_invoice_no = optional($invoiceNumbers->get($row->invoiceid))->visible_invoice_no
+                ?? $row->invoiceid;
             return $row;
         });
     }

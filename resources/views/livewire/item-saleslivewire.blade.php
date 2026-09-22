@@ -52,7 +52,7 @@
 
                                     <td data-label="Bill No">{{ $item->created_at }}</td>
 
-                                    <td data-label="Bill No">{{ $item->invoiceid }}</td>
+                                    <td data-label="Bill No">{{ $item->display_invoice_no ?? $item->invoiceid }}</td>
                                     <td data-label="Bill No">{{ $item->customername }}</td>
                                     <td data-label="Bill No">{{ $item->inv_type }}</td>
 

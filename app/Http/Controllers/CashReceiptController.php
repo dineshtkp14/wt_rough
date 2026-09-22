@@ -8,6 +8,8 @@ use App\Models\customerledgerdetails;
 use App\Models\customerinfo;
 
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Illuminate\Support\Facades\Schema;
+use App\Support\FiscalNumber;
 
 class CashReceiptController extends Controller
 {
@@ -17,15 +19,33 @@ class CashReceiptController extends Controller
         if ($value === '') return null;
 
         $query = customerledgerdetails::where('invoicetype', 'payment');
+        $hasFiscalReceiptColumn = Schema::hasColumn('customerledgerdetails', 'fiscal_receipt_no');
         if (ctype_digit($value)) {
-            $query->where(function ($q) use ($value) {
-                $q->where('id', (int) $value)->orWhere('fiscal_receipt_no', $value);
+            $query->where(function ($q) use ($value, $hasFiscalReceiptColumn) {
+                $q->where('id', (int) $value);
+                if ($hasFiscalReceiptColumn) {
+                    $q->orWhere('fiscal_receipt_no', $value);
+                }
             });
-        } else {
+            return $query->value('id');
+        } elseif ($hasFiscalReceiptColumn) {
             $query->where('fiscal_receipt_no', $value);
+            $storedId = $query->value('id');
+            if ($storedId) {
+                return $storedId;
+            }
+
+            $query = customerledgerdetails::where('invoicetype', 'payment');
         }
 
-        return $query->value('id');
+        // Backward-compatible lookup for live databases that do not yet have
+        // the optional fiscal receipt column. This is read-only.
+        return $query
+            ->where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)
+            ->orderBy('id')
+            ->get()
+            ->first(fn ($receipt) => $receipt->fiscal_display_receipt_no === $value)
+            ?->id;
     }
 
     private function hasExistingCreditNoteLedgerRow($customerid, $creditNoteRow)
@@ -77,7 +97,7 @@ class CashReceiptController extends Controller
         }
         $customerinfodetails = null;
 
-        $alldetails = customerledgerdetails::where('id', $req->receiptno)
+        $alldetails = customerledgerdetails::where('id', $cusledgerdetails_id)
         ->where('invoicetype', 'payment')
         ->get();
 
@@ -122,7 +142,7 @@ class CashReceiptController extends Controller
         abort(404, 'Cash receipt not found.');
     }
     $customerinfodetails = null;
-    $alldetails = customerledgerdetails::where('id', $req->receiptno)
+    $alldetails = customerledgerdetails::where('id', $cusledgerdetails_id)
     ->where('invoicetype', 'payment')
     ->get();
 

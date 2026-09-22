@@ -10,30 +10,29 @@ class invoice extends Model
 {
     use HasFactory;
 
-    protected static function booted(): void
+    public function getFiscalDisplayInvoiceNoAttribute(): string
     {
-        static::creating(function (self $invoice) {
-            if (!$invoice->fiscal_invoice_no) {
-                $fiscalYear = FiscalNumber::fiscalYearForDate($invoice->inv_date ?: now());
-                $last = static::where('fiscal_invoice_no', 'like', $fiscalYear . '-%')
-                    ->orderByDesc('fiscal_invoice_no')
-                    ->value('fiscal_invoice_no');
-                $sequence = $last ? ((int) substr($last, strrpos($last, '-') + 1) + 1) : 1;
-                $invoice->fiscal_invoice_no = FiscalNumber::format($fiscalYear, $sequence);
-            }
-        });
-    }
+        if (!FiscalNumber::isAfterDisplayCutover($this->created_at)) {
+            return (string) $this->id;
+        }
 
-    public function getDisplayInvoiceNoAttribute(): string
-    {
-        return $this->fiscal_invoice_no ?: (string) $this->id;
+        $sequence = static::where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)
+            ->where('id', '<=', $this->id)
+            ->count();
+
+        return FiscalNumber::format(
+            FiscalNumber::fiscalYearForDate($this->inv_date ?: $this->created_at),
+            $sequence
+        );
     }
 
     public function getVisibleInvoiceNoAttribute(): string
     {
-        return auth()->check() && auth()->user()->isAdmin()
-            ? (string) $this->id
-            : $this->display_invoice_no;
+        if (!FiscalNumber::shouldShowFiscalToCurrentUser()) {
+            return (string) $this->id;
+        }
+
+        return $this->fiscal_display_invoice_no;
     }
 
     public function customer()

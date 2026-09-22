@@ -44,7 +44,7 @@
                         <td data-label="Customer Id">{{ $i->cname }}</td>
 
                         {{-- <td data-label="Invoice Id">{{ $i->invoiceid }}</td> --}}
-                        <td data-label="Contact No."><b>{{ $i->invoiceid }}
+                        <td data-label="Contact No."><b>{{ $i->display_invoice_no ?? $i->invoiceid }}
 							@if(!empty($i->invoiceid))
                                 <a href="{{ url('onlyviewbill?invoiceid=' . $i->invoiceid) }}" class="btn btn-sm bg-info text-white">
                                     View

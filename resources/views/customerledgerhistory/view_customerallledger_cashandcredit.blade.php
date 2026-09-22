@@ -265,7 +265,7 @@
                                         <span class="clhs-type-badge {{ $isPayment ? 'payment' : ($isSettlement ? 'settlement' : ($isCash ? 'cash' : ($isCreditNote ? 'credit-note' : 'credit'))) }}">
                                             {{ $isSettlement ? 'Nil Account' : ($isCreditNote ? 'Credit Note' : $i->invoicetype) }}
                                             @if($isPayment)
-                                                CR-({{ $i->id }})
+                                                ({{ $i->display_receipt_no }})
                                             @endif
                                         </span>
                                         @if($isPayment)
@@ -274,7 +274,7 @@
                                     </td>
                                     <td>
                                         @if(!empty($i->invoiceid))
-                                            <span class="clhs-invoice-number">{{ $isCreditNote ? 'CN-' : '' }}{{ $i->invoiceid }}</span>
+                                            <span class="clhs-invoice-number">{{ $isCreditNote ? 'CN-' : '' }}{{ $i->invoice?->visible_invoice_no ?? $i->invoiceid }}</span>
                                             @if($isCreditNote)
                                                 <button type="button" onclick="openCreditNoteModal({{ $i->invoiceid }})" class="clhs-view-invoice-btn">View</button>
                                             @else
@@ -338,7 +338,7 @@
                                     <td>{{ $i->date }}</td>
                                     <td>{{ $i->particulars }}</td>
                                     <td>{{ $i->voucher_type }}</td>
-                                    <td>{{ $i->invoiceid }}</td>
+                                    <td>{{ $i->invoice?->visible_invoice_no ?? $i->invoiceid }}</td>
                                     <td class="text-end">{{ number_format((float) $i->debit, 2) }}</td>
                                 </tr>
                             @endforeach

@@ -12,6 +12,7 @@ use App\Services\SmsService;
 use App\Services\CustomerLedgerBalance;
 use App\Helpers\InvoiceSmsHelper;
 use App\Support\NepaliDate;
+use App\Support\FiscalNumber;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -83,7 +84,12 @@ class ItemsalesController extends Controller
         $cus = customerinfo::all();
         $statement  = DB::select("SHOW TABLE STATUS LIKE 'invoices'");
         $nextUserId = $statement[0]->Auto_increment;
-        $breadcrumb['title'] = 'Invoice No: ' . $nextUserId;
+        $fiscalYear = FiscalNumber::fiscalYearForDate(now());
+        $nextFiscalSequence = invoice::where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)->count() + 1;
+        $displayInvoiceNo = FiscalNumber::shouldShowFiscalToCurrentUser()
+            ? FiscalNumber::format($fiscalYear, $nextFiscalSequence)
+            : (string) $nextUserId;
+        $breadcrumb['title'] = 'Invoice No: ' . $displayInvoiceNo;
 
         $itemsdata = item::all();
         return view('itemssales.create', ['page' => 'isc', 'all' => $cus, 'data' => $itemsdata,'nextgenid' => $nextUserId,'breadcrumb'=>$breadcrumb]);

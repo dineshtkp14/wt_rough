@@ -56,7 +56,7 @@
                    @if ($all && !$all->isEmpty())
                         @foreach ($all as $i)
                         <tr>
-                            <td data-label="Id">{{ $i->id }}</td>
+                            <td data-label="Id">{{ $i->display_receipt_no }}</td>
                             <td data-label="Name">{{ $i->date }}</td>
                             <td data-label="Name">{{ $i->customerid }}</td>
                             <td data-label="Name">{{ $i->customername }}</td>

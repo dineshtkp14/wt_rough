@@ -166,10 +166,11 @@ class ModernDashboardController extends Controller
 
         $recentInvoices = [];
         foreach ($recentInvoicesRaw as $inv) {
+            $invoiceRecord = invoice::find($inv->id);
             $isPaid = ($inv->type === 'cash') || customerledgerdetails::where('invoiceid', $inv->id)->where('credit', '>', 0)->exists();
             $recentInvoices[] = [
                 'invoice_id' => $inv->id,
-                'id'       => 'INV-' . $inv->id,
+                'id'       => $invoiceRecord?->visible_invoice_no ?? $inv->id,
                 'customer' => $inv->customer,
                 'amount'   => (float) $inv->amount,
                 'type'     => ucfirst($inv->type),
@@ -190,6 +191,7 @@ class ModernDashboardController extends Controller
 
         $recentPayments = [];
         foreach ($recentPaymentsRaw as $pay) {
+            $paymentRecord = customerledgerdetails::find($pay->id);
             $mode = trim($pay->voucher_type ?? '');
             if (empty($mode)) {
                 $mode = trim($pay->particulars ?? '');
@@ -208,7 +210,7 @@ class ModernDashboardController extends Controller
                 'mode'     => $mode,
                 'date'     => NepaliDate::adToBsString($pay->date, 'en'),
                 'is_today' => $pay->date && date('Y-m-d', strtotime($pay->date)) === $today,
-                'receipt'  => 'RCP-' . $pay->id,
+                'receipt'  => $paymentRecord?->display_receipt_no ?? $pay->id,
                 'created_by' => $pay->added_by ?? '-',
             ];
         }
@@ -472,7 +474,7 @@ class ModernDashboardController extends Controller
 
         return response()->json([
             'payment_id' => $payment->id,
-            'receipt_no' => 'RCP-' . $payment->id,
+            'receipt_no' => $payment->display_receipt_no,
             'amount' => $payment->credit,
             'date' => $payment->date,
             'nepali_date' => NepaliDate::adToBsString($payment->date, 'en'),
@@ -505,7 +507,7 @@ class ModernDashboardController extends Controller
                 $isPaid = ($inv->inv_type === 'cash') || customerledgerdetails::where('invoiceid', $inv->id)->where('credit', '>', 0)->exists();
                 return [
                     'id' => $inv->id,
-                    'invoice_no' => 'INV-' . $inv->id,
+                    'invoice_no' => $inv->visible_invoice_no,
                     'type' => $inv->inv_type,
                     'date' => $inv->inv_date,
                     'nepali_date' => NepaliDate::adToBsString($inv->inv_date, 'en'),
@@ -587,7 +589,7 @@ class ModernDashboardController extends Controller
 
                 return [
                     'id' => $pay->id,
-                    'receipt_no' => 'RCP-' . $pay->id,
+                    'receipt_no' => $pay->display_receipt_no,
                     'amount' => $pay->credit,
                     'date' => $pay->date,
                     'nepali_date' => NepaliDate::adToBsString($pay->date, 'en'),
@@ -649,10 +651,11 @@ class ModernDashboardController extends Controller
 
         $recentInvoices = [];
         foreach ($recentInvoicesRaw as $inv) {
+            $invoiceRecord = invoice::find($inv->id);
             $isPaid = ($inv->type === 'cash') || customerledgerdetails::where('invoiceid', $inv->id)->where('credit', '>', 0)->exists();
             $recentInvoices[] = [
                 'invoice_id' => $inv->id,
-                'id'       => 'INV-' . $inv->id,
+                'id'       => $invoiceRecord?->visible_invoice_no ?? $inv->id,
                 'customer' => $inv->customer,
                 'amount'   => (float) $inv->amount,
                 'type'     => ucfirst($inv->type),
@@ -673,6 +676,7 @@ class ModernDashboardController extends Controller
 
         $recentPayments = [];
         foreach ($recentPaymentsRaw as $pay) {
+            $paymentRecord = customerledgerdetails::find($pay->id);
             $mode = trim($pay->voucher_type ?? '');
             if (empty($mode)) {
                 $mode = trim($pay->particulars ?? '');
@@ -691,7 +695,7 @@ class ModernDashboardController extends Controller
                 'mode'     => $mode,
                 'date'     => NepaliDate::adToBsString($pay->date, 'en'),
                 'time'     => $pay->created_at ? \Carbon\Carbon::parse($pay->created_at)->format('h:i A') : '-',
-                'receipt'  => 'RCP-' . $pay->id,
+                'receipt'  => $paymentRecord?->display_receipt_no ?? $pay->id,
             ];
         }
 

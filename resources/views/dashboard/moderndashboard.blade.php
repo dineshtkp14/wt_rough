@@ -1138,7 +1138,7 @@
                 // Invoice meta section with customer data
                 invoiceHtml += '<div class="inv-meta">';
                 invoiceHtml += '<div class="inv-meta-left">';
-                invoiceHtml += '<strong>INVOICE NO: ' + data.invoice_id + '</strong><br>';
+                invoiceHtml += '<strong>INVOICE NO: ' + (data.invoice_no || data.invoice_id) + '</strong><br>';
                 if (data.customer.pan_no) invoiceHtml += 'PAN No. ' + data.customer.pan_no + '<br>';
                 invoiceHtml += '<br>';
                 invoiceHtml += '<strong>Name:</strong> ' + (data.customer.name || 'N/A') + '<br>';
@@ -1490,9 +1490,20 @@
     <!-- Header -->
     <div class="dash-hd">
         <h2>Dashboard Overview</h2>
-        <span class="dt-badge">
-            <i class="far fa-calendar"></i> {{ \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en') }}
-        </span>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;">
+            <span class="dt-badge">
+                <i class="far fa-calendar"></i> {{ \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en') }}
+            </span>
+            @if (Auth::check() && Auth::user()->isAdmin())
+                <form method="POST" action="{{ route('admin.fiscal-display-mode') }}" style="margin:0;">
+                    @csrf
+                    <input type="hidden" name="enabled" value="{{ \App\Support\FiscalNumber::isFiscalDisplayEnabled() ? '0' : '1' }}">
+                    <button type="submit" class="btn {{ \App\Support\FiscalNumber::isFiscalDisplayEnabled() ? 'btn-warning' : 'btn-success' }}">
+                        Users: {{ \App\Support\FiscalNumber::isFiscalDisplayEnabled() ? 'FISCAL (Turn OFF)' : 'ACTUAL (Turn ON)' }}
+                    </button>
+                </form>
+            @endif
+        </div>
     </div>
 
     <div class="business-pulse">

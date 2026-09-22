@@ -68,7 +68,7 @@
                     <form action="{{ route('customer.billno') }}" method="get" id="chosendatepdfform">
                         <div class="mb-3">
                             <label for="invoiceid" class="form-label">Enter Invoice No</label>
-                            <input type="number" autocomplete="off" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Invoice No" required>
+                            <input type="text" autocomplete="off" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Invoice No (e.g. 2083/84-0039)" required>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg btn-block" style="width: 100%;">Search</button>
                     </form>

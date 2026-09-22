@@ -16,11 +16,11 @@
     <!-- Fetch data of the item being edited and populate form fields -->
     <div class="container">
         @if ($payment)
-        <h4>Edit Cash Receipt No: {{$payment->id}}</h4>
+        <h4>Edit Cash Receipt No: {{$payment->display_receipt_no}}</h4>
         <form class="row gx-5 gy-3" action="{{ route('cpayments.update', $payment->id) }}" method="post">
         @method('PUT')
         @else
-        <h4>Cash Receipt No: {{$nextUserId}}</h4>
+        <h4>Cash Receipt No: {{$displayReceiptNo ?? $nextUserId}}</h4>
         <form class="row gx-5 gy-3" action="{{ route('cpayments.store') }}" method="post">
         @endif
             @csrf

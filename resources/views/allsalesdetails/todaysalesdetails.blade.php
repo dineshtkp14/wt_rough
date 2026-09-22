@@ -115,7 +115,7 @@
                             <td data-label="Customer Id">{{ $i->customerid }}</td>
                             <td data-label="Customer Id">{{ $i->cname }}</td>
     
-                            <td data-label="Invoice Id">{{ $i->invoiceid }}</td>
+                            <td data-label="Invoice Id">{{ $i->display_invoice_no ?? ($i->invoice?->visible_invoice_no ?? $i->invoiceid) }}</td>
                             <td data-label="Particulars">{{ $i->particulars }}</td>
                             <td data-label="Invoice Type">{{ $i->invoicetype }}</td>
 

@@ -294,7 +294,7 @@
                                                             <input type="checkbox" class="invoice-select-checkbox" value="{{ $i->invoiceid }}" data-amount="{{ $remainingInvoiceAmount }}" aria-label="Select invoice {{ $i->invoiceid }}">
                                                         @endif
                                                     @endif
-                                                    <span class="clhs-invoice-number">{{ $isCreditNote ? 'CN-' : '' }}{{ $i->invoiceid }}</span>
+                                                    <span class="clhs-invoice-number">{{ $isCreditNote ? 'CN-' : '' }}{{ $i->display_invoice_no ?? $i->invoiceid }}</span>
                                                 </div>
                                                 @if(!empty($i->invoice_notes))
                                                     <small class="clhs-invoice-note">{{ $i->invoice_notes }}</small>
@@ -306,7 +306,7 @@
                                                     @else
                                                         <button type="button" onclick="openInvoiceModal({{ $i->invoiceid }})" class="clhs-view-invoice-btn">View</button>
                                                         @if(!$isPayment && !$isSettlement && $remainingInvoiceAmount > 0.01)
-                                                            <a href="{{ route('cpayments.create', ['customerid' => $customeridonly, 'invoiceid' => $i->invoiceid, 'amount' => $remainingInvoiceAmount, 'particulars' => 'Payment for Invoice No. ' . $i->invoiceid, 'voucher_type' => 'Receipt', 'totaldueamountfornotclear' => $remainingInvoiceAmount, 'cname' => $customer ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? '')) : null]) }}" class="clhs-pay-invoice-btn">Pay</a>
+                                                            <a href="{{ route('cpayments.create', ['customerid' => $customeridonly, 'invoiceid' => $i->invoiceid, 'amount' => $remainingInvoiceAmount, 'particulars' => 'Payment for Invoice No. ' . ($i->display_invoice_no ?? $i->invoiceid), 'voucher_type' => 'Receipt', 'totaldueamountfornotclear' => $remainingInvoiceAmount, 'cname' => $customer ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? '')) : null]) }}" class="clhs-pay-invoice-btn">Pay</a>
                                                         @endif
                                                     @endif
                                                 </div>
@@ -318,7 +318,7 @@
                                         <span class="clhs-type-badge {{ $isPayment ? 'payment' : ($isSettlement ? 'settlement' : ($isCreditNote ? 'credit-note' : 'credit')) }}">
                                             {{ $isSettlement ? 'Nil Account' : ($isCreditNote ? 'Credit Note' : $i->invoicetype) }}
                                             @if($isPayment)
-                                                CR-({{ $i->id }})
+                                                ({{ $i->display_receipt_no }})
                                             @endif
                                         </span>
                                     </td>

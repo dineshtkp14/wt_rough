@@ -39,7 +39,7 @@
                 <td>{{ $item->date }}</td>
               @endif
               <td class="label-nep">{{ \App\Support\NepaliDate::adToBsString($item->date ?? now()->toDateString(), 'en') }}</td>
-              <td>{{ $item->invoiceid }}</td>
+              <td>{{ $item->display_invoice_no ?? $item->invoiceid }}</td>
               <td>{{ $item->itemname ?: '-' }}</td>
               <td>{{ $item->unstockedname ?: '-' }}</td>
               <td>{{ $item->quantity }}-{{ $item->unit }}</td>

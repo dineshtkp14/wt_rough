@@ -42,6 +42,7 @@ class Allsalesdetailslivewire extends Component
     
         // Iterate over the results and fetch related data
         foreach ($results as $data) {
+            $data->display_invoice_no = $data->invoice?->visible_invoice_no ?? $data->invoiceid;
             if ($data->customerid) {
                 $item = customerinfo::where('id', $data->customerid)->select('name')->first();
                 if ($item) {
