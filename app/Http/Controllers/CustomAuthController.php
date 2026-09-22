@@ -64,7 +64,11 @@ class CustomAuthcontroller extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $authenticatedUser = Auth::user();
-            if ($authenticatedUser->is_locked && !$authenticatedUser->isAdmin()) {
+            $isLocked = (int) DB::table('users')
+                ->where('id', $authenticatedUser->getAuthIdentifier())
+                ->value('is_locked') === 1;
+
+            if ($isLocked && !$authenticatedUser->isAdmin()) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();

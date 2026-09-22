@@ -53,7 +53,7 @@
             <button type="button" class="btn btn-primary m" data-bs-toggle="modal" data-bs-target="#quickCustomerModal">
                 <i class="fa-solid fa-plus"></i> Add New Customer
             </button>
-            <a href="{{ route('onlyviewbillafterbill') }}" class="btn" style="background-color: #556B2F; border-color:rgb(29, 3, 3); color: #ffffff;"> <i class="fa-solid fa-eye"></i> Search Invoice</a>
+            <a href="{{ route('customer.billno') }}" class="btn" style="background-color: #556B2F; border-color:rgb(29, 3, 3); color: #ffffff;"> <i class="fa-solid fa-eye"></i> Search Invoice</a>
         </div>
             <form action="{{ route('itemsales.store') }}" method="post">
 

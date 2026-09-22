@@ -410,7 +410,10 @@ Route::get('/deletedbillno',[CustomerLedgerHistroy::class,'returndeletedBillsDEt
 Route::get('/deletedbillno/pdf/convert/',[CustomerLedgerHistroy::class,'showDeletedInvoicePDF'])->name('deletedinvoice.convert');
 Route::get('/deletedinvoice',[CustomerLedgerHistroy::class,'returndeletedinvoice'])->name('deleted.invoice');
 
-Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])->name('customer.billno');
+// Invoice search is available to every signed-in user; it is not admin-only.
+Route::get('/billno',[CustomerLedgerHistroy::class,'returnBillsDEtailsByInvoiceid'])
+    ->middleware('auth')
+    ->name('customer.billno');
 Route::get('/api/invoice-data',[ModernDashboardController::class,'getInvoiceData'])->name('api.invoice.data');
 Route::get('/api/payment-data',[ModernDashboardController::class,'getPaymentData'])->name('api.payment.data');
 Route::get('/api/credit-note-data',[ModernDashboardController::class,'getCreditNoteData'])->name('api.creditnote.data');
