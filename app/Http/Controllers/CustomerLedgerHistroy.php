@@ -40,6 +40,23 @@ use Illuminate\Validation\ValidationException;
 
 class CustomerLedgerHistroy extends Controller
 {
+    private function resolveInvoiceId($value): ?int
+    {
+        $value = trim((string) $value);
+        if ($value === '') return null;
+
+        $query = invoice::query();
+        if (ctype_digit($value)) {
+            $query->where(function ($q) use ($value) {
+                $q->where('id', (int) $value)->orWhere('fiscal_invoice_no', $value);
+            });
+        } else {
+            $query->where('fiscal_invoice_no', $value);
+        }
+
+        return $query->value('id');
+    }
+
     private function attachInvoiceNotes($rows)
     {
         $invoiceIds = collect($rows)->pluck('invoiceid')->filter()->unique()->values();
@@ -940,14 +957,19 @@ class CustomerLedgerHistroy extends Controller
                 $forinvoicetype=NULL;
             
                 $itemsname = item::where('id', $req->customerid)->get();
-                $invoiceid = $req->invoiceid;
+                $invoiceid = $this->resolveInvoiceId($req->invoiceid);
+                if (!$invoiceid && $req->filled('invoiceid')) {
+                    return redirect()->route('customer.billno')->with('error', 'Invoice not found.');
+                }
             
-                $allInvoices = invoice::where('id', $req->invoiceid)->get();
+                $allInvoices = $invoiceid ? invoice::where('id', $invoiceid)->get() : collect();
             
-                $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
+                $allcusbyid = $invoiceid ? salesitem::where('invoiceid', $invoiceid)->get() : collect();
                 $customerinfodetails = null;
 
-                $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
+                $cusleddetaiforinvoicetype = $invoiceid
+                    ? customerledgerdetails::where('invoiceid', $invoiceid)->get()
+                    : collect();
                 $forinvoicetype = $cusleddetaiforinvoicetype->first(); // G  
                 
               // Check if any record is found
@@ -1099,11 +1121,14 @@ class CustomerLedgerHistroy extends Controller
     public function showPDF_InvoiveBillByBillno(Request $req)
     {
         if (Auth::check()) {
-            $invoiceid = $req->invoiceid;
-            $allInvoices = invoice::where('id', $req->invoiceid)->get();
-            $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
+            $invoiceid = $this->resolveInvoiceId($req->invoiceid);
+            if (!$invoiceid) {
+                abort(404, 'Invoice not found.');
+            }
+            $allInvoices = invoice::where('id', $invoiceid)->get();
+            $allcusbyid = salesitem::where('invoiceid', $invoiceid)->get();
     
-            $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
+            $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $invoiceid)->get();
             $forinvoicetype = $cusleddetaiforinvoicetype->first();
     
             foreach ($allcusbyid as  $data) {
@@ -1938,18 +1963,21 @@ public function oldpricecheck(Request $req)
             ];
         
             $itemsname = item::where('id', $req->customerid)->get();
-            $invoiceid = $req->invoiceid;
+            $invoiceid = $this->resolveInvoiceId($req->invoiceid);
+            if (!$invoiceid) {
+                return redirect()->route('customer.billno')->with('error', 'Invoice not found.');
+            }
         
             // Legacy invoices do not have a vatBill relationship. VAT-system bills
             // are stored separately, so load the legacy invoice by itself here.
-            $allInvoices = invoice::where('id', $req->invoiceid)->get();
+            $allInvoices = invoice::where('id', $invoiceid)->get();
         
-            $allcusbyid = salesitem::where('invoiceid', $req->invoiceid)->get();
+            $allcusbyid = salesitem::where('invoiceid', $invoiceid)->get();
             $customerinfodetails = null;
             $paymentCustomer = null;
             $totalDueAmount = 0;
 
-            $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $req->invoiceid)->get();
+            $cusleddetaiforinvoicetype = customerledgerdetails::where('invoiceid', $invoiceid)->get();
             $forinvoicetype = $cusleddetaiforinvoicetype->first();           
         
             foreach ($allcusbyid as $data) {

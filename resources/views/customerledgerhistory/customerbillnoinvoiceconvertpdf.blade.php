@@ -176,7 +176,7 @@
       </div>
 
       <div class="forbillandpan">
-        <div class="invoice-no">INVOICE NO: <span class="num">{{ $invoiceid }}</span></div>
+        <div class="invoice-no">INVOICE NO: <span class="num">{{ optional($allinvoices->first())->visible_invoice_no ?? $invoiceid }}</span></div>
       </div>
 
       <div class="seconddiv forfontsizebll">

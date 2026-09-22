@@ -34,7 +34,7 @@ class CustomerSmsNotifier
         $message = InvoiceSmsHelper::paymentReceivedMessage(
             $customer->name ?? 'Customer',
             (float) $payment->credit,
-            $payment->id,
+            $payment->display_receipt_no,
             $remainingDue,
             $payment->voucher_type,
             $payment->particulars

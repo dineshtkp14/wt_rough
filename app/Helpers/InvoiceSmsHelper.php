@@ -25,16 +25,16 @@ class InvoiceSmsHelper
         $itemSummary = self::invoiceItemSummary($invoice);
 
         $messages = [
-            'Namaste ' . $customerName . ', inv ' . $invoice->id . ': ' . $itemSummary['names']
+            'Namaste ' . $customerName . ', inv ' . $invoice->display_invoice_no . ': ' . $itemSummary['names']
                 . ' Rs ' . self::formatAmount($invoice->total)
                 . '. Total due till today Rs ' . self::formatAmount($totalDue) . '.',
-            'Namaste ' . $customerName . ', inv ' . $invoice->id . ': ' . $itemSummary['short']
+            'Namaste ' . $customerName . ', inv ' . $invoice->display_invoice_no . ': ' . $itemSummary['short']
                 . ' Rs ' . self::formatAmount($invoice->total)
                 . '. Total due till today Rs ' . self::formatAmount($totalDue) . '.',
-            'Inv ' . $invoice->id . ': ' . $itemSummary['short']
+            'Inv ' . $invoice->display_invoice_no . ': ' . $itemSummary['short']
                 . ' Rs ' . self::formatAmount($invoice->total)
                 . '. Total due till today Rs ' . self::formatAmount($totalDue) . '.',
-            'Inv ' . $invoice->id . ' Rs ' . self::formatAmount($invoice->total)
+            'Inv ' . $invoice->display_invoice_no . ' Rs ' . self::formatAmount($invoice->total)
                 . '. Total due till today Rs ' . self::formatAmount($totalDue) . '.',
         ];
 

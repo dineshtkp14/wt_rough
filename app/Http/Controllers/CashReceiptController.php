@@ -11,6 +11,23 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class CashReceiptController extends Controller
 {
+    private function resolveReceiptId($value): ?int
+    {
+        $value = trim((string) $value);
+        if ($value === '') return null;
+
+        $query = customerledgerdetails::where('invoicetype', 'payment');
+        if (ctype_digit($value)) {
+            $query->where(function ($q) use ($value) {
+                $q->where('id', (int) $value)->orWhere('fiscal_receipt_no', $value);
+            });
+        } else {
+            $query->where('fiscal_receipt_no', $value);
+        }
+
+        return $query->value('id');
+    }
+
     private function hasExistingCreditNoteLedgerRow($customerid, $creditNoteRow)
     {
         $creditNoteAmount = (float) ($creditNoteRow->debit ?? $creditNoteRow->credit ?? 0);
@@ -54,7 +71,10 @@ class CashReceiptController extends Controller
             'link' => 'Search Receipt No'
         ];
     
-        $cusledgerdetails_id = $req->receiptno;
+        $cusledgerdetails_id = $this->resolveReceiptId($req->receiptno);
+        if (!$cusledgerdetails_id) {
+            return redirect()->route('cashreceipt.search')->with('error', 'Cash receipt not found.');
+        }
         $customerinfodetails = null;
 
         $alldetails = customerledgerdetails::where('id', $req->receiptno)
@@ -97,7 +117,10 @@ class CashReceiptController extends Controller
         'link' => 'Search Receipt No PDF'
     ];
 
-    $cusledgerdetails_id = $req->receiptno;
+    $cusledgerdetails_id = $this->resolveReceiptId($req->receiptno);
+    if (!$cusledgerdetails_id) {
+        abort(404, 'Cash receipt not found.');
+    }
     $customerinfodetails = null;
     $alldetails = customerledgerdetails::where('id', $req->receiptno)
     ->where('invoicetype', 'payment')

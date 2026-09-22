@@ -198,7 +198,7 @@
         </div>
 
         <div class="top-right-info">
-            <p><strong>Receipt No:</strong> {{ $receipt->id }}</p>
+            <p><strong>Receipt No:</strong> {{ $receipt->display_receipt_no }}</p>
             <p><strong>Date:</strong> {{ $receipt->date }}</p>
             <p><strong>Miti (BS):</strong> {{ \App\Support\NepaliDate::adToBsString($receipt->date ?? now()->toDateString(), 'en') }}</p>
         </div>

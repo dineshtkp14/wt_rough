@@ -34,7 +34,7 @@
                 <h5 class="card-title mb-4">Search Receipt No</h5>
                 <form action="{{ route('cashreceipt.search') }}" method="get" id="searchForm">
                     <div class="input-group mb-3">
-                        <input type="number" autocomplete="off" class="form-control" id="receiptno" name="receiptno" placeholder="Enter Receipt No" required>
+                        <input type="text" autocomplete="off" class="form-control" id="receiptno" name="receiptno" placeholder="Enter Receipt No (e.g. CR-2083/84-0001)" required>
                         <button type="submit" class="btn btn-primary">Search</button>
                     </div>
                 </form>
@@ -88,7 +88,7 @@
                 <div class="mr-3">
                     @if (!empty($alldetails))
                         <strong>Date:</strong> {{ isset($alldetails[0]->date) ? $alldetails[0]->date : '' }} <br>
-                        <strong>Receipt No:</strong> {{ isset($alldetails[0]->id) ? $alldetails[0]->id : '' }}
+                        <strong>Receipt No:</strong> {{ isset($alldetails[0]) ? $alldetails[0]->display_receipt_no : '' }}
                     @endif
                 </div>
             </div>

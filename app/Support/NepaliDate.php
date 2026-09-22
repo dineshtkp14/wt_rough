@@ -288,13 +288,16 @@ final class NepaliDate
         $epoch = self::makeUTC(self::BEGIN_AD_Y, self::BEGIN_AD_M, self::BEGIN_AD_D);
         $cur   = self::makeUTC($y, $m0 + 1, $d);
         $diff  = abs($cur->getTimestamp() - $epoch->getTimestamp());
-        return (int)ceil($diff / 86400);
+        // The BS epoch date is day 1, so the epoch itself must map to 1,
+        // not 0. Add one to convert the elapsed-day offset to a calendar day.
+        return (int)ceil($diff / 86400) + 1;
     }
 
     private static function mapDaysToDateAD(int $days): array
     {
         $epoch = self::makeUTC(self::BEGIN_AD_Y, self::BEGIN_AD_M, self::BEGIN_AD_D);
-        $ad = $epoch->modify('+' . $days . ' days');
+        // findPassedDays() is one-based (BS 2000-01-01 is day 1).
+        $ad = $epoch->modify('+' . ($days - 1) . ' days');
 
         return [
             'year'  => (int)$ad->format('Y'),

@@ -1,0 +1,332 @@
+﻿app\Support\NepaliDate.php:9:final class NepaliDate
+app\Support\NepaliDate.php:11:    /** Nepali epoch year (BS) */
+app\Support\NepaliDate.php:14:    /** AD epoch (UTC) corresponding to BS 2000-01-01 */
+app\Support\NepaliDate.php:42:     * Days in each month for each BS year from 2000..2090 (12 months each, 0-based index: Baisakh..Chaitra)
+app\Support\NepaliDate.php:147:     * Convert AD 'YYYY-MM-DD' (or DateTimeInterface) to BS string 'YYYY-MM-DD'.
+app\Support\NepaliDate.php:150:    public static function adToBsString($ad, string $lang = 'en'): string
+app\Support\NepaliDate.php:153:        [$bsY, $bsM0, $bsD, $dow] = self::convertToBS($dt);
+app\Support\NepaliDate.php:159:     * Convert BS (year, month 1-12, day) to AD (returns 'YYYY-MM-DD').
+app\Support\NepaliDate.php:161:    public static function bsToAdString(int $bsYear, int $bsMonth1, int $bsDay): string
+app\Support\NepaliDate.php:168:     * Format helper similar to JS: e.g. formatBS(2082,5,4,'YYYY-MM-DD','np')
+app\Support\NepaliDate.php:171:    public static function formatBS(int $year, int $month1, int $day, string $format = 'YYYY-MM-DD', string $lang = 'en'): string
+app\Support\NepaliDate.php:211:    private static function convertToBS(DateTimeImmutable $ad): array
+app\Support\NepaliDate.php:257:        // Find BS year index: offset < days <= offset + total
+app\Support\NepaliDate.php:291:        // The BS epoch date is day 1, so the epoch itself must map to 1,
+app\Support\NepaliDate.php:299:        // findPassedDays() is one-based (BS 2000-01-01 is day 1).
+app\Support\InvoiceQrCode.php:23:            'DATE: ' . ($invoice->inv_date ?? ''),
+app\Support\FiscalNumber.php:11:        $bs = NepaliDate::adToBsString($date, 'en');
+resources\views\cash_receipt\searchcashreceipt.blade.php:124:                                                <p class="mb-1"><strong>Cheque Date (B.S.):</strong> {{ $data->cheque_exchange_date ? \App\Support\NepaliDate::adToBsString($data->cheque_exchange_date, 'en') : '' }}</p>
+resources\views\cash_receipt\searchcashreceiptPdf.blade.php:181:                <p><strong>Miti (BS):</strong> {{ isset($alldetails[0]->date) ? \App\Support\NepaliDate::adToBsString($alldetails[0]->date, 'en') : '' }}</p>
+resources\views\cash_receipt\searchcashreceiptPdf.blade.php:206:                <p><strong>Cheque Date (B.S.):</strong> {{ $data->cheque_exchange_date ? \App\Support\NepaliDate::adToBsString($data->cheque_exchange_date, 'en') : '' }}</p>
+resources\views\itemssales\create.blade.php:130:                            Nepali Date: {{ \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en') }}
+resources\views\deletedbill\deletedinvoicepdf.blade.php:76:            <div class="field"><span class="label">Date:</span> {{ $invoice->inv_date ?? '' }}</div>
+resources\views\deletedbill\deletedinvoicepdf.blade.php:77:            <div class="field"><span class="label">Miti:</span> {{ \App\Support\NepaliDate::adToBsString(($invoice->inv_date ?? now()->toDateString()), 'en') }}</div>
+resources\views\creditnotesinvoice\searchcreditnotebillnoPdf.blade.php:234:            <div class="field"><span class="label">Date:</span> {{ $forinvoicetype->date ?? $invoice->inv_date ?? '' }}</div>
+resources\views\creditnotesinvoice\searchcreditnotebillnoPdf.blade.php:235:            <div class="field"><span class="label">Miti:</span> {{ \App\Support\NepaliDate::adToBsString(($forinvoicetype->date ?? $invoice->inv_date) ?? now()->toDateString(), 'en') }}</div>
+resources\views\temporaryinvoice\create.blade.php:54:                                    Nepali Date: {{ \App\Support\NepaliDate::adToBsString(old('invoice_date', now()->toDateString()), 'en') }}
+resources\views\smarttools\index.blade.php:547:                                            'inv_date' => 'Invoice date',
+resources\views\temporaryinvoice\show.blade.php:44:        $temporaryInvoiceNepaliDate = \App\Support\NepaliDate::adToBsString($temporaryinvoice->invoice_date, 'en');
+resources\views\temporaryinvoice\show.blade.php:90:                        <div><span>Nepali Date</span><b>{{ $temporaryInvoiceNepaliDate }}</b></div>
+resources\views\temporaryinvoice\show.blade.php:105:                        <b>{{ $temporaryInvoiceNepaliDate }}</b>
+resources\views\temporaryinvoice\print.blade.php:42:    $temporaryInvoiceNepaliDate = \App\Support\NepaliDate::adToBsString($temporaryinvoice->invoice_date, 'en');
+resources\views\temporaryinvoice\print.blade.php:210:                <div><b>Nepali Date:</b> {{ $temporaryInvoiceNepaliDate }}</div>
+resources\views\vat-system\bill.blade.php:26:<div class="vat-paper"><div class="seller">{{ $bill->seller_name }}<br>VAT No : {{ $bill->seller_vat_no ?: '-' }}<br>Phone: {{ $bill->seller_phone ?: '-' }}<br>Email: {{ $bill->seller_email ?: '-' }}<h2>INVOICE</h2></div><div class="bill-head"><div>Customer Name: &nbsp; {{ $bill->customer->name }}<br>Address: &nbsp; {{ $bill->customer->address ?: '-' }}<br>PAN No. &nbsp; {{ $bill->customer->pan_no ?: '-' }}<br>Phone Number: &nbsp; {{ $bill->customer->phone ?: '-' }}<br>Payment Mode: &nbsp; {{ $bill->payment_mode ?: '-' }}</div><div><strong>Invoice No.:</strong> &nbsp; {{ $bill->bill_no }}<br><strong>Invoice Date:</strong> &nbsp; {{ $bill->bill_date->format('Y-m-d') }}<br><strong>Invoice Miti:</strong> &nbsp; {{ $bsDate }}</div></div><table><thead><tr><th>S.N</th><th>H.S Code</th><th>Particulars</th><th>Unit</th><th>Qty.</th><th>Rate</th><th>Amount</th></tr></thead><tbody>@foreach($bill->items as $item)<tr><td class="text-center">{{ $loop->iteration }}.</td><td>{{ $item->hs_code ?: '' }}</td><td>{{ $item->item_name }}</td><td class="text-center">{{ $item->unit }}</td><td class="text-center">{{ $item->quantity }}</td><td class="num">{{ number_format($item->rate,2) }}</td><td class="num">{{ number_format($item->quantity*$item->rate,2) }}</td></tr>@endforeach</tbody></table><div style="min-height:300px"></div><div style="font-size:10px"><strong>AMOUNT IN WORDS:</strong> {{ $numberToWords($grand) }} Only.</div><div class="summary"><div><span>Total</span><span>{{ number_format($total,2) }}</span></div><div><span>Discount</span><span>{{ number_format($bill->discount,2) }}</span></div><div><span>Non Taxable Total</span><span>{{ number_format($nonTaxable,2) }}</span></div><div><span>Taxable Total</span><span>{{ number_format($taxable,2) }}</span></div><div><span>VAT</span><span>{{ number_format($vat,2) }}</span></div><div class="grand"><span>Grand Total</span><span>{{ number_format($grand,2) }}</span></div></div><div class="footer"><span>For : Nepal E-Billing</span><span>Printed by: {{ $bill->added_by ?: '-' }}</span></div></div>
+resources\views\showperday\sales-details-per-day.blade.php:89:                            <td>{{ \App\Support\NepaliDate::adToBsString($row['date'], 'en') }}</td>
+app\Http\Livewire\Allsalesdetailslivewire.php:62:    $cus = customerledgerdetails::whereDate('date', $today)
+app\Http\Livewire\AllCustomerCreditListLivewire.php:243:            ->whereDate('date', now()->toDateString());
+app\Http\Livewire\AllCustomerCreditListLivewire.php:451:            $query->whereDate('lt.latest_date', '<=', now()->subDays(45)->toDateString());
+app\Http\Livewire\AllCustomerCreditListLivewire.php:455:            $query->whereDate('lt.latest_date', '<=', now()->subDays(90)->toDateString());
+app\Http\Livewire\AllcustomerCreditduelistlivewire.php:45:    $query->whereDate('lt.latest_date', '<=', now()->subYear()->format('Y-m-d'));
+app\Http\Livewire\AllcustomerCreditduelistlivewire.php:208:            ->havingRaw('ABS(debit_credit_difference) > 0.004');
+app\Http\Livewire\AllcustomerCreditduelistlivewire.php:299:    $query->whereDate('lt.latest_date', '<=', now()->subYear()->format('Y-m-d'));
+app\Http\Livewire\Chequedepositlivewire.php:26:                    ->orWhere('cheque_date', 'like', '%' . $this->searchTerm . '%')
+app\Http\Livewire\Chequedepositlivewire.php:37:            $query->whereDate('cheque_date', Carbon::today());
+resources\views\customerledgerhistory\_items_block.blade.php:41:              <td class="label-nep">{{ \App\Support\NepaliDate::adToBsString($item->date ?? now()->toDateString(), 'en') }}</td>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit_PDF.blade.php:287:    $periodMitiText = $hasDateRange
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit_PDF.blade.php:288:        ? (\App\Support\NepaliDate::adToBsString($from, 'en') . ' to ' . \App\Support\NepaliDate::adToBsString($to, 'en'))
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit_PDF.blade.php:332:                    <div class="line"><span class="label">Miti:</span> {{ $periodMitiText }}</div>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit_PDF.blade.php:335:                        <div class="line"><span class="label">From Miti:</span> {{ \App\Support\NepaliDate::adToBsString($from, 'en') }}</div>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit_PDF.blade.php:337:                        <div class="line"><span class="label">To Miti:</span> {{ \App\Support\NepaliDate::adToBsString($to, 'en') }}</div>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit_PDF.blade.php:388:                    <th style="width: 8%;">Miti</th>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit_PDF.blade.php:412:                        <td>{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}</td>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:86:                                <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i> Start Date (B.S.)</span>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:87:                                <input type="text" name="date1_bs"
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:88:                                    value="{{ old('date1_bs', request('date1_bs', !empty($from) ? \App\Support\NepaliDate::adToBsString($from, 'en') : '')) }}"
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:89:                                    class="form-control @error('date1_bs') is-invalid @enderror" placeholder="YYYY-MM-DD"
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:90:                                    inputmode="numeric" pattern="\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2}" title="Enter B.S. date as YYYY-MM-DD">
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:93:                                <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i> End Date (B.S.)</span>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:94:                                <input type="text" name="date2_bs"
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:95:                                    value="{{ old('date2_bs', request('date2_bs', !empty($to) ? \App\Support\NepaliDate::adToBsString($to, 'en') : '')) }}"
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:96:                                    class="form-control @error('date2_bs') is-invalid @enderror" placeholder="YYYY-MM-DD"
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:97:                                    inputmode="numeric" pattern="\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2}" title="Enter B.S. date as YYYY-MM-DD">
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:101:                        @if($errors->has('date1_bs') || $errors->has('date2_bs'))
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:102:                            <div class="clhs-date-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $errors->first('date1_bs') ?: $errors->first('date2_bs') }}</div>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:256:                                            <span>{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}</span>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:257:                                            <button type="button" onclick="setLedgerDateFromRow('{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}', 'date1_bs')" title="Use as start date">Start</button>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:258:                                            <button type="button" onclick="setLedgerDateFromRow('{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}', 'date2_bs')" title="Use as end date">End</button>
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:1403:        html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:1451:        html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\customerledgerhistory\view_customerallledger_cashandcredit.blade.php:1482:    html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\customerledgerhistory\print_all_customer_invoices.blade.php:184:                <p>Date: {{ $data['invoice']->inv_date }}</p>
+resources\views\customerledgerhistory\print_all_customer_invoices.blade.php:185:                <p>Miti: {{ \App\Support\NepaliDate::adToBsString($data['invoice']->inv_date ?? now()->toDateString(), 'en') }}</p>
+resources\views\customerledgerhistory\print_all_customer_creditnotes.blade.php:247:                    <div class="field"><span class="label">Date:</span> {{ $data['invoice']->inv_date }}</div>
+resources\views\customerledgerhistory\print_all_customer_creditnotes.blade.php:248:                    <div class="field"><span class="label">Miti:</span> {{ \App\Support\NepaliDate::adToBsString($data['invoice']->inv_date ?? now()->toDateString(), 'en') }}</div>
+resources\views\customerledgerhistory\print_all_cash_receipts.blade.php:203:            <p><strong>Miti (BS):</strong> {{ \App\Support\NepaliDate::adToBsString($receipt->date ?? now()->toDateString(), 'en') }}</p>
+resources\views\customerledgerhistory\list.blade.php:87:                                <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i> Start Date (B.S.)</span>
+resources\views\customerledgerhistory\list.blade.php:88:                                <input type="text" name="date1_bs"
+resources\views\customerledgerhistory\list.blade.php:89:                                    value="{{ old('date1_bs', request('date1_bs', !empty($fromdate) ? \App\Support\NepaliDate::adToBsString($fromdate, 'en') : '')) }}"
+resources\views\customerledgerhistory\list.blade.php:90:                                    class="form-control @error('date1_bs') is-invalid @enderror" placeholder="YYYY-MM-DD"
+resources\views\customerledgerhistory\list.blade.php:91:                                    inputmode="numeric" pattern="\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2}" title="Enter B.S. date as YYYY-MM-DD">
+resources\views\customerledgerhistory\list.blade.php:94:                                <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i> End Date (B.S.)</span>
+resources\views\customerledgerhistory\list.blade.php:95:                                <input type="text" name="date2_bs"
+resources\views\customerledgerhistory\list.blade.php:96:                                    value="{{ old('date2_bs', request('date2_bs', !empty($todate) ? \App\Support\NepaliDate::adToBsString($todate, 'en') : '')) }}"
+resources\views\customerledgerhistory\list.blade.php:97:                                    class="form-control @error('date2_bs') is-invalid @enderror" placeholder="YYYY-MM-DD"
+resources\views\customerledgerhistory\list.blade.php:98:                                    inputmode="numeric" pattern="\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2}" title="Enter B.S. date as YYYY-MM-DD">
+resources\views\customerledgerhistory\list.blade.php:102:                        @if($errors->has('date1_bs') || $errors->has('date2_bs'))
+resources\views\customerledgerhistory\list.blade.php:103:                            <div class="clhs-date-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $errors->first('date1_bs') ?: $errors->first('date2_bs') }}</div>
+resources\views\customerledgerhistory\list.blade.php:270:                                            <span>{{ \App\Support\NepaliDate::adToBsString($i->date, 'en') }}</span>
+resources\views\customerledgerhistory\list.blade.php:271:                                            <button type="button" onclick="setLedgerDateFromRow('{{ \App\Support\NepaliDate::adToBsString($i->date, 'en') }}', 'date1_bs')" title="Use as start date">Start</button>
+resources\views\customerledgerhistory\list.blade.php:272:                                            <button type="button" onclick="setLedgerDateFromRow('{{ \App\Support\NepaliDate::adToBsString($i->date, 'en') }}', 'date2_bs')" title="Use as end date">End</button>
+resources\views\customerledgerhistory\list.blade.php:439:                    html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\customerledgerhistory\list.blade.php:499:                    html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\customerledgerhistory\list.blade.php:534:            html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\customerledgerhistory\dispute_missing_bills_pdf.blade.php:91:                    <td>{{ $invoice->inv_date }}</td>
+resources\views\customerledgerhistory\dispute_missing_bills.blade.php:164:                                <td>{{ $invoice->inv_date }}</td>
+resources\views\customerledgerhistory\customersoldpricecheck.blade.php:60:              <span>From Date (B.S.)</span>
+resources\views\customerledgerhistory\customersoldpricecheck.blade.php:61:              <input type="text" name="date1_bs" value="{{ request('date1_bs') }}" placeholder="YYYY-MM-DD" inputmode="numeric">
+resources\views\customerledgerhistory\customersoldpricecheck.blade.php:64:              <span>To Date (B.S.)</span>
+resources\views\customerledgerhistory\customersoldpricecheck.blade.php:65:              <input type="text" name="date2_bs" value="{{ request('date2_bs') }}" placeholder="YYYY-MM-DD" inputmode="numeric">
+resources\views\customerledgerhistory\customerLedgerDetailsConvertPdf.blade.php:275:    $periodMitiText = $hasDateRange
+resources\views\customerledgerhistory\customerLedgerDetailsConvertPdf.blade.php:276:        ? (\App\Support\NepaliDate::adToBsString($fromdate, 'en') . ' to ' . \App\Support\NepaliDate::adToBsString($todate, 'en'))
+resources\views\customerledgerhistory\customerLedgerDetailsConvertPdf.blade.php:320:                    <div class="line"><span class="label">Miti:</span> {{ $periodMitiText }}</div>
+resources\views\customerledgerhistory\customerLedgerDetailsConvertPdf.blade.php:323:                        <div class="line"><span class="label">From Miti:</span> {{ \App\Support\NepaliDate::adToBsString($fromdate, 'en') }}</div>
+resources\views\customerledgerhistory\customerLedgerDetailsConvertPdf.blade.php:325:                        <div class="line"><span class="label">To Miti:</span> {{ \App\Support\NepaliDate::adToBsString($todate, 'en') }}</div>
+resources\views\customerledgerhistory\customerLedgerDetailsConvertPdf.blade.php:365:                    <th style="width: 8%;">Miti</th>
+resources\views\customerledgerhistory\customerLedgerDetailsConvertPdf.blade.php:387:                        <td>{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}</td>
+resources\views\customerledgerhistory\customerbillnoinvoiceconvertpdf.blade.php:50:    /* Bigger text for Date + Miti ONLY */
+resources\views\customerledgerhistory\customerbillnoinvoiceconvertpdf.blade.php:173:            Miti: {{ \App\Support\NepaliDate::adToBsString($forinvoicetype->date ?? now()->toDateString(), 'np') }}
+resources\views\dashboard\print_all_payments_today.blade.php:197:                <th>Date (Miti)</th>
+resources\views\dashboard\print_all_invoices_today.blade.php:266:                    <strong>Miti:</strong> {{ $inv['nepali_date'] }}<br>
+resources\views\dashboard\moderndashboard.blade.php:1153:                invoiceHtml += '<strong>Miti:</strong> ' + (data.nepali_date || '') + '<br>';
+resources\views\dashboard\moderndashboard.blade.php:1255:        html += '<div><strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\dashboard\moderndashboard.blade.php:1405:                paymentHtml += '<strong>Miti:</strong> ' + (data.nepali_date || '') + '<br>';
+resources\views\dashboard\moderndashboard.blade.php:1494:            <i class="far fa-calendar"></i> {{ \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en') }}
+resources\views\dashboard\dashboard.blade.php:263:                        <th>Date (Miti)</th>
+resources\views\dashboard\dashboard.blade.php:318:                        <th>Date (Miti)</th>
+resources\views\dashboard\dashboard.blade.php:658:        html += '<strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\dashboard\dashboard.blade.php:714:        html += '<strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\dashboard\checktoday.blade.php:374:                            — B.S. {{ \App\Support\NepaliDate::adToBsString(substr((string) $cheque->cheque_exchange_date, 0, 10), 'en') }}
+resources\views\dashboard\checktoday.blade.php:408:                        <th>Date (Miti)</th>
+resources\views\dashboard\checktoday.blade.php:464:                        <th>Date (Miti)</th>
+resources\views\dashboard\checktoday.blade.php:829:        html += '<strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\dashboard\checktoday.blade.php:885:        html += '<strong>Miti:</strong> ' + (data.nepali_date || '') + '</div>';
+resources\views\livewire\chequedepositlivewire.blade.php:43:                                <td>{{ $i->cheque_date }}</td>
+app\Models\invoice.php:17:                $fiscalYear = FiscalNumber::fiscalYearForDate($invoice->inv_date ?: now());
+resources\views\companyLedgerBillEntry\companyledgersshow.blade.php:186:                                <td>{{ \App\Support\NepaliDate::adToBsString($i->date ?? now()->toDateString(), 'en') }}</td>
+resources\views\companyLedgerBillEntry\companylhpdf.blade.php:337:                    <td>{{ !empty($row->date) ? \App\Support\NepaliDate::adToBsString($row->date, 'en') : '-' }}</td>
+resources\views\cheque_deposit\searchchequreeceiptPdf.blade.php:158:                                        <p class="mb-1"><strong>Cheque Date:</strong> {{ $data->cheque_date ?? '' }}</p>
+resources\views\cheque_deposit\searchchequereceipt.blade.php:76:                                        <p class="mb-1"><strong>Cheque Date:</strong> {{ $data->cheque_date ?? '' }}</p>
+resources\views\cheque_deposit\edit.blade.php:83:                <input autocomplete="off" type="date" class="form-control @error('cheque_date') is-invalid @enderror" 
+resources\views\cheque_deposit\edit.blade.php:84:                    name="cheque_date" value="{{ old('cheque_date', $chequedepoedit->cheque_date) }}" id="chequeDate" placeholder="YYYY-MM-DD">
+resources\views\cheque_deposit\edit.blade.php:85:                @error('cheque_date')
+resources\views\cheque_deposit\create.blade.php:89:                <input autocomplete="off" type="date" class="form-control @error('cheque_date') is-invalid @enderror" 
+resources\views\cheque_deposit\create.blade.php:90:                    name="cheque_date" value="{{ old('cheque_date') }}" id="chequeDate" placeholder="YYYY-MM-DD">
+resources\views\cheque_deposit\create.blade.php:91:                @error('cheque_date')
+resources\views\livewire\deletedcninvoice-livewire.blade.php:38:                                    <td>{{ $sale->inv_date }}</td>
+resources\views\livewire\creditnotes-invoice-livewire.blade.php:39:                                    <td>{{ $sale->inv_date }}</td>
+resources\views\vat-system\create.blade.php:10:            ? \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'), 'en')
+resources\views\vat-system\create.blade.php:11:            : \App\Support\NepaliDate::adToBsString(now()->format('Y-m-d'), 'en');
+resources\views\vat-system\create.blade.php:334:    modeSelect.innerHTML = '<option value="ad">English (A.D.)</option><option value="bs">Nepali (B.S.)</option>';
+resources\views\vat-system\create.blade.php:361:            ? 'Enter Nepali date (B.S.). It will be converted automatically when saved.'
+resources\views\livewire\invoicelivewire.blade.php:34:                            <tr @if (date('Y-m-d', strtotime($sale->inv_date)) === date('Y-m-d')) style="font-weight:bold;background:red;color:white;" @endif>
+resources\views\livewire\invoicelivewire.blade.php:37:                                    <td>{{ $sale->inv_date }}</td>
+resources\views\livewire\deletedinvoice-livewire.blade.php:41:                                    <td>{{ $sale->inv_date }}</td>
+database\migrations\2023_03_07_165739_create_invoices_table.php:23:            $table->date('inv_date');
+database\migrations\2024_01_07_132503_create_backup_invoices_table.php:22:            $table->date('inv_date')->nullable();
+database\migrations\2024_01_08_095704_create_creditnotes_invoices_table.php:24:            $table->date('inv_date')->nullable();
+database\migrations\2024_01_09_110501_create_backupcreditnotes_invoices_table.php:23:            $table->date('inv_date')->nullable();
+app\Http\Controllers\BankReconciliationController.php:90:            $payment = customerledgerdetails::where('invoicetype', 'payment')->whereDate('date', $transaction->transaction_date)->whereRaw('ABS(credit - ?) < 0.01', [$amount])->whereNotExists(function ($q) { $q->select(DB::raw(1))->from('bank_statement_transactions as bst')->where('bst.matched_type', 'customer_payment')->whereColumn('bst.matched_id', 'customerledgerdetails.id')->where('bst.status', 'matched'); })->first();
+app\Http\Controllers\BankReconciliationController.php:92:            $deposit = Bank::whereDate('date', $transaction->transaction_date)->whereRaw('ABS(amount - ?) < 0.01', [$amount])->first();
+app\Http\Controllers\BankReconciliationController.php:95:            $expense = DB::table('expenses')->whereDate('date', $transaction->transaction_date)->whereRaw('ABS(amount - ?) < 0.01', [abs($amount)])->first();
+resources\views\vat-system\reports\confirmation-pdf.blade.php:13:<div class="date">DATE (B.S.) &nbsp; {{ $bsDate }}</div>
+resources\views\vat-system\reports\confirmation-pdf.blade.php:16:<div class="text">Dear Sir/Madam,<br><br>We hereby confirm that the following transaction details are recorded with our organization for the period <b>{{ $periodFrom }} to {{ $periodTo }}</b> (B.S. <b>{{ $periodFromBs }} to {{ $periodToBs }}</b>). Kindly verify the figures below and return a duly signed and stamped copy as confirmation of your acceptance.</div>
+resources\views\vat-system\reports\confirmation.blade.php:11:  <h2 class="confirm-title">BALANCE CONFIRMATION<br>LETTER</h2><div class="confirm-date">DATE (B.S.) &nbsp; {{ $bsDate }}</div>
+resources\views\vat-system\reports\confirmation.blade.php:14:  <div class="letter-text">Dear Sir/Madam,<br><br>We hereby confirm that the following transaction details are recorded with our organization for the period <b>{{ $periodFrom ?: now()->toDateString() }} to {{ $periodTo ?: now()->toDateString() }}</b> <span style="color:#526579">(B.S. <b>{{ $periodFromBs }} to {{ $periodToBs }}</b>)</span>. Kindly verify the figures below and return a duly signed and stamped copy as confirmation of your acceptance.</div>
+app\Http\Livewire\DeletedinvoiceLivewire.php:24:            ->orWhere('backup_invoices.inv_date', 'like', "%" . $this->searchTerm . "%")
+resources\views\customerdetails\create.blade.php:146:            <div class="col-md-4"><label>Cheque Date (B.S.) *</label><input type="text" name="cheque_exchange_date_bs" id="chequeExchangeDate" class="form-control @error('cheque_exchange_date_bs') is-invalid @enderror" value="{{ old('cheque_exchange_date_bs', \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en')) }}" placeholder="YYYY-MM-DD" inputmode="numeric" pattern="[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}"><small class="text-muted d-block mt-1">Enter Nepali date, e.g. 2083-06-02</small>@error('cheque_exchange_date_bs')<small class="text-danger d-block">{{ $message }}</small>@enderror</div>
+resources\views\vat-system\reports\ledger.blade.php:9: @if($rows->count())@php $taxable=$rows->sum(fn($row)=>$row['bill']->items->where('is_taxable',true)->sum(fn($item)=>(float)$item->quantity*(float)$item->rate));$vat=round($taxable*.13,2); @endphp<table class="ledger-table mt-3"><thead><tr><th>S.N</th><th>Date (B.S.)</th><th>Bill No</th><th>Taxable Amount (NPR)</th><th>VAT (13%) (NPR)</th><th>Total Amount (NPR)</th></tr></thead><tbody>@foreach($rows as $row)@php $bill=$row['bill'];$lineTaxable=$bill->items->where('is_taxable',true)->sum(fn($item)=>(float)$item->quantity*(float)$item->rate);$lineVat=round($lineTaxable*.13,2); @endphp<tr><td>{{ $loop->iteration }}</td><td>{{ \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'),'en') }}</td><td>#{{ $bill->bill_no }}</td><td>{{ number_format($lineTaxable,2) }}</td><td>{{ number_format($lineVat,2) }}</td><td>{{ number_format($row['amount'],2) }}</td></tr>@endforeach<tr class="total-row"><td colspan="3">TOTAL</td><td>{{ number_format($taxable,2) }}</td><td>{{ number_format($vat,2) }}</td><td>{{ number_format($total,2) }}</td></tr></tbody></table><div class="outstanding">Total Outstanding<strong>Rs {{ number_format($total,2) }}</strong></div>@else<div class="ledger-empty mt-3">No sales transactions found for this customer in the selected firm.</div>@endif
+app\Http\Controllers\ChequeDepositController.php:54:        'cheque_date' => 'required|date',
+app\Http\Controllers\ChequeDepositController.php:68:        $chequeinfo->cheque_date = $req->cheque_date;
+app\Http\Controllers\ChequeDepositController.php:103:            'cheque_date' => 'required|date',
+app\Http\Controllers\ChequeDepositController.php:114:            $chequeinfo->cheque_date = $req->cheque_date;
+resources\views\vat-system\reports\print-all.blade.php:5:<section class="paper"><header class="brand"><div class="logo">{{ strtoupper(substr($firm->name,0,1)) }}{{ strtoupper(substr(str_replace(' ','',$firm->name),1,1)) }}</div><div class="firm"><h1>{{ strtoupper($firm->name) }}</h1><p>{{ $firm->address }}<br>VAT/PAN No: {{ $firm->pan_no }} &nbsp; | &nbsp; Contact: {{ $firm->phone }}</p></div></header><h2 class="title">BALANCE CONFIRMATION<br>LETTER</h2><div class="date">DATE (B.S.) &nbsp; {{ \App\Support\NepaliDate::adToBsString(now()->toDateString(),'en') }}</div><div class="recipient"><b>ADDRESSED TO</b><div class="recipient-grid"><div><b>PARTY NAME</b><br>{{ $report['customer']->name }}</div><div><b>VAT NO.</b><br>{{ $report['customer']->pan_no ?: '-' }}</div><div><b>ADDRESS</b><br>{{ $report['customer']->address ?: '-' }}</div><div><b>PHONE</b><br>{{ $report['customer']->phone ?: '-' }}</div></div></div><div class="subject"><b>SUBJECT</b> Confirmation of Sales Transactions and Balance</div><div class="text">Dear Sir/Madam,<br><br>We hereby confirm the sales transactions recorded with our organization. Kindly verify the figures below and return a duly signed and stamped copy.</div><table class="table"><thead><tr><th>S.NO</th><th>PARTICULARS</th><th>EXEMPTED SALES</th><th>TAXABLE SALES</th><th>VAT 13%</th><th>TOTAL (NPR)</th></tr></thead><tbody><tr><td>1</td><td style="text-align:left">Purchase</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>2</td><td style="text-align:left">Purchase Return</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>3</td><td style="text-align:left">Sales</td><td>-</td><td>{{ number_format($taxable,2) }}</td><td>{{ number_format($vat,2) }}</td><td>{{ number_format($report['total'],2) }}</td></tr><tr><td>4</td><td style="text-align:left">Sales Return</td><td>-</td><td>-</td><td>-</td><td>-</td></tr></tbody></table><div class="summary"><h3>BALANCE SUMMARY</h3><div><span>Opening balance at the beginning of the period</span><strong>NIL</strong></div><div><span>Closing balance at the end of the period</span><strong>Rs {{ number_format($report['total'],2) }}</strong></div></div><div class="notice">Please return a duly signed and stamped copy within seven days of receipt of this letter. Otherwise, the figures stated above will be considered accepted and confirmed.</div><div class="text">Thanking you,<br><b>Yours faithfully</b></div><div class="signatures"><div class="signature">Authorized Signatory<small>For {{ $firm->name }}</small></div><div class="signature">Authorized Signatory<small>For {{ $report['customer']->name }}</small></div></div><footer class="footer"><span>{{ $firm->name }}</span><span>VAT CONFIRMATION</span></footer></section>
+resources\views\vat-system\reports\print-all.blade.php:6:<section class="paper"><header class="ledger-head"><h1>{{ strtoupper($firm->name) }}</h1><p>{{ $firm->address }}<br>VAT No: {{ $firm->pan_no }}<br>Contact No: {{ $firm->phone }}</p></header><h2 class="ledger-title">PARTY LEDGER</h2><div class="ledger-info"><span>Party Name: {{ strtoupper($report['customer']->name) }}</span><span>Party VAT No: {{ $report['customer']->pan_no ?: '-' }}</span><br>Currency&nbsp; : &nbsp;NPR</div>@if($report['bills']->count())<table class="table ledger-table" style="margin-top:14px"><thead><tr><th>S.N</th><th>Date (B.S.)</th><th>Bill No</th><th>Taxable Amount (NPR)</th><th>VAT (13%) (NPR)</th><th>Total Amount (NPR)</th></tr></thead><tbody>@foreach($report['bills'] as $bill)@php $lineTaxable=$bill->items->where('is_taxable',true)->sum(fn($item)=>(float)$item->quantity*(float)$item->rate);$lineVat=round($lineTaxable*.13,2); @endphp<tr><td>{{ $loop->iteration }}</td><td>{{ \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'),'en') }}</td><td>#{{ $bill->bill_no }}</td><td>{{ number_format($lineTaxable,2) }}</td><td>{{ number_format($lineVat,2) }}</td><td>{{ number_format($bill->items->sum(fn($item)=>(float)$item->quantity*(float)$item->rate)-(float)$bill->discount+$lineVat,2) }}</td></tr>@endforeach<tr class="total"><td colspan="3">TOTAL</td><td>{{ number_format($taxable,2) }}</td><td>{{ number_format($vat,2) }}</td><td>{{ number_format($report['total'],2) }}</td></tr></tbody></table><div class="outstanding">Total Outstanding<strong>Rs {{ number_format($report['total'],2) }}</strong></div>@else<div class="empty">No sales invoices recorded for this customer in this firm.</div>@endif</section>
+resources\views\vat-system\reports\purchase-confirmation-pdf.blade.php:1:<!doctype html><html><head><meta charset="utf-8"><style>@page{margin:18mm}body{font-family:DejaVu Sans,sans-serif;color:#173b72;font-size:12px}h1,h2,h3{text-align:center;margin:4px}h1{font-size:22px;text-decoration:underline}h3{color:#64748b;letter-spacing:1px;margin:22px 0}.firm{text-align:center;border-bottom:2px solid #2563eb;padding-bottom:12px}.recipient{border-left:4px solid #2563eb;padding:10px;margin:18px 0}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{border:1px solid #9eb6d1;padding:9px}th{background:#344bd2;color:#fff;text-align:left}.right{text-align:right}.total{background:#172554;color:#fff;font-weight:bold}.sign{margin-top:70px;display:flex;justify-content:space-between}</style></head><body><div class="firm"><h1>{{ strtoupper($firm->name) }}</h1><div>{{ $firm->address }}<br>VAT No: {{ $firm->pan_no }} · {{ $firm->phone }}</div></div><h3>PURCHASE BALANCE CONFIRMATION</h3><div class="recipient"><strong>Company: {{ $company }}</strong><br>Period: {{ $periodFrom }} to {{ $periodTo }}<br>B.S.: {{ $periodFromBs }} to {{ $periodToBs }}<br>Printed B.S. Date: {{ $bsDate }}</div><p>We confirm that the following purchase transactions are recorded with our organization for the stated period.</p><table><thead><tr><th>Description</th><th class="right">Amount (NPR)</th></tr></thead><tbody><tr><td>Taxable Purchases</td><td class="right">{{ number_format($taxablePurchases,2) }}</td></tr><tr><td>Non-taxable Purchases</td><td class="right">{{ number_format($nonTaxablePurchases,2) }}</td></tr><tr><td>VAT (13%)</td><td class="right">{{ number_format($vatAmount,2) }}</td></tr><tr class="total"><td>Total Purchase Amount</td><td class="right">{{ number_format($total,2) }}</td></tr></tbody></table><p>Opening Balance: Rs {{ number_format($openingBalance,2) }} &nbsp;&nbsp;&nbsp; Closing Balance: Rs {{ number_format($closingBalance,2) }}</p><p style="margin-top:40px">Kindly verify the above figures and return a duly signed and stamped copy.</p><div class="sign"><span>Prepared By: ____________</span><span>Authorized Signature: ____________</span></div></body></html>
+app\Http\Livewire\Invoicelivewire.php:25:            ->orWhere('invoices.inv_date', 'like', "%" . $this->searchTerm . "%")
+resources\views\vat-system\reports\purchase-confirmation.blade.php:3:<div class="main-content" style="background:#eef3f9;min-height:100vh"><div class="container p-4"><div class="d-flex justify-content-between align-items-center mb-3 no-print"><a href="{{ route('vat-system.purchase-party-ledger',['company'=>$company,'fiscal_year'=>$fiscalYear]) }}" class="btn btn-outline-secondary">Back to Ledger</a><form method="GET" class="d-flex gap-2 align-items-end"><input type="hidden" name="fiscal_year" value="{{ $fiscalYear }}"><label>Opening Balance<input name="opening_balance" value="{{ $openingBalance }}" type="number" step=".01" class="form-control"></label><label>Closing Balance<input name="closing_balance" value="{{ $closingBalance }}" type="number" step=".01" class="form-control"></label><button class="btn btn-outline-primary">Update</button><a href="{{ route('vat-system.purchase-balance-confirmation.pdf',['company'=>$company,'fiscal_year'=>$fiscalYear,'opening_balance'=>$openingBalance,'closing_balance'=>$closingBalance]) }}" class="btn btn-primary">Print PDF</a></form></div><article class="card border-0 shadow-sm p-5"><h2 class="text-center text-primary text-decoration-underline">{{ strtoupper($firm->name) }}</h2><p class="text-center mb-1">{{ $firm->address }} · VAT No: {{ $firm->pan_no }} · {{ $firm->phone }}</p><h4 class="text-center text-muted my-4">PURCHASE BALANCE CONFIRMATION</h4><p>To: <strong>{{ $company }}</strong></p><p>We confirm that the following purchase transactions are recorded with our organization for the period <strong>{{ $periodFrom }} to {{ $periodTo }}</strong> (B.S. <strong>{{ $periodFromBs }} to {{ $periodToBs }}</strong>).</p><table class="table table-bordered"><thead class="table-primary"><tr><th>Description</th><th class="text-end">Amount (NPR)</th></tr></thead><tbody><tr><td>Taxable Purchases</td><td class="text-end">{{ number_format($taxablePurchases,2) }}</td></tr><tr><td>Non-taxable Purchases</td><td class="text-end">{{ number_format($nonTaxablePurchases,2) }}</td></tr><tr><td>VAT (13%)</td><td class="text-end">{{ number_format($vatAmount,2) }}</td></tr><tr class="table-dark"><th>Total Purchase Amount</th><th class="text-end">{{ number_format($total,2) }}</th></tr></tbody></table><div class="row mt-4"><div class="col-md-6">Opening Balance: <strong>Rs {{ number_format($openingBalance,2) }}</strong></div><div class="col-md-6 text-end">Closing Balance: <strong>Rs {{ number_format($closingBalance,2) }}</strong></div></div><p class="mt-5">Kindly verify the above figures and return a duly signed and stamped copy.</p><div class="row mt-5"><div class="col">Prepared By: __________________</div><div class="col text-end">Authorized Signature: __________________</div></div></article></div></div>
+resources\views\vat-system\reports\purchase-ledger.blade.php:4:<div class="card border-0 shadow-sm p-4"><h3 class="text-center text-primary">{{ strtoupper($firm->name) }}</h3><h5 class="text-center text-muted mb-4">PURCHASE PARTY LEDGER</h5><div class="table-responsive"><table class="table table-bordered align-middle"><thead class="table-primary"><tr><th>#</th><th>Date (B.S.)</th><th>Bill No.</th><th>Taxable</th><th>VAT</th><th>Total Purchase</th></tr></thead><tbody>
+resources\views\vat-system\reports\purchase-ledger.blade.php:5:@forelse($rows as $row)@php($bill=$row['bill'])@php($taxable=$bill->items->where('is_taxable',true)->sum(fn($i)=>(float)$i->quantity*(float)$i->rate))@php($vat=round($taxable*.13,2))<tr><td>{{ $loop->iteration }}</td><td>{{ \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'),'en') }}</td><td>#{{ $bill->bill_no }}</td><td class="text-end">{{ number_format($taxable,2) }}</td><td class="text-end">{{ number_format($vat,2) }}</td><td class="text-end fw-bold">{{ number_format($row['amount'],2) }}</td></tr>@empty<tr><td colspan="6" class="text-center p-4">No purchase bills found.</td></tr>@endforelse
+resources\views\vat-system\reports\purchase-print-all.blade.php:10:    <table class="table"><thead><tr><th>#</th><th>Date (B.S.)</th><th>Bill No.</th><th class="right">Taxable</th><th class="right">VAT</th><th class="right">Total</th></tr></thead><tbody>
+resources\views\vat-system\reports\purchase-print-all.blade.php:14:        <tr><td>{{ $loop->iteration }}</td><td>{{ \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'),'en') }}</td><td>#{{ $bill->bill_no }}</td><td class="right">{{ number_format($taxable,2) }}</td><td class="right">{{ number_format($vat,2) }}</td><td class="right">{{ number_format($bill->items->sum(fn($item)=>(float)$item->quantity*(float)$item->rate)+$vat,2) }}</td></tr>
+database\migrations\2024_03_28_113012_create_chequedeposit_table.php:17:            $table->date('cheque_date');
+app\Http\Controllers\Creditnotes_controller.php:93:        $invoice_data->inv_date = $req->date;
+app\Http\Controllers\CustomerLedgerDetailsController.php:20:use App\Support\NepaliDate;
+app\Http\Controllers\CustomerLedgerDetailsController.php:83:        'cheque_exchange_date_bs' => 'required_if:is_cheque,1|nullable|regex:/^\\d{4}-\\d{1,2}-\\d{1,2}$/',
+app\Http\Controllers\CustomerLedgerDetailsController.php:190:        $cl->cheque_exchange_date = $chequeExchangeDate;
+app\Http\Controllers\CustomerLedgerDetailsController.php:288:        'cheque_exchange_date_bs' => 'required_if:is_cheque,1|nullable|regex:/^\\d{4}-\\d{1,2}-\\d{1,2}$/',
+app\Http\Controllers\CustomerLedgerDetailsController.php:343:    $cl->cheque_exchange_date = $chequeExchangeDate;
+app\Http\Controllers\CustomerLedgerDetailsController.php:411:    $value = trim((string) $request->input('cheque_exchange_date_bs'));
+app\Http\Controllers\CustomerLedgerDetailsController.php:413:        throw \Illuminate\Validation\ValidationException::withMessages(['cheque_exchange_date_bs' => 'Enter the cheque date in B.S. format YYYY-MM-DD.']);
+app\Http\Controllers\CustomerLedgerDetailsController.php:416:        return NepaliDate::bsToAdString((int)$parts[1], (int)$parts[2], (int)$parts[3]);
+app\Http\Controllers\CustomerLedgerDetailsController.php:418:        throw \Illuminate\Validation\ValidationException::withMessages(['cheque_exchange_date_bs' => 'The cheque B.S. date is not valid.']);
+app\Http\Controllers\CustomerLedgerHistroy.php:15:use App\Support\NepaliDate;
+app\Http\Controllers\CustomerLedgerHistroy.php:214:             'date1_bs' => 'date1',
+app\Http\Controllers\CustomerLedgerHistroy.php:215:             'date2_bs' => 'date2',
+app\Http\Controllers\CustomerLedgerHistroy.php:330:                 $bsField => 'Enter the B.S. date in YYYY-MM-DD format.',
+app\Http\Controllers\CustomerLedgerHistroy.php:336:                 $adField => NepaliDate::bsToAdString((int) $parts[1], (int) $parts[2], (int) $parts[3]),
+app\Http\Controllers\CustomerLedgerHistroy.php:340:                 $bsField => 'The entered B.S. date is invalid or outside the supported range.',
+app\Http\Controllers\CustomerLedgerHistroy.php:354:             'date1_bs' => $request->query('date2_bs'),
+app\Http\Controllers\CustomerLedgerHistroy.php:355:             'date2_bs' => $request->query('date1_bs'),
+app\Http\Controllers\CustomerLedgerHistroy.php:556:            $backupInvoice->inv_date = $invoice->inv_date;
+app\Http\Controllers\CustomerLedgerHistroy.php:699:            $backupInvoice->inv_date = $invoice->inv_date;
+app\Http\Controllers\CustomerLedgerHistroy.php:1192:                    return $query->whereBetween('inv_date', [$from, $to]);
+app\Http\Controllers\CustomerLedgerHistroy.php:1253:                    return $query->whereBetween('inv_date', [$from, $to]);
+app\Http\Controllers\CustomerLedgerHistroy.php:1378:            $invoiceQuery->whereBetween('inv_date', [$from, $to]);
+app\Http\Controllers\CustomerLedgerHistroy.php:1434:            $invoiceQuery->whereBetween('inv_date', [$from, $to]);
+app\Http\Controllers\CustomerLedgerHistroy.php:1586:                'date1_bs' => 'date1',
+app\Http\Controllers\CustomerLedgerHistroy.php:1587:                'date2_bs' => 'date2',
+app\Http\Controllers\CustomerLedgerHistroy.php:1782:        'date1_bs' => 'date1',
+app\Http\Controllers\CustomerLedgerHistroy.php:1783:        'date2_bs' => 'date2',
+app\Http\Controllers\DashboardController.php:9:use App\Support\NepaliDate;
+app\Http\Controllers\DashboardController.php:18:        $todayInvoices = invoice::whereDate('inv_date', $today)->count();
+app\Http\Controllers\DashboardController.php:19:        $todayInvoicesTotal = invoice::whereDate('inv_date', $today)->sum('total') ?? 0;
+app\Http\Controllers\DashboardController.php:23:            ->whereDate('date', $today)
+app\Http\Controllers\DashboardController.php:26:            ->whereDate('date', $today)
+app\Http\Controllers\DashboardController.php:31:            ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'customerinfos.name as customer')
+app\Http\Controllers\DashboardController.php:32:            ->whereDate('invoices.inv_date', $today)
+app\Http\Controllers\DashboardController.php:33:            ->orderByDesc('invoices.inv_date')
+app\Http\Controllers\DashboardController.php:47:                'date'     => NepaliDate::adToBsString($inv->date, 'en'),
+app\Http\Controllers\DashboardController.php:56:            ->whereDate('customerledgerdetails.date', $today)
+app\Http\Controllers\DashboardController.php:77:                'date'     => NepaliDate::adToBsString($pay->date, 'en'),
+app\Http\Controllers\ExpensesController.php:152:        $expenses->whereDate('date', '>=', $startDate);
+app\Http\Controllers\ExpensesController.php:156:        $expenses->whereDate('date', '<=', $endDate);
+app\Http\Controllers\Invoicecontroller.php:162:        'date' => $invoices->inv_date,
+app\Http\Controllers\Invoicecontroller.php:253:                $invoice->inv_date = $req->date;
+app\Http\Controllers\Invoicecontroller.php:285:                        'date' => $invoice->inv_date,
+app\Http\Controllers\ItemsalesController.php:14:use App\Support\NepaliDate;
+app\Http\Controllers\ItemsalesController.php:185:        $invoice_data->inv_date = $req->date;
+app\Http\Controllers\ItemsalesController.php:369:             'nepali_date' => $row->date ? NepaliDate::adToBsString($row->date, 'en') : '',
+app\Http\Controllers\ModernDashboardController.php:23:use App\Support\NepaliDate;
+app\Http\Controllers\ModernDashboardController.php:46:            'today_invoices'       => invoice::whereDate('inv_date', $today)->count(),
+app\Http\Controllers\ModernDashboardController.php:47:            'month_invoices'       => invoice::whereMonth('inv_date', $month)->whereYear('inv_date', $year)->count(),
+app\Http\Controllers\ModernDashboardController.php:48:            'today_credit_notes'   => CreditnotesInvoice::whereDate('inv_date', $today)->count(),
+app\Http\Controllers\ModernDashboardController.php:49:            'month_credit_notes'   => CreditnotesInvoice::whereMonth('inv_date', $month)->whereYear('inv_date', $year)->count(),
+app\Http\Controllers\ModernDashboardController.php:59:        $todaySales = (float) invoice::whereDate('inv_date', $today)->sum('total');
+app\Http\Controllers\ModernDashboardController.php:60:        $todayCashSales = (float) invoice::whereDate('inv_date', $today)->where('inv_type', 'cash')->sum('total');
+app\Http\Controllers\ModernDashboardController.php:61:        $todayPayments = (float) customerledgerdetails::whereDate('date', $today)
+app\Http\Controllers\ModernDashboardController.php:67:            ->whereDate('cheque_exchange_date', $today)
+app\Http\Controllers\ModernDashboardController.php:70:        $todayExpenses = (float) Expense::whereDate('date', $today)->sum('amount');
+app\Http\Controllers\ModernDashboardController.php:85:        $dailySalesRaw = invoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
+app\Http\Controllers\ModernDashboardController.php:86:            ->whereBetween('inv_date', [$startDate, $endDate])
+app\Http\Controllers\ModernDashboardController.php:119:                    'last_sale_date' => $row->last_sale_date ? NepaliDate::adToBsString($row->last_sale_date, 'en') : '-',
+app\Http\Controllers\ModernDashboardController.php:136:            ->whereMonth('inv_date', $month)->whereYear('inv_date', $year)
+app\Http\Controllers\ModernDashboardController.php:161:            ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'invoices.added_by', 'customerinfos.name as customer')
+app\Http\Controllers\ModernDashboardController.php:162:            ->orderByDesc('invoices.inv_date')
+app\Http\Controllers\ModernDashboardController.php:176:                'date'     => NepaliDate::adToBsString($inv->date, 'en'),
+app\Http\Controllers\ModernDashboardController.php:209:                'date'     => NepaliDate::adToBsString($pay->date, 'en'),
+app\Http\Controllers\ModernDashboardController.php:217:            ->select('creditnotes_invoices.id', 'creditnotes_invoices.total as amount', 'creditnotes_invoices.inv_date as date', 'creditnotes_invoices.added_by', 'customerinfos.name as customer')
+app\Http\Controllers\ModernDashboardController.php:218:            ->orderByDesc('creditnotes_invoices.inv_date')
+app\Http\Controllers\ModernDashboardController.php:230:                'date' => $note->date ? NepaliDate::adToBsString($note->date, 'en') : '-',
+app\Http\Controllers\ModernDashboardController.php:237:            ->select('backup_invoices.id', 'backup_invoices.invoice_id', 'backup_invoices.total as amount', 'backup_invoices.inv_type as type', 'backup_invoices.inv_date as date', 'backup_invoices.created_at', 'backup_invoices.added_by', 'customerinfos.name as customer')
+app\Http\Controllers\ModernDashboardController.php:259:                'date' => $deleted->date ? NepaliDate::adToBsString($deleted->date, 'en') : '-',
+app\Http\Controllers\ModernDashboardController.php:332:            'date' => $invoice->inv_date,
+app\Http\Controllers\ModernDashboardController.php:333:            'nepali_date' => NepaliDate::adToBsString($invoice->inv_date, 'en'),
+app\Http\Controllers\ModernDashboardController.php:382:            'date' => $invoice->inv_date,
+app\Http\Controllers\ModernDashboardController.php:383:            'nepali_date' => $invoice->inv_date ? NepaliDate::adToBsString($invoice->inv_date, 'en') : null,
+app\Http\Controllers\ModernDashboardController.php:431:            'date' => $invoice->inv_date,
+app\Http\Controllers\ModernDashboardController.php:432:            'nepali_date' => $invoice->inv_date ? NepaliDate::adToBsString($invoice->inv_date, 'en') : null,
+app\Http\Controllers\ModernDashboardController.php:478:            'nepali_date' => NepaliDate::adToBsString($payment->date, 'en'),
+app\Http\Controllers\ModernDashboardController.php:497:        $nepaliToday = NepaliDate::adToBsString($today, 'en');
+app\Http\Controllers\ModernDashboardController.php:501:            ->whereDate('inv_date', $today)
+app\Http\Controllers\ModernDashboardController.php:510:                    'date' => $inv->inv_date,
+app\Http\Controllers\ModernDashboardController.php:511:                    'nepali_date' => NepaliDate::adToBsString($inv->inv_date, 'en'),
+app\Http\Controllers\ModernDashboardController.php:570:        $nepaliToday = NepaliDate::adToBsString($today, 'en');
+app\Http\Controllers\ModernDashboardController.php:574:            ->whereDate('date', $today)
+app\Http\Controllers\ModernDashboardController.php:593:                    'nepali_date' => NepaliDate::adToBsString($pay->date, 'en'),
+app\Http\Controllers\ModernDashboardController.php:644:            ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'invoices.created_at', 'customerinfos.name as customer')
+app\Http\Controllers\ModernDashboardController.php:645:            ->whereDate('invoices.inv_date', $today)
+app\Http\Controllers\ModernDashboardController.php:646:            ->orderByDesc('invoices.inv_date')
+app\Http\Controllers\ModernDashboardController.php:659:                'date'     => NepaliDate::adToBsString($inv->date, 'en'),
+app\Http\Controllers\ModernDashboardController.php:669:            ->whereDate('customerledgerdetails.date', $today)
+app\Http\Controllers\ModernDashboardController.php:692:                'date'     => NepaliDate::adToBsString($pay->date, 'en'),
+app\Http\Controllers\ModernDashboardController.php:702:        // B.S. date entered on the payment form. Keep the comparison date-only
+app\Http\Controllers\ModernDashboardController.php:703:        // and use the Kathmandu application date so the B.S. day does not
+app\Http\Controllers\ModernDashboardController.php:710:            ->whereNotNull('cheque_exchange_date')
+app\Http\Controllers\ModernDashboardController.php:711:            ->whereDate('cheque_exchange_date', '<=', $today)
+app\Http\Controllers\Nepalidateconverter.php:10:    public function showNepaliDate()
+app\Http\Controllers\Nepalidateconverter.php:13:        $nepaliDate = $this->convertToNepaliDate($englishDate);
+app\Http\Controllers\Nepalidateconverter.php:18:    private function convertToNepaliDate($englishDate)
+app\Http\Controllers\Nepalidateconverter.php:25:        $nepaliDate = NepaliDate::convertEnglishToNepali($year, $month, $day);
+app\Http\Controllers\showperday_controller.php:32:            $salesPerDaycr = CreditnotesInvoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
+app\Http\Controllers\showperday_controller.php:37:            $salesPerDayCash = invoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
+app\Http\Controllers\showperday_controller.php:74:                $bankDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('bank_deposit');
+app\Http\Controllers\showperday_controller.php:75:                $CounterDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('counter_deposit');
+app\Http\Controllers\showperday_controller.php:125:                    $salesPerDaycr = CreditnotesInvoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
+app\Http\Controllers\showperday_controller.php:131:                    $salesPerDayCash = invoice::select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
+app\Http\Controllers\showperday_controller.php:179:                    $bankDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('bank_deposit');
+app\Http\Controllers\showperday_controller.php:180:                    $CounterDeposit = CustomerLedgerDetails::whereDate('date', $date)->value('counter_deposit');
+app\Http\Controllers\showperday_controller.php:238:            $invoiceQuery->whereBetween('inv_date', [$from, $to]);
+app\Http\Controllers\showperday_controller.php:239:            $creditNoteQuery->whereBetween('inv_date', [$from, $to]);
+app\Http\Controllers\showperday_controller.php:244:            ->select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
+app\Http\Controllers\showperday_controller.php:251:            ->select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
+app\Http\Controllers\showperday_controller.php:258:            ->select(DB::raw('DATE(inv_date) as date'), DB::raw('SUM(total) as total'))
+app\Http\Controllers\SmartToolsController.php:16:use App\Support\NepaliDate;
+app\Http\Controllers\SmartToolsController.php:46:                ? AuditLog::whereDate('created_at', now()->toDateString())->where('event', 'updated')->count()
+app\Http\Controllers\SmartToolsController.php:49:                ? AuditLog::whereDate('created_at', now()->toDateString())->where('event', 'deleted')->count()
+app\Http\Controllers\SmartToolsController.php:185:                'detail' => ucfirst($row->inv_type ?? '-') . ' | Rs ' . number_format((float) $row->total, 2) . ' | ' . $this->dateLabel($row->inv_date),
+app\Http\Controllers\SmartToolsController.php:196:        $invoiceStats = invoice::whereDate('inv_date', $today)
+app\Http\Controllers\SmartToolsController.php:200:        $cashSales = invoice::whereDate('inv_date', $today)->where('inv_type', 'cash')->sum('total');
+app\Http\Controllers\SmartToolsController.php:201:        $creditSales = invoice::whereDate('inv_date', $today)->where('inv_type', 'credit')->sum('total');
+app\Http\Controllers\SmartToolsController.php:202:        $payments = customerledgerdetails::whereDate('date', $today)->where('invoicetype', 'payment')->sum('credit');
+app\Http\Controllers\SmartToolsController.php:203:        $expenses = Expense::whereDate('date', $today)->sum('amount');
+app\Http\Controllers\SmartToolsController.php:204:        $creditNotes = CreditnotesInvoice::whereDate('inv_date', $today)->sum('total');
+app\Http\Controllers\SmartToolsController.php:205:        $bankDeposits = Bank::whereDate('date', $today)->sum('amount');
+app\Http\Controllers\SmartToolsController.php:206:        $deletedInvoices = BackupInvoice::whereDate('created_at', $today)->count();
+app\Http\Controllers\SmartToolsController.php:265:        return $date . ' / ' . NepaliDate::adToBsString($date, 'en');
+app\Http\Controllers\TemporaryInvoiceController.php:39:            $query->whereDate('invoice_date', '>=', $request->from_date);
+app\Http\Controllers\TemporaryInvoiceController.php:43:            $query->whereDate('invoice_date', '<=', $request->to_date);
+app\Http\Controllers\TemporaryInvoiceController.php:75:            $query->whereDate('invoice_date', '>=', $request->from_date);
+app\Http\Controllers\TemporaryInvoiceController.php:79:            $query->whereDate('invoice_date', '<=', $request->to_date);
+database\migrations\2026_09_19_110000_add_cheque_details_to_customerledgerdetails.php:14:            $table->date('cheque_exchange_date')->nullable()->after('cheque_no');
+database\migrations\2026_09_19_110000_add_cheque_details_to_customerledgerdetails.php:21:            $table->dropColumn(['is_cheque', 'cheque_bank', 'cheque_no', 'cheque_exchange_date']);
+database\migrations\2026_09_21_120000_add_cheque_exchanged_to_customerledgerdetails.php:11:            $table->boolean('cheque_exchanged')->default(false)->after('cheque_exchange_date');
+database\migrations\2026_09_21_140000_add_fiscal_display_numbers.php:22:        DB::table('invoices')->orderBy('inv_date')->orderBy('id')->each(function ($invoice) use (&$invoiceSequences) {
+database\migrations\2026_09_21_140000_add_fiscal_display_numbers.php:23:            $fiscalYear = FiscalNumber::fiscalYearForDate($invoice->inv_date);
+app\Http\Controllers\UserdashboardController.php:9:use App\Support\NepaliDate;
+app\Http\Controllers\UserdashboardController.php:19:        $todayInvoices = invoice::whereDate('inv_date', $today)->count();
+app\Http\Controllers\UserdashboardController.php:20:        $todayInvoicesTotal = invoice::whereDate('inv_date', $today)->sum('total') ?? 0;
+app\Http\Controllers\UserdashboardController.php:24:            ->whereDate('date', $today)
+app\Http\Controllers\UserdashboardController.php:27:            ->whereDate('date', $today)
+app\Http\Controllers\UserdashboardController.php:32:            ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'customerinfos.name as customer')
+app\Http\Controllers\UserdashboardController.php:33:            ->whereDate('invoices.inv_date', $today)
+app\Http\Controllers\UserdashboardController.php:34:            ->orderByDesc('invoices.inv_date')
+app\Http\Controllers\UserdashboardController.php:48:                'date'     => NepaliDate::adToBsString($inv->date, 'en'),
+app\Http\Controllers\UserdashboardController.php:57:            ->whereDate('customerledgerdetails.date', $today)
+app\Http\Controllers\UserdashboardController.php:78:                'date'     => NepaliDate::adToBsString($pay->date, 'en'),
+app\Http\Controllers\VatReportController.php:8:use App\Support\NepaliDate;
+app\Http\Controllers\VatReportController.php:23:        $customers = VatCustomer::whereHas('salesInvoices', fn($query) => $query->where('firm_id', $firmId)->whereDate('bill_date', '>=', $from)->whereDate('bill_date', '<=', $to))->withCount(['salesInvoices' => fn($query) => $query->where('firm_id', $firmId)->whereDate('bill_date', '>=', $from)->whereDate('bill_date', '<=', $to)])->orderBy('name')->get();
+app\Http\Controllers\VatReportController.php:49:        $periodFromBs = NepaliDate::adToBsString($periodFrom, 'en');
+app\Http\Controllers\VatReportController.php:50:        $periodToBs = NepaliDate::adToBsString($periodTo, 'en');
+app\Http\Controllers\VatReportController.php:51:        $bsDate = NepaliDate::adToBsString(now()->toDateString(), 'en');
+app\Http\Controllers\VatReportController.php:80:        $bills = CompanyBill::with('items')->where('firm_id', $firm->id)->whereDate('bill_date', '>=', $from)->whereDate('bill_date', '<=', $to)->get();
+app\Http\Controllers\VatReportController.php:89:        $companies = CompanyBill::where('firm_id', $firm->id)->whereDate('bill_date', '>=', $from)->whereDate('bill_date', '<=', $to)->whereNotNull('company_name')->where('company_name', '<>', '')->select('company_name')->distinct()->orderBy('company_name')->pluck('company_name')->values();
+app\Http\Controllers\VatReportController.php:115:        $periodFromBs = NepaliDate::adToBsString($periodFrom, 'en');
+app\Http\Controllers\VatReportController.php:116:        $periodToBs = NepaliDate::adToBsString($periodTo, 'en');
+app\Http\Controllers\VatReportController.php:117:        $bsDate = NepaliDate::adToBsString(now()->toDateString(), 'en');
+app\Http\Controllers\VatReportController.php:132:    private function purchaseBills(Request $request, VatFirm $firm, string $company) { [$from, $to] = $this->fiscalDates($request->query('fiscal_year', session('vat_report_fiscal_year', $this->currentFiscalYear()))); return CompanyBill::with('items')->where('firm_id', $firm->id)->where('company_name', $company)->whereDate('bill_date', '>=', $from)->whereDate('bill_date', '<=', $to)->latest('bill_date')->latest('id'); }
+app\Http\Controllers\VatReportController.php:134:    private function bills(Request $request,VatCustomer $customer){[$from,$to]=$this->fiscalDates($request->query('fiscal_year',session('vat_report_fiscal_year',$this->currentFiscalYear())));return VatSystemBill::with('items')->where('customer_id',$customer->id)->when(session('vat_firm_id'),fn($q,$firmId)=>$q->where('firm_id',$firmId))->whereDate('bill_date','>=',$from)->whereDate('bill_date','<=',$to)->latest('bill_date')->latest('id');}
+app\Http\Controllers\VatReportController.php:135:    private function currentFiscalYear(): string { $bs=explode('-',NepaliDate::adToBsString(now()->toDateString(),'en')); $year=(int)$bs[0]; return sprintf('%d/%02d',$bs[1] >= 4 ? $year : $year-1, ($bs[1] >= 4 ? $year+1 : $year)%100); }
+app\Http\Controllers\VatReportController.php:136:    private function fiscalDates(string $fiscalYear): array { $startYear=(int)explode('/',$fiscalYear)[0]; $from=NepaliDate::bsToAdString($startYear,4,1); $to=Carbon::parse(NepaliDate::bsToAdString($startYear+1,4,1))->subDay()->toDateString(); return [$from,$to]; }
+app\Http\Controllers\VatSystemBillController.php:10:use App\Support\NepaliDate;
+app\Http\Controllers\VatSystemBillController.php:144:        $bsDate = NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'), 'en');
+app\Http\Controllers\VatSystemBillController.php:205:                'bill_date' => NepaliDate::bsToAdString((int) $matches[1], (int) $matches[2], (int) $matches[3]),

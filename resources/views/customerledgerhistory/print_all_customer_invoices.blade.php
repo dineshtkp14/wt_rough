@@ -186,7 +186,7 @@
             </div>
             
             <div class="forbillandpan">
-                <div class="invoice-no">INVOICE NO: <span class="num">{{ $data['invoice']->id }}</span></div>
+                <div class="invoice-no">INVOICE NO: <span class="num">{{ $data['invoice']->visible_invoice_no }}</span></div>
                 @if($data['invoice']->total < 19900)
                     <div class="pan-line">PAN No. 608641838</div>
                 @endif

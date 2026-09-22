@@ -271,7 +271,7 @@
     </div>
     
  </span>
-       <b> Invoice Id: <span class=" bg-dark px-3 text-white">{{$invoiceid}} </span></b> <br>
+       <b> Invoice No: <span class=" bg-dark px-3 text-white">{{ optional($allinvoices->first())->visible_invoice_no ?? $invoiceid }} </span></b> <br>
         @if ($allinvoices !=null)
             @foreach($allinvoices as $i)
                 Customer Id: {{$i->customerid}} <br>

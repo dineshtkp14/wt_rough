@@ -61,7 +61,7 @@
                     <form action="{{ route('onlyviewbillafterbill') }}" method="get" id="chosendatepdfform">
                         <div class="mb-3">
                             <label for="invoiceid" class="form-label">Enter Invoice No</label>
-                            <input type="number" autocomplete="off" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Invoice No" required>
+                        <input type="text" autocomplete="off" class="form-control" id="invoiceid" name="invoiceid" placeholder="Enter Invoice No (e.g. 2083/84-0001)" required>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg btn-block" style="width: 100%;">Search</button>
                     </form>
@@ -230,7 +230,7 @@
     
  </span>
  <span class="makered">
-       <b> Invoice Id: <span class=" bg-dark px-3 text-white">{{$invoiceid}} </span></b> <br>
+       <b> Invoice No: <span class=" bg-dark px-3 text-white">{{ optional($allinvoices->first())->visible_invoice_no ?? $invoiceid }} </span></b> <br>
  </span>
        {{-- @if ($allinvoices !=null)
             @foreach($allinvoices as $i)

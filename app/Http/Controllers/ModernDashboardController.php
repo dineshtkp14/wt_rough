@@ -327,7 +327,7 @@ class ModernDashboardController extends Controller
 
         return response()->json([
             'invoice_id' => $invoice->id,
-            'invoice_no' => 'INV-' . $invoice->id,
+            'invoice_no' => $invoice->visible_invoice_no,
             'type' => $invoice->inv_type,
             'date' => $invoice->inv_date,
             'nepali_date' => NepaliDate::adToBsString($invoice->inv_date, 'en'),
