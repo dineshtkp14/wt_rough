@@ -59,11 +59,10 @@ class VatSystemBillController extends Controller
         $query = VatSystemBill::where('firm_id', $firm->id)->when($customer, fn($query) => $query->where('customer_id', $customer->id))->with(['customer', 'firm', 'items'])->when($search !== '', fn($q) => $q->where(function ($q) use ($search) {
             $q->where('bill_no', 'like', "%{$search}%")
                 ->orWhere('bill_date', 'like', "%{$search}%")
-                ->orWhere('payment_mode', 'like', "%{$search}%")
                 ->orWhere('seller_name', 'like', "%{$search}%")
                 ->orWhereHas('customer', fn($q) => $q->where('name', 'like', "%{$search}%")->orWhere('pan_no', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%"));
         }))->when($month, fn($q) => $q->whereBetween('bill_date', [Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString(), Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString()]))->when($bsMonthRange, fn($q) => $q->whereBetween('bill_date', $bsMonthRange))->latest('bill_date')->latest('id');
-        if ($request->expectsJson()) return response()->json(['items' => $query->limit(100)->get()->map(fn($bill) => ['id' => $bill->id, 'bill_no' => $bill->bill_no, 'date' => $bill->bill_date->format('Y-m-d'), 'firm' => $bill->firm->name ?? $bill->seller_name, 'pan' => $bill->seller_pan_no ?: '-', 'customer' => $bill->customer->name ?? '-', 'customer_pan' => $bill->customer->pan_no ?? '', 'payment_mode' => $bill->payment_mode ?: '-', 'created_by' => $bill->added_by ?: '-', 'total' => $bill->items->sum(fn($item) => (float)$item->quantity * (float)$item->rate), 'taxable' => $bill->items->where('is_taxable', true)->sum(fn($item) => (float)$item->quantity * (float)$item->rate), 'discount' => (float)$bill->discount, 'show_url' => route('vat-system.bills.show', $bill), 'edit_url' => route('vat-system.bills.edit', $bill), 'delete_url' => route('vat-system.bills.destroy', $bill)]), 'total' => $query->count()]);
+        if ($request->expectsJson()) return response()->json(['items' => $query->limit(100)->get()->map(fn($bill) => ['id' => $bill->id, 'bill_no' => $bill->bill_no, 'date' => $bill->bill_date->format('Y-m-d'), 'firm' => $bill->firm->name ?? $bill->seller_name, 'pan' => $bill->seller_pan_no ?: '-', 'customer' => $bill->customer->name ?? '-', 'customer_pan' => $bill->customer->pan_no ?? '', 'created_by' => $bill->added_by ?: '-', 'total' => $bill->items->sum(fn($item) => (float)$item->quantity * (float)$item->rate), 'taxable' => $bill->items->where('is_taxable', true)->sum(fn($item) => (float)$item->quantity * (float)$item->rate), 'discount' => (float)$bill->discount, 'show_url' => route('vat-system.bills.show', $bill), 'edit_url' => route('vat-system.bills.edit', $bill), 'delete_url' => route('vat-system.bills.destroy', $bill)]), 'total' => $query->count()]);
         $bills = $query->paginate(15)->withQueryString();
 
         return view('vat-system.bills.index', compact('bills', 'firm', 'customer', 'search', 'month', 'bsMonth'));
@@ -84,7 +83,6 @@ class VatSystemBillController extends Controller
             ->when($search !== '', fn($q) => $q->where(function ($q) use ($search) {
                 $q->where('bill_no', 'like', "%{$search}%")
                     ->orWhere('bill_date', 'like', "%{$search}%")
-                    ->orWhere('payment_mode', 'like', "%{$search}%")
                     ->orWhere('seller_name', 'like', "%{$search}%")
                     ->orWhereHas('customer', fn($q) => $q->where('name', 'like', "%{$search}%")->orWhere('pan_no', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%"));
             }))
@@ -148,7 +146,6 @@ class VatSystemBillController extends Controller
             'seller_email' => ['nullable', 'email', 'max:150'],
             'bill_no' => ['required', 'string', 'max:50', Rule::unique('vat_system_bills', 'bill_no')->where(fn($query) => $query->where('firm_id', session('vat_firm_id')))],
             'bill_date' => ['required', 'date'],
-            'payment_mode' => ['nullable', 'string', 'max:50'],
             'discount' => ['nullable', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'items' => ['required', 'array', 'min:1'],
@@ -211,7 +208,7 @@ class VatSystemBillController extends Controller
             'seller_name' => ['required', 'string', 'max:150'], 'seller_vat_no' => ['nullable', 'string', 'max:50'],
             'seller_pan_no' => ['nullable', 'string', 'max:50'], 'seller_phone' => ['nullable', 'string', 'max:60'], 'seller_address' => ['nullable', 'string', 'max:255'], 'seller_email' => ['nullable', 'email', 'max:150'],
             'bill_no' => array_merge(['required', 'string', 'max:50'], $billNoRules),
-            'bill_date' => ['required', 'date'], 'payment_mode' => ['nullable', 'string', 'max:50'],
+            'bill_date' => ['required', 'date'],
             'discount' => ['nullable', 'numeric', 'min:0'], 'notes' => ['nullable', 'string', 'max:1000'],
             'items' => ['required', 'array', 'min:1'], 'items.*.item_name' => ['required', 'string', 'max:200'],
             'items.*.hs_code' => ['nullable', 'string', 'max:50'], 'items.*.unit' => ['required', 'string', 'max:30'],
