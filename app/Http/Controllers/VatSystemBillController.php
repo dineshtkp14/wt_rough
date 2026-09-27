@@ -7,6 +7,7 @@ use App\Models\VatSystemBill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Carbon;
 use App\Support\NepaliDate;
 use App\Models\CompanyBillItem;
 use App\Models\VatStock;
@@ -52,17 +53,20 @@ class VatSystemBillController extends Controller
         if (!$firm) return redirect()->route('vat-system.firm.select', ['next' => 'workspace']);
         $customer = $request->filled('customer_id') ? VatCustomer::find($request->integer('customer_id')) : null;
         $search = trim((string) $request->query('search'));
+        $month = preg_match('/^\d{4}-\d{2}$/', (string) $request->query('month')) ? $request->query('month') : '';
+        $bsMonth = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', (string) $request->query('bs_month')) ? $request->query('bs_month') : '';
+        $bsMonthRange = $this->bsMonthRange($bsMonth);
         $query = VatSystemBill::where('firm_id', $firm->id)->when($customer, fn($query) => $query->where('customer_id', $customer->id))->with(['customer', 'firm', 'items'])->when($search !== '', fn($q) => $q->where(function ($q) use ($search) {
             $q->where('bill_no', 'like', "%{$search}%")
                 ->orWhere('bill_date', 'like', "%{$search}%")
                 ->orWhere('payment_mode', 'like', "%{$search}%")
                 ->orWhere('seller_name', 'like', "%{$search}%")
                 ->orWhereHas('customer', fn($q) => $q->where('name', 'like', "%{$search}%")->orWhere('pan_no', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%"));
-        }))->latest('bill_date')->latest('id');
+        }))->when($month, fn($q) => $q->whereBetween('bill_date', [Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString(), Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString()]))->when($bsMonthRange, fn($q) => $q->whereBetween('bill_date', $bsMonthRange))->latest('bill_date')->latest('id');
         if ($request->expectsJson()) return response()->json(['items' => $query->limit(100)->get()->map(fn($bill) => ['id' => $bill->id, 'bill_no' => $bill->bill_no, 'date' => $bill->bill_date->format('Y-m-d'), 'firm' => $bill->firm->name ?? $bill->seller_name, 'pan' => $bill->seller_pan_no ?: '-', 'customer' => $bill->customer->name ?? '-', 'customer_pan' => $bill->customer->pan_no ?? '', 'payment_mode' => $bill->payment_mode ?: '-', 'created_by' => $bill->added_by ?: '-', 'total' => $bill->items->sum(fn($item) => (float)$item->quantity * (float)$item->rate), 'taxable' => $bill->items->where('is_taxable', true)->sum(fn($item) => (float)$item->quantity * (float)$item->rate), 'discount' => (float)$bill->discount, 'show_url' => route('vat-system.bills.show', $bill), 'edit_url' => route('vat-system.bills.edit', $bill), 'delete_url' => route('vat-system.bills.destroy', $bill)]), 'total' => $query->count()]);
         $bills = $query->paginate(15)->withQueryString();
 
-        return view('vat-system.bills.index', compact('bills', 'firm', 'customer', 'search'));
+        return view('vat-system.bills.index', compact('bills', 'firm', 'customer', 'search', 'month', 'bsMonth'));
     }
 
     public function exportExcel(Request $request)
@@ -71,6 +75,9 @@ class VatSystemBillController extends Controller
         if (!$firm) return redirect()->route('vat-system.firm.select', ['next' => 'sales']);
         $customer = $request->filled('customer_id') ? VatCustomer::find($request->integer('customer_id')) : null;
         $search = trim((string) $request->query('search'));
+        $month = preg_match('/^\d{4}-\d{2}$/', (string) $request->query('month')) ? $request->query('month') : '';
+        $bsMonth = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', (string) $request->query('bs_month')) ? $request->query('bs_month') : '';
+        $bsMonthRange = $this->bsMonthRange($bsMonth);
         $bills = VatSystemBill::where('firm_id', $firm->id)
             ->when($customer, fn($query) => $query->where('customer_id', $customer->id))
             ->with(['customer', 'firm', 'items'])
@@ -81,8 +88,10 @@ class VatSystemBillController extends Controller
                     ->orWhere('seller_name', 'like', "%{$search}%")
                     ->orWhereHas('customer', fn($q) => $q->where('name', 'like', "%{$search}%")->orWhere('pan_no', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%"));
             }))
+            ->when($month, fn($q) => $q->whereBetween('bill_date', [Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString(), Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString()]))
+            ->when($bsMonthRange, fn($q) => $q->whereBetween('bill_date', $bsMonthRange))
             ->latest('bill_date')->latest('id')->get();
-        $html = view('vat-system.bills.excel', compact('bills', 'firm', 'customer', 'search'))->render();
+        $html = view('vat-system.bills.excel', compact('bills', 'firm', 'customer', 'search', 'month', 'bsMonth'))->render();
         return response($html, 200, [
             'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="vat-sales-'.$firm->id.'.xls"',
@@ -232,6 +241,20 @@ class VatSystemBillController extends Controller
             throw \Illuminate\Validation\ValidationException::withMessages([
                 'bill_date_bs' => 'The selected Nepali date is not valid.',
             ]);
+        }
+    }
+
+    private function bsMonthRange(string $bsMonth): ?array
+    {
+        if ($bsMonth === '') return null;
+        [$year, $month] = array_map('intval', explode('-', $bsMonth));
+        try {
+            $start = Carbon::parse(NepaliDate::bsToAdString($year, $month, 1));
+            [$nextYear, $nextMonth] = $month === 12 ? [$year + 1, 1] : [$year, $month + 1];
+            $end = Carbon::parse(NepaliDate::bsToAdString($nextYear, $nextMonth, 1))->subDay();
+            return [$start->toDateString(), $end->toDateString()];
+        } catch (\Throwable $exception) {
+            return null;
         }
     }
 
