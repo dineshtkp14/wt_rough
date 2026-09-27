@@ -15,12 +15,16 @@
         <div><h1 class="fw-bold mb-1">Saved Sales Invoices</h1><p class="text-muted mb-0">{{ $firm->name }} — view and manage this firm’s sales invoices.</p></div>
         <div class="d-flex gap-2"><a href="{{ route('vat-system.firm.switch', ['next' => 'sales']) }}" class="btn btn-outline-primary"><i class="fa fa-repeat me-1"></i>Change Firm</a><a href="{{ route('vat-system.index') }}" class="btn btn-outline-secondary"><i class="fa fa-arrow-left me-1"></i>Back</a><a href="{{ route('vat-system.bills.export.excel', request()->only('search','customer_id','bs_month')) }}" class="btn btn-success"><i class="fa fa-file-excel me-1"></i>Excel</a><a href="{{ route('vat-system.create') }}" class="btn btn-primary"><i class="fa fa-plus me-1"></i>Create VAT Bill</a></div>
     </div>
-    <form method="GET" action="{{ route('vat-system.bills.index') }}" class="d-flex align-items-end gap-2 mb-3">
+    @php($selectedBsParts = !empty($bsMonth) ? explode('-', $bsMonth) : explode('-', \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en')))
+    <form method="GET" action="{{ route('vat-system.bills.index') }}" class="d-flex align-items-end gap-2 mb-3" id="salesBsMonthForm">
         @if($customer)<input type="hidden" name="customer_id" value="{{ $customer->id }}">@endif
-        <div><label class="form-label mb-1 fw-bold">Filter by B.S. month</label><input type="text" name="bs_month" value="{{ $bsMonth ?? '' }}" placeholder="2083-06" pattern="\d{4}-(0[1-9]|1[0-2])" class="form-control"></div>
+        <input type="hidden" name="bs_month" id="salesBsMonthValue" value="{{ $bsMonth ?? '' }}">
+        <div><label class="form-label mb-1 fw-bold">B.S. year</label><select name="bs_year" class="form-select"><option value="">Select year</option>@for($year=2080;$year<=2090;$year++)<option value="{{ $year }}" {{ (string)$year === (string)($selectedBsParts[0] ?? '') ? 'selected' : '' }}>{{ $year }}</option>@endfor</select></div>
+        <div><label class="form-label mb-1 fw-bold">B.S. month</label><select name="bs_month_number" class="form-select"><option value="">Select month</option>@foreach(['Baisakh','Jestha','Asar','Shrawan','Bhadra','Ashwin','Kartik','Mangsir','Poush','Magh','Falgun','Chaitra'] as $monthIndex => $monthName)<option value="{{ str_pad($monthIndex + 1, 2, '0', STR_PAD_LEFT) }}" {{ str_pad($monthIndex + 1, 2, '0', STR_PAD_LEFT) === ($selectedBsParts[1] ?? '') ? 'selected' : '' }}>{{ $monthName }}</option>@endforeach</select></div>
         <button class="btn btn-outline-primary">Apply Month</button>
         @if(!empty($bsMonth))<a href="{{ route('vat-system.bills.index', $customer ? ['customer_id'=>$customer->id] : []) }}" class="btn btn-outline-secondary">Clear</a>@endif
     </form>
+    <script>document.getElementById('salesBsMonthForm')?.addEventListener('submit',function(){const y=this.querySelector('[name="bs_year"]').value,m=this.querySelector('[name="bs_month_number"]').value;this.querySelector('#salesBsMonthValue').value=y&&m?y+'-'+m:'';});</script>
     @if($customer)<div class="alert alert-info py-2"><i class="fa fa-filter me-1"></i>Showing invoices for <strong>{{ $customer->name }}</strong> only. <a href="{{ route('vat-system.bills.index') }}" class="ms-2">Show all {{ $firm->name }} invoices</a></div>@endif
     @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
     <div class="invoice-search"><i class="fa fa-search"></i><input id="vatBillSearch" type="search" value="{{ $search ?? '' }}" placeholder="Search by bill no., customer, PAN, firm or payment mode..." autocomplete="off"><button type="button" id="clearVatBillSearch" aria-label="Clear search">&times;</button><span id="vatBillSearchStatus"></span></div>
