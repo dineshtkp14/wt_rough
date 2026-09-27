@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\VatCustomer;
+use App\Models\VatExtraCustomer;
 use App\Models\VatSystemBill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,19 @@ class VatSystemBillController extends Controller
         if (!session('vat_firm_id')) return redirect()->route('vat-system.firm.select', ['next' => 'sales']);
         $catalogItems = $this->catalogItems();
         return view('vat-system.create', ['customers' => VatCustomer::orderBy('name')->get(), 'firms' => VatFirm::where('is_active', true)->orderBy('name')->get(), 'activeFirm' => VatFirm::find(session('vat_firm_id')), 'catalogItems' => $catalogItems, 'catalogJson' => $this->catalogJson($catalogItems)]);
+    }
+
+    public function storeExtraCustomer(Request $request)
+    {
+        $firm = $this->firmOrRedirect('sales');
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:150'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'contact_name' => ['nullable', 'string', 'max:150'],
+            'notes' => ['nullable', 'string', 'max:1000'],
+        ]);
+        $extra = VatExtraCustomer::create($data + ['firm_id' => $firm->id, 'added_by' => session('user_email') ?: auth()->user()?->email]);
+        return response()->json(['id' => $extra->id, 'name' => $extra->name, 'address' => $extra->address, 'contact_name' => $extra->contact_name]);
     }
 
     public function selectFirm(Request $request)
@@ -56,16 +70,20 @@ class VatSystemBillController extends Controller
         $month = preg_match('/^\d{4}-\d{2}$/', (string) $request->query('month')) ? $request->query('month') : '';
         $bsMonth = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', (string) $request->query('bs_month')) ? $request->query('bs_month') : '';
         $bsMonthRange = $this->bsMonthRange($bsMonth);
-        $query = VatSystemBill::where('firm_id', $firm->id)->when($customer, fn($query) => $query->where('customer_id', $customer->id))->with(['customer', 'firm', 'items'])->when($search !== '', fn($q) => $q->where(function ($q) use ($search) {
+        $bsFrom = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_from')) ? $request->query('bs_from') : '';
+        $bsTo = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_to')) ? $request->query('bs_to') : '';
+        $bsDateRange = $this->bsDateRange($bsFrom, $bsTo);
+        $query = VatSystemBill::where('firm_id', $firm->id)->when($customer, fn($query) => $query->where('customer_id', $customer->id))->with(['customer', 'extraCustomer', 'firm', 'items'])->when($search !== '', fn($q) => $q->where(function ($q) use ($search) {
             $q->where('bill_no', 'like', "%{$search}%")
                 ->orWhere('bill_date', 'like', "%{$search}%")
                 ->orWhere('seller_name', 'like', "%{$search}%")
                 ->orWhereHas('customer', fn($q) => $q->where('name', 'like', "%{$search}%")->orWhere('pan_no', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%"));
-        }))->when($month, fn($q) => $q->whereBetween('bill_date', [Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString(), Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString()]))->when($bsMonthRange, fn($q) => $q->whereBetween('bill_date', $bsMonthRange))->latest('bill_date')->latest('id');
+        }))->when($month, fn($q) => $q->whereBetween('bill_date', [Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString(), Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString()]))->when($bsMonthRange, fn($q) => $q->whereBetween('bill_date', $bsMonthRange))->when($bsDateRange, fn($q) => $q->whereBetween('bill_date', $bsDateRange))->latest('bill_date')->latest('id');
         if ($request->expectsJson()) return response()->json(['items' => $query->limit(100)->get()->map(fn($bill) => ['id' => $bill->id, 'bill_no' => $bill->bill_no, 'date' => $bill->bill_date->format('Y-m-d'), 'firm' => $bill->firm->name ?? $bill->seller_name, 'pan' => $bill->seller_pan_no ?: '-', 'customer' => $bill->customer->name ?? '-', 'customer_pan' => $bill->customer->pan_no ?? '', 'created_by' => $bill->added_by ?: '-', 'total' => $bill->items->sum(fn($item) => (float)$item->quantity * (float)$item->rate), 'taxable' => $bill->items->where('is_taxable', true)->sum(fn($item) => (float)$item->quantity * (float)$item->rate), 'discount' => (float)$bill->discount, 'show_url' => route('vat-system.bills.show', $bill), 'edit_url' => route('vat-system.bills.edit', $bill), 'delete_url' => route('vat-system.bills.destroy', $bill)]), 'total' => $query->count()]);
+        $grandTotal = (clone $query)->get()->sum(fn ($bill) => $bill->items->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) - (float) $bill->discount + round($bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) * .13, 2));
         $bills = $query->paginate(15)->withQueryString();
 
-        return view('vat-system.bills.index', compact('bills', 'firm', 'customer', 'search', 'month', 'bsMonth'));
+        return view('vat-system.bills.index', compact('bills', 'firm', 'customer', 'search', 'month', 'bsMonth', 'bsFrom', 'bsTo', 'grandTotal'));
     }
 
     public function exportExcel(Request $request)
@@ -77,9 +95,12 @@ class VatSystemBillController extends Controller
         $month = preg_match('/^\d{4}-\d{2}$/', (string) $request->query('month')) ? $request->query('month') : '';
         $bsMonth = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', (string) $request->query('bs_month')) ? $request->query('bs_month') : '';
         $bsMonthRange = $this->bsMonthRange($bsMonth);
+        $bsFrom = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_from')) ? $request->query('bs_from') : '';
+        $bsTo = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_to')) ? $request->query('bs_to') : '';
+        $bsDateRange = $this->bsDateRange($bsFrom, $bsTo);
         $bills = VatSystemBill::where('firm_id', $firm->id)
             ->when($customer, fn($query) => $query->where('customer_id', $customer->id))
-            ->with(['customer', 'firm', 'items'])
+            ->with(['customer', 'extraCustomer', 'firm', 'items'])
             ->when($search !== '', fn($q) => $q->where(function ($q) use ($search) {
                 $q->where('bill_no', 'like', "%{$search}%")
                     ->orWhere('bill_date', 'like', "%{$search}%")
@@ -88,6 +109,7 @@ class VatSystemBillController extends Controller
             }))
             ->when($month, fn($q) => $q->whereBetween('bill_date', [Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString(), Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString()]))
             ->when($bsMonthRange, fn($q) => $q->whereBetween('bill_date', $bsMonthRange))
+            ->when($bsDateRange, fn($q) => $q->whereBetween('bill_date', $bsDateRange))
             ->latest('bill_date')->latest('id')->get();
         $html = view('vat-system.bills.excel', compact('bills', 'firm', 'customer', 'search', 'month', 'bsMonth'))->render();
         return response($html, 200, [
@@ -103,6 +125,7 @@ class VatSystemBillController extends Controller
 
         return view('vat-system.create', [
             'customers' => VatCustomer::orderBy('name')->get(),
+            'extraCustomer' => $bill->extraCustomer,
             'firms' => VatFirm::where('is_active', true)->orderBy('name')->get(),
             'activeFirm' => $bill->firm ?: VatFirm::find(session('vat_firm_id')),
             'catalogItems' => $catalogItems = $this->catalogItems(),
@@ -136,7 +159,8 @@ class VatSystemBillController extends Controller
         $request->merge(['firm_id' => $firm->id]);
         $this->normalizeBillDate($request);
         $data = $request->validate([
-            'customer_id' => ['required', 'exists:vat_customers,id'],
+            'customer_id' => ['nullable', 'required_without:extra_customer_id', 'exists:vat_customers,id'],
+            'extra_customer_id' => ['nullable', 'required_without:customer_id', 'exists:vat_extra_customers,id'],
             'firm_id' => ['required', Rule::exists('vat_firms', 'id')->where(fn ($query) => $query->where('is_active', true))],
             'seller_name' => ['required', 'string', 'max:150'],
             'seller_vat_no' => ['nullable', 'string', 'max:50'],
@@ -170,7 +194,7 @@ class VatSystemBillController extends Controller
     public function show(VatSystemBill $bill)
     {
         abort_unless((int) $bill->firm_id === (int) session('vat_firm_id'), 404);
-        $bill->load(['customer', 'firm', 'items']);
+        $bill->load(['customer', 'extraCustomer', 'firm', 'items']);
         $bsDate = NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'), 'en');
         return view('vat-system.bill', compact('bill', 'bsDate'));
     }
@@ -204,7 +228,7 @@ class VatSystemBillController extends Controller
     private function validatedBill(Request $request, array $billNoRules = []): array
     {
         return $request->validate([
-            'customer_id' => ['required', 'exists:vat_customers,id'], 'firm_id' => ['required', Rule::exists('vat_firms', 'id')->where(fn ($query) => $query->where('is_active', true))],
+            'customer_id' => ['nullable', 'required_without:extra_customer_id', 'exists:vat_customers,id'], 'extra_customer_id' => ['nullable', 'required_without:customer_id', 'exists:vat_extra_customers,id'], 'firm_id' => ['required', Rule::exists('vat_firms', 'id')->where(fn ($query) => $query->where('is_active', true))],
             'seller_name' => ['required', 'string', 'max:150'], 'seller_vat_no' => ['nullable', 'string', 'max:50'],
             'seller_pan_no' => ['nullable', 'string', 'max:50'], 'seller_phone' => ['nullable', 'string', 'max:60'], 'seller_address' => ['nullable', 'string', 'max:255'], 'seller_email' => ['nullable', 'email', 'max:150'],
             'bill_no' => array_merge(['required', 'string', 'max:50'], $billNoRules),
@@ -250,6 +274,20 @@ class VatSystemBillController extends Controller
             [$nextYear, $nextMonth] = $month === 12 ? [$year + 1, 1] : [$year, $month + 1];
             $end = Carbon::parse(NepaliDate::bsToAdString($nextYear, $nextMonth, 1))->subDay();
             return [$start->toDateString(), $end->toDateString()];
+        } catch (\Throwable $exception) {
+            return null;
+        }
+    }
+
+    private function bsDateRange(string $from, string $to): ?array
+    {
+        if ($from === '' || $to === '') return null;
+        try {
+            [$fy, $fm, $fd] = array_map('intval', explode('-', $from));
+            [$ty, $tm, $td] = array_map('intval', explode('-', $to));
+            $start = Carbon::parse(NepaliDate::bsToAdString($fy, $fm, $fd));
+            $end = Carbon::parse(NepaliDate::bsToAdString($ty, $tm, $td));
+            return $start->lte($end) ? [$start->toDateString(), $end->toDateString()] : null;
         } catch (\Throwable $exception) {
             return null;
         }
