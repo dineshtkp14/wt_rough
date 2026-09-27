@@ -18,13 +18,18 @@
     #openingStockTable input:focus{border-color:#2563eb;box-shadow:0 0 0 3px #2563eb1c;outline:0}
     #openingStockTable td:last-child .btn{width:34px;height:34px;padding:0;display:inline-grid;place-items:center}
     .opening-stock-actions{padding:18px;border-top:1px solid #e4eaf3;background:#fff}
+    .opening-history-table th{background:#243dba;color:#fff;font-size:11px;text-transform:uppercase}
+    .opening-history-table td,.opening-history-table th{padding:11px 10px;vertical-align:middle}
     @media(max-width:700px){.opening-stock-heading{padding:18px}.opening-stock-table-wrap{padding:0 10px}.opening-stock-actions{padding:14px}.opening-stock-actions .btn{width:100%;margin:4px 0!important}}
 </style>
 <div class="main-content opening-stock-page">
     <div class="container-fluid p-3 p-md-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
             <div><h1 class="fw-bold text-primary mb-1"><i class="fa fa-box-open me-2"></i>Opening Stock</h1><p class="text-muted mb-0">Add the stock already available for <strong>{{ $firm->name }}</strong>.</p></div>
-            <a href="{{ route('vat-system.stock.index') }}" class="btn btn-outline-secondary"><i class="fa fa-arrow-left me-1"></i>Back to Stock</a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('vat-system.stock.opening.index') }}" class="btn btn-info text-white"><i class="fa fa-list-check me-1"></i>View/Edit Opening Stock</a>
+                <a href="{{ route('vat-system.stock.index') }}" class="btn btn-outline-secondary"><i class="fa fa-arrow-left me-1"></i>Back to Stock</a>
+            </div>
         </div>
         @if($errors->any())<div class="alert alert-danger shadow-sm">{{ $errors->first() }}</div>@endif
         <div class="opening-stock-card">

@@ -13,7 +13,7 @@
 <div class="main-content vat-list"><div class="container-fluid p-3 p-md-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
         <div><h1 class="fw-bold mb-1">Saved Sales Invoices</h1><p class="text-muted mb-0">{{ $firm->name }} — view and manage this firm’s sales invoices.</p></div>
-        <div class="d-flex gap-2"><a href="{{ route('vat-system.firm.switch', ['next' => 'sales']) }}" class="btn btn-outline-primary"><i class="fa fa-repeat me-1"></i>Change Firm</a><a href="{{ route('vat-system.index') }}" class="btn btn-outline-secondary"><i class="fa fa-arrow-left me-1"></i>Back</a><a href="{{ route('vat-system.create') }}" class="btn btn-primary"><i class="fa fa-plus me-1"></i>Create VAT Bill</a></div>
+        <div class="d-flex gap-2"><a href="{{ route('vat-system.firm.switch', ['next' => 'sales']) }}" class="btn btn-outline-primary"><i class="fa fa-repeat me-1"></i>Change Firm</a><a href="{{ route('vat-system.index') }}" class="btn btn-outline-secondary"><i class="fa fa-arrow-left me-1"></i>Back</a><a href="{{ route('vat-system.bills.export.excel', request()->only('search','customer_id')) }}" class="btn btn-success"><i class="fa fa-file-excel me-1"></i>Excel</a><a href="{{ route('vat-system.create') }}" class="btn btn-primary"><i class="fa fa-plus me-1"></i>Create VAT Bill</a></div>
     </div>
     @if($customer)<div class="alert alert-info py-2"><i class="fa fa-filter me-1"></i>Showing invoices for <strong>{{ $customer->name }}</strong> only. <a href="{{ route('vat-system.bills.index') }}" class="ms-2">Show all {{ $firm->name }} invoices</a></div>@endif
     @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif

@@ -65,6 +65,30 @@ class VatSystemBillController extends Controller
         return view('vat-system.bills.index', compact('bills', 'firm', 'customer', 'search'));
     }
 
+    public function exportExcel(Request $request)
+    {
+        $firm = VatFirm::find(session('vat_firm_id'));
+        if (!$firm) return redirect()->route('vat-system.firm.select', ['next' => 'sales']);
+        $customer = $request->filled('customer_id') ? VatCustomer::find($request->integer('customer_id')) : null;
+        $search = trim((string) $request->query('search'));
+        $bills = VatSystemBill::where('firm_id', $firm->id)
+            ->when($customer, fn($query) => $query->where('customer_id', $customer->id))
+            ->with(['customer', 'firm', 'items'])
+            ->when($search !== '', fn($q) => $q->where(function ($q) use ($search) {
+                $q->where('bill_no', 'like', "%{$search}%")
+                    ->orWhere('bill_date', 'like', "%{$search}%")
+                    ->orWhere('payment_mode', 'like', "%{$search}%")
+                    ->orWhere('seller_name', 'like', "%{$search}%")
+                    ->orWhereHas('customer', fn($q) => $q->where('name', 'like', "%{$search}%")->orWhere('pan_no', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%"));
+            }))
+            ->latest('bill_date')->latest('id')->get();
+        $html = view('vat-system.bills.excel', compact('bills', 'firm', 'customer', 'search'))->render();
+        return response($html, 200, [
+            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="vat-sales-'.$firm->id.'.xls"',
+        ]);
+    }
+
     public function edit(VatSystemBill $bill)
     {
         abort_unless((int) $bill->firm_id === (int) session('vat_firm_id'), 404);
