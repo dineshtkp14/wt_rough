@@ -31,10 +31,10 @@
     <div class="card overflow-hidden"><div class="card-header d-flex justify-content-between align-items-center"><span><i class="fa fa-file-invoice me-2"></i>All VAT Bills</span><span class="badge bg-light text-dark">{{ $bills->total() }} bills</span></div>
         @if($bills->count())
         <div class="table-responsive"><table class="table table-hover mb-0 align-middle"><thead><tr><th>Bill No.</th><th>Bill Date</th><th>Firm</th><th>Customer</th><th>Payment Mode</th><th class="text-end">Grand Total</th><th>Created By</th><th class="text-end">Action</th></tr></thead><tbody>
-        @foreach($bills as $bill)
+        @forelse($bills as $bill)
         @php $total=$bill->items->sum(fn($item)=>(float)$item->quantity*(float)$item->rate); $taxable=$bill->items->where('is_taxable',true)->sum(fn($item)=>(float)$item->quantity*(float)$item->rate); $grand=$total-(float)$bill->discount+round($taxable*.13,2); @endphp
         <tr><td class="bill-number">#{{ $bill->bill_no }}</td><td>{{ $bill->bill_date->format('Y-m-d') }}<br><small class="text-primary fw-bold">B.S. {{ \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'),'en') }}</small></td><td><strong>{{ $bill->firm->name ?? $bill->seller_name }}</strong><br><small class="text-muted">PAN: {{ $bill->seller_pan_no ?: '-' }}</small></td><td><strong>{{ $bill->customer->name ?? '-' }}</strong><br><small class="text-muted">{{ $bill->customer->pan_no ?? '' }}</small></td><td>{{ $bill->payment_mode ?: '-' }}</td><td class="text-end fw-bold">{{ number_format($grand,2) }}</td><td>{{ $bill->added_by ?: '-' }}</td><td class="text-end text-nowrap"><a href="{{ route('vat-system.bills.show', $bill) }}" class="btn btn-info btn-sm text-white"><i class="fa fa-eye me-1"></i>View</a> <a href="{{ route('vat-system.bills.edit', $bill) }}" class="btn btn-warning btn-sm"><i class="fa fa-edit me-1"></i>Edit</a><form method="post" action="{{ route('vat-system.bills.destroy', $bill) }}" class="d-inline" onsubmit="return confirm('Delete this VAT bill?')">@csrf @method('DELETE')<button class="btn btn-danger btn-sm"><i class="fa fa-trash me-1"></i>Delete</button></form></td></tr>
-        @endforeach
+        @endforelse
         </tbody></table></div><div class="p-3">{{ $bills->links() }}</div>
         @else
         <div class="empty text-center"><i class="fa fa-file-invoice fa-3x mb-3"></i><h4>No VAT bills saved yet</h4><a href="{{ route('vat-system.create') }}" class="btn btn-primary">Create First VAT Bill</a></div>
