@@ -17,6 +17,9 @@ class CompanyBillController extends Controller
         $search = trim((string) $request->query('search'));
         $bsMonth = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', (string) $request->query('bs_month')) ? $request->query('bs_month') : '';
         $bsMonthRange = $this->bsMonthRange($bsMonth);
+        $bsFrom = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_from')) ? $request->query('bs_from') : '';
+        $bsTo = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_to')) ? $request->query('bs_to') : '';
+        $bsDateRange = $this->bsDateRange($bsFrom, $bsTo);
         $query = CompanyBill::where('firm_id', $firm->id)->with(['items', 'supplier'])
             ->when($search !== '', fn($q) => $q->where(function ($q) use ($search) {
                 $q->where('bill_no', 'like', "%{$search}%")
@@ -26,6 +29,7 @@ class CompanyBillController extends Controller
                     ->orWhereHas('supplier', fn($q) => $q->where('name', 'like', "%{$search}%"));
             }))
             ->when($bsMonthRange, fn($q) => $q->whereBetween('bill_date', $bsMonthRange))
+            ->when($bsDateRange, fn($q) => $q->whereBetween('bill_date', $bsDateRange))
             ->latest('bill_date')->latest('id');
 
         if ($request->expectsJson()) {
@@ -44,8 +48,9 @@ class CompanyBillController extends Controller
             ]);
         }
 
+        $grandTotal = (clone $query)->get()->sum(fn ($bill) => $bill->items->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) + round($bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) * .13, 2));
         $bills = $query->paginate(15)->withQueryString();
-        return view('vat-system.company-bills.index', compact('bills', 'firm', 'search', 'bsMonth'));
+        return view('vat-system.company-bills.index', compact('bills', 'firm', 'search', 'bsMonth', 'bsFrom', 'bsTo', 'grandTotal'));
     }
     public function exportExcel(Request $request)
     {
@@ -54,6 +59,9 @@ class CompanyBillController extends Controller
         $search = trim((string) $request->query('search'));
         $bsMonth = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', (string) $request->query('bs_month')) ? $request->query('bs_month') : '';
         $bsMonthRange = $this->bsMonthRange($bsMonth);
+        $bsFrom = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_from')) ? $request->query('bs_from') : '';
+        $bsTo = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_to')) ? $request->query('bs_to') : '';
+        $bsDateRange = $this->bsDateRange($bsFrom, $bsTo);
         $bills = CompanyBill::where('firm_id', $firm->id)->with(['items', 'supplier'])
             ->when($search !== '', fn($q) => $q->where(function ($q) use ($search) {
                 $q->where('bill_no', 'like', "%{$search}%")
@@ -63,6 +71,7 @@ class CompanyBillController extends Controller
                     ->orWhereHas('supplier', fn($q) => $q->where('name', 'like', "%{$search}%"));
             }))
             ->when($bsMonthRange, fn($q) => $q->whereBetween('bill_date', $bsMonthRange))
+            ->when($bsDateRange, fn($q) => $q->whereBetween('bill_date', $bsDateRange))
             ->latest('bill_date')->latest('id')->get();
 
         $html = view('vat-system.company-bills.excel', compact('bills', 'firm', 'search', 'bsMonth'))->render();
@@ -89,6 +98,20 @@ class CompanyBillController extends Controller
             [$nextYear, $nextMonth] = $month === 12 ? [$year + 1, 1] : [$year, $month + 1];
             $end = Carbon::parse(\App\Support\NepaliDate::bsToAdString($nextYear, $nextMonth, 1))->subDay();
             return [$start->toDateString(), $end->toDateString()];
+        } catch (\Throwable $exception) {
+            return null;
+        }
+    }
+
+    private function bsDateRange(string $from, string $to): ?array
+    {
+        if ($from === '' || $to === '') return null;
+        try {
+            [$fy, $fm, $fd] = array_map('intval', explode('-', $from));
+            [$ty, $tm, $td] = array_map('intval', explode('-', $to));
+            $start = Carbon::parse(\App\Support\NepaliDate::bsToAdString($fy, $fm, $fd));
+            $end = Carbon::parse(\App\Support\NepaliDate::bsToAdString($ty, $tm, $td));
+            return $start->lte($end) ? [$start->toDateString(), $end->toDateString()] : null;
         } catch (\Throwable $exception) {
             return null;
         }
