@@ -38,6 +38,19 @@ class VatSystemBillController extends Controller
         return response()->json(['id' => $extra->id, 'name' => $extra->name, 'address' => $extra->address, 'contact_name' => $extra->contact_name]);
     }
 
+    public function updateExtraCustomer(Request $request, VatExtraCustomer $extraCustomer)
+    {
+        abort_unless((int) $extraCustomer->firm_id === (int) session('vat_firm_id'), 404);
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:150'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'contact_name' => ['nullable', 'string', 'max:150'],
+            'notes' => ['nullable', 'string', 'max:1000'],
+        ]);
+        $extraCustomer->update($data);
+        return response()->json(['id' => $extraCustomer->id, 'name' => $extraCustomer->name, 'address' => $extraCustomer->address, 'contact_name' => $extraCustomer->contact_name]);
+    }
+
     public function selectFirm(Request $request)
     {
         return view('vat-system.firm-select', ['firms' => VatFirm::where('is_active', true)->orderBy('name')->get(), 'next' => $request->query('next', 'workspace')]);

@@ -11,6 +11,8 @@
             : \App\Support\NepaliDate::adToBsString(now()->format('Y-m-d'), 'en');
     }
     $initialBillDateMode = old('bill_date_mode', 'bs');
+    $extraCustomerPayload = !empty($extraCustomer) ? ['id' => $extraCustomer->id, 'name' => $extraCustomer->name, 'address' => $extraCustomer->address, 'contact_name' => $extraCustomer->contact_name, 'notes' => $extraCustomer->notes] : null;
+    $extraCustomerEndpoint = !empty($extraCustomer) ? route('vat-system.extra-customers.update', $extraCustomer) : route('vat-system.extra-customers.store');
 @endphp
 <style>
 #vatBillForm>.firm-display{display:flex!important;width:100%;margin:0 0 14px!important;justify-content:center!important;text-align:center!important;position:relative!important}
@@ -25,7 +27,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4 create-page-heading"><div><h1 class="fw-bold mb-1">{{ $editing ? 'Edit Sales Invoice' : 'Create Sales Invoice' }}</h1><p class="text-muted mb-0">Create an invoice for goods sold to your customer.</p></div><div class="selected-firm-heading"><small>Selected Firm</small><strong>{{ $activeFirm?->name ?? 'Select a firm' }}</strong></div><div class="d-flex gap-2"><a href="{{ route('vat-system.stock.opening.create') }}" class="btn btn-warning fw-bold"><i class="fa fa-box-open me-1"></i>Opening Stock</a><a href="{{ route('vat-system.bills.index') }}" class="btn btn-outline-secondary">Back</a></div></div>
 @if($errors->any())<div class="alert alert-danger"><ul class="mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
 <form method="post" action="{{ $editing ? route('vat-system.bills.update', $bill) : route('vat-system.bills.store') }}" id="vatBillForm" novalidate>@csrf @if($editing) @method('PUT') @endif
-<div class="card mb-4"><div class="card-header d-flex justify-content-between align-items-center">Bill and Party Information <button type="button" class="btn btn-light btn-sm fw-bold" id="openExtraCustomer"><i class="fa fa-plus me-1"></i>Extra Customer</button></div><div class="card-body"><div class="row g-3">
+<div class="card mb-4"><div class="card-header d-flex justify-content-between align-items-center">Bill and Party Information <button type="button" class="btn btn-light btn-sm fw-bold" id="openExtraCustomer"><i class="fa fa-{{ !empty($extraCustomer) ? 'pen' : 'plus' }} me-1"></i>{{ !empty($extraCustomer) ? 'Edit Extra Customer' : 'Extra Customer' }}</button></div><div class="card-body"><div class="row g-3">
 <div class="col-md-4"><label>Firm *</label><select name="firm_id" id="firm_id" class="form-select" required><option value="">Choose firm</option>@foreach($firms as $firm)<option value="{{ $firm->id }}" data-name="{{ $firm->name }}" data-pan="{{ $firm->pan_no }}" data-address="{{ $firm->address }}" data-phone="{{ $firm->phone }}" @selected($selectedFirm == $firm->id)>{{ $firm->name }} â€” PAN {{ $firm->pan_no }}</option>@endforeach</select></div>
 <input type="hidden" name="seller_pan_no" id="seller_pan_no" value="{{ old('seller_pan_no', $bill->seller_pan_no ?? '') }}"><input type="hidden" name="seller_address" id="seller_address" value="{{ old('seller_address', $bill->seller_address ?? '') }}">
 <div class="col-md-3"><label>Seller / Firm Name *</label><input name="seller_name" class="form-control" value="{{ old('seller_name', $bill->seller_name ?? 'NEPAL') }}" required></div><div class="col-md-3"><label>Seller VAT No.</label><input name="seller_vat_no" class="form-control" value="{{ old('seller_vat_no', $bill->seller_vat_no ?? '123456789') }}"></div><div class="col-md-3"><label>Seller Phone</label><input name="seller_phone" class="form-control" value="{{ old('seller_phone', $bill->seller_phone ?? '123456792') }}"></div><div class="col-md-3"><label>Seller Email</label><input type="email" name="seller_email" class="form-control" value="{{ old('seller_email', $bill->seller_email ?? 'nepalbillingdemo@gmail.com') }}"></div>
@@ -366,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <script>window.vatCatalog={!! $catalogJson !!};document.addEventListener('DOMContentLoaded',function(){const observer=new MutationObserver(function(){document.querySelectorAll('.item-suggestion').forEach(function(button){if(button.dataset.stockShown)return;const item=window.vatCatalog[Number(button.dataset.index)];if(!item)return;const small=button.querySelector('small');if(!small)return;small.textContent='Available: '+(item.stock_quantity===null?'Not tracked':Number(item.stock_quantity).toFixed(3))+'  |  Rate: '+(item.price??'N/A')+'  |  Unit: '+(item.unit||'N/A')+'  |  H.S. Code: '+(item.hs_code||'N/A');button.dataset.stockShown='1'})});observer.observe(document.body,{subtree:true,childList:true})});</script>
-<div class="modal fade" id="extraCustomerModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Extra Customer</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><form id="extraCustomerForm"><div class="modal-body"><div id="extraCustomerError" class="alert alert-danger d-none"></div><div class="mb-3"><label class="form-label">Customer Name *</label><input name="name" class="form-control" required></div><div class="mb-3"><label class="form-label">Address</label><input name="address" class="form-control"></div><div class="mb-3"><label class="form-label">Contact Name</label><input name="contact_name" class="form-control"></div><div class="mb-3"><label class="form-label">Notes</label><textarea name="notes" rows="3" class="form-control"></textarea></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary"><i class="fa fa-save me-1"></i>Save and Select</button></div></form></div></div></div>
+<div class="modal fade" id="extraCustomerModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Extra Customer</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><form id="extraCustomerForm"><div class="modal-body"><div id="extraCustomerError" class="alert alert-danger d-none"></div><div class="mb-3"><label class="form-label">Customer Name *</label><input name="name" class="form-control" required></div><div class="mb-3"><label class="form-label">Address</label><input name="address" class="form-control"></div><div class="mb-3"><label class="form-label">Contact Name</label><input name="contact_name" class="form-control"></div><div class="mb-3"><label class="form-label">Notes</label><textarea name="notes" rows="3" class="form-control"></textarea></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary"><i class="fa fa-save me-1"></i>Save and Select</button></div></form></div></div></div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const select = document.querySelector('select[name="customer_id"]');
@@ -383,7 +385,21 @@ document.addEventListener('DOMContentLoaded', function () {
     select.add(oldOption); extra.value = @json((string) $extraCustomer->id); select.value = ''; select.required = false;
     if (searchInput()) searchInput().value = @json($extraCustomer->name);
     @endif
-    open.addEventListener('click', () => { form.reset(); document.getElementById('extraCustomerError').classList.add('d-none'); modal.show(); });
+    const existing = @json($extraCustomerPayload);
+    const endpoint = @json($extraCustomerEndpoint);
+    if (existing) {
+        const input = searchInput();
+        const field = input?.closest('[class*="col-"]');
+        if (field && !document.getElementById('visibleEditExtraCustomer')) {
+            const editButton = document.createElement('button');
+            editButton.type = 'button'; editButton.id = 'visibleEditExtraCustomer';
+            editButton.className = 'btn btn-outline-primary btn-sm mt-2 fw-bold';
+            editButton.innerHTML = '<i class="fa fa-pen me-1"></i>Edit Extra Customer Name and Details';
+            editButton.addEventListener('click', () => open.click());
+            field.appendChild(editButton);
+        }
+    }
+    open.addEventListener('click', () => { form.reset(); if (existing) { Object.keys(existing).filter(k => k !== 'id').forEach(k => { const field = form.elements[k]; if (field) field.value = existing[k] || ''; }); } document.getElementById('extraCustomerError').classList.add('d-none'); modal.show(); });
     select.addEventListener('change', () => { if (select.value) { extra.value = ''; select.required = true; } });
     document.querySelector('.clean-customer-search, .customer-search-wrap input[type="search"]')?.addEventListener('input', () => { extra.value = ''; select.required = true; });
     form.addEventListener('submit', async function (event) {
@@ -391,11 +407,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const error = document.getElementById('extraCustomerError'); error.classList.add('d-none');
         const button = form.querySelector('button[type="submit"]'); button.disabled = true;
         try {
-            const response = await fetch('{{ route('vat-system.extra-customers.store') }}', { method: 'POST', headers: {'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value, 'Accept': 'application/json'}, body: new FormData(form) });
+            const payload = new FormData(form);
+            if (existing) payload.append('_method', 'PUT');
+            const response = await fetch(endpoint, { method: 'POST', headers: {'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value, 'Accept': 'application/json'}, body: payload });
             const data = await response.json(); if (!response.ok) throw new Error(data.message || Object.values(data.errors || {}).flat().join(' ') || 'Could not save extra customer.');
-            const option = new Option(data.name + ' (Extra customer)', ''); option.dataset.extraId = String(data.id); select.add(option);
+            let option = Array.from(select.options).find(item => item.dataset.extraId === String(data.id));
+            if (option) option.textContent = data.name + ' (Extra customer)'; else { option = new Option(data.name + ' (Extra customer)', ''); option.dataset.extraId = String(data.id); select.add(option); }
             select.value = ''; extra.value = data.id; select.required = false;
             const input = searchInput(); if (input) input.value = data.name;
+            if (existing) Object.assign(existing, data);
             modal.hide();
         } catch (e) { error.textContent = e.message; error.classList.remove('d-none'); }
         button.disabled = false;
