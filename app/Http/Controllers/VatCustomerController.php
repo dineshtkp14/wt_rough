@@ -16,14 +16,17 @@ class VatCustomerController extends Controller
     public function index(Request $request)
     {
         $search = trim((string) $request->query('search'));
+        $type = in_array($request->query('type'), ['shop', 'customer'], true) ? $request->query('type') : '';
         if ($request->expectsJson()) {
             return response()->json(VatCustomer::query()
+                ->when($type !== '', fn ($query) => $query->where('customer_type', $type))
                 ->when($search !== '', fn ($query) => $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")->orWhere('address', 'like', "%{$search}%")
                         ->orWhere('pan_no', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%");
-                }))->latest()->limit(100)->get(['id', 'name', 'address', 'pan_no', 'phone']));
+                }))->latest()->limit(100)->get(['id', 'name', 'customer_type', 'address', 'pan_no', 'phone']));
         }
         $customers = VatCustomer::query()
+            ->when($type !== '', fn ($query) => $query->where('customer_type', $type))
             ->when($search !== '', fn ($query) => $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
                     ->orWhere('address', 'like', "%{$search}%")
@@ -34,7 +37,7 @@ class VatCustomerController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view('vat-system.customers.index', compact('customers', 'search'));
+        return view('vat-system.customers.index', compact('customers', 'search', 'type'));
     }
 
     public function create()
@@ -78,6 +81,7 @@ class VatCustomerController extends Controller
     {
         return $request->validate([
             'name' => ['required', 'string', 'max:150'],
+            'customer_type' => ['required', 'in:shop,customer'],
             'address' => ['nullable', 'string', 'max:255'],
             'pan_no' => ['nullable', 'string', 'max:50'],
             'phone' => ['nullable', 'string', 'max:30'],
