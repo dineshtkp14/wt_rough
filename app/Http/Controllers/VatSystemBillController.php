@@ -193,8 +193,6 @@ class VatSystemBillController extends Controller
             'items.*.rate' => ['required', 'numeric', 'min:0'],
             'items.*.is_taxable' => ['nullable', 'boolean'],
         ]);
-        $this->validateAvailableStock($data['items'], $firm->id);
-
         $bill = DB::transaction(function () use ($data) {
             $bill = VatSystemBill::create(collect($data)->except('items')->merge(['added_by' => session('user_email') ?: auth()->user()?->email])->all());
             foreach ($data['items'] as $item) { $saved=$bill->items()->create($item + ['is_taxable' => !array_key_exists('is_taxable', $item) || !empty($item['is_taxable'])]); $this->adjustStock($saved->item_name,$saved->unit,-(float)$saved->quantity,(float)$saved->rate,'Sales invoice #'.$bill->bill_no); }
@@ -325,20 +323,4 @@ class VatSystemBillController extends Controller
         $stock->movements()->create(['movement_type'=>$quantity < 0 ? 'sale' : 'sale_reversal','quantity'=>abs($quantity),'rate'=>$rate,'reference'=>$reference,'user_email'=>session('user_email')?:auth()->user()?->email,'quantity_before'=>$before,'quantity_after'=>$after]);
     }
 
-    private function validateAvailableStock(array $items, int $firmId): void
-    {
-        $stocks = VatStock::where('firm_id', $firmId)->get()->keyBy(fn ($stock) => strtolower(trim($stock->item_name)).'|'.strtolower(trim($stock->unit)));
-        $errors = [];
-        foreach ($items as $index => $item) {
-            $key = strtolower(trim($item['item_name'])).'|'.strtolower(trim($item['unit']));
-            $stock = $stocks->get($key);
-            $quantity = (float) $item['quantity'];
-            if (!$stock) {
-                $errors["items.{$index}.item_name"] = 'This item is not available in VAT stock.';
-            } elseif ($quantity > (float) $stock->quantity) {
-                $errors["items.{$index}.quantity"] = 'Only '.number_format((float)$stock->quantity, 3).' available for '.$item['item_name'].'.';
-            }
-        }
-        if ($errors) throw \Illuminate\Validation\ValidationException::withMessages($errors);
-    }
 }

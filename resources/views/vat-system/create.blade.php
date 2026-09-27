@@ -259,9 +259,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!match) {
                 showError(itemField, 'Select an item from the VAT stock list.');
                 if (!firstInvalid) firstInvalid = itemField;
-            } else if (match.stock_quantity !== null && Number(quantityField.value) > Number(match.stock_quantity)) {
-                showError(quantityField, 'Only ' + Number(match.stock_quantity).toFixed(3) + ' available in stock.');
-                if (!firstInvalid) firstInvalid = quantityField;
             }
         });
         if (!firstInvalid) return;
