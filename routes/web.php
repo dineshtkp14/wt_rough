@@ -114,6 +114,7 @@ Route::post('/extra-balance-confirmation', [ExtraBalanceConfirmationController::
 Route::post('/extra-balance-confirmation/firms', [ExtraBalanceConfirmationController::class, 'storeFirm'])->name('extra-balance-confirmation.firms.store');
 Route::post('/extra-balance-confirmation/save', [ExtraBalanceConfirmationController::class, 'store'])->name('extra-balance-confirmation.store');
 Route::get('/extra-balance-confirmation/{confirmation}/edit', [ExtraBalanceConfirmationController::class, 'edit'])->name('extra-balance-confirmation.edit');
+Route::get('/extra-balance-confirmation/{confirmation}/pdf', [ExtraBalanceConfirmationController::class, 'download'])->name('extra-balance-confirmation.download');
 Route::get('/extra-balance-confirmation/{confirmation}', [ExtraBalanceConfirmationController::class, 'show'])->name('extra-balance-confirmation.show');
 Route::put('/extra-balance-confirmation/{confirmation}', [ExtraBalanceConfirmationController::class, 'update'])->name('extra-balance-confirmation.update');
 Route::delete('/extra-balance-confirmation/{confirmation}', [ExtraBalanceConfirmationController::class, 'destroy'])->name('extra-balance-confirmation.destroy');

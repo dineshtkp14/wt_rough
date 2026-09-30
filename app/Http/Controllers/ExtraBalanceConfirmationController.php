@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\VatFirm;
 use App\Models\ExtraBalanceConfirmation;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ExtraBalanceConfirmationController extends Controller
 {
@@ -76,6 +77,17 @@ class ExtraBalanceConfirmationController extends Controller
         $data = $confirmation->toArray();
         $data['firm'] = $confirmation->firm;
         return view('extra-balance-confirmation.letter', compact('data'));
+    }
+
+    public function download(ExtraBalanceConfirmation $confirmation)
+    {
+        $data = $confirmation->toArray();
+        $data['firm'] = $confirmation->firm;
+
+        return Pdf::setOptions(['dpi' => 150, 'defaultFont' => 'DejaVu Sans'])
+            ->loadView('extra-balance-confirmation.letter', compact('data'))
+            ->setPaper('a4', 'portrait')
+            ->download('balance-confirmation-' . $confirmation->id . '.pdf');
     }
 
     public function destroy(ExtraBalanceConfirmation $confirmation)

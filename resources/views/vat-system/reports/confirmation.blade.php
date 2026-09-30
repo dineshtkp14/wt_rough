@@ -17,4 +17,5 @@
   <div class="notice">Please return a duly signed and stamped copy within seven days of receipt of this letter. Otherwise, the figures stated above will be considered accepted and confirmed.</div><div class="letter-text">Thanking you,<br><b>Yours faithfully</b></div><div class="signatures"><div class="signature-line">Authorized Signatory<small>For {{ $firm->name ?? 'Company' }}</small></div><div class="signature-line">Authorized Signatory<small>For {{ $customer->name }}</small></div></div><footer class="confirm-footer"><span>{{ $firm->name ?? 'VAT SYSTEM' }}</span><span>VAT CONFIRMATION</span></footer>
  </article>
 </div>
+<script>document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('a[href*="balance-confirmation.pdf"]').forEach(function(link){link.innerHTML='<i class="fa fa-download me-1"></i>Download PDF'});});</script>
 @endsection
