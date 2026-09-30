@@ -99,7 +99,7 @@ class ExtraBalanceConfirmationController extends Controller
 
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'firm_id' => ['required', 'exists:vat_firms,id'],
             'party_name' => ['required', 'string', 'max:150'],
             'party_vat_no' => ['nullable', 'string', 'max:50'],
@@ -114,5 +114,17 @@ class ExtraBalanceConfirmationController extends Controller
             'sales_return_exempted' => ['nullable', 'numeric'], 'sales_return_taxable' => ['nullable', 'numeric'], 'sales_return_vat' => ['nullable', 'numeric'],
             'opening_balance' => ['nullable', 'numeric'], 'closing_balance' => ['nullable', 'numeric'],
         ]);
+
+        foreach ([
+            'purchase_exempted', 'purchase_taxable', 'purchase_vat',
+            'purchase_return_exempted', 'purchase_return_taxable', 'purchase_return_vat',
+            'sales_exempted', 'sales_taxable', 'sales_vat',
+            'sales_return_exempted', 'sales_return_taxable', 'sales_return_vat',
+            'opening_balance', 'closing_balance',
+        ] as $field) {
+            $data[$field] = (float) ($data[$field] ?? 0);
+        }
+
+        return $data;
     }
 }
