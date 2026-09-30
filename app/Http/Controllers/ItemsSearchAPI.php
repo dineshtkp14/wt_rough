@@ -23,16 +23,26 @@ class ItemsSearchAPI extends Controller
         $quantity_case = $req->input('quantity');
 
         $search = trim((string) $req->name);
+        $normalizedSearch = preg_replace('/[^\pL\pN.]+/u', ' ', mb_strtolower($search));
+        $terms = collect(preg_split('/\s+/', trim($normalizedSearch), -1, PREG_SPLIT_NO_EMPTY))
+            ->map(fn ($term) => trim($term, '.'))
+            ->filter(fn ($term) => $term !== '')
+            ->unique()
+            ->values();
+
+        $matchesAllTerms = function ($query) use ($terms) {
+            foreach ($terms as $term) {
+                $query->where(function ($part) use ($term) {
+                    $part->whereRaw('LOWER(itemsname) LIKE ?', ['%' . $term . '%'])
+                        ->orWhere('id', 'LIKE', '%' . $term . '%');
+                });
+            }
+        };
 
         if ($quantity_case == 'all') {
-            $items = Item::where('itemsname', 'LIKE', '%'.$req->name.'%')
-                        ->orWhere('id', 'LIKE', '%'.$req->name.'%')
-                        ->get();
+            $items = Item::where($matchesAllTerms)->get();
         } else {
-            $items = Item::where(function($query) use ($req) {
-                            $query->where('itemsname', 'LIKE', '%'.$req->name.'%')
-                                  ->orWhere('id', 'LIKE', '%'.$req->name.'%');
-                        })
+            $items = Item::where($matchesAllTerms)
                         ->where('quantity', '>', 0)
                         ->get();
         }
@@ -56,7 +66,11 @@ class ItemsSearchAPI extends Controller
         });
 
         $priceListItems = pricelist::query()
-            ->where('itemname', 'LIKE', '%'.$search.'%')
+            ->where(function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->whereRaw('LOWER(itemname) LIKE ?', ['%' . $term . '%']);
+                }
+            })
             ->latest('id')
             ->get()
             ->unique('itemname')

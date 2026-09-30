@@ -22,9 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/customer_search/{name}',[CustomerAPI::class,'index']);
+Route::get('/items_search',[ItemsSearchAPI::class,'index']);
 Route::get('/items_search/{name}',[ItemsSearchAPI::class,'index']);
 Route::get('/company_search/{name}',[companyNameSearchAPI::class,'index']);
-
 
 
 

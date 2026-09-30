@@ -11,7 +11,7 @@ const BASE_URL = window.location.origin + "/api/";
 const CUSTOMER_SEARCH_API_URL =
     window.location.origin + "/api/customer_search/";
 
-const PRODUCT_SEARCH_API_URL = window.location.origin + "/api/items_search/";
+const PRODUCT_SEARCH_API_URL = window.location.origin + "/api/items_search";
 const OLD_PRICE_SEARCH_URL = window.location.origin + "/itemsales/old-price-search";
 
 let customerSearchQuery = "";
@@ -1068,12 +1068,13 @@ function selectProduct() {
     });
 }
 
+let productSearchTimer = null;
 $("#searchProductInput").on("keyup", function (e) {
     const target = e.target;
     productSearchQuery = target.value.trim();
     $(currentLink).data("query", productSearchQuery);
-
-    getProductData();
+    clearTimeout(productSearchTimer);
+    productSearchTimer = setTimeout(getProductData, 180);
 });
 
 function getProductData() {
@@ -1087,12 +1088,13 @@ function getProductData() {
 
         getData(
             PRODUCT_SEARCH_API_URL +
-                productSearchQuery +
-                `?quantity=${quantityCase}`,
+                "?name=" + encodeURIComponent(productSearchQuery) +
+                "&quantity=" + quantityCase,
             function (response) {
                 if (response) {
                     if (response.length > 0) {
                         $("#productResultList").empty();
+                        $("#productResultWrapper").scrollTop(0);
                         $("#productLoadingResultBox").addClass("d-none");
                         $("#productNotFoundResultBox").addClass("d-none");
                         $.each(response, function (index, value) {
