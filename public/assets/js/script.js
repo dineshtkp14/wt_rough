@@ -186,9 +186,12 @@ function customerResultHTML(value) {
     const todayInvoiceText = todayInvoices.length
         ? `Today: ${todayInvoices.length} invoice${todayInvoices.length === 1 ? "" : "s"}`
         : "Today: No invoice";
+    const todayInvoiceStyle = todayInvoices.length
+        ? "position:absolute;right:16px;top:50%;transform:translateY(-50%);max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#dcfce7;border:1px solid #22c55e;border-radius:999px;box-shadow:0 3px 10px rgba(22,101,52,.16);color:#15803d;font-size:12px;font-weight:800;padding:7px 12px;"
+        : "position:absolute;right:16px;top:50%;transform:translateY(-50%);background:#f1f5f9;border:1px solid #cbd5e1;border-radius:999px;color:#64748b;font-size:12px;font-weight:800;padding:7px 12px;";
 
     return `
-     <div class="result-box d-flex justify-content-start align-items-start customer-result-box customer-suggestion-box" data-value="${encodeURIComponent(JSON.stringify(value))}"> 
+     <div class="result-box d-flex justify-content-start align-items-start customer-result-box customer-suggestion-box" style="position:relative;padding-right:45% !important;" data-value="${encodeURIComponent(JSON.stringify(value))}">
             <i class="fas fa-user"> </i>
             <div class="customer-suggestion-content px-2">
                 <h1 class="m-0">${escapeHTML(value.name)}</h1>
@@ -197,7 +200,7 @@ function customerResultHTML(value) {
                     <span><i class="fas fa-phone"></i> ${escapeHTML(phone || "No contact no")}</span>
                     <span class="customer-suggestion-due">Due: Rs ${escapeHTML(totalDue)}</span>
                 </div>
-                <div class="customer-suggestion-today ${todayInvoices.length ? "has-today-invoice" : "no-today-invoice"}"><i class="fas fa-file-invoice"></i> ${todayInvoiceText}</div>
+                <div class="customer-suggestion-today ${todayInvoices.length ? "has-today-invoice" : "no-today-invoice"}" style="${todayInvoiceStyle}"><i class="fas fa-file-invoice"></i> ${todayInvoiceText}</div>
             </div>
      </div>`;
 }
