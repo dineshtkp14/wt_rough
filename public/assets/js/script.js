@@ -1210,6 +1210,15 @@ function triggerProductResultClick() {
             $("#productResultWrapper").slideUp();
 
             $("#modalWrapper").hide();
+
+            const focusQuantity = function () {
+                const quantityInput = rowEl.find("#quantityInput")[0];
+                if (!quantityInput || quantityInput.disabled) return;
+                quantityInput.focus({ preventScroll: true });
+                quantityInput.select();
+            };
+            window.setTimeout(focusQuantity, 0);
+            window.setTimeout(focusQuantity, 180);
         });
 }
 
