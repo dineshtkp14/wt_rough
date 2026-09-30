@@ -153,12 +153,16 @@ h5 {
     font-size: 12px;
     font-weight: 800;
     margin-top: 0;
+    max-width: 42%;
+    overflow: hidden;
     padding: 7px 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .customer-result-box {
     position: relative;
-    padding-right: 190px !important;
+    padding-right: 45% !important;
 }
 
 .customer-suggestion-today.has-today-invoice {
