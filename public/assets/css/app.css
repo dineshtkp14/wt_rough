@@ -141,6 +141,49 @@ h5 {
     width: 100%;
 }
 
+.customer-suggestion-today {
+    background: #dcfce7;
+    border: 1px solid #22c55e;
+    border-radius: 999px;
+    box-shadow: 0 3px 10px rgba(22, 101, 52, .12);
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 800;
+    margin-top: 0;
+    padding: 7px 12px;
+}
+
+.customer-result-box {
+    position: relative;
+    padding-right: 190px !important;
+}
+
+.customer-suggestion-today.has-today-invoice {
+    color: #15803d;
+}
+
+.customer-suggestion-today.no-today-invoice {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    box-shadow: none;
+    color: #64748b;
+}
+
+@media (max-width: 700px) {
+    .customer-result-box {
+        padding-right: 14px !important;
+    }
+
+    .customer-suggestion-today {
+        position: static;
+        transform: none;
+        margin-top: 5px;
+    }
+}
+
 .customer-suggestion-box > .fa-user {
     color: #0f172a;
     font-size: 20px;

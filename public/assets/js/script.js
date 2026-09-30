@@ -182,6 +182,10 @@ function customerResultHTML(value) {
         .filter((number) => number !== null && number !== undefined && `${number}`.trim() !== "")
         .join(", ");
     const totalDue = value.total_due_formatted || "0.00";
+    const todayInvoices = Array.isArray(value.today_invoice_numbers) ? value.today_invoice_numbers : [];
+    const todayInvoiceText = todayInvoices.length
+        ? `Today: ${todayInvoices.map((number) => `Q: ${escapeHTML(number)}`).join(", ")}`
+        : "Today: No invoice";
 
     return `
      <div class="result-box d-flex justify-content-start align-items-start customer-result-box customer-suggestion-box" data-value="${encodeURIComponent(JSON.stringify(value))}"> 
@@ -193,6 +197,7 @@ function customerResultHTML(value) {
                     <span><i class="fas fa-phone"></i> ${escapeHTML(phone || "No contact no")}</span>
                     <span class="customer-suggestion-due">Due: Rs ${escapeHTML(totalDue)}</span>
                 </div>
+                <div class="customer-suggestion-today ${todayInvoices.length ? "has-today-invoice" : "no-today-invoice"}"><i class="fas fa-file-invoice"></i> ${todayInvoiceText}</div>
             </div>
      </div>`;
 }

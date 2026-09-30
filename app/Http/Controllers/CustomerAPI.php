@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\customerinfo;
+use App\Models\invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -166,6 +167,7 @@ class CustomerAPI extends Controller
         $creditNoteCredit = collect();
         $creditLimitDays = collect();
         $ledgerCustomerIds = collect();
+        $todayInvoices = collect();
 
         if ($customerIds->isNotEmpty()) {
             $ledgerDue = DB::table('customerledgerdetails')
@@ -210,9 +212,15 @@ class CustomerAPI extends Controller
                 ->where('credit_limit_days', '>', 0)
                 ->groupBy('customerid')
                 ->pluck('credit_limit_days', 'customerid');
+
+            $todayInvoices = invoice::whereIn('customerid', $customerIds)
+                ->whereDate('inv_date', now()->toDateString())
+                ->orderBy('id')
+                ->get()
+                ->groupBy('customerid');
         }
 
-        $cus->transform(function ($customer) use ($ledgerDue, $creditNoteCredit, $creditLimitDays, $ledgerCustomerIds) {
+        $cus->transform(function ($customer) use ($ledgerDue, $creditNoteCredit, $creditLimitDays, $ledgerCustomerIds, $todayInvoices) {
             $due = (float) ($ledgerDue[$customer->id] ?? 0) - (float) ($creditNoteCredit[$customer->id] ?? 0);
             $customer->total_due = max(0, $due);
             $customer->total_due_formatted = number_format($customer->total_due, 2);
@@ -224,6 +232,11 @@ class CustomerAPI extends Controller
             $customer->default_credit_limit_days = !$customer->has_credit_limit_days && $customer->has_account_or_due
                 ? 30
                 : null;
+            $customer->today_invoice_numbers = ($todayInvoices[$customer->id] ?? collect())
+                ->map(fn ($invoice) => $invoice->visible_invoice_no)
+                ->values()
+                ->all();
+            $customer->today_invoice_count = count($customer->today_invoice_numbers);
 
             return $customer;
         });
