@@ -89,7 +89,7 @@ class ItemsalesController extends Controller
         $displayInvoiceNo = FiscalNumber::shouldShowFiscalToCurrentUser()
             ? FiscalNumber::format($fiscalYear, $nextFiscalSequence)
             : (string) $nextUserId;
-        $breadcrumb['title'] = 'Invoice No: ' . $displayInvoiceNo;
+        $breadcrumb['title'] = 'Q: ' . $displayInvoiceNo;
 
         $itemsdata = item::all();
         return view('itemssales.create', ['page' => 'isc', 'all' => $cus, 'data' => $itemsdata,'nextgenid' => $nextUserId,'breadcrumb'=>$breadcrumb]);
