@@ -184,7 +184,7 @@ function customerResultHTML(value) {
     const totalDue = value.total_due_formatted || "0.00";
     const todayInvoices = Array.isArray(value.today_invoice_numbers) ? value.today_invoice_numbers : [];
     const todayInvoiceText = todayInvoices.length
-        ? `Today: ${todayInvoices.map((number) => `Q: ${escapeHTML(number)}`).join(", ")}`
+        ? `Today: ${todayInvoices.length} invoice${todayInvoices.length === 1 ? "" : "s"}`
         : "Today: No invoice";
 
     return `
