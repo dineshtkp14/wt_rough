@@ -78,6 +78,7 @@ use App\Http\Controllers\SmartToolsController;
 use App\Http\Controllers\BankReconciliationController;
 use App\Http\Controllers\VatCustomerController;
 use App\Http\Controllers\VatSystemBillController;
+use App\Http\Controllers\ExtraBalanceConfirmationController;
 use App\Http\Controllers\CompanyBillController;
 use App\Http\Controllers\VatStockController;
 use App\Http\Controllers\VatReportController;
@@ -108,6 +109,14 @@ Route::get('/invoicedash',[UserdashboardController::class,'invoicedash'])->name(
 Route::get('/cndash',[UserdashboardController::class,'cndash'])->name('cndash');
 
 Route::get('/userdash',[UserdashboardController::class,'index'])->name('userdash');
+Route::get('/extra-balance-confirmation', [ExtraBalanceConfirmationController::class, 'create'])->name('extra-balance-confirmation.create');
+Route::post('/extra-balance-confirmation', [ExtraBalanceConfirmationController::class, 'generate'])->name('extra-balance-confirmation.generate');
+Route::post('/extra-balance-confirmation/firms', [ExtraBalanceConfirmationController::class, 'storeFirm'])->name('extra-balance-confirmation.firms.store');
+Route::post('/extra-balance-confirmation/save', [ExtraBalanceConfirmationController::class, 'store'])->name('extra-balance-confirmation.store');
+Route::get('/extra-balance-confirmation/{confirmation}/edit', [ExtraBalanceConfirmationController::class, 'edit'])->name('extra-balance-confirmation.edit');
+Route::get('/extra-balance-confirmation/{confirmation}', [ExtraBalanceConfirmationController::class, 'show'])->name('extra-balance-confirmation.show');
+Route::put('/extra-balance-confirmation/{confirmation}', [ExtraBalanceConfirmationController::class, 'update'])->name('extra-balance-confirmation.update');
+Route::delete('/extra-balance-confirmation/{confirmation}', [ExtraBalanceConfirmationController::class, 'destroy'])->name('extra-balance-confirmation.destroy');
 Route::get('/vat-system', function () {
     abort_unless(auth()->check(), 403);
     if (!session('vat_firm_id') || !session('vat_workspace_ready')) return redirect()->route('vat-system.firm.select', ['next' => 'workspace']);

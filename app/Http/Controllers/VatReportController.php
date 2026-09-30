@@ -55,13 +55,13 @@ class VatReportController extends Controller
         if ($request->has('opening_balance') || $request->has('closing_balance')) {
             $savedBalances = [
                 'opening' => $request->has('opening_balance') ? (float) $request->opening_balance : ($savedBalances['opening'] ?? 0),
-                'closing' => $request->has('closing_balance') ? (float) $request->closing_balance : ($savedBalances['closing'] ?? $total),
+                'closing' => $request->has('closing_balance') ? (float) $request->closing_balance : ($savedBalances['closing'] ?? 0),
             ];
             session([$balanceSessionKey => $savedBalances]);
         }
 
         $openingBalance = $savedBalances['opening'] ?? 0;
-        $closingBalance = $savedBalances['closing'] ?? $total;
+        $closingBalance = $savedBalances['closing'] ?? 0;
         $fiscalYear = $request->query('fiscal_year', session('vat_report_fiscal_year', $this->currentFiscalYear()));
         return view('vat-system.reports.confirmation', compact('customer','bills','total','firm','taxableSales','nonTaxableSales','vatAmount','periodFrom','periodTo','periodFromBs','periodToBs','bsDate','openingBalance','closingBalance','fiscalYear'));
     }
@@ -117,11 +117,11 @@ class VatReportController extends Controller
         $bsDate = NepaliDate::adToBsString(now()->toDateString(), 'en');
         $balances = session('vat_purchase_confirmation_balance_'.md5($company), []);
         if ($request->has('opening_balance') || $request->has('closing_balance')) {
-            $balances = ['opening' => (float) $request->input('opening_balance', $balances['opening'] ?? 0), 'closing' => (float) $request->input('closing_balance', $balances['closing'] ?? $total)];
+            $balances = ['opening' => (float) $request->input('opening_balance', $balances['opening'] ?? 0), 'closing' => (float) $request->input('closing_balance', $balances['closing'] ?? 0)];
             session(['vat_purchase_confirmation_balance_'.md5($company) => $balances]);
         }
         $openingBalance = $balances['opening'] ?? 0;
-        $closingBalance = $balances['closing'] ?? $total;
+        $closingBalance = $balances['closing'] ?? 0;
         return view('vat-system.reports.purchase-confirmation', compact('company','bills','total','firm','taxablePurchases','nonTaxablePurchases','vatAmount','periodFrom','periodTo','periodFromBs','periodToBs','bsDate','openingBalance','closingBalance','fiscalYear'));
     }
     public function purchaseConfirmationPdf(Request $request, string $company) {

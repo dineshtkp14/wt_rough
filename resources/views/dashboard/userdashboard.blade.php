@@ -96,6 +96,10 @@
             <a href="{{ route('vat-system.index') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-receipt"></i> VAT SYSTEM</a>
         </div>
 
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('extra-balance-confirmation.create') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-signature"></i> EXTRA BALANCE CONFIRMATION</a>
+        </div>
+
     </div>
 
 </div>
