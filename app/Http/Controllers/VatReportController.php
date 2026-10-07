@@ -39,10 +39,22 @@ class VatReportController extends Controller
         $firm = VatFirm::find(session('vat_firm_id'));
         if (!$firm) return redirect()->route('vat-system.firm.select', ['next' => 'workspace']);
         $fiscalYear = $request->query('fiscal_year', session('vat_report_fiscal_year', $this->currentFiscalYear()));
+        $balanceKey = 'vat_confirmation_balance_'.$customer->id;
+        $balances = session($balanceKey, []);
+        if ($request->has('opening_balance') || $request->has('closing_balance')) {
+            $balances = [
+                'opening' => (float) $request->input('opening_balance', $balances['opening'] ?? 0),
+                'closing' => (float) $request->input('closing_balance', $balances['closing'] ?? 0),
+            ];
+            session([$balanceKey => $balances]);
+        }
+        $openingBalance = $balances['opening'] ?? 0;
+        $closingBalance = $balances['closing'] ?? 0;
         $bills = $this->bills($request, $customer)->get();
         $reports = collect([['customer' => $customer, 'bills' => $bills, 'total' => $bills->sum(fn($bill) => $this->billAmount($bill))]])
             ->filter(fn($report) => $report['bills']->isNotEmpty())->values();
-        return view('vat-system.reports.print-all', compact('firm', 'reports', 'fiscalYear'));
+        return view('vat-system.reports.print-all', compact('firm', 'reports', 'fiscalYear', 'openingBalance', 'closingBalance'))
+            ->with('singleCustomerBoth', true)->with('customer', $customer);
     }
     public function ledger(Request $request, VatCustomer $customer) { $firm=VatFirm::find(session('vat_firm_id')); if(!$firm)return redirect()->route('vat-system.firm.select',['next'=>'workspace']); $fiscalYear=$request->query('fiscal_year',session('vat_report_fiscal_year',$this->currentFiscalYear()));session(['vat_report_fiscal_year'=>$fiscalYear]);$bills=$this->bills($request,$customer)->get();$rows=$bills->map(fn($bill)=>['bill'=>$bill,'amount'=>$this->billAmount($bill)]);$total=$rows->sum('amount');$fiscalYears=$this->fiscalYears();return view('vat-system.reports.ledger',compact('customer','rows','total','firm','fiscalYears','fiscalYear')); }
     public function confirmation(Request $request, VatCustomer $customer) {
