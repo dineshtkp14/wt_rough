@@ -160,6 +160,7 @@ Route::get('/vat-system/change-firm', [VatSystemBillController::class, 'switchFi
   Route::get('/vat-system/purchase-balance-confirmation/{company}/pdf', [VatReportController::class, 'purchaseConfirmationPdf'])->name('vat-system.purchase-balance-confirmation.pdf');
   Route::get('/vat-system/balance-confirmation/{customer}', [VatReportController::class, 'confirmation'])->name('vat-system.balance-confirmation');
   Route::get('/vat-system/balance-confirmation/{customer}/pdf', [VatReportController::class, 'confirmationPdf'])->name('vat-system.balance-confirmation.pdf');
+  Route::get('/vat-system/customer-reports/{customer}/print-both', [VatReportController::class, 'printCustomerBoth'])->name('vat-system.customer-reports.print-both');
 Route::get('/vat-system/customers', [VatCustomerController::class, 'index'])->name('vat-system.customers.index');
 Route::post('/vat-system/extra-customers', [VatSystemBillController::class, 'storeExtraCustomer'])->name('vat-system.extra-customers.store');
 Route::put('/vat-system/extra-customers/{extraCustomer}', [VatSystemBillController::class, 'updateExtraCustomer'])->name('vat-system.extra-customers.update');

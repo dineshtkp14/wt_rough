@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <style>
 .party-pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:16px 20px;background:#fff}.party-pagination button{min-width:34px;height:34px;padding:4px 10px;border:1px solid #cbd9eb;border-radius:7px;background:#fff;color:#2563eb;font-weight:700;cursor:pointer}.party-pagination button:hover:not(:disabled),.party-pagination button.active{background:#2563eb;color:#fff;border-color:#2563eb}.party-pagination button:disabled{color:#a5b4c7;background:#f8fafc;cursor:not-allowed}.party-page-info{margin:0 8px;color:#64748b;font-size:13px}
-</style>
+.party-table th:last-child,.party-table td:last-child{display:none!important}.party-table th:last-child,.party-table td:last-child{display:table-cell!important}.action-group>a:not(.print-both-customer){display:none!important}</style>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const box = document.querySelector('.party-table-box');
@@ -90,6 +90,27 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     input.addEventListener('input', function () { page = 1; render(); });
     render();
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const template = @json(route('vat-system.customer-reports.print-both', '__CUSTOMER_ID__'));
+    const addPrintBothButtons = function () {
+        document.querySelectorAll('.action-group').forEach(function (group) {
+            if (group.querySelector('.print-both-customer')) return;
+            const confirmation = group.querySelector('a[href*="/vat-system/balance-confirmation/"]');
+            if (!confirmation) return;
+            const customerId = confirmation.href.split('/').filter(Boolean).pop();
+            const button = document.createElement('a');
+            button.href = template.replace('__CUSTOMER_ID__', customerId);
+            button.className = 'btn btn-outline-success print-both-customer';
+            button.title = 'Print Balance Confirmation and Party Ledger';
+            button.innerHTML = '<i class="fa fa-print me-1"></i>Party Ledger + Balance Confirmation';
+            group.appendChild(button);
+        });
+    };
+    addPrintBothButtons();
+    new MutationObserver(addPrintBothButtons).observe(document.body, { childList: true, subtree: true });
 });
 </script>
 @endsection

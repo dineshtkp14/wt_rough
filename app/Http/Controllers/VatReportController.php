@@ -35,6 +35,15 @@ class VatReportController extends Controller
         })->filter(fn($report) => $report['bills']->isNotEmpty())->values();
         return view('vat-system.reports.print-all', compact('firm', 'reports', 'fiscalYear'));
     }
+    public function printCustomerBoth(Request $request, VatCustomer $customer) {
+        $firm = VatFirm::find(session('vat_firm_id'));
+        if (!$firm) return redirect()->route('vat-system.firm.select', ['next' => 'workspace']);
+        $fiscalYear = $request->query('fiscal_year', session('vat_report_fiscal_year', $this->currentFiscalYear()));
+        $bills = $this->bills($request, $customer)->get();
+        $reports = collect([['customer' => $customer, 'bills' => $bills, 'total' => $bills->sum(fn($bill) => $this->billAmount($bill))]])
+            ->filter(fn($report) => $report['bills']->isNotEmpty())->values();
+        return view('vat-system.reports.print-all', compact('firm', 'reports', 'fiscalYear'));
+    }
     public function ledger(Request $request, VatCustomer $customer) { $firm=VatFirm::find(session('vat_firm_id')); if(!$firm)return redirect()->route('vat-system.firm.select',['next'=>'workspace']); $fiscalYear=$request->query('fiscal_year',session('vat_report_fiscal_year',$this->currentFiscalYear()));session(['vat_report_fiscal_year'=>$fiscalYear]);$bills=$this->bills($request,$customer)->get();$rows=$bills->map(fn($bill)=>['bill'=>$bill,'amount'=>$this->billAmount($bill)]);$total=$rows->sum('amount');$fiscalYears=$this->fiscalYears();return view('vat-system.reports.ledger',compact('customer','rows','total','firm','fiscalYears','fiscalYear')); }
     public function confirmation(Request $request, VatCustomer $customer) {
         $firm = VatFirm::find(session('vat_firm_id'));

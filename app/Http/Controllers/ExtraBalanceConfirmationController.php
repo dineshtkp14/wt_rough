@@ -85,7 +85,7 @@ class ExtraBalanceConfirmationController extends Controller
         $data['firm'] = $confirmation->firm;
 
         return Pdf::setOptions(['dpi' => 150, 'defaultFont' => 'DejaVu Sans'])
-            ->loadView('extra-balance-confirmation.letter', ['data' => $data, 'pdfMode' => true])
+            ->loadView('extra-balance-confirmation.pdf', ['data' => $data])
             ->setPaper('a4', 'portrait')
             ->download('balance-confirmation-' . $confirmation->id . '.pdf');
     }
