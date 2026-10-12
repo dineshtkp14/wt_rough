@@ -26,6 +26,9 @@ class AllCustomerCreditListLivewire extends Component
     public $searchTerm = '';
     public $sortBy = 'high_to_low';
     public $showQuickPaymentModal = false;
+    public $showAgeBreakdownModal = false;
+    public $ageBreakdownModalTitle = '';
+    public $ageBreakdownModalCustomers = [];
     public $quickPaymentCustomerId;
     public $quickPaymentCustomerName = '';
     public $quickPaymentCustomerPhone = '';
@@ -80,6 +83,44 @@ class AllCustomerCreditListLivewire extends Component
     {
         $this->showQuickPaymentModal = false;
         $this->resetValidation();
+    }
+
+    public function openAgeBreakdownModal($filter)
+    {
+        $allowedFilters = [
+            'shop_recent_6_months',
+            'customer_recent_6_months',
+            'shop_old_6_months',
+            'customer_old_6_months',
+        ];
+
+        if (!in_array($filter, $allowedFilters, true)) {
+            return;
+        }
+
+        [$ledgerTotals, $creditNoteTotals] = $this->creditSummarySubqueries();
+        $query = $this->buildCustomerCreditQuery($ledgerTotals, $creditNoteTotals);
+        $this->sortBy = $filter;
+        $this->applyFilters($query);
+        $this->applySorting($query);
+
+        $this->ageBreakdownModalCustomers = $query->get()->map(function ($customer) {
+            return [
+                'name' => $customer->name ?? '-',
+                'type' => ucfirst($customer->type ?? 'Customer'),
+                'address' => $customer->address ?? '-',
+                'latest_date' => $customer->latest_date ?? '-',
+                'total_due' => max(0, (float) $customer->total_due),
+            ];
+        })->values()->all();
+        $this->ageBreakdownModalTitle = $this->selectedFilterLabel();
+        $this->showAgeBreakdownModal = true;
+    }
+
+    public function closeAgeBreakdownModal()
+    {
+        $this->showAgeBreakdownModal = false;
+        $this->ageBreakdownModalCustomers = [];
     }
 
     public function saveQuickPayment()

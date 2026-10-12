@@ -74,7 +74,7 @@
             ];
         @endphp
         @foreach($ageBreakdown as $key => $breakdown)
-            <button type="button" class="credit-age-breakdown-item" wire:click="$set('sortBy', '{{ $breakdownFilters[$key] }}')">
+            <button type="button" class="credit-age-breakdown-item" wire:click="openAgeBreakdownModal('{{ $breakdownFilters[$key] }}')">
                 <span>{{ $breakdown['label'] }}</span>
                 <strong>Rs {{ number_format($breakdown['total'], 2) }}</strong>
                 <small>{{ number_format($breakdown['count']) }} customers</small>
@@ -392,6 +392,56 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+    @endif
+
+    @if($showAgeBreakdownModal)
+        <div class="age-breakdown-backdrop">
+            <div class="age-breakdown-modal">
+                <div class="age-breakdown-header">
+                    <div>
+                        <span>Amount Details</span>
+                        <strong>{{ $ageBreakdownModalTitle }}</strong>
+                    </div>
+                    <button type="button" wire:click="closeAgeBreakdownModal" class="quick-payment-close" aria-label="Close">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="age-breakdown-body">
+                    <div class="age-breakdown-table-wrap">
+                        <table class="age-breakdown-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Customer</th>
+                                    <th>Type</th>
+                                    <th>Address</th>
+                                    <th>Latest Activity</th>
+                                    <th>Total Due</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($ageBreakdownModalCustomers as $modalCustomer)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $modalCustomer['name'] }}</td>
+                                        <td>{{ $modalCustomer['type'] }}</td>
+                                        <td>{{ $modalCustomer['address'] }}</td>
+                                        <td>{{ $modalCustomer['latest_date'] }}</td>
+                                        <td>Rs {{ number_format($modalCustomer['total_due'], 2) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="6" class="age-breakdown-empty">No customers found.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="age-breakdown-footer">
+                    <strong>{{ number_format(count($ageBreakdownModalCustomers)) }} customers</strong>
+                    <button type="button" wire:click="closeAgeBreakdownModal" class="age-breakdown-close">Close</button>
+                </div>
             </div>
         </div>
     @endif
@@ -1088,6 +1138,114 @@
             color: #64748b;
             font-weight: 900;
             text-align: center;
+        }
+
+        .age-breakdown-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(15, 23, 42, .62);
+        }
+
+        .age-breakdown-modal {
+            width: min(1100px, 100%);
+            max-height: calc(100vh - 36px);
+            overflow: hidden;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 28px 70px rgba(15, 23, 42, .35);
+        }
+
+        .age-breakdown-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 20px;
+            background: #1d4ed8;
+            color: #ffffff;
+        }
+
+        .age-breakdown-header span,
+        .age-breakdown-header strong {
+            display: block;
+        }
+
+        .age-breakdown-header span {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .age-breakdown-header strong {
+            margin-top: 4px;
+            font-size: 20px;
+        }
+
+        .age-breakdown-body {
+            max-height: calc(100vh - 180px);
+            overflow: auto;
+            padding: 16px 20px;
+        }
+
+        .age-breakdown-table {
+            width: 100%;
+            min-width: 760px;
+            border-collapse: collapse;
+        }
+
+        .age-breakdown-table th,
+        .age-breakdown-table td {
+            padding: 10px 12px;
+            border: 1px solid #d5deea;
+            text-align: left;
+        }
+
+        .age-breakdown-table th {
+            background: #1e3a8a;
+            color: #ffffff;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .age-breakdown-table td {
+            color: #172033;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .age-breakdown-table td:last-child {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .age-breakdown-empty {
+            padding: 28px !important;
+            color: #64748b !important;
+            text-align: center !important;
+        }
+
+        .age-breakdown-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 20px;
+            border-top: 1px solid #d5deea;
+        }
+
+        .age-breakdown-close {
+            padding: 9px 18px;
+            border: 0;
+            border-radius: 6px;
+            background: #1d4ed8;
+            color: #ffffff;
+            cursor: pointer;
+            font-weight: 800;
         }
 
         .quick-payment-backdrop {
