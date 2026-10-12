@@ -196,7 +196,7 @@ class AllCustomerCreditListLivewire extends Component
         $this->applyFilters($query);
         $this->applySorting($query);
 
-        $customers = $query->paginate(200);
+        $customers = $query->paginate(300);
 
         foreach ($customers as $customer) {
             if (!array_key_exists($customer->id, $this->customerNotes)) {
@@ -232,6 +232,28 @@ class AllCustomerCreditListLivewire extends Component
             return !empty($row->latest_date)
                 && \Carbon\Carbon::parse($row->latest_date)->lte(now()->subDays(180));
         })->count();
+        $sixMonthCutoff = now()->subDays(180)->startOfDay();
+        $ageBreakdown = [
+            'shop_recent' => ['label' => 'Shop · Within 6 Months', 'count' => 0, 'total' => 0],
+            'customer_recent' => ['label' => 'Customer · Within 6 Months', 'count' => 0, 'total' => 0],
+            'shop_old' => ['label' => 'Shop · More Than 6 Months', 'count' => 0, 'total' => 0],
+            'customer_old' => ['label' => 'Customer · More Than 6 Months', 'count' => 0, 'total' => 0],
+        ];
+        foreach ($summaryRows as $row) {
+            $type = strtolower((string) ($row->type ?? ''));
+            if (!in_array($type, ['shop', 'customer'], true)) {
+                continue;
+            }
+
+            $latestDate = !empty($row->latest_date) ? \Carbon\Carbon::parse($row->latest_date) : null;
+            if (!$latestDate) {
+                continue;
+            }
+            $age = $latestDate && $latestDate->gte($sixMonthCutoff) ? 'recent' : 'old';
+            $key = $type . '_' . $age;
+            $ageBreakdown[$key]['count']++;
+            $ageBreakdown[$key]['total'] += max(0, (float) $row->total_due);
+        }
         $highestDueCustomer = $summaryRows->sortByDesc('total_due')->first();
 
         [$ledgerTotalsForAdvance, $creditNoteTotalsForAdvance] = $this->creditSummarySubqueries();
@@ -257,6 +279,7 @@ class AllCustomerCreditListLivewire extends Component
             'expiredCustomerCount' => $expiredCustomerCount,
             'oldDueCustomerCount' => $oldDueCustomerCount,
             'veryOldDueCustomerCount' => $veryOldDueCustomerCount,
+            'ageBreakdown' => $ageBreakdown,
             'highestDueCustomer' => $highestDueCustomer,
             'todayCollectionAmount' => $todayCollectionAmount,
             'todayCollectionCount' => $todayCollectionCount,
@@ -464,6 +487,29 @@ class AllCustomerCreditListLivewire extends Component
             $query->whereDate('lt.latest_date', '<=', now()->subDays(180)->toDateString());
         }
 
+        if ($this->sortBy === 'latest_within_6_months') {
+            $query->whereNotNull('lt.latest_date')
+                ->whereDate('lt.latest_date', '>=', now()->subDays(180)->toDateString());
+        }
+
+        if (in_array($this->sortBy, ['shop_recent_6_months', 'shop_old_6_months'], true)) {
+            $query->where('c.type', 'shop');
+        }
+
+        if (in_array($this->sortBy, ['customer_recent_6_months', 'customer_old_6_months'], true)) {
+            $query->where('c.type', 'customer');
+        }
+
+        if (in_array($this->sortBy, ['shop_recent_6_months', 'customer_recent_6_months'], true)) {
+            $query->whereNotNull('lt.latest_date')
+                ->whereDate('lt.latest_date', '>=', now()->subDays(180)->toDateString());
+        }
+
+        if (in_array($this->sortBy, ['shop_old_6_months', 'customer_old_6_months'], true)) {
+            $query->whereNotNull('lt.latest_date')
+                ->whereDate('lt.latest_date', '<', now()->subDays(180)->toDateString());
+        }
+
         if ($this->sortBy === 'credit_time_expired') {
             $query->whereNotNull('lt.latest_credit_date')
                 ->whereNotNull('lt.credit_limit_days')
@@ -508,6 +554,11 @@ class AllCustomerCreditListLivewire extends Component
             'more_than_45_days' => 'More Than 45 Days',
             'more_than_90_days' => 'More Than 90 Days',
             'more_than_180_days' => 'More Than 180 Days',
+            'latest_within_6_months' => 'Latest Within 6 Months',
+            'shop_recent_6_months' => 'Shop · Within 6 Months',
+            'customer_recent_6_months' => 'Customer · Within 6 Months',
+            'shop_old_6_months' => 'Shop · More Than 6 Months',
+            'customer_old_6_months' => 'Customer · More Than 6 Months',
             'newest' => 'Newest',
             'oldest' => 'Oldest',
         ][$this->sortBy] ?? 'High to Low';

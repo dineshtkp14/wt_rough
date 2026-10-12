@@ -20,6 +20,11 @@
                 <option value="more_than_45_days">More Than 45 Days</option>
                 <option value="more_than_90_days">More Than 90 Days</option>
                 <option value="more_than_180_days">More Than 180 Days</option>
+                <option value="latest_within_6_months">Latest Within 6 Months</option>
+                <option value="shop_recent_6_months">Shop · Within 6 Months</option>
+                <option value="customer_recent_6_months">Customer · Within 6 Months</option>
+                <option value="shop_old_6_months">Shop · More Than 6 Months</option>
+                <option value="customer_old_6_months">Customer · More Than 6 Months</option>
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
             </select>
@@ -57,6 +62,16 @@
             <strong>Rs {{ number_format((float) $todayCollectionAmount, 2) }}</strong>
             <small>{{ number_format($todayCollectionCount) }} payments</small>
         </div>
+    </div>
+
+    <div class="credit-age-breakdown">
+        @foreach($ageBreakdown as $breakdown)
+            <div class="credit-age-breakdown-item">
+                <span>{{ $breakdown['label'] }}</span>
+                <strong>Rs {{ number_format($breakdown['total'], 2) }}</strong>
+                <small>{{ number_format($breakdown['count']) }} customers</small>
+            </div>
+        @endforeach
     </div>
 
     <div class="credit-list-table-wrap">
@@ -639,6 +654,41 @@
 
         .credit-summary-tile.collection {
             border-top-color: #15803d;
+        }
+
+        .credit-age-breakdown {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin: -4px 0 16px;
+        }
+
+        .credit-age-breakdown-item {
+            padding: 12px 14px;
+            border: 1px solid #d9e2ef;
+            border-left: 4px solid #2563eb;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .credit-age-breakdown-item span,
+        .credit-age-breakdown-item small {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .credit-age-breakdown-item strong {
+            display: block;
+            margin-top: 4px;
+            color: #172033;
+            font-size: 18px;
+        }
+
+        .credit-age-breakdown-item small {
+            margin-top: 3px;
+            font-weight: 700;
         }
 
         .credit-list-table-wrap {
@@ -1331,6 +1381,10 @@
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
+            .credit-age-breakdown {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
             .credit-list-table-wrap {
                 display: none;
             }
@@ -1352,6 +1406,10 @@
 
         @media (max-width: 520px) {
             .credit-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .credit-age-breakdown {
                 grid-template-columns: 1fr;
             }
 
