@@ -65,12 +65,21 @@
     </div>
 
     <div class="credit-age-breakdown">
-        @foreach($ageBreakdown as $breakdown)
-            <div class="credit-age-breakdown-item">
+        @php
+            $breakdownFilters = [
+                'shop_recent' => 'shop_recent_6_months',
+                'customer_recent' => 'customer_recent_6_months',
+                'shop_old' => 'shop_old_6_months',
+                'customer_old' => 'customer_old_6_months',
+            ];
+        @endphp
+        @foreach($ageBreakdown as $key => $breakdown)
+            <button type="button" class="credit-age-breakdown-item" wire:click="$set('sortBy', '{{ $breakdownFilters[$key] }}')">
                 <span>{{ $breakdown['label'] }}</span>
                 <strong>Rs {{ number_format($breakdown['total'], 2) }}</strong>
                 <small>{{ number_format($breakdown['count']) }} customers</small>
-            </div>
+                <em>Click to view details</em>
+            </button>
         @endforeach
     </div>
 
@@ -664,11 +673,21 @@
         }
 
         .credit-age-breakdown-item {
+            display: block;
+            width: 100%;
             padding: 12px 14px;
             border: 1px solid #d9e2ef;
             border-left: 4px solid #2563eb;
             border-radius: 8px;
             background: #f8fafc;
+            cursor: pointer;
+            text-align: left;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+        .credit-age-breakdown-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(15, 23, 42, .1);
         }
 
         .credit-age-breakdown-item span,
@@ -689,6 +708,15 @@
         .credit-age-breakdown-item small {
             margin-top: 3px;
             font-weight: 700;
+        }
+
+        .credit-age-breakdown-item em {
+            display: block;
+            margin-top: 6px;
+            color: #2563eb;
+            font-size: 11px;
+            font-style: normal;
+            font-weight: 800;
         }
 
         .credit-list-table-wrap {
