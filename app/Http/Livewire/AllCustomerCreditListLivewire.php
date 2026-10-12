@@ -123,6 +123,37 @@ class AllCustomerCreditListLivewire extends Component
         $this->ageBreakdownModalCustomers = [];
     }
 
+    public function openAllAgeBreakdownModal()
+    {
+        [$ledgerTotals, $creditNoteTotals] = $this->creditSummarySubqueries();
+        $query = $this->buildCustomerCreditQuery($ledgerTotals, $creditNoteTotals);
+        $currentSort = $this->sortBy;
+        $this->sortBy = 'high_to_low';
+        $this->applyCommonFilters($query);
+        $this->sortBy = $currentSort;
+
+        $cutoff = now()->subDays(180)->startOfDay();
+        $this->ageBreakdownModalCustomers = $query->get()->filter(function ($customer) {
+            return in_array(strtolower((string) ($customer->type ?? '')), ['shop', 'customer'], true)
+                && !empty($customer->latest_date);
+        })->map(function ($customer) use ($cutoff) {
+            $latestDate = \Carbon\Carbon::parse($customer->latest_date);
+            $type = strtolower((string) $customer->type);
+            $period = $latestDate->gte($cutoff) ? 'Within 6 Months' : 'More Than 6 Months';
+
+            return [
+                'name' => $customer->name ?? '-',
+                'type' => ucfirst($type),
+                'category' => ucfirst($type) . ' · ' . $period,
+                'address' => $customer->address ?? '-',
+                'latest_date' => $customer->latest_date ?? '-',
+                'total_due' => max(0, (float) $customer->total_due),
+            ];
+        })->values()->all();
+        $this->ageBreakdownModalTitle = 'Shop and Customer · 6-Month Details';
+        $this->showAgeBreakdownModal = true;
+    }
+
     public function saveQuickPayment()
     {
         if (!Auth::check()) {

@@ -65,22 +65,10 @@
     </div>
 
     <div class="credit-age-breakdown">
-        @php
-            $breakdownFilters = [
-                'shop_recent' => 'shop_recent_6_months',
-                'customer_recent' => 'customer_recent_6_months',
-                'shop_old' => 'shop_old_6_months',
-                'customer_old' => 'customer_old_6_months',
-            ];
-        @endphp
-        @foreach($ageBreakdown as $key => $breakdown)
-            <button type="button" class="credit-age-breakdown-item" wire:click="openAgeBreakdownModal('{{ $breakdownFilters[$key] }}')">
-                <span>{{ $breakdown['label'] }}</span>
-                <strong>Rs {{ number_format($breakdown['total'], 2) }}</strong>
-                <small>{{ number_format($breakdown['count']) }} customers</small>
-                <em>Click to view details</em>
-            </button>
-        @endforeach
+        <button type="button" class="age-breakdown-open-button" wire:click="openAllAgeBreakdownModal">
+            <i class="fa-solid fa-list"></i>
+            View 6-Month Shop &amp; Customer Amount Details
+        </button>
     </div>
 
     <div class="credit-list-table-wrap">
@@ -415,6 +403,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Customer</th>
+                                    <th>Category</th>
                                     <th>Type</th>
                                     <th>Address</th>
                                     <th>Latest Activity</th>
@@ -426,13 +415,14 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $modalCustomer['name'] }}</td>
+                                        <td>{{ $modalCustomer['category'] ?? '-' }}</td>
                                         <td>{{ $modalCustomer['type'] }}</td>
                                         <td>{{ $modalCustomer['address'] }}</td>
                                         <td>{{ $modalCustomer['latest_date'] }}</td>
                                         <td>Rs {{ number_format($modalCustomer['total_due'], 2) }}</td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="6" class="age-breakdown-empty">No customers found.</td></tr>
+                                    <tr><td colspan="7" class="age-breakdown-empty">No customers found.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -720,6 +710,21 @@
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 12px;
             margin: -4px 0 16px;
+        }
+
+        .age-breakdown-open-button {
+            padding: 10px 16px;
+            border: 1px solid #2563eb;
+            border-radius: 7px;
+            background: #2563eb;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .age-breakdown-open-button:hover {
+            background: #1d4ed8;
         }
 
         .credit-age-breakdown-item {
