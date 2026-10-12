@@ -228,6 +228,10 @@ class AllCustomerCreditListLivewire extends Component
             return !empty($row->latest_date)
                 && \Carbon\Carbon::parse($row->latest_date)->lte(now()->subDays(45));
         })->count();
+        $veryOldDueCustomerCount = $summaryRows->filter(function ($row) {
+            return !empty($row->latest_date)
+                && \Carbon\Carbon::parse($row->latest_date)->lte(now()->subDays(180));
+        })->count();
         $highestDueCustomer = $summaryRows->sortByDesc('total_due')->first();
 
         [$ledgerTotalsForAdvance, $creditNoteTotalsForAdvance] = $this->creditSummarySubqueries();
@@ -252,6 +256,7 @@ class AllCustomerCreditListLivewire extends Component
             'creditCustomerCount' => $creditCustomerCount,
             'expiredCustomerCount' => $expiredCustomerCount,
             'oldDueCustomerCount' => $oldDueCustomerCount,
+            'veryOldDueCustomerCount' => $veryOldDueCustomerCount,
             'highestDueCustomer' => $highestDueCustomer,
             'todayCollectionAmount' => $todayCollectionAmount,
             'todayCollectionCount' => $todayCollectionCount,
@@ -455,6 +460,10 @@ class AllCustomerCreditListLivewire extends Component
             $query->whereDate('lt.latest_date', '<=', now()->subDays(90)->toDateString());
         }
 
+        if ($this->sortBy === 'more_than_180_days') {
+            $query->whereDate('lt.latest_date', '<=', now()->subDays(180)->toDateString());
+        }
+
         if ($this->sortBy === 'credit_time_expired') {
             $query->whereNotNull('lt.latest_credit_date')
                 ->whereNotNull('lt.credit_limit_days')
@@ -498,6 +507,7 @@ class AllCustomerCreditListLivewire extends Component
             'advance_deposit' => 'Advance Deposit Only',
             'more_than_45_days' => 'More Than 45 Days',
             'more_than_90_days' => 'More Than 90 Days',
+            'more_than_180_days' => 'More Than 180 Days',
             'newest' => 'Newest',
             'oldest' => 'Oldest',
         ][$this->sortBy] ?? 'High to Low';

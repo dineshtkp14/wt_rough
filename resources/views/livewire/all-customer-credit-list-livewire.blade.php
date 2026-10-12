@@ -19,6 +19,7 @@
                 <option value="advance_deposit">Advance Deposit Only</option>
                 <option value="more_than_45_days">More Than 45 Days</option>
                 <option value="more_than_90_days">More Than 90 Days</option>
+                <option value="more_than_180_days">More Than 180 Days</option>
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
             </select>
@@ -41,6 +42,10 @@
         <button type="button" class="credit-summary-tile warning" wire:click="$set('sortBy', 'more_than_45_days')">
             <span>More Than 45 Days</span>
             <strong>{{ number_format($oldDueCustomerCount) }}</strong>
+        </button>
+        <button type="button" class="credit-summary-tile critical" wire:click="$set('sortBy', 'more_than_180_days')">
+            <span>More Than 180 Days</span>
+            <strong>{{ number_format($veryOldDueCustomerCount) }}</strong>
         </button>
         <div class="credit-summary-tile calm">
             <span>Highest Due</span>
@@ -574,7 +579,7 @@
         .credit-summary-grid {
             display: grid;
             gap: 12px;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(6, minmax(0, 1fr));
             margin-bottom: 16px;
         }
 
@@ -622,6 +627,10 @@
 
         .credit-summary-tile.warning {
             border-top-color: #d97706;
+        }
+
+        .credit-summary-tile.critical {
+            border-top-color: #7c3aed;
         }
 
         .credit-summary-tile.calm {
