@@ -24,6 +24,7 @@ let selectedCustomerType = "";
 let currentLink = null;
 let currentIndex = null;
 let currentID = null;
+let quickPriceListMode = false;
 
 let counter = 0;
 let percentSystemEnabled = false;
@@ -246,7 +247,8 @@ function selectCustomerForInvoice(data) {
     $("#customerResultWrapper").slideUp();
     $("#peerPriceToggle").prop("checked", false);
     $("#peerPriceToggleText").text("Suggest Me Price");
-    $("#peerPriceToggleBox").toggle(selectedCustomerType !== "shop");
+    // Quick Price List is available for every customer type, including shops.
+    $("#peerPriceToggleBox").show();
     $(document).trigger("customer:selected", [data]);
     updateInvoiceStepVisibility();
 }
@@ -1036,6 +1038,10 @@ function selectProduct() {
     $(".select-product-link").on("click", function (e) {
         e.preventDefault();
 
+        quickPriceListMode = false;
+        $("#productPickerTitle").text("Select Items");
+        $("#productPickerHint").hide();
+
         currentLink = this;
         currentID = $(this).data("id");
         currentIndex = salesData.findIndex((obj) => obj.id === currentID);
@@ -1076,6 +1082,30 @@ function selectProduct() {
     });
 }
 
+function openQuickPriceListPicker() {
+    quickPriceListMode = true;
+
+    let lastRow = $("#invoiceTableBody tr[id^='inputRow']").last();
+    const lastId = parseInt(lastRow.attr("id")?.replace("inputRow", "") || "", 10);
+    const lastData = salesData.find((row) => row.id === lastId);
+    if (!lastData || lastData.product || lastData.unstocked || lastData.quantity) {
+        appendInputRow();
+        lastRow = $("#invoiceTableBody tr[id^='inputRow']").last();
+    }
+
+    currentLink = lastRow.find("#selectProductLink")[0];
+    currentID = parseInt($(currentLink).data("id"), 10);
+    currentIndex = salesData.findIndex((row) => row.id === currentID);
+    productSearchQuery = "";
+    $(currentLink).data("query", "");
+    $("#productPickerTitle").text("Quick Price List");
+    $("#productPickerHint").show();
+    $("#searchProductInput").val("");
+    $("#productResultWrapper").hide();
+    $("#modalWrapper").show();
+    window.setTimeout(function () { $("#searchProductInput").trigger("focus"); }, 50);
+}
+
 let productSearchTimer = null;
 $("#searchProductInput").on("keyup", function (e) {
     const target = e.target;
@@ -1097,7 +1127,8 @@ function getProductData() {
         getData(
             PRODUCT_SEARCH_API_URL +
                 "?name=" + encodeURIComponent(productSearchQuery) +
-                "&quantity=" + quantityCase,
+                "&quantity=" + quantityCase +
+                (quickPriceListMode ? "&price_list_only=1" : ""),
             function (response) {
                 if (response) {
                     if (response.length > 0) {
@@ -1227,6 +1258,25 @@ function triggerProductResultClick() {
             };
             window.setTimeout(focusQuantity, 0);
             window.setTimeout(focusQuantity, 180);
+
+            if (quickPriceListMode) {
+                const quantityInput = rowEl.find("#quantityInput");
+                quantityInput.off("keydown.quickPriceList").on("keydown.quickPriceList", function (event) {
+                    if (event.key !== "Enter") return;
+                    event.preventDefault();
+
+                    const quantity = String(quantityInput.val() || "").trim();
+                    if (!quantity || parseFloat(quantity) <= 0) {
+                        setInvoiceError("Please enter a valid quantity.", quantityInput);
+                        return;
+                    }
+
+                    quantityInput.trigger("input");
+                    getFinalCalculations();
+                    resetInvoiceVerification();
+                    openQuickPriceListPicker();
+                });
+            }
         });
 }
 
@@ -1238,6 +1288,9 @@ $("#modalContainer").on("click", function (e) {
     if (closeStatus) {
         if (elId === "modalContainer") {
             $("#modalWrapper").hide();
+            $("#productPickerTitle").text("Select Items");
+            $("#productPickerHint").hide();
+            quickPriceListMode = false;
         }
     }
 });
@@ -1413,6 +1466,13 @@ $(window).on("load", function () {
     $("#peerPriceToggle").on("change", function () {
         hideOldPriceBoxes();
         $(".old-price-input:focus").trigger("input");
+    });
+
+    $("#quickPriceListBtn").on("click", function () {
+        hideOldPriceBoxes();
+        // Price-list MRP is the source price for the discount-percent workflow.
+        setPercentSystemState(true);
+        openQuickPriceListPicker();
     });
 
     $("#addRowBtn").on("click", function (e) {

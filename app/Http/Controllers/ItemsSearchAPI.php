@@ -39,12 +39,16 @@ class ItemsSearchAPI extends Controller
             }
         };
 
-        if ($quantity_case == 'all') {
+        $priceListOnly = $req->boolean('price_list_only');
+
+        if ($quantity_case == 'all' && !$priceListOnly) {
             $items = Item::where($matchesAllTerms)->get();
-        } else {
+        } elseif (!$priceListOnly) {
             $items = Item::where($matchesAllTerms)
                         ->where('quantity', '>', 0)
                         ->get();
+        } else {
+            $items = collect();
         }
 
         $priceListByName = pricelist::query()

@@ -76,12 +76,17 @@
                             <input type="text" class="search-input" placeholder="Search Customer"
                                 id="searchCustomerInput" data-api="customer_search" autocomplete="off">
                             <i class="fas fa-search search-icon"> </i>
-                            <div class="peer-price-toggle" id="peerPriceToggleBox" style="display: none;">
-                                <input class="peer-price-toggle-input" type="checkbox" id="peerPriceToggle">
-                                <label class="peer-price-toggle-label" for="peerPriceToggle">
-                                    <span class="peer-price-toggle-switch"></span>
-                                    <span id="peerPriceToggleText">Suggest Me Price</span>
-                                </label>
+                            <div class="invoice-price-actions" id="peerPriceToggleBox" style="display: none;">
+                                <div class="peer-price-toggle">
+                                    <input class="peer-price-toggle-input" type="checkbox" id="peerPriceToggle">
+                                    <label class="peer-price-toggle-label" for="peerPriceToggle">
+                                        <span class="peer-price-toggle-switch"></span>
+                                        <span id="peerPriceToggleText">Suggest Me Price</span>
+                                    </label>
+                                </div>
+                                <button type="button" class="quick-price-list-btn" id="quickPriceListBtn">
+                                    <i class="fa-solid fa-bolt"></i> Quick Price List
+                                </button>
                             </div>
                             <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
                                 <div class="result-box d-flex justify-content-start align-items-center"
@@ -339,7 +344,8 @@
             <div class="modal-container flex-css" id="modalContainer" data-close="true">
                 <div class="modal-box">
                     <div class="title flex-css mb-4">
-                        <h1>Select Items</h1>
+                        <h1 id="productPickerTitle">Select Items</h1>
+                        <small id="productPickerHint" style="display:none;">Choose an item, enter quantity, then press Enter for the next item.</small>
                     </div>
                     <div class="search-box">
                         <input type="text" class="search-input" placeholder="Search Items" id="searchProductInput" autocomplete="off">
@@ -1103,7 +1109,33 @@ $(document).ready(function () {
         }
 
         .peer-price-toggle {
+            margin-top: 0;
+        }
+
+        .invoice-price-actions {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
             margin-top: 8px;
+        }
+
+        .quick-price-list-btn {
+            background: #0f766e;
+            border: 1px solid #0f766e;
+            border-radius: 999px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 900;
+            line-height: 1;
+            padding: 8px 12px;
+            text-transform: uppercase;
+        }
+
+        .quick-price-list-btn:hover {
+            background: #115e59;
+            border-color: #115e59;
         }
 
         .peer-price-toggle-input {
