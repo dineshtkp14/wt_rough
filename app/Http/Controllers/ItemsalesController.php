@@ -92,7 +92,11 @@ class ItemsalesController extends Controller
         $breadcrumb['title'] = 'Q: ' . $displayInvoiceNo;
 
         $itemsdata = item::all();
-        return view('itemssales.create', ['page' => 'isc', 'all' => $cus, 'data' => $itemsdata,'nextgenid' => $nextUserId,'breadcrumb'=>$breadcrumb]);
+        $prefilledCustomer = request('customerid')
+            ? customerinfo::find(request('customerid'))
+            : null;
+
+        return view('itemssales.create', ['page' => 'isc', 'all' => $cus, 'data' => $itemsdata,'nextgenid' => $nextUserId,'breadcrumb'=>$breadcrumb, 'prefilledCustomer' => $prefilledCustomer]);
     }
 
     return redirect('/login');

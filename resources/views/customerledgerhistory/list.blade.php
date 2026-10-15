@@ -108,6 +108,12 @@
                             Search Ledger
                         </button>
                     </form>
+                    @if($customeridonly)
+                        <a href="{{ route('itemsales.create', ['customerid' => $customeridonly]) }}" class="clhs-search-add-invoice">
+                            <i class="fa-solid fa-file-invoice"></i>
+                            add invoice
+                        </a>
+                    @endif
                 </section>
 
                 @if($customeridonly)
@@ -693,6 +699,27 @@
 
         .clhs-search-btn:hover {
             background: #111827;
+        }
+
+        .clhs-search-add-invoice {
+            align-items: center;
+            background: #2563eb;
+            border-radius: 6px;
+            color: #fff;
+            display: inline-flex;
+            font-size: 18px;
+            font-weight: 800;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 12px;
+            min-height: 48px;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .clhs-search-add-invoice:hover {
+            background: #1d4ed8;
+            color: #fff;
         }
 
         .clhs-summary-head {

@@ -376,6 +376,8 @@
 
     <script>
 
+        window.INVOICE_PREFILLED_CUSTOMER = @json($prefilledCustomer ?? null);
+
         function syncAutomaticInvoiceNotes() {
             const noteField = $("#noteInput");
             if (!noteField.length) return;

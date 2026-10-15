@@ -643,7 +643,7 @@ class ModernDashboardController extends Controller
 
         // Get today's invoices
         $recentInvoicesRaw = invoice::join('customerinfos', 'invoices.customerid', '=', 'customerinfos.id')
-            ->select('invoices.id', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'invoices.created_at', 'customerinfos.name as customer')
+            ->select('invoices.id', 'invoices.customerid', 'invoices.total as amount', 'invoices.inv_type as type', 'invoices.inv_date as date', 'invoices.created_at', 'customerinfos.name as customer')
             ->whereDate('invoices.inv_date', $today)
             ->orderByDesc('invoices.inv_date')
             ->orderByDesc('invoices.id')
@@ -655,6 +655,7 @@ class ModernDashboardController extends Controller
             $isPaid = ($inv->type === 'cash') || customerledgerdetails::where('invoiceid', $inv->id)->where('credit', '>', 0)->exists();
             $recentInvoices[] = [
                 'invoice_id' => $inv->id,
+                'customer_id' => $inv->customerid,
                 'id'       => $invoiceRecord?->visible_invoice_no ?? $inv->id,
                 'customer' => $inv->customer,
                 'amount'   => (float) $inv->amount,

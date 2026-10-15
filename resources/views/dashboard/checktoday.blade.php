@@ -112,6 +112,26 @@
         color: white;
     }
 
+    .row-add-invoice {
+        align-items: center;
+        background: #16a34a;
+        border-radius: 4px;
+        color: #fff;
+        display: inline-flex;
+        font-size: 11px;
+        font-weight: 700;
+        gap: 4px;
+        margin-left: 8px;
+        padding: 5px 7px;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .row-add-invoice:hover {
+        background: #15803d;
+        color: #fff;
+    }
+
     .table-container {
         overflow-x: auto;
     }
@@ -415,6 +435,9 @@
                         <td>
                             <a href="javascript:void(0)" onclick="openInvoiceModal({{ $inv['invoice_id'] }})" class="invoice-link">
                                 {{ $inv['id'] }}
+                            </a>
+                            <a href="{{ route('itemsales.create', ['customerid' => $inv['customer_id']]) }}" class="row-add-invoice">
+                                <i class="fas fa-plus"></i> add invoice
                             </a>
                         </td>
                         <td>{{ $inv['customer'] }}</td>

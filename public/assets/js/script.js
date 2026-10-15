@@ -1322,6 +1322,10 @@ $(".sales-input-final").on("input", function () {
 $(window).on("load", function () {
     const currentUrl = window.location.href;
 
+    if (window.INVOICE_PREFILLED_CUSTOMER && !window.INVOICE_EDIT_DATA) {
+        selectCustomerForInvoice(window.INVOICE_PREFILLED_CUSTOMER);
+    }
+
     if (window.INVOICE_EDIT_DATA) {
         finalData[0] = {
             customer: `${window.INVOICE_EDIT_DATA.customer || ""}`,
