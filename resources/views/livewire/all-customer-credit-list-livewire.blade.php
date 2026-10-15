@@ -67,7 +67,7 @@
     <div class="credit-age-breakdown">
         <button type="button" class="age-breakdown-open-button" wire:click="openAllAgeBreakdownModal">
             <i class="fa-solid fa-list"></i>
-            View 6-Month Shop &amp; Customer Amount Details
+            View 6-Month Shop &amp; Customer Total Amounts
         </button>
     </div>
 
@@ -400,29 +400,47 @@
                     <div class="age-breakdown-table-wrap">
                         <table class="age-breakdown-table">
                             <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Customer</th>
-                                    <th>Category</th>
-                                    <th>Type</th>
-                                    <th>Address</th>
-                                    <th>Latest Activity</th>
-                                    <th>Total Due</th>
-                                </tr>
+                                @if($ageBreakdownIsSummary)
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Type</th>
+                                        <th>Period</th>
+                                        <th>Total Amount</th>
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Customer</th>
+                                        <th>Category</th>
+                                        <th>Type</th>
+                                        <th>Address</th>
+                                        <th>Latest Activity</th>
+                                        <th>Total Due</th>
+                                    </tr>
+                                @endif
                             </thead>
                             <tbody>
                                 @forelse($ageBreakdownModalCustomers as $modalCustomer)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $modalCustomer['name'] }}</td>
-                                        <td>{{ $modalCustomer['category'] ?? '-' }}</td>
-                                        <td>{{ $modalCustomer['type'] }}</td>
-                                        <td>{{ $modalCustomer['address'] }}</td>
-                                        <td>{{ $modalCustomer['latest_date'] }}</td>
-                                        <td>Rs {{ number_format($modalCustomer['total_due'], 2) }}</td>
-                                    </tr>
+                                    @if($ageBreakdownIsSummary)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $modalCustomer['type'] }}</td>
+                                            <td>{{ str_replace($modalCustomer['type'] . ' - ', '', $modalCustomer['category']) }}</td>
+                                            <td>Rs {{ number_format($modalCustomer['total_due'], 2) }}</td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $modalCustomer['name'] }}</td>
+                                            <td>{{ $modalCustomer['category'] ?? '-' }}</td>
+                                            <td>{{ $modalCustomer['type'] }}</td>
+                                            <td>{{ $modalCustomer['address'] }}</td>
+                                            <td>{{ $modalCustomer['latest_date'] }}</td>
+                                            <td>Rs {{ number_format($modalCustomer['total_due'], 2) }}</td>
+                                        </tr>
+                                    @endif
                                 @empty
-                                    <tr><td colspan="7" class="age-breakdown-empty">No customers found.</td></tr>
+                                    <tr><td colspan="{{ $ageBreakdownIsSummary ? 4 : 7 }}" class="age-breakdown-empty">No amounts found.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>

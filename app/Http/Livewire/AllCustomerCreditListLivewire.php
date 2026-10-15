@@ -29,6 +29,7 @@ class AllCustomerCreditListLivewire extends Component
     public $showAgeBreakdownModal = false;
     public $ageBreakdownModalTitle = '';
     public $ageBreakdownModalCustomers = [];
+    public $ageBreakdownIsSummary = false;
     public $quickPaymentCustomerId;
     public $quickPaymentCustomerName = '';
     public $quickPaymentCustomerPhone = '';
@@ -114,6 +115,22 @@ class AllCustomerCreditListLivewire extends Component
             ];
         })->values()->all();
         $this->ageBreakdownModalTitle = $this->selectedFilterLabel();
+        $this->ageBreakdownIsSummary = false;
+        if (method_exists($this, 'openAllAgeBreakdownModal') && $this->ageBreakdownModalTitle === 'Shop and Customer Â· 6-Month Details') {
+            $this->ageBreakdownModalCustomers = collect($this->ageBreakdownModalCustomers)
+                ->groupBy('category')
+                ->map(function ($customers, $category) {
+                    return [
+                        'type' => $customers->first()['type'] ?? '-',
+                        'category' => $category,
+                        'total_due' => $customers->sum('total_due'),
+                    ];
+                })
+                ->values()
+                ->all();
+            $this->ageBreakdownModalTitle = 'Shop and Customer - Total Amounts';
+            $this->ageBreakdownIsSummary = true;
+        }
         $this->showAgeBreakdownModal = true;
     }
 
@@ -121,6 +138,7 @@ class AllCustomerCreditListLivewire extends Component
     {
         $this->showAgeBreakdownModal = false;
         $this->ageBreakdownModalCustomers = [];
+        $this->ageBreakdownIsSummary = false;
     }
 
     public function openAllAgeBreakdownModal()
@@ -152,6 +170,20 @@ class AllCustomerCreditListLivewire extends Component
         })->values()->all();
         $this->ageBreakdownModalTitle = 'Shop and Customer · 6-Month Details';
         $this->showAgeBreakdownModal = true;
+
+        $this->ageBreakdownModalCustomers = collect($this->ageBreakdownModalCustomers)
+            ->groupBy('category')
+            ->map(function ($customers, $category) {
+                return [
+                    'type' => $customers->first()['type'] ?? '-',
+                    'category' => $category,
+                    'total_due' => $customers->sum('total_due'),
+                ];
+            })
+            ->values()
+            ->all();
+        $this->ageBreakdownModalTitle = 'Shop and Customer - Total Amounts';
+        $this->ageBreakdownIsSummary = true;
     }
 
     public function saveQuickPayment()
