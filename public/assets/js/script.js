@@ -1322,6 +1322,12 @@ $(".sales-input-final").on("input", function () {
 $(window).on("load", function () {
     const currentUrl = window.location.href;
 
+    if (!window.INVOICE_PREFILLED_CUSTOMER && !window.INVOICE_EDIT_DATA) {
+        window.setTimeout(function () {
+            $("#searchCustomerInput").trigger("focus").select();
+        }, 100);
+    }
+
     if (window.INVOICE_PREFILLED_CUSTOMER && !window.INVOICE_EDIT_DATA) {
         selectCustomerForInvoice(window.INVOICE_PREFILLED_CUSTOMER);
     }
