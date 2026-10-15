@@ -827,13 +827,9 @@ function setPercentSystemState(enabled) {
             updatePercentRowPricing(index, row.id);
             rowEl.find("#priceInput").prop("readonly", true);
         } else {
-            if (!enabled) {
-                // Do not submit stale MRP/percentage values after the user
-                // turns the percent-pricing system off.
-                row.list_price = "";
-                row.discount_percent = "";
-                rowEl.find("#listPriceInput, #discountPercentInput").val("");
-            }
+            // Keep MRP and discount values in the row while the percent
+            // columns are hidden. If the system is enabled again, the saved
+            // values are restored and the selling price is recalculated.
             rowEl.find("#priceInput").prop("readonly", false);
         }
 
