@@ -12,6 +12,12 @@
             </div>
         @endif
 
+        @if (Session::get('invoice_whatsapp_pdf_sent'))
+            <div class="alert alert-success bg-success text-white w-50">
+                Invoice PDF sent to the customer on WhatsApp.
+            </div>
+        @endif
+
         @if (Session::has('vat_success'))
             <div class="alert alert-success bg-success text-white w-50">
                 {{ Session::get('vat_success') }}

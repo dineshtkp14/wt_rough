@@ -102,6 +102,32 @@ class VatStockController extends Controller
         });
         return redirect()->route('vat-system.stock.opening.create')->with('success','Opening stock updated successfully.');
     }
+    public function edit(VatStock $stock){
+        abort_unless((int)$stock->firm_id === (int)session('vat_firm_id'), 404);
+        return view('vat-system.stock.edit', compact('stock'));
+    }
+    public function update(Request $request, VatStock $stock){
+        abort_unless((int)$stock->firm_id === (int)session('vat_firm_id'), 404);
+        $data=$request->validate([
+            'item_name'=>'required|string|max:200',
+            'hs_code'=>'nullable|string|max:50',
+            'unit'=>'required|string|max:30',
+            'purchase_rate'=>'nullable|numeric|min:0',
+            'sale_rate'=>'nullable|numeric|min:0',
+            'reorder_level'=>'nullable|numeric|min:0',
+            'notes'=>'nullable|string|max:500',
+        ]);
+        $stock->update([
+            'item_name'=>trim($data['item_name']),
+            'hs_code'=>trim((string)($data['hs_code']??'')) ?: null,
+            'unit'=>trim($data['unit']),
+            'purchase_rate'=>(float)($data['purchase_rate']??0),
+            'sale_rate'=>(float)($data['sale_rate']??0),
+            'reorder_level'=>(float)($data['reorder_level']??0),
+            'notes'=>$data['notes']??null,
+        ]);
+        return redirect()->route('vat-system.stock.index')->with('success','Stock item updated successfully.');
+    }
     public function openingDestroy(VatStockMovement $movement){
         $firm=VatFirm::find(session('vat_firm_id'));
         abort_unless($firm && $movement->movement_type==='opening_stock' && $movement->stock && (int)$movement->stock->firm_id===(int)$firm->id,404);

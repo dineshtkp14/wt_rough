@@ -174,9 +174,12 @@ class AllCustomerCreditListLivewire extends Component
         $this->ageBreakdownModalCustomers = collect($this->ageBreakdownModalCustomers)
             ->groupBy('category')
             ->map(function ($customers, $category) {
+                $type = $customers->first()['type'] ?? '-';
+                $period = str_contains($category, 'Within 6 Months') ? 'Within 6 Months' : 'More Than 6 Months';
+
                 return [
-                    'type' => $customers->first()['type'] ?? '-',
-                    'category' => $category,
+                    'type' => $type,
+                    'category' => $type . ' - ' . $period,
                     'total_due' => $customers->sum('total_due'),
                 ];
             })

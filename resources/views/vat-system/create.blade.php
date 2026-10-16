@@ -419,4 +419,213 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
+<style>
+/* Final visual layer: a calmer, clearer invoice workflow. */
+.vat-create {
+    background: radial-gradient(circle at 90% 0%, #e4efff 0, transparent 36%), #f4f7fb;
+    padding-bottom: 42px;
+}
+.vat-create > .container-fluid { max-width: 1540px; margin: 0 auto; }
+.vat-create .create-page-heading {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, auto) auto;
+    gap: 22px;
+    padding: 8px 2px 22px;
+    align-items: center;
+}
+.vat-create .create-page-heading h1 {
+    color: #142f5d;
+    font-size: clamp(28px, 3vw, 42px);
+    letter-spacing: -1px;
+    line-height: 1.05;
+}
+.vat-create .create-page-heading p { color: #6d7f99 !important; font-size: 15px; }
+.vat-create .selected-firm-heading {
+    position: static !important;
+    transform: none !important;
+    min-width: 260px;
+    padding: 10px 18px;
+    border: 1px solid #cfe0f7;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(23,59,114,.08);
+}
+.vat-create .selected-firm-heading small { color: #7387a3; font-size: 10px; }
+.vat-create .selected-firm-heading strong { color: #173b72; font-size: 17px; white-space: normal; }
+.vat-create .create-page-heading > .d-flex:last-child { justify-content: flex-end; }
+.vat-create .create-page-heading > .d-flex:last-child .btn { border-radius: 11px; padding: 11px 15px; }
+.vat-create .card {
+    border: 1px solid #e1eaf5;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(23,59,114,.08);
+    overflow: hidden;
+}
+.vat-create .card-header {
+    min-height: 64px;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(105deg, #173b72, #2457a6) !important;
+    color: #fff;
+    letter-spacing: .1px;
+}
+.vat-create .card-header button { border: 0; border-radius: 9px; padding: 9px 14px; color: #173b72; }
+.vat-create .card-body { padding: 25px 23px; }
+.vat-create label { color: #536b88; font-size: 11px; letter-spacing: .55px; margin-bottom: 7px; }
+.vat-create .form-control, .vat-create .form-select {
+    min-height: 45px;
+    border: 1px solid #cfdaea;
+    border-radius: 10px;
+    background: #fbfdff;
+    color: #1c385e;
+    transition: border-color .18s, box-shadow .18s, background .18s;
+}
+.vat-create .form-control:hover, .vat-create .form-select:hover { background: #fff; border-color: #a9bfdb; }
+.vat-create .form-control:focus, .vat-create .form-select:focus {
+    background: #fff;
+    border-color: #2877e8;
+    box-shadow: 0 0 0 4px rgba(40,119,232,.12);
+}
+.vat-create .firm-display { border-radius: 12px; box-shadow: inset 4px 0 #2877e8; }
+.vat-create #billItems { min-width: 920px; border-collapse: separate; border-spacing: 0; }
+.vat-create #billItems thead th {
+    background: #eef4fc !important;
+    color: #3d5879 !important;
+    border-bottom: 1px solid #d8e3f1;
+    font-size: 10px;
+    letter-spacing: .7px;
+    padding: 14px 10px;
+    text-transform: uppercase;
+}
+.vat-create #billItems tbody td { border-bottom: 1px solid #e8eef6; padding: 13px 9px; background: #fff; }
+.vat-create #billItems tbody tr:hover td { background: #f8fbff; }
+.vat-create #billItems .sn { color: #7590b0; font-weight: 900; text-align: center; }
+.vat-create #billItems .amount { background: #f1f6fc; color: #173b72; font-weight: 800; }
+.vat-create #billItems .taxable { width: 18px; height: 18px; accent-color: #2563eb; }
+.vat-create #billItems .remove-row { border-radius: 9px; width: 36px; height: 36px; padding: 0; }
+.vat-create .total-box {
+    border: 1px solid #d6e3f2;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #f8fbff, #eef5fd);
+    color: #506783;
+}
+.vat-create .total-box strong { color: #173b72; }
+.vat-create #grandTotal { color: #138a59; font-size: 24px; }
+.vat-create .card-footer { background: #fff !important; padding: 0 23px 23px !important; }
+.vat-create .card-footer .btn-primary {
+    border: 0;
+    border-radius: 12px;
+    background: linear-gradient(110deg, #1769d5, #234bc0);
+    box-shadow: 0 8px 18px rgba(35,75,192,.22);
+}
+.vat-create .card-footer .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 11px 22px rgba(35,75,192,.3); }
+.vat-create .col-lg-5 > .card { position: sticky; top: 88px; }
+.vat-create textarea.form-control { min-height: 145px; resize: vertical; }
+@media (max-width: 1050px) {
+    .vat-create .create-page-heading { grid-template-columns: 1fr auto; }
+    .vat-create .selected-firm-heading { grid-column: 1 / -1; grid-row: 2; text-align: left; }
+}
+@media (max-width: 700px) {
+    .vat-create .create-page-heading { display: flex !important; flex-wrap: wrap; gap: 12px; }
+    .vat-create .create-page-heading > div:first-child { flex: 1 1 100%; }
+    .vat-create .selected-firm-heading { width: 100%; min-width: 0; }
+    .vat-create .create-page-heading > .d-flex:last-child { width: 100%; justify-content: flex-start; }
+    .vat-create .card-body { padding: 18px 14px; }
+    .vat-create .card-header { padding: 13px 15px; min-height: 56px; }
+    .vat-create .col-lg-5 > .card { position: static; }
+}
+</style>
+
+<style>
+/* Party information: make the primary fields balanced and easy to scan. */
+.vat-create #vatBillForm > .card:first-of-type .card-header {
+    min-height: 70px;
+    background: linear-gradient(105deg, #173b72 0%, #2459ac 100%) !important;
+    letter-spacing: .15px;
+}
+.vat-create #vatBillForm > .card:first-of-type .card-header::before {
+    content: '\f2bb';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    margin-right: 12px;
+    color: #bfdbfe;
+    font-size: 18px;
+}
+.vat-create #vatBillForm > .card:first-of-type .card-header button {
+    background: rgba(255,255,255,.98);
+    color: #17427e;
+    border: 1px solid rgba(255,255,255,.65);
+    box-shadow: 0 4px 12px rgba(7,31,72,.18);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+.vat-create #vatBillForm > .card:first-of-type .card-header button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 16px rgba(7,31,72,.25);
+}
+.vat-create #vatBillForm > .card:first-of-type .card-body {
+    padding: 30px 29px 32px;
+    background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
+}
+.vat-create #vatBillForm > .card:first-of-type .card-body > .row {
+    display: grid !important;
+    grid-template-columns: minmax(340px, 1.55fr) minmax(150px, .7fr) minmax(340px, 1.35fr);
+    gap: 24px !important;
+    align-items: start;
+}
+.vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-4:has(.customer-search-wrap),
+.vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-2,
+.vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-3:last-child {
+    width: auto !important;
+    padding: 0 !important;
+}
+.vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-4:has(.customer-search-wrap) { grid-column: 1; }
+.vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-2 { grid-column: 2; }
+.vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-3:last-child { grid-column: 3; }
+.vat-create #vatBillForm > .card:first-of-type label {
+    display: block;
+    margin-bottom: 9px;
+    color: #3e5d82;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .8px;
+}
+.vat-create #vatBillForm > .card:first-of-type .customer-search-wrap,
+.vat-create #vatBillForm > .card:first-of-type input[name="bill_no"] {
+    width: 100%;
+}
+.vat-create #vatBillForm > .card:first-of-type input[name="bill_no"] { min-height: 58px; font-size: 18px; }
+.vat-create #vatBillForm > .card:first-of-type .customer-search-wrap .clean-customer-search { height: 58px !important; }
+.vat-create #vatBillForm > .card:first-of-type .vat-date-mode-row {
+    display: grid;
+    grid-template-columns: 145px minmax(180px, 1fr);
+    gap: 9px;
+    align-items: start;
+}
+.vat-create #vatBillForm > .card:first-of-type .vat-date-mode-row select,
+.vat-create #vatBillForm > .card:first-of-type .vat-date-mode-row input { width: 100%; max-width: none; min-height: 58px; }
+.vat-create #vatBillForm > .card:first-of-type .vat-date-mode-row .client-validation-error {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+.vat-create #vatBillForm > .card:first-of-type .vat-date-help {
+    margin-top: 8px;
+    color: #66809f;
+    font-size: 11px;
+    line-height: 1.35;
+}
+@media (max-width: 950px) {
+    .vat-create #vatBillForm > .card:first-of-type .card-body > .row { grid-template-columns: minmax(0, 1fr) minmax(150px, .55fr); }
+    .vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-4:has(.customer-search-wrap) { grid-column: 1 / -1; }
+    .vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-2 { grid-column: 1; }
+    .vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-3:last-child { grid-column: 2; }
+}
+@media (max-width: 600px) {
+    .vat-create #vatBillForm > .card:first-of-type .card-body { padding: 21px 16px 24px; }
+    .vat-create #vatBillForm > .card:first-of-type .card-body > .row { display: block !important; }
+    .vat-create #vatBillForm > .card:first-of-type .card-body > .row > div { margin-bottom: 18px; }
+    .vat-create #vatBillForm > .card:first-of-type .vat-date-mode-row { display: block; }
+    .vat-create #vatBillForm > .card:first-of-type .vat-date-mode-row select { margin-bottom: 8px; }
+}
+</style>
 @endsection

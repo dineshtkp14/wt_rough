@@ -146,6 +146,8 @@ Route::get('/vat-system/change-firm', [VatSystemBillController::class, 'switchFi
   Route::put('/vat-system/stock/opening/{movement}', [VatStockController::class, 'openingUpdate'])->name('vat-system.stock.opening.update');
   Route::delete('/vat-system/stock/opening/{movement}', [VatStockController::class, 'openingDestroy'])->name('vat-system.stock.opening.destroy');
   Route::get('/vat-system/stock', [VatStockController::class, 'index'])->name('vat-system.stock.index');
+  Route::get('/vat-system/stock/{stock}/edit', [VatStockController::class, 'edit'])->name('vat-system.stock.edit');
+  Route::put('/vat-system/stock/{stock}', [VatStockController::class, 'update'])->name('vat-system.stock.update');
   Route::get('/vat-system/stock/export/pdf', [VatStockController::class, 'exportPdf'])->name('vat-system.stock.export.pdf');
   Route::get('/vat-system/stock/export/excel', [VatStockController::class, 'exportExcel'])->name('vat-system.stock.export.excel');
   Route::post('/vat-system/stock/{stock}/adjust', [VatStockController::class, 'adjust'])->name('vat-system.stock.adjust');

@@ -10,6 +10,7 @@ use App\Models\item;
 use App\Models\SmsLog;
 use App\Services\SmsService;
 use App\Services\CustomerLedgerBalance;
+use App\Services\WhatsAppInvoiceService;
 use App\Helpers\InvoiceSmsHelper;
 use App\Support\NepaliDate;
 use App\Support\FiscalNumber;
@@ -261,6 +262,17 @@ class ItemsalesController extends Controller
 
         $redirect = redirect()->route('onlyviewbillafterbill', ['invoiceid' => $invoice_data->id])
             ->with('success', 'Invoice Created Successfully !!');
+
+        // Send the generated invoice PDF through WhatsApp Cloud API when configured.
+        // A failed WhatsApp send is logged and does not roll back the invoice.
+        $whatsappResult = app(WhatsAppInvoiceService::class)->trySend(
+            $invoice_data,
+            $phone,
+            'Invoice ' . ($invoice_data->visible_invoice_no ?? $invoice_data->id)
+        );
+        if ($whatsappResult['success'] ?? false) {
+            $redirect->with('invoice_whatsapp_pdf_sent', true);
+        }
 
         if ($invoice_data->inv_type === 'credit') {
             $totalDueAmount = $this->customerTotalDueForMessage($invoice_data->customerid);
