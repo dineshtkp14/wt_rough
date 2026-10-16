@@ -43,7 +43,7 @@
         @if(session('success'))<div class="alert alert-success border-0 shadow-sm">{{ session('success') }}</div>@endif
         @if($errors->any())<div class="alert alert-danger border-0 shadow-sm">{{ $errors->first() }}</div>@endif
         <div class="stock-card mb-4"><form class="search-panel row g-2" id="stockSearchForm"><input type="hidden" name="status" value="{{ request('status') }}"><div class="col-md-8"><div class="input-group"><span class="input-group-text bg-white"><i class="fa fa-search text-primary"></i></span><input id="stockSearch" name="search" class="form-control border-start-0" value="{{ request('search') }}" placeholder="Search by item name..." autocomplete="off"></div></div><div class="col-md-2"><select id="stockSort" name="sort" class="form-select h-100"><option value="newest" {{ request('sort','newest')==='newest'?'selected':'' }}>New to Old</option><option value="oldest" {{ request('sort')==='oldest'?'selected':'' }}>Old to New</option></select></div><div class="col-md-2"><button class="btn btn-primary w-100 h-100" type="submit"><i class="fa fa-search me-1"></i>Search</button></div></form><div class="stock-filter-links"><a href="{{ route('vat-system.stock.index') }}" class="{{ !request('status')?'active':'' }}">All Items</a><a href="{{ route('vat-system.stock.index', ['status'=>'low']) }}" class="{{ request('status')==='low'?'active':'' }}"><i class="fa fa-triangle-exclamation"></i> Low Stock</a><a href="{{ route('vat-system.stock.index', ['status'=>'out']) }}" class="{{ request('status')==='out'?'active':'' }}"><i class="fa fa-circle-xmark"></i> Out of Stock</a></div></div>
-        <div class="stock-card overflow-hidden"><div class="p-3 border-bottom d-flex justify-content-between align-items-center"><div><h4 class="mb-1 fw-bold text-dark">Inventory Overview</h4><small class="text-muted">Use adjustment only for physical stock corrections.</small></div><span id="stockRecordCount" class="badge rounded-pill bg-primary-subtle text-primary">{{ $stocks->total() }} records</span></div><div class="table-scroll"><table class="table stock-table align-middle"><thead><tr><th>Item</th><th>Available</th><th>Purchase Rate</th><th>Sale Rate</th><th>Reorder</th><th>Status</th><th>Quick Adjustment</th><th>Edit</th></tr></thead><tbody id="stockRows">
+        <div class="stock-card overflow-hidden"><div class="p-3 border-bottom d-flex justify-content-between align-items-center"><div><h4 class="mb-1 fw-bold text-dark">Inventory Overview</h4><small class="text-muted">Showing the essential stock view. Show details when needed.</small></div><div class="d-flex align-items-center gap-2"><span id="stockRecordCount" class="badge rounded-pill bg-primary-subtle text-primary">{{ $stocks->total() }} records</span><button type="button" id="toggleStockDetails" class="btn btn-primary btn-sm active"><i class="fa fa-expand me-1"></i>Show Details</button></div></div><div class="table-scroll"><table class="table stock-table compact-stock-view align-middle"><thead><tr><th>Item</th><th>Available</th><th>Purchase Rate</th><th>Sale Rate</th><th>Reorder</th><th>Status</th><th>Quick Adjustment</th><th>Edit</th></tr></thead><tbody id="stockRows">
         @forelse($stocks as $stock)
             @php $status=$stock->quantity<=0?'Out of stock':($stock->reorder_level>0&&$stock->quantity<=$stock->reorder_level?'Low stock':'In stock'); $class=$status==='Out of stock'?'status-out':($status==='Low stock'?'status-low':'status-ok'); @endphp
             <tr><td><div class="item-name">{{ $stock->item_name }}</div>@if($stock->has_opening_stock)<div class="opening-stock-label"><i class="fa fa-box-open me-1"></i>Opening Stock</div>@endif<div class="item-unit">Updated {{ $stock->updated_at?->format('Y-m-d') }}</div></td><td class="fw-bold">{{ number_format($stock->quantity,3) }} {{ $stock->unit }}</td><td>Rs {{ number_format($stock->purchase_rate,2) }}</td><td>Rs {{ number_format($stock->sale_rate,2) }}</td><td>{{ number_format($stock->reorder_level,3) }}</td><td><span class="status-badge {{ $class }}"><i class="fa fa-circle fa-xs"></i>{{ $status }}</span></td><td><form method="post" action="{{ route('vat-system.stock.adjust',$stock) }}" class="adjust-form">@csrf<select name="type" class="form-select form-select-sm"><option value="in">IN</option><option value="out">OUT</option></select><input name="quantity" type="number" min=".001" step=".001" class="form-control form-control-sm" placeholder="Qty" required><button class="btn btn-success btn-sm">Save</button></form><a href="{{ route('vat-system.stock.history',$stock) }}" class="btn btn-outline-primary btn-sm w-100 mt-1"><i class="fa fa-clock-rotate-left me-1"></i>History</a></td><td><a href="{{ route('vat-system.stock.edit',$stock) }}" class="btn btn-warning btn-sm w-100"><i class="fa fa-pen-to-square me-1"></i>Edit</a></td></tr>
@@ -63,4 +63,107 @@ document.addEventListener('DOMContentLoaded',()=>{const input=document.querySele
 <style>
 .stock-filter-card{display:block;text-decoration:none;color:inherit;height:100%}.stock-filter-card .stock-card{transition:.18s}.stock-filter-card:hover .stock-card,.stock-filter-card.active .stock-card{transform:translateY(-2px);box-shadow:0 0 0 2px #2563eb,0 10px 25px rgba(37,99,235,.16)}.stock-filter-links{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 16px}.stock-filter-links a{padding:7px 12px;border:1px solid #d5e1ef;border-radius:999px;text-decoration:none;color:#526987;font-size:12px;font-weight:800;background:#fff}.stock-filter-links a:hover,.stock-filter-links a.active{background:#2563eb;border-color:#2563eb;color:#fff}
 </style>
+
+<style>
+/* Stock dashboard polish */
+.vat-stock-page { background: linear-gradient(145deg, #f3f7fc 0%, #eaf1fa 100%); }
+.vat-stock-page > .container-fluid { max-width: 1660px; margin: 0 auto; }
+.vat-stock-page .stock-hero { padding: 25px 29px; border: 1px solid rgba(255,255,255,.2); }
+.vat-stock-page .stock-hero .actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; max-width: 720px; }
+.vat-stock-page .stock-hero .actions .ms-2 { margin-left: 0 !important; }
+.vat-stock-page .stock-hero .actions .btn { border-radius: 10px; padding: 9px 13px; font-size: 12px; }
+.vat-stock-page .stock-card { border: 1px solid #e0e9f4; box-shadow: 0 10px 28px rgba(30,64,110,.08); }
+.vat-stock-page .metric { min-height: 92px; transition: transform .18s ease, box-shadow .18s ease; }
+.vat-stock-page .metric:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(30,64,110,.13); }
+.vat-stock-page .search-panel { padding: 20px; }
+.vat-stock-page .search-panel .form-control, .vat-stock-page .search-panel .form-select { height: 52px; border-color: #cbd9eb; font-size: 15px; }
+.vat-stock-page .search-panel .btn { border-radius: 11px; font-weight: 800; }
+.vat-stock-page .stock-filter-links { padding: 0 20px 19px; }
+.vat-stock-page .stock-filter-links a { padding: 8px 14px; }
+.vat-stock-page .table-scroll { overflow-x: auto; overflow-y: hidden; }
+.vat-stock-page .stock-table {
+    width: 100% !important;
+    min-width: 1120px !important;
+    max-width: none !important;
+    table-layout: fixed !important;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.vat-stock-page .stock-table th {
+    background: linear-gradient(110deg, #2945c5, #344ddb) !important;
+    border-right: 1px solid rgba(255,255,255,.2);
+    padding: 15px 13px;
+    font-size: 11px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+.vat-stock-page .stock-table th:nth-child(1), .vat-stock-page .stock-table td:nth-child(1) { width: 22% !important; }
+.vat-stock-page .stock-table th:nth-child(2), .vat-stock-page .stock-table td:nth-child(2) { width: 11% !important; }
+.vat-stock-page .stock-table th:nth-child(3), .vat-stock-page .stock-table td:nth-child(3),
+.vat-stock-page .stock-table th:nth-child(4), .vat-stock-page .stock-table td:nth-child(4) { width: 12% !important; }
+.vat-stock-page .stock-table th:nth-child(5), .vat-stock-page .stock-table td:nth-child(5) { width: 9% !important; }
+.vat-stock-page .stock-table th:nth-child(6), .vat-stock-page .stock-table td:nth-child(6) { width: 11% !important; }
+.vat-stock-page .stock-table th:nth-child(7), .vat-stock-page .stock-table td:nth-child(7) { width: 17% !important; }
+.vat-stock-page .stock-table th:nth-child(8), .vat-stock-page .stock-table td:nth-child(8) { width: 6% !important; }
+.vat-stock-page .stock-table td { height: 122px; padding: 14px 13px; border-right: 1px solid #dce5f0; border-bottom: 1px solid #dce5f0; background: #fff; text-align: center; }
+.vat-stock-page .stock-table tbody tr:nth-child(even) td { background: #f8fbff; }
+.vat-stock-page .stock-table tbody tr:hover td { background: #eef6ff; }
+.vat-stock-page .stock-table td:first-child { text-align: left; white-space: normal; }
+.vat-stock-page .stock-table td:nth-child(2), .vat-stock-page .stock-table td:nth-child(3), .vat-stock-page .stock-table td:nth-child(4), .vat-stock-page .stock-table td:nth-child(5) { color: #173b72; font-size: 15px; }
+.vat-stock-page .stock-table .item-name { font-size: 15px; }
+.vat-stock-page .stock-table .item-unit { color: #8192aa; }
+.vat-stock-page .stock-table .status-badge { justify-content: center; min-width: 100px; }
+.vat-stock-page .stock-table td:nth-child(7) { padding: 10px 9px; }
+.vat-stock-page .adjust-form { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 6px; align-items: center; }
+.vat-stock-page .adjust-form select, .vat-stock-page .adjust-form input { width: 100%; min-width: 0; height: 38px; }
+.vat-stock-page .adjust-form button { grid-column: 1 / -1; width: 100%; height: 36px; border-radius: 9px; }
+.vat-stock-page .stock-table td:nth-child(7) .btn-outline-primary { border-radius: 9px; height: 34px; padding: 7px 5px; }
+.vat-stock-page .stock-table td:nth-child(8) { padding-left: 7px; padding-right: 7px; }
+.vat-stock-page .stock-table td:nth-child(8) .btn { border-radius: 9px; padding: 9px 6px; font-size: 11px; font-weight: 800; }
+.vat-stock-page #stockPagination { background: #fff; border-top: 1px solid #e2eaf4; }
+@media (max-width: 900px) {
+    .vat-stock-page .stock-hero .actions { justify-content: flex-start; margin-top: 17px; }
+    .vat-stock-page .stock-table { min-width: 1120px !important; }
+}
+</style>
+
+<style>
+.vat-stock-page #toggleStockDetails { border-radius: 9px; font-weight: 800; white-space: nowrap; }
+.vat-stock-page #toggleStockDetails.active { background: #173b72; border-color: #173b72; color: #fff; }
+.vat-stock-page .stock-table.compact-stock-view th:nth-child(3),
+.vat-stock-page .stock-table.compact-stock-view td:nth-child(3),
+.vat-stock-page .stock-table.compact-stock-view th:nth-child(4),
+.vat-stock-page .stock-table.compact-stock-view td:nth-child(4),
+.vat-stock-page .stock-table.compact-stock-view th:nth-child(5),
+.vat-stock-page .stock-table.compact-stock-view td:nth-child(5),
+.vat-stock-page .stock-table.compact-stock-view th:nth-child(6),
+.vat-stock-page .stock-table.compact-stock-view td:nth-child(6),
+.vat-stock-page .stock-table.compact-stock-view th:nth-child(7),
+.vat-stock-page .stock-table.compact-stock-view td:nth-child(7) { display: none; }
+.vat-stock-page .stock-table.compact-stock-view { min-width: 620px !important; }
+.vat-stock-page .stock-table.compact-stock-view th:nth-child(1),
+.vat-stock-page .stock-table.compact-stock-view td:nth-child(1) { width: 55% !important; }
+.vat-stock-page .stock-table.compact-stock-view th:nth-child(2),
+.vat-stock-page .stock-table.compact-stock-view td:nth-child(2) { width: 29% !important; }
+.vat-stock-page .stock-table.compact-stock-view th:nth-child(8),
+.vat-stock-page .stock-table.compact-stock-view td:nth-child(8) { width: 16% !important; }
+.vat-stock-page .stock-table.compact-stock-view td { height: 86px; }
+.vat-stock-page .stock-table.compact-stock-view td:nth-child(2),
+.vat-stock-page .stock-table.compact-stock-view td:nth-child(8) { text-align: center; }
+@media(max-width:600px) { .vat-stock-page #toggleStockDetails { font-size: 0; width: 36px; height: 34px; padding: 0; } .vat-stock-page #toggleStockDetails i { margin: 0 !important; font-size: 13px; } }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const table = document.querySelector('.vat-stock-page .stock-table');
+    const toggle = document.getElementById('toggleStockDetails');
+    if (!table || !toggle) return;
+    toggle.addEventListener('click', function () {
+        const compact = table.classList.toggle('compact-stock-view');
+        toggle.classList.toggle('active', compact);
+        toggle.innerHTML = compact
+            ? '<i class="fa fa-expand me-1"></i>Show Details'
+            : '<i class="fa fa-compress me-1"></i>Hide Details';
+    });
+});
+</script>
 @endsection
