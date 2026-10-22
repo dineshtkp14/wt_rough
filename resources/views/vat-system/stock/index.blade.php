@@ -150,6 +150,10 @@ document.addEventListener('DOMContentLoaded',()=>{const input=document.querySele
 .vat-stock-page .stock-table.compact-stock-view td { height: 86px; }
 .vat-stock-page .stock-table.compact-stock-view td:nth-child(2),
 .vat-stock-page .stock-table.compact-stock-view td:nth-child(8) { text-align: center; }
+.vat-stock-page .stock-table td:nth-child(8) > a,
+.vat-stock-page .stock-table td:nth-child(8) > form { display: inline-block !important; vertical-align: middle; width: calc(50% - 5px) !important; margin: 0 !important; }
+.vat-stock-page .stock-table td:nth-child(8) > form button { width: 100%; }
+.vat-stock-page .stock-table td:nth-child(8) > a { padding-left: 3px !important; padding-right: 3px !important; }
 @media(max-width:600px) { .vat-stock-page #toggleStockDetails { font-size: 0; width: 36px; height: 34px; padding: 0; } .vat-stock-page #toggleStockDetails i { margin: 0 !important; font-size: 13px; } }
 </style>
 <script>
