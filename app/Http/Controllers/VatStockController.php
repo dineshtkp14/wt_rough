@@ -128,6 +128,24 @@ class VatStockController extends Controller
         ]);
         return redirect()->route('vat-system.stock.index')->with('success','Stock item updated successfully.');
     }
+    public function destroy(VatStock $stock){
+        abort_unless((int)$stock->firm_id === (int)session('vat_firm_id'), 404);
+        if ((float)$stock->quantity !== 0.0) {
+            return back()->withErrors(['stock' => 'Stock can only be deleted when available quantity is zero. Adjust it to zero first.']);
+        }
+        DB::transaction(function () use ($stock) {
+            $quantity = (float)$stock->quantity;
+            $stock->movements()->create([
+                'movement_type' => 'stock_deleted', 'quantity' => 0, 'rate' => 0,
+                'reference' => 'Stock item deleted',
+                'notes' => 'Stock item ' . $stock->item_name . ' was deleted from active inventory.',
+                'user_email' => session('user_email') ?: auth()->user()?->email,
+                'quantity_before' => $quantity, 'quantity_after' => $quantity,
+            ]);
+            $stock->delete();
+        });
+        return redirect()->route('vat-system.stock.index')->with('success','Stock item deleted. Its movement history was preserved.');
+    }
     public function openingDestroy(VatStockMovement $movement){
         $firm=VatFirm::find(session('vat_firm_id'));
         abort_unless($firm && $movement->movement_type==='opening_stock' && $movement->stock && (int)$movement->stock->firm_id===(int)$firm->id,404);
@@ -142,9 +160,22 @@ class VatStockController extends Controller
         return redirect()->route('vat-system.stock.opening.create')->with('success','Opening stock deleted successfully.');
     }
     public function index(Request $request){$firm=VatFirm::find(session('vat_firm_id'));if(!$firm)return redirect()->route('vat-system.firm.select',['next'=>'stock']);$query=$this->stockQuery($request,$firm->id);$stocks=$query->paginate(20)->withQueryString();if($request->expectsJson())return response()->json(['total'=>$stocks->total(),'items'=>$stocks->getCollection()->map(fn($s)=>['id'=>$s->id,'item_name'=>$s->item_name,'unit'=>$s->unit,'quantity'=>(float)$s->quantity,'purchase_rate'=>(float)$s->purchase_rate,'sale_rate'=>(float)$s->sale_rate,'reorder_level'=>(float)$s->reorder_level,'has_opening_stock'=>(bool)$s->has_opening_stock])]);return view('vat-system.stock.index',compact('stocks','firm'));}
-    public function exportPdf(Request $request){$firm=VatFirm::find(session('vat_firm_id'));if(!$firm)return redirect()->route('vat-system.firm.select',['next'=>'stock']);$stocks=$this->stockQuery($request,$firm->id)->get();return Pdf::loadView('vat-system.stock.pdf',compact('stocks','firm'))->setPaper('a4','landscape')->download('vat-stock-'.$firm->id.'.pdf');}
-    public function exportExcel(Request $request){$firm=VatFirm::find(session('vat_firm_id'));if(!$firm)return redirect()->route('vat-system.firm.select',['next'=>'stock']);$stocks=$this->stockQuery($request,$firm->id)->get();$html=view('vat-system.stock.excel',compact('stocks','firm'))->render();return response($html,200,['Content-Type'=>'application/vnd.ms-excel; charset=UTF-8','Content-Disposition'=>'attachment; filename="vat-stock-'.$firm->id.'.xls"']);}
+    public function exportPdf(Request $request){$firm=VatFirm::find(session('vat_firm_id'));if(!$firm)return redirect()->route('vat-system.firm.select',['next'=>'stock']);$stocks=$this->stockExportQuery($request,$firm->id);return Pdf::loadView('vat-system.stock.pdf',compact('stocks','firm'))->setPaper('a4','landscape')->download('vat-stock-'.$firm->id.'.pdf');}
+    public function exportExcel(Request $request){$firm=VatFirm::find(session('vat_firm_id'));if(!$firm)return redirect()->route('vat-system.firm.select',['next'=>'stock']);$stocks=$this->stockExportQuery($request,$firm->id);$html=view('vat-system.stock.excel',compact('stocks','firm'))->render();return response($html,200,['Content-Type'=>'application/vnd.ms-excel; charset=UTF-8','Content-Disposition'=>'attachment; filename="vat-stock-'.$firm->id.'.xls"']);}
     public function adjust(Request $request,VatStock $stock){abort_unless((int)$stock->firm_id===(int)session('vat_firm_id'),404);$data=$request->validate(['type'=>'required|in:in,out','quantity'=>'required|numeric|gt:0','rate'=>'nullable|numeric|min:0','notes'=>'nullable|string|max:500']);if($data['type']==='out'&&$stock->quantity<$data['quantity'])return back()->withErrors(['quantity'=>'Insufficient stock. Available: '.$stock->quantity]);DB::transaction(function()use($stock,$data){$qty=(float)$data['quantity'];$before=(float)$stock->quantity;$after=$before+($data['type']==='in'?$qty:-$qty);$stock->update(['quantity'=>$after]);$stock->movements()->create(['movement_type'=>$data['type']==='out'?'adjustment_out':'adjustment_in','quantity'=>$qty,'rate'=>$data['rate']??0,'reference'=>'Manual adjustment','notes'=>$data['notes']??null,'user_email'=>session('user_email')?:auth()->user()?->email,'quantity_before'=>$before,'quantity_after'=>$after]);});return back()->with('success','Stock adjustment saved and recorded.');}
     public function history(VatStock $stock){abort_unless((int)$stock->firm_id===(int)session('vat_firm_id'),404);$movements=$stock->movements()->latest()->paginate(30);return view('vat-system.stock.history',compact('stock','movements'));}
+    private function stockExportQuery(Request $request,int $firmId){
+        $stocks=$this->stockQuery($request,$firmId)->with('movements')->get();
+        return $stocks->each(function($stock){
+            $movements=$stock->movements;
+            $isOut=fn($movement)=>str_contains($movement->movement_type,'out')||in_array($movement->movement_type,['sale','purchase_reversal'],true);
+            $stock->movement_count=$movements->count();
+            $stock->movement_in=$movements->reject($isOut)->sum('quantity');
+            $stock->movement_out=$movements->filter($isOut)->sum('quantity');
+            $last=$movements->sortByDesc('created_at')->first();
+            $stock->last_movement=$last?->created_at;
+            $stock->last_movement_type=$last?->movement_type;
+        });
+    }
     private function stockQuery(Request $request,int $firmId){$sort=$request->query('sort','newest')==='oldest'?'asc':'desc';return VatStock::where('firm_id',$firmId)->withExists(['movements as has_opening_stock'=>fn($q)=>$q->where('movement_type','opening_stock')])->when($request->filled('search'),fn($q)=>$q->where('item_name','like','%'.trim($request->query('search')).'%'))->when($request->query('status')==='out',fn($q)=>$q->where('quantity','<=',0))->when($request->query('status')==='low',fn($q)=>$q->where('reorder_level','>',0)->whereColumn('quantity','<=','reorder_level')->where('quantity','>',0))->orderBy('created_at',$sort)->orderBy('id',$sort);}
 }

@@ -1,8 +1,10 @@
 <?php
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 class VatStock extends Model
 {
+    use SoftDeletes;
     protected $fillable = ['firm_id','item_name','hs_code','unit','quantity','purchase_rate','sale_rate','reorder_level','notes'];
     protected $casts = ['quantity'=>'decimal:3','purchase_rate'=>'decimal:2','sale_rate'=>'decimal:2','reorder_level'=>'decimal:3'];
     public function movements() { return $this->hasMany(VatStockMovement::class); }

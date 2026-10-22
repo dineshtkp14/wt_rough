@@ -33,7 +33,7 @@
 <div class="col-md-3"><label>Seller / Firm Name *</label><input name="seller_name" class="form-control" value="{{ old('seller_name', $bill->seller_name ?? 'NEPAL') }}" required></div><div class="col-md-3"><label>Seller VAT No.</label><input name="seller_vat_no" class="form-control" value="{{ old('seller_vat_no', $bill->seller_vat_no ?? '123456789') }}"></div><div class="col-md-3"><label>Seller Phone</label><input name="seller_phone" class="form-control" value="{{ old('seller_phone', $bill->seller_phone ?? '123456792') }}"></div><div class="col-md-3"><label>Seller Email</label><input type="email" name="seller_email" class="form-control" value="{{ old('seller_email', $bill->seller_email ?? 'nepalbillingdemo@gmail.com') }}"></div>
 <div class="col-md-4"><label>Customer *</label><select name="customer_id" class="form-select" required><option value="">Choose VAT customer</option>@foreach($customers as $customer)<option value="{{ $customer->id }}" @selected(old('customer_id', $bill->customer_id ?? '') == $customer->id)>{{ $customer->name }}{{ $customer->pan_no ? ' ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â '.$customer->pan_no : '' }}</option>@endforeach</select></div><div class="col-md-2"><label>Bill No. *</label><input name="bill_no" class="form-control" value="{{ old('bill_no', $bill->bill_no ?? '') }}" required></div><div class="col-md-3"><label>Bill Date *</label><input type="date" name="bill_date" class="form-control" value="{{ old('bill_date', isset($bill) ? $bill->bill_date->format('Y-m-d') : now()->format('Y-m-d')) }}" required></div>
 </div></div></div>
-<div class="card mb-4"><div class="card-header d-flex justify-content-between align-items-center">Bill Items <button type="button" class="btn btn-light btn-sm" id="addBillRow"><i class="fa fa-plus me-1"></i>Add Item</button></div><div class="table-responsive"><table class="table align-middle mb-0" id="billItems"><thead><tr><th>#</th><th>Particulars *</th><th>H.S. Code</th><th>Unit *</th><th>Qty *</th><th>Rate *</th><th>Taxable</th><th>Amount</th><th></th></tr></thead><tbody>@if($editing)@foreach($bill->items as $item)<tr class="bill-row"><td class="sn">{{ $loop->iteration }}</td><td><input name="items[{{ $loop->index }}][item_name]" class="form-control item-name" autocomplete="off" value="{{ old('items.'.$loop->index.'.item_name', $item->item_name) }}" required></td><td><input name="items[{{ $loop->index }}][hs_code]" class="form-control" value="{{ old('items.'.$loop->index.'.hs_code', $item->hs_code) }}"></td><td><input name="items[{{ $loop->index }}][unit]" class="form-control" value="{{ old('items.'.$loop->index.'.unit', $item->unit) }}" required></td><td><input name="items[{{ $loop->index }}][quantity]" class="form-control qty" type="number" min=".001" step=".001" value="{{ old('items.'.$loop->index.'.quantity', $item->quantity) }}" required></td><td><input name="items[{{ $loop->index }}][rate]" class="form-control rate" type="number" min="0" step=".01" value="{{ old('items.'.$loop->index.'.rate', $item->rate) }}" required></td><td class="text-center"><input name="items[{{ $loop->index }}][is_taxable]" value="1" type="checkbox" class="taxable" @checked(old('items.'.$loop->index.'.is_taxable', $item->is_taxable))></td><td><input class="form-control amount text-end" value="0.00" readonly></td><td><button type="button" class="btn btn-outline-danger remove-row"><i class="fa fa-trash"></i></button></td></tr>@endforeach @else<tr class="bill-row"><td class="sn">1</td><td><input name="items[0][item_name]" class="form-control item-name" autocomplete="off" required></td><td><input name="items[0][hs_code]" class="form-control"></td><td><input name="items[0][unit]" class="form-control" value="KG" required></td><td><input name="items[0][quantity]" class="form-control qty" type="number" min=".001" step=".001" value="1" required></td><td><input name="items[0][rate]" class="form-control rate" type="number" min="0" step=".01" required></td><td class="text-center"><input name="items[0][is_taxable]" value="1" type="checkbox" class="taxable" checked></td><td><input class="form-control amount text-end" value="0.00" readonly></td><td><button type="button" class="btn btn-outline-danger remove-row"><i class="fa fa-trash"></i></button></td></tr>@endif</tbody></table></div></div>
+<div class="card mb-4"><div class="card-header d-flex justify-content-between align-items-center">Bill Items <div class="bill-items-actions"><button type="button" class="btn btn-outline-light btn-sm" id="toggleMargin"><i class="fa fa-percent me-1"></i>Add Margin</button><button type="button" class="btn btn-light btn-sm" id="addBillRow"><i class="fa fa-plus me-1"></i>Add Item</button></div></div><div id="marginControl" class="margin-control" hidden><label for="marginPercent"><i class="fa fa-percent me-1"></i>Margin on rate</label><input id="marginPercent" type="number" min="0" max="1000" step=".01" value="0"><span>Example: 157 + 5% = 164.85</span></div><div class="table-responsive"><table class="table align-middle mb-0" id="billItems"><thead><tr><th>#</th><th>Particulars *</th><th>H.S. Code</th><th>Unit *</th><th>Qty *</th><th>Rate *</th><th>Taxable</th><th>Amount</th><th></th></tr></thead><tbody>@if($editing)@foreach($bill->items as $item)<tr class="bill-row"><td class="sn">{{ $loop->iteration }}</td><td><input name="items[{{ $loop->index }}][item_name]" class="form-control item-name" autocomplete="off" value="{{ old('items.'.$loop->index.'.item_name', $item->item_name) }}" required></td><td><input name="items[{{ $loop->index }}][hs_code]" class="form-control" value="{{ old('items.'.$loop->index.'.hs_code', $item->hs_code) }}"></td><td><input name="items[{{ $loop->index }}][unit]" class="form-control" value="{{ old('items.'.$loop->index.'.unit', $item->unit) }}" required></td><td><input name="items[{{ $loop->index }}][quantity]" class="form-control qty" type="number" min=".001" step=".001" value="{{ old('items.'.$loop->index.'.quantity', $item->quantity) }}" required></td><td><input name="items[{{ $loop->index }}][rate]" class="form-control rate" type="number" min="0" step=".01" value="{{ old('items.'.$loop->index.'.rate', $item->rate) }}" required></td><td class="text-center"><input name="items[{{ $loop->index }}][is_taxable]" value="1" type="checkbox" class="taxable" @checked(old('items.'.$loop->index.'.is_taxable', $item->is_taxable))></td><td><input class="form-control amount text-end" value="0.00" readonly></td><td><button type="button" class="btn btn-outline-danger remove-row"><i class="fa fa-trash"></i></button></td></tr>@endforeach @else<tr class="bill-row"><td class="sn">1</td><td><input name="items[0][item_name]" class="form-control item-name" autocomplete="off" required></td><td><input name="items[0][hs_code]" class="form-control"></td><td><input name="items[0][unit]" class="form-control" value="KG" required></td><td><input name="items[0][quantity]" class="form-control qty" type="number" min=".001" step=".001" value="1" required></td><td><input name="items[0][rate]" class="form-control rate" type="number" min="0" step=".01" required></td><td class="text-center"><input name="items[0][is_taxable]" value="1" type="checkbox" class="taxable" checked></td><td><input class="form-control amount text-end" value="0.00" readonly></td><td><button type="button" class="btn btn-outline-danger remove-row"><i class="fa fa-trash"></i></button></td></tr>@endif</tbody></table></div></div>
 <div class="row g-4"><div class="col-lg-7"><div class="card"><div class="card-header">Notes</div><div class="card-body"><textarea name="notes" rows="4" class="form-control" placeholder="Optional notes">{{ old('notes', $bill->notes ?? '') }}</textarea></div></div></div><div class="col-lg-5"><div class="card"><div class="card-header">Bill Summary</div><div class="card-body"><div class="total-box p-3"><div class="d-flex justify-content-between mb-2">Total <strong id="total">0.00</strong></div><div class="d-flex justify-content-between align-items-center mb-2">Discount <input name="discount" id="discount" class="form-control form-control-sm text-end" style="width:110px" value="{{ old('discount', $bill->discount ?? '0') }}"></div><div class="d-flex justify-content-between mb-2">Non-Taxable Total <strong id="nonTaxable">0.00</strong></div><div class="d-flex justify-content-between mb-2">Taxable Total <strong id="taxableTotal">0.00</strong></div><div class="d-flex justify-content-between mb-2">VAT (13%) <strong id="vat">0.00</strong></div><hr><div class="d-flex justify-content-between fs-5 fw-bold">Grand Total <strong id="grandTotal">0.00</strong></div></div></div><div class="card-footer bg-white border-0 p-3"><button class="btn btn-primary btn-lg w-100"><i class="fa fa-print me-2"></i>{{ $editing ? 'Update & View VAT Bill' : 'Save & View VAT Bill' }}</button></div></div></div></div>
 </form></div></div>
 <datalist id="vatItemSuggestions">@foreach($catalogItems as $catalogItem)<option value="{{ $catalogItem->itemsname }}"></option>@endforeach</datalist>
@@ -564,7 +564,7 @@ document.addEventListener('DOMContentLoaded', function () {
     box-shadow: 0 7px 16px rgba(7,31,72,.25);
 }
 .vat-create #vatBillForm > .card:first-of-type .card-body {
-    padding: 30px 29px 32px;
+    padding: 20px 29px 21px;
     background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
 }
 .vat-create #vatBillForm > .card:first-of-type .card-body > .row {
@@ -572,6 +572,8 @@ document.addEventListener('DOMContentLoaded', function () {
     grid-template-columns: minmax(340px, 1.55fr) minmax(150px, .7fr) minmax(340px, 1.35fr);
     gap: 24px !important;
     align-items: start;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
 .vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-4:has(.customer-search-wrap),
 .vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-2,
@@ -621,11 +623,149 @@ document.addEventListener('DOMContentLoaded', function () {
     .vat-create #vatBillForm > .card:first-of-type .card-body > .row > .col-md-3:last-child { grid-column: 2; }
 }
 @media (max-width: 600px) {
-    .vat-create #vatBillForm > .card:first-of-type .card-body { padding: 21px 16px 24px; }
+    .vat-create #vatBillForm > .card:first-of-type .card-body { padding: 18px 16px 18px; }
     .vat-create #vatBillForm > .card:first-of-type .card-body > .row { display: block !important; }
     .vat-create #vatBillForm > .card:first-of-type .card-body > .row > div { margin-bottom: 18px; }
     .vat-create #vatBillForm > .card:first-of-type .vat-date-mode-row { display: block; }
     .vat-create #vatBillForm > .card:first-of-type .vat-date-mode-row select { margin-bottom: 8px; }
 }
 </style>
+<style>
+/* Larger, bolder product suggestions for faster item selection. */
+.vat-create .item-suggestion-menu { width: min(520px, calc(100vw - 40px)) !important; border-radius: 13px !important; }
+.vat-create .item-suggestion { padding: 14px 16px !important; min-height: 67px; }
+.vat-create .item-suggestion strong { font-size: 15px !important; line-height: 1.3; font-weight: 900 !important; letter-spacing: .05px; }
+.vat-create .item-suggestion small { display: block; margin-top: 5px; font-size: 12px !important; line-height: 1.35; font-weight: 700; color: #dbeafe !important; }
+.vat-create .item-suggestion:hover strong { color: #fff; }
+.vat-create #billItems .item-name { font-size: 16px; font-weight: 700; }
+</style>
+<style>
+.bill-items-actions { display:flex; gap:8px; align-items:center; }
+.bill-items-actions .btn { border-radius:9px; font-weight:800; }
+.margin-control { display:flex; align-items:center; gap:10px; padding:12px 20px; background:#f3f8ff; border-bottom:1px solid #dbe7f5; color:#31547e; }
+.margin-control label { margin:0; color:#31547e; font-size:12px; font-weight:900; text-transform:none; }
+.margin-control input { width:105px; min-height:38px; border:1px solid #b8cde7; border-radius:8px; padding:6px 10px; font-weight:800; color:#173b72; }
+.margin-control span { font-size:11px; color:#7186a1; font-weight:700; }
+@media(max-width:600px) { .bill-items-actions { gap:5px; } .bill-items-actions .btn { padding:7px 8px; font-size:11px; } .margin-control { flex-wrap:wrap; padding:10px 14px; } .margin-control span { flex-basis:100%; } }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const table = document.getElementById('billItems');
+    const marginButton = document.getElementById('toggleMargin');
+    const marginControl = document.getElementById('marginControl');
+    const marginInput = document.getElementById('marginPercent');
+    if (!table || !marginButton || !marginControl || !marginInput) return;
+    const body = table.querySelector('tbody');
+    const currentMargin = () => Math.max(0, Number(marginInput.value) || 0);
+    const applyMargin = row => {
+        const rate = row?.querySelector('.rate');
+        if (!rate || rate.value === '') return;
+        if (row.dataset.baseRate === undefined) row.dataset.baseRate = rate.value;
+        const base = Number(row.dataset.baseRate) || 0;
+        rate.value = (base * (1 + currentMargin() / 100)).toFixed(2);
+    };
+    marginButton.addEventListener('click', function () {
+        const open = marginControl.hidden;
+        marginControl.hidden = !open;
+        marginButton.classList.toggle('active', open);
+        if (open) marginInput.focus();
+    });
+    marginInput.addEventListener('input', function () {
+        body.querySelectorAll('.bill-row').forEach(applyMargin);
+        body.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    body.addEventListener('mousedown', function (event) {
+        if (!event.target.closest('.item-suggestion')) return;
+        const row = event.target.closest('.bill-row');
+        setTimeout(() => applyMargin(row), 0);
+    });
+    body.addEventListener('change', function (event) {
+        if (event.target.classList.contains('item-name')) {
+            const row = event.target.closest('.bill-row');
+            setTimeout(() => applyMargin(row), 0);
+        }
+    });
+    body.querySelectorAll('.bill-row').forEach(row => {
+        const rate = row.querySelector('.rate');
+        if (rate?.value) row.dataset.baseRate = (Number(rate.value) / (1 + currentMargin() / 100)).toFixed(2);
+    });
+});
+</script>
+<style>
+/* Keep the party card compact so the item-entry rows stay above the fold. */
+@media (min-width: 951px) {
+    .vat-create #vatBillForm > .card:first-of-type .card-body > .row {
+        position: relative;
+        top: -38px;
+        margin-bottom: -38px !important;
+    }
+}
+@media (min-width: 601px) and (max-width: 950px) {
+    .vat-create #vatBillForm > .card:first-of-type .card-body > .row {
+        position: relative;
+        top: -24px;
+        margin-bottom: -24px !important;
+    }
+}
+@media (max-width: 600px) {
+    .vat-create #vatBillForm > .card:first-of-type .card-body > .row {
+        position: relative;
+        top: -10px;
+        margin-bottom: -10px !important;
+    }
+}
+</style>
+<style>
+/* Compact invoice header and party fields without changing functionality. */
+.vat-create .create-page-heading h1 {
+    white-space: nowrap;
+    font-size: clamp(25px, 2.45vw, 38px);
+    letter-spacing: -.7px;
+}
+.vat-create #vatBillForm > .card:first-of-type {
+    border: 0;
+    border-radius: 16px;
+    box-shadow: 0 8px 22px rgba(23,59,114,.06);
+    background: transparent;
+    overflow: visible;
+    margin-bottom: 18px !important;
+}
+.vat-create #vatBillForm > .card:first-of-type .card-header { display: none !important; }
+.vat-create #vatBillForm > .card:first-of-type .card-body {
+    padding: 21px 26px 20px;
+    border: 1px solid #dfe8f3;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
+}
+.vat-create #vatBillForm > .card:first-of-type .card-body > .row { margin-top: 0 !important; }
+.vat-create #vatBillForm > .card:nth-of-type(2) { margin-top: 0 !important; }
+@media (max-width: 1050px) {
+    .vat-create .create-page-heading h1 { font-size: clamp(24px, 3.5vw, 34px); }
+}
+@media (max-width: 600px) {
+    .vat-create .create-page-heading h1 { font-size: 25px; }
+    .vat-create #vatBillForm > .card:first-of-type .card-body { padding: 17px 15px 16px; }
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const repositionSuggestions = function () {
+        document.querySelectorAll('.item-suggestion-menu.show').forEach(function (menu) {
+            const input = menu.closest('.item-cell')?.querySelector('.item-name');
+            if (!input) return;
+            const box = input.getBoundingClientRect();
+            menu.style.position = 'fixed';
+            menu.style.left = box.left + 'px';
+            menu.style.top = (box.bottom + 5) + 'px';
+            menu.style.width = Math.max(300, box.width) + 'px';
+            menu.style.maxHeight = Math.max(150, window.innerHeight - box.bottom - 15) + 'px';
+        });
+    };
+    window.addEventListener('scroll', repositionSuggestions, true);
+    window.addEventListener('resize', repositionSuggestions);
+    document.addEventListener('input', function (event) {
+        if (event.target.classList.contains('item-name')) setTimeout(repositionSuggestions, 0);
+    });
+});
+</script>
 @endsection

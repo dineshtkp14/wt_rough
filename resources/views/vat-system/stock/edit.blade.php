@@ -19,8 +19,9 @@
                 <div class="col-md-3"><label class="form-label fw-bold">Sale Rate</label><input name="sale_rate" type="number" min="0" step=".01" class="form-control" value="{{ old('sale_rate',$stock->sale_rate) }}"></div>
                 <div class="col-md-3"><label class="form-label fw-bold">Reorder Level</label><input name="reorder_level" type="number" min="0" step=".001" class="form-control" value="{{ old('reorder_level',$stock->reorder_level) }}"></div>
                 <div class="col-12"><label class="form-label fw-bold">Notes</label><textarea name="notes" class="form-control" rows="3">{{ old('notes',$stock->notes) }}</textarea></div>
-                <div class="col-12"><button class="btn btn-primary"><i class="fa fa-save me-1"></i>Save Changes</button></div>
+                <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2"><button class="btn btn-primary"><i class="fa fa-save me-1"></i>Save Changes</button>@if((float)$stock->quantity === 0.0)<button type="submit" form="deleteStockForm" class="btn btn-outline-danger"><i class="fa fa-trash me-1"></i>Delete Stock</button>@else<button type="button" class="btn btn-outline-secondary" disabled title="Adjust available quantity to zero before deleting"><i class="fa fa-lock me-1"></i>Delete requires zero stock</button>@endif</div>
             </form>
+            @if((float)$stock->quantity === 0.0)<form id="deleteStockForm" method="post" action="{{ route('vat-system.stock.destroy',$stock) }}" onsubmit="return confirm('Delete this stock item? Its movement history will be preserved.');">@csrf @method('DELETE')</form>@endif
         </div></div>
     </div>
 </div>
