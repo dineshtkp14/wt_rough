@@ -130,9 +130,6 @@ class VatStockController extends Controller
     }
     public function destroy(VatStock $stock){
         abort_unless((int)$stock->firm_id === (int)session('vat_firm_id'), 404);
-        if ((float)$stock->quantity !== 0.0) {
-            return back()->withErrors(['stock' => 'Stock can only be deleted when available quantity is zero. Adjust it to zero first.']);
-        }
         DB::transaction(function () use ($stock) {
             $quantity = (float)$stock->quantity;
             $stock->movements()->create([
