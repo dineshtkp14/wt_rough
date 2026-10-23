@@ -13,6 +13,7 @@
     $initialBillDateMode = old('bill_date_mode', 'bs');
     $extraCustomerPayload = !empty($extraCustomer) ? ['id' => $extraCustomer->id, 'name' => $extraCustomer->name, 'address' => $extraCustomer->address, 'contact_name' => $extraCustomer->contact_name, 'notes' => $extraCustomer->notes] : null;
     $extraCustomerEndpoint = !empty($extraCustomer) ? route('vat-system.extra-customers.update', $extraCustomer) : route('vat-system.extra-customers.store');
+    $unitOptions = ['PCS', 'KGS', 'FEET', 'KG', 'MTR', 'BOX', 'SET', 'LTR', 'NOS'];
 @endphp
 <style>
 #vatBillForm>.firm-display{display:flex!important;width:100%;margin:0 0 14px!important;justify-content:center!important;text-align:center!important;position:relative!important}
@@ -36,6 +37,52 @@
 <div class="card mb-4"><div class="card-header d-flex justify-content-between align-items-center">Bill Items <div class="bill-items-actions"><button type="button" class="btn btn-outline-light btn-sm" id="toggleMargin"><i class="fa fa-percent me-1"></i>Add Margin</button><button type="button" class="btn btn-light btn-sm" id="addBillRow"><i class="fa fa-plus me-1"></i>Add Item</button></div></div><div id="marginControl" class="margin-control" hidden><label for="marginPercent"><i class="fa fa-percent me-1"></i>Margin on rate</label><input id="marginPercent" type="number" min="0" max="1000" step=".01" value="0"><span>Example: 157 + 5% = 164.85</span></div><div class="table-responsive"><table class="table align-middle mb-0" id="billItems"><thead><tr><th>#</th><th>Particulars *</th><th>H.S. Code</th><th>Unit *</th><th>Qty *</th><th>Rate *</th><th>Taxable</th><th>Amount</th><th></th></tr></thead><tbody>@if($editing)@foreach($bill->items as $item)<tr class="bill-row"><td class="sn">{{ $loop->iteration }}</td><td><input name="items[{{ $loop->index }}][item_name]" class="form-control item-name" autocomplete="off" value="{{ old('items.'.$loop->index.'.item_name', $item->item_name) }}" required></td><td><input name="items[{{ $loop->index }}][hs_code]" class="form-control" value="{{ old('items.'.$loop->index.'.hs_code', $item->hs_code) }}"></td><td><input name="items[{{ $loop->index }}][unit]" class="form-control" value="{{ old('items.'.$loop->index.'.unit', $item->unit) }}" required></td><td><input name="items[{{ $loop->index }}][quantity]" class="form-control qty" type="number" min=".001" step=".001" value="{{ old('items.'.$loop->index.'.quantity', $item->quantity) }}" required></td><td><input name="items[{{ $loop->index }}][rate]" class="form-control rate" type="number" min="0" step=".01" value="{{ old('items.'.$loop->index.'.rate', $item->rate) }}" required><small class="original-rate" hidden></small></td><td class="text-center"><input name="items[{{ $loop->index }}][is_taxable]" value="1" type="checkbox" class="taxable" @checked(old('items.'.$loop->index.'.is_taxable', $item->is_taxable))></td><td><input class="form-control amount text-end" value="0.00" readonly></td><td><button type="button" class="btn btn-outline-danger remove-row"><i class="fa fa-trash"></i></button></td></tr>@endforeach @else<tr class="bill-row"><td class="sn">1</td><td><input name="items[0][item_name]" class="form-control item-name" autocomplete="off" required></td><td><input name="items[0][hs_code]" class="form-control"></td><td><input name="items[0][unit]" class="form-control" value="KG" required></td><td><input name="items[0][quantity]" class="form-control qty" type="number" min=".001" step=".001" value="1" required></td><td><input name="items[0][rate]" class="form-control rate" type="number" min="0" step=".01" required><small class="original-rate" hidden></small></td><td class="text-center"><input name="items[0][is_taxable]" value="1" type="checkbox" class="taxable" checked></td><td><input class="form-control amount text-end" value="0.00" readonly></td><td><button type="button" class="btn btn-outline-danger remove-row"><i class="fa fa-trash"></i></button></td></tr>@endif</tbody></table></div></div>
 <div class="row g-4"><div class="col-lg-7"><div class="card"><div class="card-header">Notes</div><div class="card-body"><textarea name="notes" rows="4" class="form-control" placeholder="Optional notes">{{ old('notes', $bill->notes ?? '') }}</textarea></div></div></div><div class="col-lg-5"><div class="card"><div class="card-header">Bill Summary</div><div class="card-body"><div class="total-box p-3"><div class="d-flex justify-content-between mb-2">Total <strong id="total">0.00</strong></div><div class="d-flex justify-content-between align-items-center mb-2">Discount <input name="discount" id="discount" class="form-control form-control-sm text-end" style="width:110px" value="{{ old('discount', $bill->discount ?? '0') }}"></div><div class="d-flex justify-content-between mb-2">Non-Taxable Total <strong id="nonTaxable">0.00</strong></div><div class="d-flex justify-content-between mb-2">Taxable Total <strong id="taxableTotal">0.00</strong></div><div class="d-flex justify-content-between mb-2">VAT (13%) <strong id="vat">0.00</strong></div><hr><div class="d-flex justify-content-between fs-5 fw-bold">Grand Total <strong id="grandTotal">0.00</strong></div></div></div><div class="card-footer bg-white border-0 p-3"><button class="btn btn-primary btn-lg w-100"><i class="fa fa-print me-2"></i>{{ $editing ? 'Update & View VAT Bill' : 'Save & View VAT Bill' }}</button></div></div></div></div>
 </form></div></div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const units = ['PCS', 'KGS', 'FEET', 'KG', 'MTR', 'BOX', 'SET', 'LTR', 'NOS'];
+    const makeUnitDropdown = input => {
+        if (!input || input.dataset.unitDropdownReady) return;
+        input.dataset.unitDropdownReady = '1';
+        const value = String(input.value || 'KG').trim().toUpperCase();
+        const select = document.createElement('select');
+        select.className = 'form-select unit-select';
+        select.setAttribute('aria-label', 'Unit');
+        units.forEach(unit => select.add(new Option(unit, unit)));
+        if (value && !units.includes(value)) select.add(new Option(value, value));
+        select.add(new Option('+ Add More...', '__custom__'));
+        select.value = value || 'KG';
+        input.type = 'hidden';
+        input.classList.add('unit-hidden-value');
+        input.value = select.value;
+        input.parentNode.insertBefore(select, input);
+        select.addEventListener('change', function () {
+            if (select.value === '__custom__') {
+                const custom = (window.prompt('Enter a unit name, for example: Dozen') || '').trim().toUpperCase();
+                if (!custom) { select.value = input.value || 'KG'; return; }
+                select.insertBefore(new Option(custom, custom), select.lastElementChild);
+                select.value = custom;
+            }
+            input.value = select.value;
+        });
+    };
+    const syncUnitDropdowns = row => row?.querySelectorAll('.unit-hidden-value').forEach(input => {
+        const select = input.parentElement.querySelector('.unit-select');
+        if (select && select.value !== input.value) select.value = input.value;
+    });
+    document.querySelectorAll('input[name$="[unit]"]').forEach(makeUnitDropdown);
+    document.querySelector('#billItems tbody')?.addEventListener('mousedown', function (event) {
+        if (event.target.closest('.item-suggestion')) setTimeout(() => syncUnitDropdowns(event.target.closest('.bill-row')), 0);
+    });
+    document.querySelector('#addBillRow')?.addEventListener('click', function () {
+        setTimeout(() => {
+            const row = document.querySelector('#billItems tbody .bill-row:last-child');
+            const input = row?.querySelector('input[name$="[unit]"]');
+            makeUnitDropdown(input);
+            if (input) { input.value = 'KG'; const select = input.parentElement.querySelector('.unit-select'); if (select) select.value = 'KG'; }
+        }, 0);
+    });
+});
+</script>
 <datalist id="vatItemSuggestions">@foreach($catalogItems as $catalogItem)<option value="{{ $catalogItem->itemsname }}"></option>@endforeach</datalist>
 <datalist id="vatCustomerSuggestions">@foreach($customers as $customer)<option value="{{ $customer->name }} â€” PAN {{ $customer->pan_no ?: '-' }} â€” {{ $customer->phone ?: '-' }}" data-id="{{ $customer->id }}" data-name="{{ $customer->name }}" data-details="PAN: {{ $customer->pan_no ?: 'Not provided' }} Â· Phone: {{ $customer->phone ?: 'Not provided' }}" data-search="{{ strtolower($customer->name.' '.$customer->pan_no.' '.$customer->phone.' '.$customer->address) }}"></option>@endforeach</datalist>
 <script>document.addEventListener('DOMContentLoaded',function(){const body=document.querySelector('#billItems tbody');function reindex(){body.querySelectorAll('.bill-row').forEach(function(r,i){r.querySelector('.sn').textContent=i+1;r.querySelectorAll('input[name]').forEach(function(x){x.name=x.name.replace(/items\[\d+\]/,'items['+i+']')})})}function total(){let all=0,tax=0;body.querySelectorAll('.bill-row').forEach(function(r){let a=(+r.querySelector('.qty').value||0)*(+r.querySelector('.rate').value||0);r.querySelector('.amount').value=a.toFixed(2);all+=a;if(r.querySelector('.taxable').checked)tax+=a});let non=all-tax,vat=Math.round(tax*.13*100)/100,discount=+document.querySelector('#discount').value||0;document.querySelector('#total').textContent=all.toFixed(2);document.querySelector('#nonTaxable').textContent=non.toFixed(2);document.querySelector('#taxableTotal').textContent=tax.toFixed(2);document.querySelector('#vat').textContent=vat.toFixed(2);document.querySelector('#grandTotal').textContent=(all-discount+vat).toFixed(2)}document.querySelector('#addBillRow').onclick=function(){let r=body.querySelector('.bill-row').cloneNode(true);delete r.dataset.baseRate;r.querySelectorAll('input').forEach(function(x){if(x.type==='checkbox')x.checked=true;else if(x.classList.contains('qty'))x.value=1;else if(x.classList.contains('amount'))x.value='0.00';else x.value=''});body.appendChild(r);reindex();if(typeof bindSuggestion==='function')bindSuggestion(r.querySelector('.item-name'));total()};body.addEventListener('click',function(e){if(e.target.closest('.remove-row')&&body.children.length>1){e.target.closest('.bill-row').remove();reindex();total()}});body.addEventListener('input',total);body.addEventListener('change',total);document.querySelector('#discount').addEventListener('input',total);total();const catalog={!! $catalogJson !!};const bindSuggestion=input=>{input.dataset.suggestionBound='1';const cell=input.closest('td');cell.classList.add('item-cell');let menu=cell.querySelector('.item-suggestion-menu');if(!menu){menu=document.createElement('div');menu.className='item-suggestion-menu';cell.appendChild(menu)}const show=()=>{const box=input.getBoundingClientRect();menu.style.left=box.left+'px';menu.style.top=(box.bottom+5)+'px';menu.style.width=Math.max(300,box.width)+'px';const q=input.value.trim().toLowerCase();const matches=catalog.filter(i=>i.name.toLowerCase().includes(q)).slice(0,8);menu.innerHTML=matches.length?matches.map((i,n)=>'<button type="button" class="item-suggestion" data-index="'+catalog.indexOf(i)+'"><strong>'+i.name+'</strong><small>Rate: '+(i.price??'—')+' &nbsp; Unit: '+(i.unit||'—')+' &nbsp; H.S. Code: '+(i.hs_code||'—')+'</small></button>').join(''):'<div class="item-suggestion-empty">No matching VAT purchase item</div>';menu.classList.add('show')};input.addEventListener('input',show);input.addEventListener('focus',()=>{if(input.value)show()});menu.addEventListener('mousedown',e=>{const button=e.target.closest('.item-suggestion');if(!button)return;e.preventDefault();const found=catalog[button.dataset.index];input.value=found.name;const row=input.closest('.bill-row');if(found.price!==null){row.querySelector('.rate').value=found.price;row.dataset.baseRate=found.price}if(found.unit)row.querySelector('input[name$="[unit]"]').value=found.unit;if(found.hs_code)row.querySelector('input[name$="[hs_code]"]').value=found.hs_code;menu.classList.remove('show');total()})};body.querySelectorAll('.item-name').forEach(bindSuggestion);body.addEventListener('focusin',e=>{if(e.target.classList.contains('item-name')&&!e.target.dataset.suggestionBound){e.target.dataset.suggestionBound='1';bindSuggestion(e.target)}});document.addEventListener('click',e=>{if(!e.target.closest('.item-cell'))document.querySelectorAll('.item-suggestion-menu').forEach(m=>m.classList.remove('show'))});body.addEventListener('change',e=>{if(!e.target.classList.contains('item-name'))return;const found=catalog.find(i=>i.name.toLowerCase()===e.target.value.trim().toLowerCase());if(!found)return;const row=e.target.closest('.bill-row');if(found.price!==null){row.querySelector('.rate').value=found.price;row.dataset.baseRate=found.price}if(found.unit)row.querySelector('input[name$="[unit]"]').value=found.unit;if(found.hs_code)row.querySelector('input[name$="[hs_code]"]').value=found.hs_code;total()});});</script>
@@ -638,7 +685,7 @@ document.addEventListener('DOMContentLoaded', function () {
 .vat-create .item-suggestion small { display: block; margin-top: 6px; font-size: 14px !important; line-height: 1.4; font-weight: 700; color: #dbeafe !important; }
 .vat-create .item-suggestion:hover strong { color: #fff; }
 .vat-create #billItems .item-name { font-size: 18px; font-weight: 700; }
-.vat-create #billItems .rate, .vat-create #billItems input[name$="[unit]"], .vat-create #billItems .qty { font-size: 17px; font-weight: 600; }
+.vat-create #billItems .rate, .vat-create #billItems .unit-select, .vat-create #billItems .qty { font-size: 17px; font-weight: 600; }
 </style>
 <style>
 .bill-items-actions { display:flex; gap:8px; align-items:center; }
