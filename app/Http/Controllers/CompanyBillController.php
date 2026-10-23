@@ -81,6 +81,12 @@ class CompanyBillController extends Controller
         ]);
     }
     public function create() { $firm=$this->firm(); if(!$firm)return redirect()->route('vat-system.firm.select',['next'=>'purchase']); $suppliers=VatSupplier::orderBy('name')->get(); return view('vat-system.company-bills.form',compact('firm','suppliers')); }
+    public function checkDuplicate(Request $request)
+    {
+        $supplier = VatSupplier::where('name', trim((string) $request->query('company_name')))->first();
+        $message = $this->duplicateSupplierBillMessage($supplier, $request->query('bill_no'), $request->integer('ignore_id') ?: null);
+        return response()->json(['exists' => (bool) $message, 'message' => $message]);
+    }
     public function store(Request $request) { $firm=$this->firmOrRedirect('purchase'); $supplier=VatSupplier::where('name',$request->input('company_name'))->first(); $duplicateMessage=$this->duplicateSupplierBillMessage($supplier,$request->input('bill_no')); if($duplicateMessage)return back()->withInput()->withErrors(['bill_no'=>$duplicateMessage]); $billRules=$supplier ? [Rule::unique('company_bills','bill_no')->where(fn($q)=>$q->where('supplier_id',$supplier->id))] : []; $data=$this->validated($request,$billRules); $data['firm_id']=$firm->id; $data['supplier_id']=$supplier?->id; $bill=$this->saveBill($data); return redirect()->route('vat-system.company-bills.index')->with('success','Company purchase bill saved successfully.'); }
     public function show(CompanyBill $companyBill) { $this->ensureFirm($companyBill); $companyBill->load('items'); return view('vat-system.company-bills.show', ['bill'=>$companyBill]); }
     public function edit(CompanyBill $companyBill) { $this->ensureFirm($companyBill); $companyBill->load('items'); $firm=$this->firm(); $suppliers=VatSupplier::orderBy('name')->get(); return view('vat-system.company-bills.form',['bill'=>$companyBill, 'firm'=>$firm, 'suppliers'=>$suppliers]); }

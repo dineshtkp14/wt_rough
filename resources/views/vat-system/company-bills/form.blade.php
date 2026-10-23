@@ -128,6 +128,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!form) return;
     const supplierNames = @json($suppliers);
     const supplierInput = form.querySelector('[name="company_name"]');
+    const billNumberInput = form.querySelector('[name="bill_no"]');
+    const duplicateUrl = @json(route('vat-system.company-bills.check-duplicate'));
     const supplierField = supplierInput?.closest('.supplier-field');
     const message = function (field, text) {
         field.classList.add('validation-invalid');
@@ -144,7 +146,8 @@ document.addEventListener('DOMContentLoaded', function () {
         group.querySelector('.validation-error')?.remove();
     };
     form.addEventListener('input', function (event) { if (event.target.matches('input,textarea,select')) { clear(event.target); if (event.target === supplierInput) supplierField?.classList.remove('validation-invalid'); } });
-    form.addEventListener('submit', function (event) {
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
         let first = null;
         const name = supplierInput?.value.trim().toLowerCase();
         const validSupplier = supplierNames.some(s => (s.name || '').trim().toLowerCase() === name);
@@ -157,7 +160,23 @@ document.addEventListener('DOMContentLoaded', function () {
         form.querySelectorAll('input[required],select[required],textarea[required]').forEach(function (field) {
             if (!field.checkValidity()) { message(field, 'This field is required.'); if (!first) first = field; }
         });
-        if (first) { first.focus(); first.scrollIntoView({behavior:'smooth',block:'center'}); }
+        if (first) { first.focus(); first.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+        clear(billNumberInput);
+        const params = new URLSearchParams({company_name: supplierInput.value.trim(), bill_no: billNumberInput.value.trim(), ignore_id: @json(isset($bill) ? $bill->id : null)});
+        try {
+            const response = await fetch(duplicateUrl + '?' + params.toString(), {headers: {Accept: 'application/json'}});
+            const result = await response.json();
+            if (result.exists) {
+                message(billNumberInput, result.message || 'This bill number is already used for this supplier.');
+                billNumberInput.focus();
+                billNumberInput.scrollIntoView({behavior:'smooth',block:'center'});
+                return;
+            }
+            HTMLFormElement.prototype.submit.call(form);
+        } catch (error) {
+            message(billNumberInput, 'Could not validate the bill number. Please try again.');
+            billNumberInput.focus();
+        }
     });
 });
 </script>
