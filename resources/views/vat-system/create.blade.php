@@ -677,12 +677,12 @@ document.addEventListener('DOMContentLoaded', function () {
     body.addEventListener('mousedown', function (event) {
         if (!event.target.closest('.item-suggestion')) return;
         const row = event.target.closest('.bill-row');
-        setTimeout(() => applyMargin(row), 0);
+        setTimeout(() => { applyMargin(row); body.dispatchEvent(new Event('input', { bubbles: true })); }, 0);
     });
     body.addEventListener('change', function (event) {
         if (event.target.classList.contains('item-name')) {
             const row = event.target.closest('.bill-row');
-            setTimeout(() => applyMargin(row), 0);
+            setTimeout(() => { applyMargin(row); body.dispatchEvent(new Event('input', { bubbles: true })); }, 0);
         }
     });
     body.querySelectorAll('.bill-row').forEach(row => {
