@@ -634,10 +634,11 @@ document.addEventListener('DOMContentLoaded', function () {
 /* Larger, bolder product suggestions for faster item selection. */
 .vat-create .item-suggestion-menu { width: min(520px, calc(100vw - 40px)) !important; border-radius: 13px !important; }
 .vat-create .item-suggestion { padding: 14px 16px !important; min-height: 67px; }
-.vat-create .item-suggestion strong { font-size: 15px !important; line-height: 1.3; font-weight: 900 !important; letter-spacing: .05px; }
-.vat-create .item-suggestion small { display: block; margin-top: 5px; font-size: 12px !important; line-height: 1.35; font-weight: 700; color: #dbeafe !important; }
+.vat-create .item-suggestion strong { font-size: 18px !important; line-height: 1.3; font-weight: 900 !important; letter-spacing: .05px; }
+.vat-create .item-suggestion small { display: block; margin-top: 6px; font-size: 14px !important; line-height: 1.4; font-weight: 700; color: #dbeafe !important; }
 .vat-create .item-suggestion:hover strong { color: #fff; }
-.vat-create #billItems .item-name { font-size: 16px; font-weight: 700; }
+.vat-create #billItems .item-name { font-size: 18px; font-weight: 700; }
+.vat-create #billItems .rate, .vat-create #billItems input[name$="[unit]"], .vat-create #billItems .qty { font-size: 17px; font-weight: 600; }
 </style>
 <style>
 .bill-items-actions { display:flex; gap:8px; align-items:center; }
