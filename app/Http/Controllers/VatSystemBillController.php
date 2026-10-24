@@ -156,15 +156,15 @@ class VatSystemBillController extends Controller
 
     private function catalogItems()
     {
-        $purchased = CompanyBillItem::query()->whereHas('companyBill', fn ($query) => $query->where('firm_id', session('vat_firm_id')))->select('item_name', 'hs_code', 'rate', 'unit')->get()->map(fn ($item) => (object) ['itemsname' => $item->item_name, 'mrp' => $item->rate, 'unit' => $item->unit, 'hs_code' => $item->hs_code, 'stock_quantity' => null]);
-        $stock = VatStock::query()->where('firm_id', session('vat_firm_id'))->select('item_name', 'sale_rate', 'unit', 'quantity', 'hs_code')->get()->map(fn ($item) => (object) ['itemsname' => $item->item_name, 'mrp' => $item->sale_rate, 'unit' => $item->unit, 'hs_code' => $item->hs_code, 'stock_quantity' => (float)$item->quantity]);
+        $purchased = CompanyBillItem::query()->whereHas('companyBill', fn ($query) => $query->where('firm_id', session('vat_firm_id')))->select('item_name', 'hs_code', 'rate', 'unit')->get()->map(fn ($item) => (object) ['itemsname' => $item->item_name, 'mrp' => $item->rate, 'sale_price' => null, 'purchase_price' => $item->rate, 'unit' => $item->unit, 'hs_code' => $item->hs_code, 'stock_quantity' => null]);
+        $stock = VatStock::query()->where('firm_id', session('vat_firm_id'))->select('item_name', 'sale_rate', 'purchase_rate', 'unit', 'quantity', 'hs_code')->get()->map(fn ($item) => (object) ['itemsname' => $item->item_name, 'mrp' => $item->sale_rate, 'sale_price' => $item->sale_rate, 'purchase_price' => $item->purchase_rate, 'unit' => $item->unit, 'hs_code' => $item->hs_code, 'stock_quantity' => (float)$item->quantity]);
 
         return $stock->concat($purchased)->unique(fn ($item) => strtolower(trim($item->itemsname).'|'.strtolower(trim($item->unit))))->sortBy('itemsname')->values();
     }
 
     private function catalogJson($catalogItems): string
     {
-        return $catalogItems->map(fn ($item) => ['name'=>$item->itemsname,'price'=>$item->mrp,'unit'=>$item->unit,'hs_code'=>$item->hs_code ?? null,'stock_quantity'=>$item->stock_quantity])->values()->toJson();
+        return $catalogItems->map(fn ($item) => ['name'=>$item->itemsname,'price'=>$item->mrp,'sale_price'=>$item->sale_price ?? $item->mrp,'purchase_price'=>$item->purchase_price ?? null,'unit'=>$item->unit,'hs_code'=>$item->hs_code ?? null,'stock_quantity'=>$item->stock_quantity])->values()->toJson();
     }
 
     public function store(Request $request)
