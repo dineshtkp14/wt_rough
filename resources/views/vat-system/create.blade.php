@@ -836,5 +836,17 @@ document.addEventListener('DOMContentLoaded', function () {
     .item-suggestion-menu{max-height:480px!important;overflow-y:auto!important;overflow-x:hidden!important}
     .item-suggestion-menu::-webkit-scrollbar{width:8px}
     .item-suggestion-menu::-webkit-scrollbar-thumb{background:#6ea8ff;border-radius:8px}
+    .vat-create{flex:1 1 auto;min-width:0;width:auto!important}
+    .vat-create>.container-fluid{width:100%;max-width:none;padding-left:12px!important;padding-right:12px!important}
+    #billItems{width:100%!important;min-width:0!important;table-layout:fixed}
+    #billItems th:nth-child(1),#billItems td:nth-child(1){width:4%}
+    #billItems th:nth-child(2),#billItems td:nth-child(2){width:29%}
+    #billItems th:nth-child(3),#billItems td:nth-child(3){width:13%}
+    #billItems th:nth-child(4),#billItems td:nth-child(4){width:8%}
+    #billItems th:nth-child(5),#billItems td:nth-child(5){width:9%}
+    #billItems th:nth-child(6),#billItems td:nth-child(6){width:12%}
+    #billItems th:nth-child(7),#billItems td:nth-child(7){width:6%;text-align:center}
+    #billItems th:nth-child(8),#billItems td:nth-child(8){width:14%}
+    #billItems th:nth-child(9),#billItems td:nth-child(9){width:5%;text-align:center;padding-left:4px;padding-right:4px}
 </style>
 @endsection
