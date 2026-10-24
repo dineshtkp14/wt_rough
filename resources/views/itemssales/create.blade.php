@@ -160,8 +160,8 @@
                                 <th>Quantity</th>
                                 <th>
                                     <div class="unit-header-control">
-                                        <span>Unit (pcs/kg)</span>
-                                        <button type="button" class="default-unit-btn" id="defaultPcsUnitBtn">pcs</button>
+                                        <span>Unit (PCS/KG/FEET/MTR)</span>
+                                        <button type="button" class="default-unit-btn" id="defaultPcsUnitBtn">PCS</button>
                                     </div>
                                 </th>
                                 <th class="percent-system-col">MRP</th>

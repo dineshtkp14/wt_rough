@@ -100,7 +100,7 @@
                                         <th><button type="button" class="temporary-row-add" id="addTempRowTableBtn"><i class="fa-solid fa-plus"></i></button></th>
                                         <th>Unstocked Item</th>
                                         <th>Quantity</th>
-                                        <th><span>Unit (pcs/kg)</span><button type="button" class="temporary-default-unit" id="temporaryDefaultUnitBtn">pcs</button></th>
+                                        <th><span>Unit (PCS/KG/FEET/MTR)</span><button type="button" class="temporary-default-unit" id="temporaryDefaultUnitBtn">PCS</button></th>
                                         <th class="temporary-percent-col">MRP</th>
                                         <th class="temporary-percent-col">Discount %</th>
                                         <th>Price</th>
@@ -350,7 +350,7 @@
                     '<td><button type="button" class="btn btn-outline-danger btn-sm remove-temp-row"><i class="fa-solid fa-trash"></i></button></td>',
                     '<td><div class="temporary-price-search"><input type="text" class="form-control" data-field="item_name" placeholder="Unstocked Name" required autocomplete="off"><div class="temporary-price-results" style="display: none;"></div></div></td>',
                     '<td><input type="number" step="0.01" min="0" class="form-control temp-calc" data-field="quantity" required></td>',
-                    '<td><select class="form-select" data-field="unit"><option value="">select</option><option value="pcs">pcs</option><option value="kg">kg</option><option value="feet">feet</option><option value="mtr">mtr</option></select></td>',
+                    '<td><select class="form-select" data-field="unit"><option value="">select</option><option value="PCS">PCS</option><option value="KG">KG</option><option value="FEET">FEET</option><option value="MTR">MTR</option></select></td>',
                     '<td class="temporary-percent-col"><div class="input-group"><span class="input-group-text">Rs.</span><input type="number" step="0.01" min="0" class="form-control temp-calc" data-field="list_price" placeholder="MRP"></div></td>',
                     '<td class="temporary-percent-col"><input type="number" step="0.01" min="0" max="100" class="form-control temp-calc" data-field="discount_percent" placeholder="0"></td>',
                     '<td><div class="input-group"><span class="input-group-text">Rs.</span><input type="number" step="0.01" min="0" class="form-control temp-calc" data-field="price" required placeholder="Price"></div></td>',
@@ -566,7 +566,7 @@
             tableAddBtn.addEventListener('click', function () { addRow(); });
             defaultUnitBtn.addEventListener('click', function () {
                 tbody.querySelectorAll('[data-field="unit"]').forEach(function (input) {
-                    if (!input.value) input.value = 'pcs';
+                    if (!input.value) input.value = 'PCS';
                 });
             });
 

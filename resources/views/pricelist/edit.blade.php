@@ -27,7 +27,7 @@
                     <label for="unit" class="form-label">Unit</label>
                     <select class="form-select @error('unit') is-invalid @enderror" name="unit" id="unit">
                         <option value="">select</option>
-                        @foreach (['pcs', 'kg', 'feet', 'mtr'] as $unit)
+                        @foreach (['PCS', 'KG', 'FEET', 'MTR'] as $unit)
                             <option value="{{ $unit }}" @selected(old('unit', $pricelistdata->unit ?? '') === $unit)>{{ $unit }}</option>
                         @endforeach
                     </select>

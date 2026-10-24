@@ -13,7 +13,7 @@
     $initialBillDateMode = old('bill_date_mode', 'bs');
     $extraCustomerPayload = !empty($extraCustomer) ? ['id' => $extraCustomer->id, 'name' => $extraCustomer->name, 'address' => $extraCustomer->address, 'contact_name' => $extraCustomer->contact_name, 'notes' => $extraCustomer->notes] : null;
     $extraCustomerEndpoint = !empty($extraCustomer) ? route('vat-system.extra-customers.update', $extraCustomer) : route('vat-system.extra-customers.store');
-    $unitOptions = ['PCS', 'KGS', 'FEET', 'KG', 'MTR', 'BOX', 'SET', 'LTR', 'NOS'];
+    $unitOptions = ['PCS', 'KG', 'FEET', 'MTR'];
 @endphp
 <style>
 #vatBillForm>.firm-display{display:flex!important;width:100%;margin:0 0 14px!important;justify-content:center!important;text-align:center!important;position:relative!important}
@@ -39,18 +39,18 @@
 </form></div></div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const units = ['PCS', 'KGS', 'FEET', 'KG', 'MTR', 'BOX', 'SET', 'LTR', 'NOS'];
+    const units = ['PCS', 'KG', 'FEET', 'MTR'];
     const makeUnitDropdown = input => {
         if (!input || input.dataset.unitDropdownReady) return;
         input.dataset.unitDropdownReady = '1';
-        const value = String(input.value || 'KG').trim().toUpperCase();
+        const value = String(input.value || 'PCS').trim().toUpperCase();
         const select = document.createElement('select');
         select.className = 'form-select unit-select';
         select.setAttribute('aria-label', 'Unit');
         units.forEach(unit => select.add(new Option(unit, unit)));
         if (value && !units.includes(value)) select.add(new Option(value, value));
         select.add(new Option('+ Add More...', '__custom__'));
-        select.value = value || 'KG';
+        select.value = value || 'PCS';
         input.type = 'hidden';
         input.classList.add('unit-hidden-value');
         input.value = select.value;
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
         select.addEventListener('change', function () {
             if (select.value === '__custom__') {
                 const custom = (window.prompt('Enter a unit name, for example: Dozen') || '').trim().toUpperCase();
-                if (!custom) { select.value = input.value || 'KG'; return; }
+                if (!custom) { select.value = input.value || 'PCS'; return; }
                 select.insertBefore(new Option(custom, custom), select.lastElementChild);
                 select.value = custom;
             }
@@ -78,11 +78,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = document.querySelector('#billItems tbody .bill-row:last-child');
             const input = row?.querySelector('input[name$="[unit]"]');
             makeUnitDropdown(input);
-            if (input) { input.value = 'KG'; const select = input.parentElement.querySelector('.unit-select'); if (select) select.value = 'KG'; }
+            if (input) { input.value = 'PCS'; const select = input.parentElement.querySelector('.unit-select'); if (select) select.value = 'PCS'; }
         }, 0);
     });
 });
 </script>
+<script>document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('#billItems .bill-row').forEach(function(row){const item=row.querySelector('.item-name'),input=row.querySelector('input[name$="[unit]"]'),select=row.querySelector('.unit-select');if(item&&input&&!item.value.trim()){input.value='PCS';if(select)select.value='PCS'}})});</script>
 <datalist id="vatItemSuggestions">@foreach($catalogItems as $catalogItem)<option value="{{ $catalogItem->itemsname }}"></option>@endforeach</datalist>
 <datalist id="vatCustomerSuggestions">@foreach($customers as $customer)<option value="{{ $customer->name }} â€” PAN {{ $customer->pan_no ?: '-' }} â€” {{ $customer->phone ?: '-' }}" data-id="{{ $customer->id }}" data-name="{{ $customer->name }}" data-details="PAN: {{ $customer->pan_no ?: 'Not provided' }} Â· Phone: {{ $customer->phone ?: 'Not provided' }}" data-search="{{ strtolower($customer->name.' '.$customer->pan_no.' '.$customer->phone.' '.$customer->address) }}"></option>@endforeach</datalist>
 <script>document.addEventListener('DOMContentLoaded',function(){const body=document.querySelector('#billItems tbody');function reindex(){body.querySelectorAll('.bill-row').forEach(function(r,i){r.querySelector('.sn').textContent=i+1;r.querySelectorAll('input[name]').forEach(function(x){x.name=x.name.replace(/items\[\d+\]/,'items['+i+']')})})}function total(){let all=0,tax=0;body.querySelectorAll('.bill-row').forEach(function(r){let a=(+r.querySelector('.qty').value||0)*(+r.querySelector('.rate').value||0);r.querySelector('.amount').value=a.toFixed(2);all+=a;if(r.querySelector('.taxable').checked)tax+=a});let non=all-tax,vat=Math.round(tax*.13*100)/100,discount=+document.querySelector('#discount').value||0;document.querySelector('#total').textContent=all.toFixed(2);document.querySelector('#nonTaxable').textContent=non.toFixed(2);document.querySelector('#taxableTotal').textContent=tax.toFixed(2);document.querySelector('#vat').textContent=vat.toFixed(2);document.querySelector('#grandTotal').textContent=(all-discount+vat).toFixed(2)}document.querySelector('#addBillRow').onclick=function(){let r=body.querySelector('.bill-row').cloneNode(true);delete r.dataset.baseRate;r.querySelectorAll('input').forEach(function(x){if(x.type==='checkbox')x.checked=true;else if(x.classList.contains('qty'))x.value=1;else if(x.classList.contains('amount'))x.value='0.00';else x.value=''});body.appendChild(r);reindex();if(typeof bindSuggestion==='function')bindSuggestion(r.querySelector('.item-name'));total()};body.addEventListener('click',function(e){if(e.target.closest('.remove-row')&&body.children.length>1){e.target.closest('.bill-row').remove();reindex();total()}});body.addEventListener('input',total);body.addEventListener('change',total);document.querySelector('#discount').addEventListener('input',total);total();const catalog={!! $catalogJson !!};const bindSuggestion=input=>{input.dataset.suggestionBound='1';const cell=input.closest('td');cell.classList.add('item-cell');let menu=cell.querySelector('.item-suggestion-menu');if(!menu){menu=document.createElement('div');menu.className='item-suggestion-menu';cell.appendChild(menu)}const show=()=>{const box=input.getBoundingClientRect();menu.style.left=box.left+'px';menu.style.top=(box.bottom+5)+'px';menu.style.width=Math.max(300,box.width)+'px';const q=input.value.trim().toLowerCase();const matches=catalog.filter(i=>i.name.toLowerCase().includes(q)).slice(0,8);menu.innerHTML=matches.length?matches.map(i=>'<button type="button" class="item-suggestion" data-index="'+catalog.indexOf(i)+'"><strong>'+i.name+'</strong><small>Sale Price: '+(i.sale_price??'—')+' &nbsp; Purchase Price: '+(i.purchase_price??'—')+' &nbsp; Stock: '+(i.stock_quantity===null?'Not tracked':Number(i.stock_quantity).toFixed(3))+' &nbsp; Unit: '+(i.unit||'—')+' &nbsp; H.S. Code: '+(i.hs_code||'—')+'</small></button>').join(''):'<div class="item-suggestion-empty">No matching VAT purchase item</div>';menu.classList.add('show')};input.addEventListener('input',show);input.addEventListener('focus',()=>{if(input.value)show()});menu.addEventListener('mousedown',e=>{const button=e.target.closest('.item-suggestion');if(!button)return;e.preventDefault();const found=catalog[button.dataset.index];input.value=found.name;const row=input.closest('.bill-row');const salePrice=found.sale_price??found.price;if(salePrice!==null){row.querySelector('.rate').value=salePrice;row.dataset.baseRate=salePrice}if(found.unit)row.querySelector('input[name$="[unit]"]').value=found.unit;if(found.hs_code)row.querySelector('input[name$="[hs_code]"]').value=found.hs_code;menu.classList.remove('show');total()})};body.querySelectorAll('.item-name').forEach(bindSuggestion);body.addEventListener('focusin',e=>{if(e.target.classList.contains('item-name')&&!e.target.dataset.suggestionBound){e.target.dataset.suggestionBound='1';bindSuggestion(e.target)}});document.addEventListener('click',e=>{if(!e.target.closest('.item-cell'))document.querySelectorAll('.item-suggestion-menu').forEach(m=>m.classList.remove('show'))});body.addEventListener('change',e=>{if(!e.target.classList.contains('item-name'))return;const found=catalog.find(i=>i.name.toLowerCase()===e.target.value.trim().toLowerCase());if(!found)return;const row=e.target.closest('.bill-row');const salePrice=found.sale_price??found.price;if(salePrice!==null){row.querySelector('.rate').value=salePrice;row.dataset.baseRate=salePrice}if(found.unit)row.querySelector('input[name$="[unit]"]').value=found.unit;if(found.hs_code)row.querySelector('input[name$="[hs_code]"]').value=found.hs_code;total()});});</script>
@@ -413,8 +414,9 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <script>window.vatCatalog={!! $catalogJson !!};document.addEventListener('DOMContentLoaded',function(){const catalog=window.vatCatalog||[];const fillInfo=function(row,item){if(!row||!item)return;const sale=item.sale_price??item.price;const saleField=row.querySelector('.sale-price');const purchaseField=row.querySelector('.purchase-price');const stockField=row.querySelector('.stock-available');if(saleField)saleField.value=sale??'';if(purchaseField)purchaseField.value=item.purchase_price??'';if(stockField)stockField.value=item.stock_quantity===null?'Not tracked':Number(item.stock_quantity).toFixed(3)};document.querySelector('#billItems tbody').addEventListener('mousedown',function(event){const button=event.target.closest('.item-suggestion');if(button)fillInfo(button.closest('.item-cell')?.closest('.bill-row'),catalog[Number(button.dataset.index)])});document.querySelector('#billItems tbody').addEventListener('change',function(event){if(!event.target.classList.contains('item-name'))return;const item=catalog.find(i=>i.name.toLowerCase()===event.target.value.trim().toLowerCase());fillInfo(event.target.closest('.bill-row'),item)});document.querySelectorAll('#billItems .item-name').forEach(function(input){const item=catalog.find(i=>i.name.toLowerCase()===input.value.trim().toLowerCase());fillInfo(input.closest('.bill-row'),item)})});</script>
 <style>#billItems{min-width:0}</style>
-<script>document.addEventListener('DOMContentLoaded',function(){const table=document.getElementById('billItems');if(!table)return;table.querySelectorAll('tr').forEach(function(row){[5,4,3,2].forEach(function(index){row.children[index]?.remove()})})});</script>
+<script>document.addEventListener('DOMContentLoaded',function(){const table=document.getElementById('billItems');if(!table)return;table.querySelectorAll('tr').forEach(function(row){[4,3,2].forEach(function(index){row.children[index]?.remove()});const unit=row.children[3],qty=row.children[4];if(unit&&qty)row.insertBefore(qty,unit)})});</script>
 <script>document.addEventListener('mousedown',function(event){if(!event.target.closest('.item-suggestion'))return;setTimeout(function(){document.querySelectorAll('.item-suggestion-menu').forEach(function(menu){menu.classList.remove('show')});},0)},true);</script>
+<script>document.addEventListener('mousedown',function(event){const button=event.target.closest('.item-suggestion');if(!button)return;const catalog=window.vatCatalog||[];const item=catalog[Number(button.dataset.index)];const row=button.closest('.item-cell')?.closest('.bill-row');if(!item||!row)return;const unit=row.querySelector('input[name$="[unit]"]');const hsCode=row.querySelector('input[name$="[hs_code]"]');if(unit&&item.unit)unit.value=item.unit;if(hsCode&&item.hs_code)hsCode.value=item.hs_code},true);</script>
 <div class="modal fade" id="extraCustomerModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Extra Customer</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><form id="extraCustomerForm"><div class="modal-body"><div id="extraCustomerError" class="alert alert-danger d-none"></div><div class="mb-3"><label class="form-label">Customer Name *</label><input name="name" class="form-control" required></div><div class="mb-3"><label class="form-label">Address</label><input name="address" class="form-control"></div><div class="mb-3"><label class="form-label">Contact Name</label><input name="contact_name" class="form-control"></div><div class="mb-3"><label class="form-label">Notes</label><textarea name="notes" rows="3" class="form-control"></textarea></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary"><i class="fa fa-save me-1"></i>Save and Select</button></div></form></div></div></div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -830,4 +832,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+<style>
+    .item-suggestion-menu{max-height:480px!important;overflow-y:auto!important;overflow-x:hidden!important}
+    .item-suggestion-menu::-webkit-scrollbar{width:8px}
+    .item-suggestion-menu::-webkit-scrollbar-thumb{background:#6ea8ff;border-radius:8px}
+</style>
 @endsection

@@ -136,7 +136,7 @@
                             <th>Items</th>
                             <th>Unstocked Name</th>
                             <th>Quantity</th>
-                            <th>Unit (pcs/kg)</th>
+                            <th>Unit (PCS/KG/FEET/MTR)</th>
                             <th>Price</th>
                             <th>Subtotal</th>
                         </tr>

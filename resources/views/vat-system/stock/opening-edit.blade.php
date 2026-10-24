@@ -1,6 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
+@include('vat-system._unit-dropdown')
 <div class="main-content" style="background:#f1f5fb;min-height:calc(100vh - 70px)">
     <div class="container-fluid p-3 p-md-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">

@@ -76,7 +76,7 @@
                             <th>Item</th>
                             <th class="unstockedth">Unstocked Item</th>
                             <th>Quantity</th>
-                            <th>Unit (pcs/kg)</th>
+                            <th>Unit (PCS/KG/FEET/MTR)</th>
                             <th class="percent-system-col">MRP</th>
                             <th class="percent-system-col">Discount %</th>
                             <th>Price</th>

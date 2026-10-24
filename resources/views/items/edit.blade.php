@@ -143,12 +143,13 @@
             </div>
 
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Unit(PCS/kg/etc)</label>
+                <label for="inputPassword4" class="form-label">Unit (PCS/KG/FEET/MTR)</label>
                 <select class="form-select @error('unit') is-invalid @enderror" name="unit">
                     <option value="" selected disabled>Select Unit</option>
-                    <option value="pcs" {{ old('unit', $item->unit) == 'pcs' ? 'selected' : '' }}>pcs</option>
-                    <option value="kg" {{ old('unit', $item->unit) == 'kg' ? 'selected' : '' }}>kg</option>
-                    <option value="feet" {{ old('unit', $item->unit) == 'feet' ? 'selected' : '' }}>feet</option>
+                    <option value="PCS" {{ strtoupper(old('unit', $item->unit)) == 'PCS' ? 'selected' : '' }}>PCS</option>
+                    <option value="KG" {{ strtoupper(old('unit', $item->unit)) == 'KG' ? 'selected' : '' }}>KG</option>
+                    <option value="FEET" {{ strtoupper(old('unit', $item->unit)) == 'FEET' ? 'selected' : '' }}>FEET</option>
+                    <option value="MTR" {{ strtoupper(old('unit', $item->unit)) == 'MTR' ? 'selected' : '' }}>MTR</option>
                     <!-- Add more options as needed -->
                 </select>
                 @error('unit')

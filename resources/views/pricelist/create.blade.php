@@ -64,7 +64,7 @@
                                 <th>
                                     <div class="price-unit-head">
                                         <span>Unit</span>
-                                        <button type="button" class="price-default-unit-btn" id="defaultPriceListUnitBtn" title="Set blank rows to pcs">pcs</button>
+                                        <button type="button" class="price-default-unit-btn" id="defaultPriceListUnitBtn" title="Set blank rows to PCS">PCS</button>
                                     </div>
                                 </th>
                                 <th>Cost Price</th>
@@ -116,7 +116,7 @@
             row.innerHTML = [
                 '<td><span class="price-row-number"></span><button type="button" class="price-remove-btn" title="Remove row"><i class="fa-solid fa-trash"></i></button></td>',
                 '<td><input type="text" class="form-control" data-field="itemname" required autocomplete="off"></td>',
-                '<td><select class="form-select" data-field="unit" required><option value="">select</option><option value="pcs">pcs</option><option value="kg">kg</option><option value="feet">feet</option><option value="mtr">mtr</option></select></td>',
+                '<td><select class="form-select" data-field="unit" required><option value="">select</option><option value="PCS">PCS</option><option value="KG">KG</option><option value="FEET">FEET</option><option value="MTR">MTR</option></select></td>',
                 '<td><input type="number" step="0.01" min="0" class="form-control" data-field="costprice" required></td>',
                 '<td><input type="number" step="0.01" min="0" class="form-control" data-field="saleprice" required></td>',
                 '<td><input type="number" step="0.01" min="0" class="form-control" data-field="wholesaleprice"></td>',
@@ -140,7 +140,7 @@
         document.getElementById('defaultPriceListUnitBtn').addEventListener('click', function () {
             tbody.querySelectorAll('[data-field="unit"]').forEach(function (unitSelect) {
                 if (!unitSelect.value) {
-                    unitSelect.value = 'pcs';
+                    unitSelect.value = 'PCS';
                 }
             });
         });
