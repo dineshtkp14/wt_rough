@@ -12,18 +12,52 @@ class invoice extends Model
 
     public function getFiscalDisplayInvoiceNoAttribute(): string
     {
-        if (!FiscalNumber::isAfterDisplayCutover($this->created_at)) {
+        if (!empty($this->fiscal_invoice_no)) {
+            return (string) $this->fiscal_invoice_no;
+        }
+
+        $fiscalYear = FiscalNumber::fiscalYearForDate($this->inv_date ?: $this->created_at);
+        $sequence = static::orderBy('inv_date')
+            ->orderBy('id')
+            ->get(['id', 'inv_date', 'created_at'])
+            ->filter(function ($invoice) use ($fiscalYear) {
+                $date = $invoice->inv_date ?: $invoice->created_at;
+                return FiscalNumber::fiscalYearForDate($date) === $fiscalYear;
+            })
+            ->values()
+            ->search(fn ($invoice) => (int) $invoice->id === (int) $this->id);
+
+        if ($sequence === false) {
             return (string) $this->id;
         }
 
-        $sequence = static::where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)
-            ->where('id', '<=', $this->id)
-            ->count();
+        $sequence++;
 
         return FiscalNumber::format(
-            FiscalNumber::fiscalYearForDate($this->inv_date ?: $this->created_at),
+            $fiscalYear,
             $sequence
         );
+    }
+
+    public function assignFiscalInvoiceNumber(): void
+    {
+        $fiscalYear = FiscalNumber::fiscalYearForDate($this->inv_date ?: $this->created_at);
+        $sequence = static::orderBy('inv_date')
+            ->orderBy('id')
+            ->get(['id', 'inv_date', 'created_at'])
+            ->filter(function ($invoice) use ($fiscalYear) {
+                $date = $invoice->inv_date ?: $invoice->created_at;
+                return FiscalNumber::fiscalYearForDate($date) === $fiscalYear;
+            })
+            ->values()
+            ->search(fn ($invoice) => (int) $invoice->id === (int) $this->id);
+
+        if ($sequence === false) {
+            return;
+        }
+
+        $this->fiscal_invoice_no = FiscalNumber::format($fiscalYear, $sequence + 1);
+        $this->saveQuietly();
     }
 
     public function getVisibleInvoiceNoAttribute(): string

@@ -19,8 +19,9 @@ final class FiscalNumber
 
     public static function shouldShowFiscalToCurrentUser(): bool
     {
-        return self::isFiscalDisplayEnabled()
-            && !(auth()->check() && auth()->user()->isAdmin());
+        // Fiscal numbers are the public numbers. The original database ID is
+        // reserved for administrators only.
+        return !(auth()->check() && auth()->user()->isAdmin());
     }
 
     public static function isAfterDisplayCutover($date): bool

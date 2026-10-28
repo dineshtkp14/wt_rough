@@ -280,7 +280,12 @@
                                     </td>
                                     <td class="ledger-optional-column">{{ $i->date }}</td>
                                     <td>
-                                        <div>{{ $i->particulars }}</div>
+                                        <div>
+                                            {{ $i->particulars }}
+                                            @if (($i->particulars ?? '') === 'Goods_Return')
+                                                <span class="text-warning fw-bold"> - Credit Note / Sales Return</span>
+                                            @endif
+                                        </div>
                                         @if($isPayment && !empty($i->is_cheque) && !empty($i->cheque_bank))
                                             <small class="clhs-cheque-bank"><i class="fa-solid fa-building-columns"></i> Cheque Bank: {{ $i->cheque_bank }}</small>
                                         @endif

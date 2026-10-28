@@ -12,20 +12,65 @@ class customerledgerdetails extends Model
 
     public function getFiscalDisplayReceiptNoAttribute(): string
     {
-        if (!FiscalNumber::isAfterDisplayCutover($this->created_at)) {
+        // Migrations and newly created receipts use the persisted fiscal number
+        // whenever it is available. This prevents a receipt from changing its
+        // customer when rows are inserted later.
+        if (!empty($this->fiscal_receipt_no)) {
+            return (string) $this->fiscal_receipt_no;
+        }
+
+        // Match the migration sequence: payment date first, then database id.
+        // The previous id-only calculation produced incorrect receipt matches.
+        $receiptDate = $this->date ?: $this->created_at;
+        $fiscalYear = FiscalNumber::fiscalYearForDate($receiptDate);
+        $sequence = static::where('invoicetype', 'payment')
+            ->orderBy('date')
+            ->orderBy('id')
+            ->get(['id', 'date', 'created_at'])
+            ->filter(function ($receipt) use ($fiscalYear) {
+                $date = $receipt->date ?: $receipt->created_at;
+                return FiscalNumber::fiscalYearForDate($date) === $fiscalYear;
+            })
+            ->values()
+            ->search(fn ($receipt) => (int) $receipt->id === (int) $this->id);
+
+        if ($sequence === false) {
             return (string) $this->id;
         }
 
-        $sequence = static::where('invoicetype', 'payment')
-            ->where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)
-            ->where('id', '<=', $this->id)
-            ->count();
+        $sequence = $sequence + 1;
 
         return FiscalNumber::format(
-            FiscalNumber::fiscalYearForDate($this->date ?: $this->created_at),
+            $fiscalYear,
             $sequence,
             'CR'
         );
+    }
+
+    public function assignFiscalReceiptNumber(): void
+    {
+        if ($this->invoicetype !== 'payment') {
+            return;
+        }
+
+        $fiscalYear = FiscalNumber::fiscalYearForDate($this->date ?: $this->created_at);
+        $sequence = static::where('invoicetype', 'payment')
+            ->orderBy('date')
+            ->orderBy('id')
+            ->get(['id', 'date', 'created_at'])
+            ->filter(function ($receipt) use ($fiscalYear) {
+                $date = $receipt->date ?: $receipt->created_at;
+                return FiscalNumber::fiscalYearForDate($date) === $fiscalYear;
+            })
+            ->values()
+            ->search(fn ($receipt) => (int) $receipt->id === (int) $this->id);
+
+        if ($sequence === false) {
+            return;
+        }
+
+        $this->fiscal_receipt_no = FiscalNumber::format($fiscalYear, $sequence + 1, 'CR');
+        $this->saveQuietly();
     }
 
     public function getDisplayReceiptNoAttribute(): string

@@ -58,7 +58,7 @@
         <form class="row gx-5 gy-3" action="{{ route('cpayments.store') }}" method="post">
             @csrf
 
-            <div class="py-4 d-flex justify-content-between align-items-center">
+            <div class="py-4 d-flex justify-content-between align-items-center payment-search-row{{ request('customerid') ? ' has-prefilled-customer' : '' }}">
                 <div style="width: 200px">
                     <div class="input-group mb-1">
                         <div class="search-box">
@@ -69,7 +69,6 @@
                             @error('customerid')
                             <p class="invalid-feedback m-0" style="position: absolute; bottom: -24px; left: 0;">{{ $message }}</p>
                             @enderror  
-                            <i class="fas fa-search search-icon"></i>
                             <div class="result-wrapper" id="customerResultWrapper" style="display: none;">
                                 <div class="result-box d-flex justify-content-start align-items-center" id="customerLoadingResultBox">
                                     <i class="fas fa-spinner" id="spinnerIcon"></i>
@@ -84,43 +83,15 @@
                         </div>
                     </div>
                 </div>
-                <div>
-                    
-                    <span id="cname" style="font-size: 20px; font-weight: bold; background-color: black; color: white; padding: 4px 8px; border-radius: 4px;"></span>
-                </div>
-                
-                <div style="width: 300px">
-                    <div class="input-group mb-1">
-                        <span class="input-group-text">Date: <span style="color: red;">*</span></span>
-                        <input type="date" class="form-control @error('date') is-invalid @enderror" placeholder="" id="salesDate" class="form-control foritemsaledatecss" value="{{now()->format('Y-m-d')}}" name="date">
-                        @error('date')
-                        <p class="invalid-feedback">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
             </div>
 
             <!-- Checkbox -->
             
 
-            <div class="col-md-2">
-                <div class="form-check d-flex align-items-center">
-                    <input class="form-check-input me-2" type="checkbox" id="forautoinputcash" name="forautoinputcash" style="width: 30px; height: 30px;">
-                    <label class="form-check-label" for="forautoinputcash">If Cash</label>
-                </div>
-            </div>
-
             <div class="col-md-3">
                 <div class="form-check d-flex align-items-center">
                     <input class="form-check-input me-2" type="checkbox" id="isCheque" name="is_cheque" value="1" style="width: 30px; height: 30px;" {{ old('is_cheque') ? 'checked' : '' }}>
                     <label class="form-check-label" for="isCheque">If Cheque</label>
-                </div>
-            </div>
-
-            <div class="col-md-2">
-                <div class="form-check d-flex align-items-center">
-                    <input class="form-check-input me-2" type="checkbox" id="forautoinputfonepay" name="forautoinputfonepay" style="width: 30px; height: 30px;">
-                    <label class="form-check-label" for="forautoinputfonepay">If Fonepay</label>
                 </div>
             </div>
 
@@ -131,10 +102,17 @@
                 </div>
             </div>
 
-            <div class="col-md-2">
-                <div class="form-check d-flex align-items-center">
-                    <input class="form-check-input me-2" type="checkbox" id="disableFields" name="disableFields" style="width: 30px; height: 30px;">
-                    <label class="form-check-label" for="disableFields">If Sales Return</label>
+            <div class="col-md-5 customer-summary-slot">
+                <span id="cname" style="font-size: 20px; font-weight: bold; background-color: black; color: white; padding: 4px 8px; border-radius: 4px;"></span>
+            </div>
+
+            <div class="date-summary-slot">
+                <div class="input-group mb-1">
+                    <span class="input-group-text">Date: <span style="color: red;">*</span></span>
+                    <input type="date" class="form-control @error('date') is-invalid @enderror" id="salesDate" value="{{ now()->format('Y-m-d') }}" name="date">
+                    @error('date')
+                    <p class="invalid-feedback">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
@@ -148,24 +126,39 @@
             <div class="w-100 payment-row-break"></div>
 
             <div class="col-md-6">
-                <label for="inputPassword4" class="form-label"> Particulars <span class="text-success fw-bold"> (Bank Name / Fone Pay / Payment) </span> <span style="color: red;">*</span></label>
-                <input autocomplete="off" id="particulars" type="text" class="form-control @error('particulars') is-invalid @enderror" name="particulars" value="{{ old('particulars') }}" >
+                <label for="particularsSelect" class="form-label">Particulars <span style="color: red;">*</span></label>
+                <div class="particulars-picker-row">
+                    <select id="particularsSelect" class="form-select @error('particulars') is-invalid @enderror">
+                        <option value="">-- Select Particulars --</option>
+                        <option value="NMB BANK - DURGA AND DINESH TRADERS">NMB BANK - DURGA AND DINESH TRADERS</option>
+                        <option value="RBB BANK - MALIKA AND NAWADURGA TRADERS">RBB BANK - MALIKA AND NAWADURGA TRADERS</option>
+                        <option value="CASH IN HAND">CASH IN HAND</option>
+                        <option value="ESEWA HARI PRASAD BAJAIN">ESEWA HARI PRASAD BAJAIN</option>
+                        <option value="__other__">Other</option>
+                    </select>
+                    <div id="otherParticularsWrap" style="display: none;">
+                        <input autocomplete="off" id="otherParticulars" type="text" class="form-control" placeholder="Enter particulars">
+                    </div>
+                </div>
+                <input autocomplete="off" id="particulars" type="hidden" name="particulars" value="{{ old('particulars') }}">
                 <input  id="hiddenParticulars" type="hidden" name="hiddenParticulars" value="{{ old('hiddenParticulars') }}">
                 @error('particulars')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6" style="display: none;">
                 <label for="inputPassword4" class="form-label">Voucher Type <span class="text-success fw-bold">(Receipt / Cash)</span> <span style="color: red;">*</span></label>
-                <input autocomplete="off" id="vt" type="text" class="form-control @error('vt') is-invalid @enderror" name="vt" value="{{ old('vt') }}" >
-                <input  id="hiddenVt" type="hidden" name="hiddenVt" value="{{ old('hiddenVt') }}">
+                <input autocomplete="off" id="vt" type="text" class="form-control @error('vt') is-invalid @enderror" name="vt" value="{{ old('vt') ?: request('voucher_type', 'Receipt') }}" >
+                <input  id="hiddenVt" type="hidden" name="hiddenVt" value="{{ old('hiddenVt') ?: request('voucher_type', 'Receipt') }}">
                 @error('vt')
                 <p class="invalid-feedback">{{ $message }}</p>
                 @enderror
             </div>
 
             <div class="w-100 payment-row-break"></div>
+
+            <div class="w-100 payment-section-divider" aria-hidden="true"></div>
 
             <!-- Your existing HTML code -->
             <div class="col-md-6" id="additionalFieldContainer" style="display: none;">
@@ -230,6 +223,21 @@
         const voucherType = urlParams.get('voucher_type');
         const cname = urlParams.get('cname');
 
+        const particularsSelect = document.getElementById('particularsSelect');
+        const particularsInput = document.getElementById('particulars');
+        const otherParticularsWrap = document.getElementById('otherParticularsWrap');
+        const otherParticularsInput = document.getElementById('otherParticulars');
+        const syncParticulars = function (value) {
+            const isOther = value === '__other__';
+            if (otherParticularsWrap) otherParticularsWrap.style.display = isOther ? 'block' : 'none';
+            if (!isOther && particularsInput) particularsInput.value = value || '';
+            if (isOther && otherParticularsInput && particularsInput) particularsInput.value = otherParticularsInput.value.trim();
+            if (document.getElementById('hiddenParticulars')) document.getElementById('hiddenParticulars').value = particularsInput ? particularsInput.value : '';
+        };
+
+        if (particularsSelect) particularsSelect.addEventListener('change', function () { syncParticulars(this.value); });
+        if (otherParticularsInput) otherParticularsInput.addEventListener('input', function () { syncParticulars('__other__'); });
+
 
         const laptop = urlParams.get('laptop'); // Optional if needed later
 
@@ -244,8 +252,27 @@
         }
 
         if (particulars) {
-            document.getElementById('particulars').value = particulars;
-            document.getElementById('hiddenParticulars').value = particulars;
+            const matchingOption = particularsSelect && Array.from(particularsSelect.options).find(function (option) { return option.value === particulars; });
+            if (matchingOption) {
+                particularsSelect.value = particulars;
+                syncParticulars(particulars);
+            } else if (particularsSelect) {
+                particularsSelect.value = '__other__';
+                if (otherParticularsInput) otherParticularsInput.value = particulars;
+                syncParticulars('__other__');
+            }
+        }
+
+        if (!particulars && particularsInput && particularsInput.value && particularsSelect) {
+            const savedOption = Array.from(particularsSelect.options).find(function (option) { return option.value === particularsInput.value; });
+            if (savedOption) {
+                particularsSelect.value = particularsInput.value;
+                syncParticulars(particularsInput.value);
+            } else {
+                particularsSelect.value = '__other__';
+                if (otherParticularsInput) otherParticularsInput.value = particularsInput.value;
+                syncParticulars('__other__');
+            }
         }
 
         if (voucherType) {
@@ -268,7 +295,8 @@
 
         // Optionally disable the checkbox and input fields if they are auto-filled
         if (particulars || voucherType) {
-            document.getElementById('disableFields').disabled = true;
+            const salesReturnCheckbox = document.getElementById('disableFields');
+            if (salesReturnCheckbox) salesReturnCheckbox.disabled = true;
         }
     });
 </script>
@@ -314,6 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('DOMContentLoaded', function () {
         const cashCheckbox = document.getElementById('forautoinputcash');
         const fonepayCheckbox = document.getElementById('forautoinputfonepay');
+        if (!cashCheckbox || !fonepayCheckbox) return;
     
         const particularsInput = document.getElementById('particulars');
         const hiddenParticulars = document.getElementById('hiddenParticulars');
@@ -374,6 +403,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const voucherTypeInput = document.getElementById('vt');
     const hiddenVoucherTypeInput = document.getElementById('hiddenVt');
     const additionalFieldContainer = document.getElementById('additionalFieldContainer');
+
+    if (!checkbox) return;
 
     checkbox.addEventListener('change', function() {
         if (this.checked) {
@@ -463,6 +494,38 @@ $(document).ready(function () {
     });
 </script>
 
+<script>
+    // Automatically settle amounts within Rs. 10 of the old due amount.
+    document.addEventListener('DOMContentLoaded', function () {
+        const amountInput = document.getElementById('amount');
+        const dueSpan = document.getElementById('totaldueamountfornotclear');
+        const nilCheckbox = document.getElementById('nilaccount');
+        if (!amountInput || !dueSpan || !nilCheckbox) return;
+
+        const autoSettleWithinTolerance = function () {
+            const due = parseFloat(String(dueSpan.textContent || '').replace(/,/g, ''));
+            const entered = parseFloat(amountInput.value);
+            const withinTolerance = Number.isFinite(due) && due > 0 && Number.isFinite(entered)
+                && entered > 0 && Math.abs(entered - due) <= 10;
+
+            if (withinTolerance) {
+                nilCheckbox.checked = true;
+                nilCheckbox.dataset.autoSettled = '1';
+                if (Math.abs(entered - due) > 0.005) {
+                    amountInput.value = due.toFixed(2).replace(/\.00$/, '');
+                    if (typeof updateAmountInWords === 'function') updateAmountInWords();
+                }
+            } else if (nilCheckbox.dataset.autoSettled === '1') {
+                nilCheckbox.checked = false;
+                delete nilCheckbox.dataset.autoSettled;
+            }
+        };
+
+        amountInput.addEventListener('input', autoSettleWithinTolerance);
+        amountInput.addEventListener('change', autoSettleWithinTolerance);
+    });
+</script>
+
     
 
     <script>
@@ -498,6 +561,10 @@ $(document).ready(function () {
             // Listen to all possible changes
             particulars.addEventListener('input', validateForm);
             voucherType.addEventListener('input', validateForm);
+            const particularsSelect = document.getElementById('particularsSelect');
+            const otherParticulars = document.getElementById('otherParticulars');
+            if (particularsSelect) particularsSelect.addEventListener('change', validateForm);
+            if (otherParticulars) otherParticulars.addEventListener('input', validateForm);
             amount.addEventListener('input', validateForm);
             if (chequeDate) chequeDate.addEventListener('input', validateForm);
             if (cheque) cheque.addEventListener('change', validateForm);
@@ -660,5 +727,478 @@ $(document).ready(function () {
     form[action*="cpayments"] #paymentSubmitBtn{height:54px;border:0;border-radius:11px;background:linear-gradient(135deg,#2563eb,#1744a0);font-size:17px;font-weight:900;box-shadow:0 8px 18px #2563eb35}
     form[action*="cpayments"] #paymentSubmitBtn:hover{transform:translateY(-1px);box-shadow:0 10px 22px #2563eb45}
     @media(max-width:768px){form[action*="cpayments"]{padding:18px!important;margin-top:18px!important}form[action*="cpayments"] .py-4{display:block!important}form[action*="cpayments"] .py-4>div{width:100%!important;margin:12px 0}form[action*="cpayments"]>.col-md-2,form[action*="cpayments"]>.col-md-3,form[action*="cpayments"]>.col-md-4,form[action*="cpayments"]>.col-md-6{flex:0 0 100%!important;width:100%!important;max-width:100%!important}.main-content:has(form[action*="cpayments"])>.container{padding-left:12px!important;padding-right:12px!important}}
+</style>
+<style>
+    /* Payment form polish */
+    .main-content:has(form[action*="cpayments"]) {
+        background: #f3f7fc;
+    }
+
+    .main-content:has(form[action*="cpayments"]) > .container,
+    .main-content:has(form[action*="cpayments"]) > .d-flex {
+        max-width: 1240px;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .main-content:has(form[action*="cpayments"]) > .d-flex {
+        gap: 10px;
+        margin-top: 8px;
+        margin-bottom: 18px;
+    }
+
+    .main-content:has(form[action*="cpayments"]) > .d-flex .btn {
+        border: 0;
+        border-radius: 10px;
+        font-weight: 800;
+        padding: 11px 16px;
+        box-shadow: 0 5px 14px rgba(37, 99, 235, .14);
+    }
+
+    .main-content:has(form[action*="cpayments"]) h4 {
+        color: #173b72;
+        font-size: 25px;
+        font-weight: 900;
+        margin: 8px 0 16px;
+    }
+
+    form[action*="cpayments"] {
+        position: relative;
+        overflow: hidden;
+        margin-top: 0 !important;
+        padding: 24px 30px 28px !important;
+        border-top: 5px solid #2563eb;
+        box-shadow: 0 18px 45px rgba(23, 59, 114, .13) !important;
+    }
+
+    /* Customer and date details are displayed in the options row now. */
+    form[action*="cpayments"] .payment-search-row.has-prefilled-customer {
+        display: none !important;
+    }
+
+    form[action*="cpayments"] .py-4 {
+        position: relative;
+        min-height: 76px;
+        padding: 0 0 18px !important;
+        margin-bottom: 8px;
+    }
+
+    form[action*="cpayments"] #cname {
+        display: inline-block;
+        max-width: 430px;
+        overflow: hidden;
+        background: #173b72 !important;
+        border-radius: 10px !important;
+        padding: 10px 16px !important;
+        color: #fff !important;
+        font-size: 16px !important;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        box-shadow: 0 6px 16px rgba(23, 59, 114, .2);
+    }
+
+    form[action*="cpayments"] .input-group-text {
+        border-radius: 9px 0 0 9px;
+    }
+
+    form[action*="cpayments"] > .col-md-2,
+    form[action*="cpayments"] > .col-md-3,
+    form[action*="cpayments"] > .col-md-4 {
+        min-height: 58px;
+        padding: 10px 14px;
+        transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    form[action*="cpayments"] > .col-md-2:has(input:checked),
+    form[action*="cpayments"] > .col-md-3:has(input:checked),
+    form[action*="cpayments"] > .col-md-4:has(input:checked) {
+        background: #eaf2ff;
+        border-color: #75a7f8;
+        transform: translateY(-1px);
+    }
+
+    form[action*="cpayments"] #particularsSelect,
+    form[action*="cpayments"] #otherParticulars {
+        min-height: 62px;
+        border: 1px solid #b9cce4;
+        border-radius: 10px;
+        background-color: #fbfdff;
+        font-size: 21px;
+        font-weight: 900;
+    }
+
+    form[action*="cpayments"] #particularsSelect option {
+        font-size: 20px;
+        font-weight: 900;
+        padding: 10px;
+    }
+
+    form[action*="cpayments"] label[for="particularsSelect"] {
+        font-size: 15px !important;
+        font-weight: 900 !important;
+    }
+
+    form[action*="cpayments"] #particularsSelect:focus,
+    form[action*="cpayments"] #otherParticulars:focus,
+    form[action*="cpayments"] #amount:focus,
+    form[action*="cpayments"] textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+        outline: 0;
+    }
+
+    form[action*="cpayments"] #amount {
+        min-height: 54px;
+        border: 2px solid #93b4e7;
+        background: #f8fbff;
+    }
+
+    form[action*="cpayments"] textarea {
+        resize: vertical;
+        min-height: 112px !important;
+    }
+
+    form[action*="cpayments"] #amountInWords {
+        display: inline-block;
+        min-height: 25px;
+        margin-top: 5px;
+        color: #1744a0;
+        font-size: 16px;
+    }
+
+    form[action*="cpayments"] #paymentSubmitBtn {
+        letter-spacing: .2px;
+        transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    @media (max-width: 768px) {
+        .main-content:has(form[action*="cpayments"]) > .d-flex {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            margin: 8px 12px 14px;
+        }
+
+        .main-content:has(form[action*="cpayments"]) > .d-flex .btn {
+            margin: 0 !important;
+            width: 100%;
+            font-size: 13px;
+        }
+
+        form[action*="cpayments"] #cname {
+            max-width: 100%;
+            font-size: 14px !important;
+        }
+    }
+
+    /* Keep the payment card closer to the page heading. */
+    .main-content:has(form[action*="cpayments"]) > .container:has(form[action*="cpayments"]) {
+        margin-top: -18px;
+    }
+
+    .main-content:has(form[action*="cpayments"]) > .d-flex {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        transform: translateY(-10px);
+    }
+
+    /* Final usability pass: keep related fields visually grouped. */
+    form[action*="cpayments"] {
+        row-gap: 0 !important;
+        margin: 0 !important;
+        padding: 0 28px 22px !important;
+        font-size: 20px;
+    }
+
+    form[action*="cpayments"] label:not(.form-check-label) {
+        font-size: 17px !important;
+        line-height: 1.25;
+    }
+
+    form[action*="cpayments"] .form-check-label {
+        font-size: 20px !important;
+        font-weight: 900;
+    }
+
+    form[action*="cpayments"] .input-group-text,
+    form[action*="cpayments"] input[type="date"] {
+        font-size: 19px !important;
+    }
+
+    form[action*="cpayments"] #particularsSelect,
+    form[action*="cpayments"] #otherParticulars,
+    form[action*="cpayments"] #amount,
+    form[action*="cpayments"] textarea {
+        font-size: 22px !important;
+    }
+
+    form[action*="cpayments"] #amountInWords {
+        font-size: 21px !important;
+        font-weight: 800;
+    }
+
+    form[action*="cpayments"] #paymentSubmitBtn {
+        font-size: 22px !important;
+    }
+
+    /* Large-display mode for easier reading. */
+    form[action*="cpayments"] {
+        font-size: 22px;
+    }
+
+    form[action*="cpayments"] label:not(.form-check-label) {
+        font-size: 19px !important;
+    }
+
+    form[action*="cpayments"] .form-check-label,
+    form[action*="cpayments"] .input-group-text,
+    form[action*="cpayments"] input[type="date"] {
+        font-size: 22px !important;
+    }
+
+    form[action*="cpayments"] #particularsSelect,
+    form[action*="cpayments"] #otherParticulars,
+    form[action*="cpayments"] #amount,
+    form[action*="cpayments"] textarea {
+        font-size: 25px !important;
+    }
+
+    form[action*="cpayments"] #amountInWords {
+        font-size: 24px !important;
+    }
+
+    form[action*="cpayments"] #paymentSubmitBtn {
+        font-size: 25px !important;
+    }
+
+    form[action*="cpayments"] label:not(.form-check-label) {
+        font-size: 22px !important;
+    }
+
+    form[action*="cpayments"] #particularsSelect,
+    form[action*="cpayments"] #otherParticulars {
+        font-size: 30px !important;
+        min-height: 68px;
+    }
+
+    form[action*="cpayments"] #particularsSelect option {
+        font-size: 28px !important;
+        font-weight: 900;
+    }
+
+    form[action*="cpayments"] > .col-md-6:has(#amount),
+    form[action*="cpayments"] > .col-md-6:has(textarea[name="notes"]) {
+        margin-top: 12px !important;
+    }
+
+    form[action*="cpayments"] > .col-md-6:has(#particularsSelect) {
+        margin-top: 12px !important;
+    }
+
+    form[action*="cpayments"] .payment-section-divider {
+        flex: 0 0 100%;
+        width: 100%;
+        height: 1px;
+        margin: 8px 0 0;
+        border-top: 2px solid #d7e2f0;
+    }
+
+    form[action*="cpayments"] .py-4 {
+        height: 40px !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        justify-content: flex-start !important;
+        gap: 16px;
+        align-items: center !important;
+    }
+
+    form[action*="cpayments"] .py-4 > div:nth-child(2) {
+        margin-left: 0 !important;
+    }
+
+    form[action*="cpayments"] .py-4 > div:last-child {
+        margin-left: auto;
+    }
+
+    form[action*="cpayments"] .py-4 > div:first-child {
+        margin-left: 0 !important;
+    }
+
+    form[action*="cpayments"] .py-4 > div:first-child,
+    form[action*="cpayments"] .py-4 > div:first-child .input-group,
+    form[action*="cpayments"] .py-4 > div:first-child .search-box {
+        height: 40px;
+    }
+
+    form[action*="cpayments"] .py-4 > div:first-child .search-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    form[action*="cpayments"] .py-4 > div:first-child .search-icon {
+        top: 50% !important;
+        transform: translateY(-50%);
+    }
+
+    form[action*="cpayments"] > .col-md-2,
+    form[action*="cpayments"] > .col-md-3,
+    form[action*="cpayments"] > .col-md-4 {
+        min-height: 50px;
+        padding: 8px 14px;
+    }
+
+    form[action*="cpayments"] > .col-md-3:has(#isCheque),
+    form[action*="cpayments"] > .col-md-4:has(#nilaccount) {
+        flex: 0 0 50% !important;
+        width: 50% !important;
+        max-width: 50% !important;
+    }
+
+    form[action*="cpayments"] > .customer-summary-slot {
+        flex: 0 0 33.3333% !important;
+        width: 33.3333% !important;
+        max-width: 33.3333% !important;
+        display: flex;
+        align-items: center;
+        min-height: 50px;
+        padding: 8px 14px;
+    }
+
+    form[action*="cpayments"] > .customer-summary-slot #cname {
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    form[action*="cpayments"] > .col-md-3:has(#isCheque),
+    form[action*="cpayments"] > .col-md-4:has(#nilaccount) {
+        flex: 0 0 220px !important;
+        width: 220px !important;
+        max-width: 220px !important;
+    }
+
+    form[action*="cpayments"] > .customer-summary-slot {
+        flex: 1 1 auto !important;
+        width: auto !important;
+        max-width: none !important;
+    }
+
+    form[action*="cpayments"] > .date-summary-slot {
+        flex: 0 0 300px;
+        width: 300px;
+        max-width: 300px;
+        display: flex;
+        align-items: center;
+    }
+
+    form[action*="cpayments"] > .date-summary-slot .input-group {
+        width: 100%;
+        margin-bottom: 0 !important;
+    }
+
+    form[action*="cpayments"] > .col-md-6:has(#particularsSelect) {
+        margin-top: -4px;
+    }
+
+    form[action*="cpayments"] #particularsSelect {
+        min-height: 56px;
+        cursor: pointer;
+    }
+
+    form[action*="cpayments"] .particulars-picker-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+    }
+
+    form[action*="cpayments"] .particulars-picker-row #particularsSelect {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    form[action*="cpayments"] #otherParticularsWrap {
+        flex: 0 0 42%;
+        margin-top: 0 !important;
+    }
+
+    form[action*="cpayments"] #otherParticularsWrap input {
+        min-height: 56px;
+        width: 100%;
+    }
+
+    form[action*="cpayments"] #amount,
+    form[action*="cpayments"] textarea {
+        min-height: 52px;
+    }
+
+    form[action*="cpayments"] textarea {
+        min-height: 104px !important;
+    }
+
+    form[action*="cpayments"] #amountInWords {
+        margin-top: 0;
+        padding: 6px 10px;
+        border-left: 4px solid #2563eb;
+        border-radius: 4px;
+        background: #f1f6ff;
+    }
+
+    form[action*="cpayments"] .d-grid {
+        margin-top: 2px;
+        padding-bottom: 0 !important;
+    }
+
+    form[action*="cpayments"] #paymentSubmitBtn {
+        min-height: 56px;
+        font-size: 18px;
+    }
+
+    .main-content:has(form[action*="cpayments"]) h4 {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        transform: translateY(-10px);
+    }
+
+    @media (max-width: 768px) {
+        .main-content:has(form[action*="cpayments"]) > .container:has(form[action*="cpayments"]) {
+            margin-top: -8px;
+        }
+
+        .main-content:has(form[action*="cpayments"]) > .d-flex,
+        .main-content:has(form[action*="cpayments"]) h4 {
+            transform: none;
+        }
+
+        form[action*="cpayments"] .particulars-picker-row {
+            align-items: stretch;
+        }
+
+        form[action*="cpayments"] #otherParticularsWrap {
+            flex-basis: 42%;
+        }
+
+        form[action*="cpayments"] > .customer-summary-slot {
+            flex-basis: 100% !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        form[action*="cpayments"] > .date-summary-slot {
+            flex-basis: 100%;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        form[action*="cpayments"] > .col-md-3:has(#isCheque),
+        form[action*="cpayments"] > .col-md-4:has(#nilaccount) {
+            flex-basis: 50% !important;
+            width: 50% !important;
+            max-width: 50% !important;
+        }
+    }
 </style>
 @stop

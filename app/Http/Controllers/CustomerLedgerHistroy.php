@@ -68,7 +68,6 @@ class CustomerLedgerHistroy extends Controller
         // Backward-compatible lookup for databases that do not yet have the
         // optional fiscal invoice column. This is read-only.
         return $query
-            ->where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)
             ->orderBy('id')
             ->get()
             ->first(fn ($invoice) => $invoice->fiscal_display_invoice_no === $value)

@@ -41,7 +41,7 @@ class CashReceiptController extends Controller
         // Backward-compatible lookup for live databases that do not yet have
         // the optional fiscal receipt column. This is read-only.
         return $query
-            ->where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)
+            ->orderBy('date')
             ->orderBy('id')
             ->get()
             ->first(fn ($receipt) => $receipt->fiscal_display_receipt_no === $value)
@@ -93,7 +93,12 @@ class CashReceiptController extends Controller
     
         $cusledgerdetails_id = $this->resolveReceiptId($req->receiptno);
         if (!$cusledgerdetails_id) {
-            return redirect()->route('cashreceipt.search')->with('error', 'Cash receipt not found.');
+            return view('cash_receipt.searchcashreceipt', [
+                'alldetails' => collect(),
+                'receiptno' => $req->receiptno,
+                'breadcrumb' => $breadcrumb,
+                'customerinfodetails' => null,
+            ]);
         }
         $customerinfodetails = null;
 

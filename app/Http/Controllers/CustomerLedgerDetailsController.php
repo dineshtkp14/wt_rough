@@ -17,6 +17,7 @@ use App\Models\invoice;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CreditnotesInvoice;
 use App\Services\CustomerSmsNotifier;
+use App\Services\CustomerLedgerBalance;
 use App\Support\NepaliDate;
 use App\Support\FiscalNumber;
 
@@ -66,12 +67,14 @@ class CustomerLedgerDetailsController extends Controller
 
         $statement  = DB::select("SHOW TABLE STATUS LIKE 'customerledgerdetails'");
         $nextUserId = $statement[0]->Auto_increment;       
+        $fiscalYear = FiscalNumber::fiscalYearForDate(now());
         $nextReceiptSequence = customerledgerdetails::where('invoicetype', 'payment')
-            ->where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)
+            ->orderBy('date')->orderBy('id')->get(['id', 'date', 'created_at'])
+            ->filter(fn ($receipt) => FiscalNumber::fiscalYearForDate($receipt->date ?: $receipt->created_at) === $fiscalYear)
             ->count() + 1;
         $displayReceiptNo = FiscalNumber::shouldShowFiscalToCurrentUser()
             ? FiscalNumber::format(
-                FiscalNumber::fiscalYearForDate(now()),
+                $fiscalYear,
                 $nextReceiptSequence,
                 'CR'
             )
@@ -108,6 +111,20 @@ public function store(Request $req)
     if ($validator->fails()) {
         return redirect()->route('cpayments.create')->withErrors($validator)->withInput();
     }
+
+        // Treat payments within Rs. 10 of the customer's outstanding balance as settled.
+        // This prevents small rounding leftovers such as Rs. 0.10.
+        if (!$req->has('disableFields') && $req->filled('customerid') && is_numeric($req->amount)) {
+            $currentDue = round((new CustomerLedgerBalance())->totalDue((int) $req->customerid), 2);
+            $enteredAmount = round((float) $req->amount, 2);
+
+            if ($currentDue > 0 && $enteredAmount > 0 && abs($enteredAmount - $currentDue) <= 10.00) {
+                $req->merge([
+                    'amount' => number_format($currentDue, 2, '.', ''),
+                    'nilaccount' => '1',
+                ]);
+            }
+        }
 
     if ($req->filled('invoiceid')) {
         $invoice = invoice::where('id', $req->invoiceid)
@@ -206,6 +223,7 @@ public function store(Request $req)
         $cl->cheque_exchange_date = $chequeExchangeDate;
         $cl->added_by = session('user_email');
         $cl->save();
+        $cl->assignFiscalReceiptNumber();
         $payment = $cl;
 
         if ($req->has('nilaccount') && !$req->has('disableFields')) {

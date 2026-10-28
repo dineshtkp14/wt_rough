@@ -86,7 +86,9 @@ class ItemsalesController extends Controller
         $statement  = DB::select("SHOW TABLE STATUS LIKE 'invoices'");
         $nextUserId = $statement[0]->Auto_increment;
         $fiscalYear = FiscalNumber::fiscalYearForDate(now());
-        $nextFiscalSequence = invoice::where('created_at', '>=', FiscalNumber::DISPLAY_CUTOVER_AT)->count() + 1;
+        $nextFiscalSequence = invoice::orderBy('inv_date')->orderBy('id')->get(['id', 'inv_date', 'created_at'])
+            ->filter(fn ($invoice) => FiscalNumber::fiscalYearForDate($invoice->inv_date ?: $invoice->created_at) === $fiscalYear)
+            ->count() + 1;
         $displayInvoiceNo = FiscalNumber::shouldShowFiscalToCurrentUser()
             ? FiscalNumber::format($fiscalYear, $nextFiscalSequence)
             : (string) $nextUserId;
@@ -204,6 +206,7 @@ class ItemsalesController extends Controller
 
         //dd( $invoice_data->notes);
         $invoice_data->save();
+        $invoice_data->assignFiscalInvoiceNumber();
 
         // sales insert
         foreach ($sales_arr as $value) {
