@@ -120,6 +120,9 @@
                             <option value="credit">CREDIT </option>
                            
                         </select>
+                        <button type="button" id="testNepaliVoiceBtn" class="btn btn-dark btn-sm mt-2">
+                            🔊 Test Hindi Voice
+                        </button>
                         <small class="invoice-help-text">Cash / Credit</small>
                     </div>
 
@@ -149,7 +152,9 @@
                     <table class="invoicetable table-responsive bg-white">
                         <tbody id="invoiceTableBody" style="max-height: none;">
                             <tr>
-                                <th>#</th> <!-- Serial number column -->
+                                <th class="invoice-row-number-header">
+                                    <button type="button" id="bulkAddRowsBtn" class="bulk-add-rows-btn" title="Add multiple rows">#</button>
+                                </th> <!-- Serial number column -->
 
                                 <th>
                                     <a class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></a>
@@ -541,7 +546,81 @@ $(document).ready(function () {
         // Set the initial background color based on the default selected value
         changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
 
+        document.getElementById('testNepaliVoiceBtn')?.addEventListener('click', function () {
+            if (!('speechSynthesis' in window)) {
+                alert('Speech is not supported by this browser.');
+                return;
+            }
 
+            let hasSpoken = false;
+            const speakTest = function () {
+                if (hasSpoken) return;
+                hasSpoken = true;
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance();
+                utterance.lang = 'ne-NP';
+                utterance.text = 'यो ग्राहकको नगद बिल हो। कुल रकम एक हजार रुपैयाँ हो।';
+                utterance.rate = 0.82;
+                utterance.volume = 1;
+                const voice = window.speechSynthesis.getVoices().find(function (item) {
+                    return /^ne(-|_)/i.test(item.lang) || /nepali|nepal/i.test((item.name || '') + ' ' + (item.lang || ''));
+                });
+                if (voice) utterance.voice = voice;
+                utterance.onerror = function () {
+                    alert('The browser could not play speech. Please check your speaker volume and browser sound permissions.');
+                };
+                window.speechSynthesis.speak(utterance);
+            };
+
+            // Speak immediately. Some browsers never fire voiceschanged on localhost.
+            speakTest();
+            window.speechSynthesis.resume();
+        });
+
+        // Use the local Piper Nepali voice instead of relying on Windows browser voices.
+        document.getElementById('testNepaliVoiceBtn')?.addEventListener('click', async function (event) {
+            event.stopImmediatePropagation();
+            const button = this;
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Generating Nepali audio...';
+
+            try {
+                const response = await fetch('{{ route('tts.nepali') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'audio/wav'
+                    },
+                    body: JSON.stringify({
+                        text: 'यो ग्राहकको नगद बिल हो। कुल रकम एक हजार रुपैयाँ हो।'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(await response.text());
+                }
+
+                const audioUrl = URL.createObjectURL(await response.blob());
+                const audio = new Audio(audioUrl);
+                audio.onended = function () {
+                    URL.revokeObjectURL(audioUrl);
+                };
+                await audio.play();
+            } catch (error) {
+                console.error('Piper Nepali TTS error:', error);
+                alert('Nepali audio failed: ' + error.message);
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        }, true);
+
+        const nepaliVoiceButton = document.getElementById('testNepaliVoiceBtn');
+        if (nepaliVoiceButton) {
+            nepaliVoiceButton.textContent = '\uD83D\uDD0A Test Nepali Voice';
+        }
 
         //forboldtext
         $("#customerId").css("font-weight", "bold");
@@ -1303,6 +1382,32 @@ $(document).ready(function () {
         .invoice-create-page .invoicetable tbody tr {
             display: table-row;
             width: auto;
+        }
+
+        .invoice-row-number-header {
+            position: relative;
+        }
+
+        .bulk-add-rows-btn {
+            align-items: center;
+            background: #111827;
+            border: 0;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            display: inline-flex;
+            font-size: 11px;
+            font-weight: 800;
+            height: 20px;
+            justify-content: center;
+            line-height: 1;
+            margin-left: 4px;
+            padding: 0;
+            width: 20px;
+        }
+
+        .bulk-add-rows-btn:hover {
+            background: #000;
         }
 
         .invoicetable th,

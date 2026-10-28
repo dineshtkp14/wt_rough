@@ -402,7 +402,7 @@ function inputHTML(counter) {
 
     <td>${serialNo}</td> <!-- Serial number column -->
 
-                <td><button class="btn btn-danger remove-row-btn" data-id="${counter}"><i class="fa-solid fa-xmark"></i></button></td>
+                <td><button type="button" tabindex="-1" class="btn btn-danger remove-row-btn" data-id="${counter}"><i class="fa-solid fa-xmark"></i></button></td>
                 <td class="item-cell">
                 <a href="#" class="select-product-link" id="selectProductLink" style="text-decoration: none;" data-id="${counter}" data-query="">
                         <h6 class="m-0" style="font-size: 14px; color: #000000;"></h6>
@@ -1485,6 +1485,35 @@ $(window).on("load", function () {
         e.preventDefault();
         appendInputRow();
         // A new row invalidates the previous verification.
+        resetInvoiceVerification();
+    });
+
+    $("#bulkAddRowsBtn").on("click", function (e) {
+        e.preventDefault();
+
+        const remainingRows = MAX_INVOICE_ROWS - salesData.length;
+        if (remainingRows <= 0) {
+            alert(`You can add a maximum of ${MAX_INVOICE_ROWS} rows.`);
+            return;
+        }
+
+        const requestedRows = window.prompt(
+            `How many rows do you want to add? (1-${remainingRows})`,
+            String(Math.min(10, remainingRows))
+        );
+
+        if (requestedRows === null) return;
+
+        const rowCount = Number.parseInt(requestedRows, 10);
+        if (!Number.isInteger(rowCount) || rowCount < 1 || rowCount > remainingRows) {
+            alert(`Please enter a whole number from 1 to ${remainingRows}.`);
+            return;
+        }
+
+        for (let index = 0; index < rowCount; index += 1) {
+            appendInputRow();
+        }
+
         resetInvoiceVerification();
     });
 

@@ -182,7 +182,7 @@
       <div class="seconddiv forfontsizebll">
         @if ($cinfodetails)
           @foreach($cinfodetails as $i)
-            <p>Name: {{ $i->name }}</p>
+            <p>Name: <strong>{{ $i->name }}</strong></p>
             <p>Address: {{ $i->address }}</p>
             <p>Email: {{ $i->email }}</p>
             <p>Contact No: {{ $i->phoneno }}, {{ $i->alternate_phoneno }}</p>

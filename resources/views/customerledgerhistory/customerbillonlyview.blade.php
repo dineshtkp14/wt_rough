@@ -10,6 +10,145 @@
             <div class="alert alert-success bg-success text-white w-50">
                 {{ Session::get('success') }}
             </div>
+            @if (!empty($cinfodetails) && $cinfodetails->first())
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                        const name = @json($cinfodetails->first()->name);
+                        const invoiceType = @json(strtolower($forinvoicetype->invoicetype ?? 'invoice'));
+                        const totalAmount = @json((float) ($allinvoices->first()->total ?? 0));
+                        const nepaliType = invoiceType === 'credit' ? 'क्रेडिट' : invoiceType === 'cash' ? 'क्यास' : invoiceType;
+                        const nepaliNumberWords = function (amount) {
+                            const ones = ['', 'एक', 'दुई', 'तीन', 'चार', 'पाँच', 'छ', 'सात', 'आठ', 'नौ', 'दश', 'एघार', 'बाह्र', 'तेह्र', 'चौध', 'पन्ध्र', 'सोह्र', 'सत्र', 'अठार', 'उन्नाइस'];
+                            const tens = ['', '', 'बीस', 'तीस', 'चालीस', 'पचास', 'साठी', 'सत्तरी', 'असी', 'नब्बे'];
+                            const underHundred = function (number) {
+                                if (number < 20) return ones[number];
+                                return tens[Math.floor(number / 10)] + (number % 10 ? ' ' + ones[number % 10] : '');
+                            };
+                            const integerWords = function (number) {
+                                if (number < 100) return underHundred(number);
+                                if (number < 1000) return ones[Math.floor(number / 100)] + ' सय' + (number % 100 ? ' ' + integerWords(number % 100) : '');
+                                if (number < 100000) return integerWords(Math.floor(number / 1000)) + ' हजार' + (number % 1000 ? ' ' + integerWords(number % 1000) : '');
+                                if (number < 10000000) return integerWords(Math.floor(number / 100000)) + ' लाख' + (number % 100000 ? ' ' + integerWords(number % 100000) : '');
+                                return integerWords(Math.floor(number / 10000000)) + ' करोड' + (number % 10000000 ? ' ' + integerWords(number % 10000000) : '');
+                            };
+                            const integerPart = Math.floor(Number(amount)) || 0;
+                            let words = integerWords(integerPart || 0);
+                            return words;
+                        };
+                        const announcementText = name + ' को ' + nepaliType + ' ' + nepaliNumberWords(totalAmount) + ' रुपैयाँको बिल काटियो';
+                        let selectedVoice = localStorage.getItem('nepaliPiperVoice') || 'google-medium';
+                        let nepaliAudioUrl = '';
+                        const buildAudioUrl = function () {
+                            nepaliAudioUrl = '{{ route('tts.nepali') }}?voice=' + encodeURIComponent(selectedVoice) + '&text=' + encodeURIComponent(announcementText);
+                        };
+                        buildAudioUrl();
+                        let nepaliAudio;
+
+                        const speakWithOnlineNepaliVoice = function () {
+                            if (!nepaliAudio) nepaliAudio = new Audio(nepaliAudioUrl);
+                            nepaliAudio.preload = 'auto';
+                            nepaliAudio.onerror = function () {
+                                const button = document.getElementById('speakInvoiceNepali');
+                                if (button) button.textContent = '⚠️ Nepali audio unavailable — click again';
+                            };
+                            nepaliAudio.play().catch(function () {
+                                const button = document.getElementById('speakInvoiceNepali');
+                                if (button) button.textContent = '🔊 Click to speak Nepali';
+                            });
+                        };
+
+                        const speak = function () {
+                            return speakWithOnlineNepaliVoice();
+                        };
+
+                        const successAlert = document.querySelector('.alert.alert-success');
+                        const voicePanel = document.getElementById('nepaliInvoiceSpeaker') || successAlert;
+                        if (voicePanel) {
+                            const voiceLabel = document.createElement('label');
+                            voiceLabel.className = 'me-2 fw-bold text-dark';
+                            voiceLabel.textContent = 'Nepali voice:';
+                            const voiceSelect = document.createElement('select');
+                            voiceSelect.id = 'nepaliPiperVoice';
+                            voiceSelect.className = 'form-select form-select-sm d-inline-block me-2';
+                            voiceSelect.style.width = '170px';
+                            voiceSelect.innerHTML = '<option value="google-medium">Google Medium</option><option value="chitwan-medium">Chitwan Medium</option>';
+                            voiceSelect.value = selectedVoice;
+                            voiceSelect.addEventListener('change', function () {
+                                selectedVoice = this.value;
+                                localStorage.setItem('nepaliPiperVoice', selectedVoice);
+                                buildAudioUrl();
+                                nepaliAudio = null;
+                                if (player) player.src = nepaliAudioUrl;
+                            });
+                            voicePanel.appendChild(voiceLabel);
+                            voicePanel.appendChild(voiceSelect);
+
+                            const textLabel = document.createElement('div');
+                            textLabel.className = 'small text-dark mt-2';
+                            textLabel.textContent = 'Text sent to Piper: ' + announcementText;
+                            voicePanel.appendChild(textLabel);
+
+                            const button = document.createElement('button');
+                            button.type = 'button';
+                            button.id = 'speakInvoiceNepali';
+                            button.className = 'btn btn-light btn-sm ms-2';
+                            button.textContent = '🔊 Speak Nepali';
+                            button.addEventListener('click', speak);
+                            voicePanel.appendChild(button);
+
+                            let player = document.createElement('audio');
+                            player.id = 'nepaliInvoiceAudio';
+                            player.controls = true;
+                            player.preload = 'none';
+                            player.src = nepaliAudioUrl;
+                            player.title = 'Play Nepali invoice announcement';
+                            player.style.verticalAlign = 'middle';
+                            player.style.marginLeft = '8px';
+                            player.style.height = '32px';
+                            nepaliAudio = player;
+                            voicePanel.appendChild(player);
+                        }
+
+                        speak();
+                    });
+                </script>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Legacy browser Hindi speech handler is disabled; local Piper handles Nepali audio above.
+                        return;
+                        const oldButton = document.getElementById('speakInvoiceNepali');
+                        const oldAudio = document.getElementById('nepaliInvoiceAudio');
+                        if (oldAudio) {
+                            oldAudio.pause();
+                            oldAudio.remove();
+                        }
+                        if (oldButton) oldButton.remove();
+
+                        if (!('speechSynthesis' in window)) return;
+                        const name = @json($cinfodetails->first()->name);
+                        const invoiceType = @json(strtolower($forinvoicetype->invoicetype ?? 'invoice'));
+                        const totalAmount = @json((float) ($allinvoices->first()->total ?? 0));
+                        const typeText = invoiceType === 'credit' ? 'क्रेडिट' : invoiceType === 'cash' ? 'कैश' : invoiceType;
+                        const text = 'ग्राहक ' + name + ' का ' + typeText + ' बिल है। कुल राशि ' + totalAmount.toFixed(2) + ' रुपये है।';
+                        const speakHindi = function () {
+                            window.speechSynthesis.cancel();
+                            const utterance = new SpeechSynthesisUtterance(text);
+                            utterance.lang = 'hi-IN';
+                            utterance.rate = 0.82;
+                            const voice = window.speechSynthesis.getVoices().find(function (item) {
+                                return /^hi(-|_)/i.test(item.lang) || /hindi|prabhat|india/i.test((item.name || '') + ' ' + (item.lang || ''));
+                            });
+                            if (!voice) return;
+                            utterance.voice = voice;
+                            window.speechSynthesis.speak(utterance);
+                        };
+                        if (window.speechSynthesis.getVoices().length) speakHindi();
+                        else window.speechSynthesis.addEventListener('voiceschanged', speakHindi, { once: true });
+                    });
+                </script>
+            @endif
+            <div id="nepaliInvoiceSpeaker" class="mt-2 mb-3"></div>
         @endif
 
         @if (Session::get('invoice_whatsapp_pdf_sent'))

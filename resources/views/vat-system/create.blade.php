@@ -436,6 +436,17 @@ document.addEventListener('DOMContentLoaded', function () {
     @endif
     const existing = @json($extraCustomerPayload);
     const endpoint = @json($extraCustomerEndpoint);
+    const customerInput = searchInput();
+    const customerField = customerInput?.closest('[class*="col-"]');
+    if (customerField && !document.getElementById('visibleExtraCustomer')) {
+        const walkInButton = document.createElement('button');
+        walkInButton.type = 'button';
+        walkInButton.id = 'visibleExtraCustomer';
+        walkInButton.className = 'btn btn-outline-primary btn-sm mt-2 fw-bold';
+        walkInButton.innerHTML = '<i class="fa fa-user-plus me-1"></i>Extra / Walk-in Customer';
+        walkInButton.addEventListener('click', () => open.click());
+        customerField.appendChild(walkInButton);
+    }
     if (existing) {
         const input = searchInput();
         const field = input?.closest('[class*="col-"]');
