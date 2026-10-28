@@ -28,7 +28,6 @@ use App\Http\Controllers\CashReceiptController;
 use App\Http\Controllers\ChequeDepositController;
 use App\Http\Controllers\DateConversionController;
 use App\Http\Controllers\FiscalDisplaySettingsController;
-use App\Http\Controllers\PiperTtsController;
 
 
 
@@ -181,7 +180,6 @@ Route::get('/convertdate',[DateConversionController::class,'convertdate'])->name
 Route::get('/smart-tools',[SmartToolsController::class,'index'])->name('smarttools.index');
 Route::get('/itemsales',[ItemsalesController::class,'index'])->name('itemsales.index');
 Route::get('/itemsales/create',[ItemsalesController::class,'create'])->name('itemsales.create');
-Route::match(['get', 'post'], '/tts/nepali', [PiperTtsController::class, 'speak'])->name('tts.nepali');
 Route::get('/itemsales/old-price-search',[ItemsalesController::class,'oldPriceSearch'])->name('itemsales.old-price-search');
 Route::get('/itemsales/{itemsales}/edit',[ItemsalesController::class,'edit'])->name('itemsales.edit');
 Route::put('/itemsales/{itemsales}',[ItemsalesController::class,'update'])->name('itemsales.update');

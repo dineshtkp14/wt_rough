@@ -13,6 +13,7 @@
             @if (!empty($cinfodetails) && $cinfodetails->first())
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
+                        return;
                         if ('speechSynthesis' in window) window.speechSynthesis.cancel();
                         const name = @json($cinfodetails->first()->name);
                         const invoiceType = @json(strtolower($forinvoicetype->invoicetype ?? 'invoice'));
@@ -36,11 +37,11 @@
                             let words = integerWords(integerPart || 0);
                             return words;
                         };
-                        const announcementText = name + ' को ' + nepaliType + ' ' + nepaliNumberWords(totalAmount) + ' रुपैयाँको बिल काटियो';
-                        let selectedVoice = localStorage.getItem('nepaliPiperVoice') || 'google-medium';
+                        const announcementText = name + ' को ' + nepaliType + ' बिल रु. ' + nepaliNumberWords(totalAmount) + ' को काटियो';
+                        let selectedVoice = localStorage.getItem('espeakVoice') || 'ne';
                         let nepaliAudioUrl = '';
                         const buildAudioUrl = function () {
-                            nepaliAudioUrl = '{{ route('tts.nepali') }}?voice=' + encodeURIComponent(selectedVoice) + '&text=' + encodeURIComponent(announcementText);
+                            nepaliAudioUrl = '#';
                         };
                         buildAudioUrl();
                         let nepaliAudio;
@@ -72,11 +73,11 @@
                             voiceSelect.id = 'nepaliPiperVoice';
                             voiceSelect.className = 'form-select form-select-sm d-inline-block me-2';
                             voiceSelect.style.width = '170px';
-                            voiceSelect.innerHTML = '<option value="google-medium">Google Medium</option><option value="chitwan-medium">Chitwan Medium</option>';
+                            voiceSelect.innerHTML = '<option value="ne">Nepali pronunciation</option><option value="hi">Hindi pronunciation</option>';
                             voiceSelect.value = selectedVoice;
                             voiceSelect.addEventListener('change', function () {
                                 selectedVoice = this.value;
-                                localStorage.setItem('nepaliPiperVoice', selectedVoice);
+                                localStorage.setItem('espeakVoice', selectedVoice);
                                 buildAudioUrl();
                                 nepaliAudio = null;
                                 if (player) player.src = nepaliAudioUrl;
@@ -86,7 +87,7 @@
 
                             const textLabel = document.createElement('div');
                             textLabel.className = 'small text-dark mt-2';
-                            textLabel.textContent = 'Text sent to Piper: ' + announcementText;
+                            textLabel.textContent = 'Text sent to eSpeak NG: ' + announcementText;
                             voicePanel.appendChild(textLabel);
 
                             const button = document.createElement('button');
@@ -115,7 +116,7 @@
                 </script>
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
-                        // Legacy browser Hindi speech handler is disabled; local Piper handles Nepali audio above.
+                        // Legacy browser Hindi speech handler is disabled; local eSpeak NG handles Nepali audio above.
                         return;
                         const oldButton = document.getElementById('speakInvoiceNepali');
                         const oldAudio = document.getElementById('nepaliInvoiceAudio');
@@ -148,7 +149,6 @@
                     });
                 </script>
             @endif
-            <div id="nepaliInvoiceSpeaker" class="mt-2 mb-3"></div>
         @endif
 
         @if (Session::get('invoice_whatsapp_pdf_sent'))

@@ -120,9 +120,6 @@
                             <option value="credit">CREDIT </option>
                            
                         </select>
-                        <button type="button" id="testNepaliVoiceBtn" class="btn btn-dark btn-sm mt-2">
-                            🔊 Test Hindi Voice
-                        </button>
                         <small class="invoice-help-text">Cash / Credit</small>
                     </div>
 
@@ -547,6 +544,7 @@ $(document).ready(function () {
         changeBackgroundColor(document.querySelector('select[name="invoice_type"]'));
 
         document.getElementById('testNepaliVoiceBtn')?.addEventListener('click', function () {
+            return;
             if (!('speechSynthesis' in window)) {
                 alert('Speech is not supported by this browser.');
                 return;
@@ -586,7 +584,7 @@ $(document).ready(function () {
             button.textContent = 'Generating Nepali audio...';
 
             try {
-                const response = await fetch('{{ route('tts.nepali') }}', {
+                const response = await fetch('#', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
