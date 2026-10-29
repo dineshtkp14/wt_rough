@@ -6,11 +6,48 @@
     $exportVat = 0;
     $exportGrandTotal = 0;
 @endphp
-<table><thead><tr><th>Bill No.</th><th>Date (A.D.)</th><th>Date (B.S.)</th><th>Supplier</th><th>Supplier VAT/PAN</th><th>Subtotal</th><th>Taxable Amount</th><th>VAT 13%</th><th>Grand Total</th></tr></thead><tbody>
-@foreach($bills as $bill) @php($subtotal=$bill->items->sum(fn($i)=>(float)$i->quantity*(float)$i->rate)) @php($taxable=$bill->items->where('is_taxable',true)->sum(fn($i)=>(float)$i->quantity*(float)$i->rate)) @php($vat=round($taxable*.13,2)) @php($grand=$subtotal+$vat)
-@php($exportSubtotal += $subtotal) @endphp @php($exportTaxable += $taxable) @endphp @php($exportVat += $vat) @endphp @php($exportGrandTotal += $grand) @endphp
-@php($supplierVat = $bill->company_vat_no ?: $bill->supplier?->vat_no)
-@php($supplierPan = $bill->company_pan_no ?: $bill->supplier?->pan_no)
-<tr><td>{{ $bill->bill_no }}</td><td>{{ $bill->bill_date->format('Y-m-d') }}</td><td>{{ \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'),'en') }}</td><td>{{ $bill->company_name }}</td><td>VAT: {{ $supplierVat ?: '-' }} | PAN: {{ $supplierPan ?: '-' }}</td><td class="num">{{ number_format($subtotal,2) }}</td><td class="num">{{ number_format($taxable,2) }}</td><td class="num">{{ number_format($vat,2) }}</td><td class="num">{{ number_format($grand,2) }}</td></tr>
-@endforeach
-</tbody><tfoot><tr><th colspan="5" style="text-align:right">TOTAL</th><th class="num">{{ number_format($exportSubtotal,2) }}</th><th class="num">{{ number_format($exportTaxable,2) }}</th><th class="num">{{ number_format($exportVat,2) }}</th><th class="num">{{ number_format($exportGrandTotal,2) }}</th></tr></tfoot></table></body></html>
+<table>
+    <thead>
+        <tr>
+            <th>Bill No.</th><th>Date (A.D.)</th><th>Date (B.S.)</th><th>Supplier</th>
+            <th>Supplier VAT/PAN</th><th>Subtotal</th><th>Taxable Amount</th><th>VAT 13%</th><th>Grand Total</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach($bills as $bill)
+        @php
+            $subtotal = $bill->items->sum(fn ($item) => (float) $item->quantity * (float) $item->rate);
+            $taxable = $bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate);
+            $vat = round($taxable * 0.13, 2);
+            $grand = $subtotal + $vat;
+            $exportSubtotal += $subtotal;
+            $exportTaxable += $taxable;
+            $exportVat += $vat;
+            $exportGrandTotal += $grand;
+            $supplierVat = $bill->company_vat_no ?: $bill->supplier?->vat_no;
+            $supplierPan = $bill->company_pan_no ?: $bill->supplier?->pan_no;
+        @endphp
+        <tr>
+            <td>{{ $bill->bill_no }}</td>
+            <td>{{ $bill->bill_date->format('Y-m-d') }}</td>
+            <td>{{ \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'), 'en') }}</td>
+            <td>{{ $bill->company_name }}</td>
+            <td>VAT: {{ $supplierVat ?: '-' }} | PAN: {{ $supplierPan ?: '-' }}</td>
+            <td class="num">{{ number_format($subtotal, 2) }}</td>
+            <td class="num">{{ number_format($taxable, 2) }}</td>
+            <td class="num">{{ number_format($vat, 2) }}</td>
+            <td class="num">{{ number_format($grand, 2) }}</td>
+        </tr>
+    @endforeach
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="5" style="text-align:right">TOTAL</th>
+            <th class="num">{{ number_format($exportSubtotal, 2) }}</th>
+            <th class="num">{{ number_format($exportTaxable, 2) }}</th>
+            <th class="num">{{ number_format($exportVat, 2) }}</th>
+            <th class="num">{{ number_format($exportGrandTotal, 2) }}</th>
+        </tr>
+    </tfoot>
+</table>
+</body></html>
