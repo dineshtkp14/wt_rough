@@ -103,43 +103,6 @@ class VatReportController extends Controller
         $fiscalYears = $this->fiscalYears();
         return view('vat-system.reports.purchase-companies', compact('companies', 'firm', 'fiscalYears', 'fiscalYear'));
     }
-    public function purchasePanSummaryExcel(Request $request) {
-        $firm = $this->reportFirm('purchase');
-        $fiscalYear = $request->query('fiscal_year', session('vat_report_fiscal_year', $this->currentFiscalYear()));
-        [$from, $to] = $this->fiscalDates($fiscalYear);
-        $bills = CompanyBill::with(['items', 'supplier'])->where('firm_id', $firm->id)
-            ->whereDate('bill_date', '>=', $from)->whereDate('bill_date', '<=', $to)
-            ->orderBy('bill_date')->orderBy('id')->get();
-        $groups = [];
-        foreach ($bills as $bill) {
-            $pan = trim((string) ($bill->company_pan_no ?: optional($bill->supplier)->pan_no));
-            $panKey = $pan !== '' ? strtoupper((string) preg_replace('/\s+/', '', $pan)) : '';
-            $key = $panKey !== '' ? 'pan:'.$panKey : 'party:'.($bill->supplier_id ?: 'legacy-bill-'.$bill->id);
-            $taxable = (float) $bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate);
-            $vat = round($taxable * .13, 2);
-            $total = (float) $bill->items->sum(fn ($item) => (float) $item->quantity * (float) $item->rate);
-            $grand = round($total - (float) $bill->discount + $vat, 2);
-            if (!isset($groups[$key])) {
-                $groups[$key] = ['name' => trim((string) ($bill->company_name ?: optional($bill->supplier)->name)) ?: 'Unknown Party', 'pan' => $pan, 'bill_count' => 0, 'taxable' => 0.0, 'vat' => 0.0, 'grand_total' => 0.0];
-            }
-            $groups[$key]['bill_count']++;
-            $groups[$key]['taxable'] += $taxable;
-            $groups[$key]['vat'] += $vat;
-            $groups[$key]['grand_total'] += $grand;
-        }
-        $groups = collect($groups)->map(function (array $row) {
-            $row['taxable'] = round($row['taxable'], 2);
-            $row['vat'] = round($row['vat'], 2);
-            $row['grand_total'] = round($row['grand_total'], 2);
-            return $row;
-        })->sortBy('name')->values();
-        // VatSupplier currently has no customer_type/Sub column, so purchase parties
-        // are classified by PAN and their aggregated taxable amount.
-        $above = $groups->filter(fn ($row) => $row['pan'] !== '' && $row['taxable'] >= 100000)->values();
-        $others = $groups->reject(fn ($row) => $row['pan'] !== '' && $row['taxable'] >= 100000)->values();
-        $view = view('vat-system.reports.purchase-pan-summary-excel', compact('firm', 'fiscalYear', 'from', 'to', 'above', 'others'))->render();
-        return response($view, 200, ['Content-Type' => 'application/vnd.ms-excel; charset=UTF-8', 'Content-Disposition' => 'attachment; filename="purchase-pan-summary-'.$fiscalYear.'.xls"']);
-    }
     public function purchasePrintAll(Request $request) {
         $firm = $this->reportFirm('purchase');
         $fiscalYear = $request->query('fiscal_year', session('vat_report_fiscal_year', $this->currentFiscalYear()));

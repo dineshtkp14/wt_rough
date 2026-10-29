@@ -159,7 +159,6 @@ Route::get('/vat-system/change-firm', [VatSystemBillController::class, 'switchFi
   Route::get('/vat-system/party-ledger/print-all', [VatReportController::class, 'printAll'])->name('vat-system.party-ledger.print-all');
   Route::get('/vat-system/party-ledger/{customer}', [VatReportController::class, 'ledger'])->name('vat-system.party-ledger');
   Route::get('/vat-system/purchase-party-ledger', [VatReportController::class, 'purchaseCompanies'])->name('vat-system.purchase-party-ledger.companies');
-  Route::get('/vat-system/purchase-party-ledger/pan-summary-excel', [VatReportController::class, 'purchasePanSummaryExcel'])->name('vat-system.purchase-party-ledger.pan-summary-excel');
   Route::get('/vat-system/purchase-party-ledger/print-all', [VatReportController::class, 'purchasePrintAll'])->name('vat-system.purchase-party-ledger.print-all');
   Route::get('/vat-system/purchase-party-ledger/{company}', [VatReportController::class, 'purchaseLedger'])->name('vat-system.purchase-party-ledger');
   Route::get('/vat-system/purchase-balance-confirmation/{company}', [VatReportController::class, 'purchaseConfirmation'])->name('vat-system.purchase-balance-confirmation');
