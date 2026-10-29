@@ -231,6 +231,22 @@ $(document).on("keydown.invoiceRow", "#invoiceTableBody input, #invoiceTableBody
     event.stopPropagation();
 });
 
+$(document).on("keydown.invoicePriceAddRow", "#invoiceTableBody #priceInput", function (event) {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    event.stopPropagation();
+    const beforeCount = salesData.length;
+    syncAllRowsFromDom();
+    appendInputRow();
+    if (salesData.length <= beforeCount) return;
+    const newRow = salesData[salesData.length - 1];
+    window.setTimeout(function () {
+        const target = $(`#inputRow${newRow.id} #unstockedInput`);
+        if (target.length) target.trigger("focus");
+    }, 0);
+    resetInvoiceVerification();
+});
+
 function updateInvoiceStepVisibility() {
     const hasCustomer = `${finalData[0]["customer"] || ""}`.trim() !== "";
     const invoiceType = $("#invoice_type").val();
@@ -1500,6 +1516,14 @@ $(window).on("load", function () {
         updateCreditDaysVisibility();
         updateInvoiceStepVisibility();
         resetInvoiceVerification();
+        if ($(this).val() === "credit") {
+            window.setTimeout(function () {
+                const target = $("#invoiceTableBody tr[id^='inputRow'] #unstockedInput").filter(":visible").first();
+                if (target.length && !target.prop("disabled")) {
+                    target.trigger("focus");
+                }
+            }, 0);
+        }
     });
 
     $("#creditDays").on("input change", function () {
