@@ -32,7 +32,7 @@
             <td>{{ $bill->bill_date->format('Y-m-d') }}</td>
             <td>{{ \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'), 'en') }}</td>
             <td>{{ $bill->company_name }}</td>
-            <td>VAT: {{ $supplierVat ?: '-' }} | PAN: {{ $supplierPan ?: '-' }}</td>
+            <td>{{ $supplierVat ?: ($supplierPan ?: '-') }}</td>
             <td class="num">{{ number_format($subtotal, 2) }}</td>
             <td class="num">{{ number_format($taxable, 2) }}</td>
             <td class="num">{{ number_format($vat, 2) }}</td>
