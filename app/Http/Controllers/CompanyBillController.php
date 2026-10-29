@@ -48,9 +48,11 @@ class CompanyBillController extends Controller
             ]);
         }
 
-        $grandTotal = (clone $query)->get()->sum(fn ($bill) => $bill->items->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) + round($bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) * .13, 2));
+        $summaryBills = (clone $query)->get();
+        $taxableTotal = $summaryBills->sum(fn ($bill) => $bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate));
+        $grandTotal = $summaryBills->sum(fn ($bill) => $bill->items->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) + round($bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) * .13, 2));
         $bills = $query->paginate(15)->withQueryString();
-        return view('vat-system.company-bills.index', compact('bills', 'firm', 'search', 'bsMonth', 'bsFrom', 'bsTo', 'grandTotal'));
+        return view('vat-system.company-bills.index', compact('bills', 'firm', 'search', 'bsMonth', 'bsFrom', 'bsTo', 'taxableTotal', 'grandTotal'));
     }
     public function exportExcel(Request $request)
     {

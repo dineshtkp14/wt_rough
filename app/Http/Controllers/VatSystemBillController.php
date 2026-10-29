@@ -94,10 +94,12 @@ class VatSystemBillController extends Controller
                 ->orWhereHas('extraCustomer', fn($q) => $q->where('name', 'like', "%{$search}%"));
         }))->when($month, fn($q) => $q->whereBetween('bill_date', [Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString(), Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString()]))->when($bsMonthRange, fn($q) => $q->whereBetween('bill_date', $bsMonthRange))->when($bsDateRange, fn($q) => $q->whereBetween('bill_date', $bsDateRange))->latest('bill_date')->latest('id');
         if ($request->expectsJson()) return response()->json(['items' => $query->limit(100)->get()->map(fn($bill) => ['id' => $bill->id, 'bill_no' => $bill->bill_no, 'date' => $bill->bill_date->format('Y-m-d'), 'firm' => $bill->firm->name ?? $bill->seller_name, 'pan' => $bill->seller_pan_no ?: '-', 'customer' => $bill->customer->name ?? $bill->extraCustomer->name ?? '-', 'customer_pan' => $bill->customer->pan_no ?? '', 'created_by' => $bill->added_by ?: '-', 'total' => $bill->items->sum(fn($item) => (float)$item->quantity * (float)$item->rate), 'taxable' => $bill->items->where('is_taxable', true)->sum(fn($item) => (float)$item->quantity * (float)$item->rate), 'discount' => (float)$bill->discount, 'show_url' => route('vat-system.bills.show', $bill), 'edit_url' => route('vat-system.bills.edit', $bill), 'delete_url' => route('vat-system.bills.destroy', $bill)]), 'total' => $query->count()]);
-        $grandTotal = (clone $query)->get()->sum(fn ($bill) => $bill->items->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) - (float) $bill->discount + round($bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) * .13, 2));
+        $summaryBills = (clone $query)->get();
+        $taxableTotal = $summaryBills->sum(fn ($bill) => $bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate));
+        $grandTotal = $summaryBills->sum(fn ($bill) => $bill->items->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) - (float) $bill->discount + round($bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate) * .13, 2));
         $bills = $query->paginate(15)->withQueryString();
 
-        return view('vat-system.bills.index', compact('bills', 'firm', 'customer', 'search', 'month', 'bsMonth', 'bsFrom', 'bsTo', 'grandTotal'));
+        return view('vat-system.bills.index', compact('bills', 'firm', 'customer', 'search', 'month', 'bsMonth', 'bsFrom', 'bsTo', 'taxableTotal', 'grandTotal'));
     }
 
     public function exportExcel(Request $request)
