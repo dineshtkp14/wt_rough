@@ -154,6 +154,69 @@ class VatSystemBillController extends Controller
         return response($html,200,['Content-Type'=>'application/vnd.ms-excel; charset=UTF-8','Content-Disposition'=>'attachment; filename="vat-sales-pan-summary-for-final-'.$firm->id.'.xls"']);
     }
 
+    public function exportSalesSummaryExcel(Request $request)
+    {
+        $firm = VatFirm::find(session('vat_firm_id'));
+        if (!$firm) return redirect()->route('vat-system.firm.select', ['next' => 'sales']);
+
+        $customer = $request->filled('customer_id') ? VatCustomer::find($request->integer('customer_id')) : null;
+        $search = trim((string) $request->query('search'));
+        $month = preg_match('/^\d{4}-\d{2}$/', (string) $request->query('month')) ? $request->query('month') : '';
+        $bsMonth = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', (string) $request->query('bs_month')) ? $request->query('bs_month') : '';
+        $bsMonthRange = $this->bsMonthRange($bsMonth);
+        $bsFrom = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_from')) ? $request->query('bs_from') : '';
+        $bsTo = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_to')) ? $request->query('bs_to') : '';
+        $bsDateRange = $this->bsDateRange($bsFrom, $bsTo);
+        $fiscalYear = preg_match('/^\d{4}\/\d{2}$/', (string) $request->query('fiscal_year')) ? $request->query('fiscal_year') : '';
+        $fiscalDateRange = $fiscalYear !== '' ? $this->fiscalDates($fiscalYear) : null;
+
+        $bills = VatSystemBill::where('firm_id', $firm->id)
+            ->when($customer, fn ($q) => $q->where('customer_id', $customer->id))
+            ->with(['customer', 'extraCustomer', 'items'])
+            ->when($search !== '', fn ($q) => $q->where(function ($q) use ($search) {
+                $q->where('bill_no', 'like', "%{$search}%")
+                    ->orWhere('bill_date', 'like', "%{$search}%")
+                    ->orWhere('seller_name', 'like', "%{$search}%")
+                    ->orWhereHas('customer', fn ($q) => $q->where('name', 'like', "%{$search}%")->orWhere('pan_no', 'like', "%{$search}%"))
+                    ->orWhereHas('extraCustomer', fn ($q) => $q->where('name', 'like', "%{$search}%"));
+            }))
+            ->when($fiscalDateRange, fn ($q) => $q->whereBetween('bill_date', $fiscalDateRange))
+            ->when(!$fiscalDateRange && $month, fn ($q) => $q->whereBetween('bill_date', [Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString(), Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString()]))
+            ->when(!$fiscalDateRange && !$month && $bsMonthRange, fn ($q) => $q->whereBetween('bill_date', $bsMonthRange))
+            ->when(!$fiscalDateRange && !$month && !$bsMonthRange && $bsDateRange, fn ($q) => $q->whereBetween('bill_date', $bsDateRange))
+            ->orderBy('bill_date')->orderBy('id')->get();
+
+        $parties = [];
+        foreach ($bills as $bill) {
+            $party = $bill->customer ?: $bill->extraCustomer;
+            $pan = trim((string) ($bill->customer?->pan_no ?: ''));
+            $normalizedPan = strtoupper((string) preg_replace('/\s+/', '', $pan));
+            $key = $normalizedPan !== '' ? 'pan:'.$normalizedPan : 'party:'.($bill->customer_id ?: 'extra:'.($bill->extra_customer_id ?: 'bill:'.$bill->id));
+            $taxable = (float) $bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate);
+            $subtotal = (float) $bill->items->sum(fn ($item) => (float) $item->quantity * (float) $item->rate);
+            $vat = round($taxable * .13, 2);
+            if (!isset($parties[$key])) $parties[$key] = ['names' => [], 'pan' => $pan, 'bills' => 0, 'taxable' => 0.0, 'vat' => 0.0, 'grand' => 0.0];
+            $name = trim((string) ($party?->name ?: $bill->seller_name)) ?: 'Unknown Party';
+            $parties[$key]['names'][$name] = true;
+            $parties[$key]['bills']++;
+            $parties[$key]['taxable'] += $taxable;
+            $parties[$key]['vat'] += $vat;
+            $parties[$key]['grand'] += $subtotal - (float) $bill->discount + $vat;
+        }
+        $parties = collect($parties)->map(function (array $party) {
+            $party['name'] = implode(' / ', array_keys($party['names']));
+            $party['taxable'] = round($party['taxable'], 2);
+            $party['vat'] = round($party['vat'], 2);
+            $party['grand'] = round($party['grand'], 2);
+            return $party;
+        })->sortBy(fn ($party) => strtolower($party['name']))->values();
+
+        $above = $parties->filter(fn ($party) => $party['pan'] !== '' && $party['taxable'] >= 100000)->values();
+        $others = $parties->reject(fn ($party) => $party['pan'] !== '' && $party['taxable'] >= 100000)->values();
+        $html = view('vat-system.bills.pan-summary-excel', compact('firm', 'above', 'others', 'bsMonth', 'bsFrom', 'bsTo', 'fiscalYear'))->render();
+        return response($html, 200, ['Content-Type' => 'application/vnd.ms-excel; charset=UTF-8', 'Content-Disposition' => 'attachment; filename="vat-sales-summary-'.$firm->id.'.xls"']);
+    }
+
     public function edit(VatSystemBill $bill)
     {
         abort_unless((int) $bill->firm_id === (int) session('vat_firm_id'), 404);
@@ -311,6 +374,14 @@ class VatSystemBillController extends Controller
         } catch (\Throwable $exception) {
             return null;
         }
+    }
+
+    private function fiscalDates(string $fiscalYear): array
+    {
+        $startYear = (int) explode('/', $fiscalYear)[0];
+        $from = NepaliDate::bsToAdString($startYear, 4, 1);
+        $to = Carbon::parse(NepaliDate::bsToAdString($startYear + 1, 4, 1))->subDay()->toDateString();
+        return [$from, $to];
     }
 
     private function bsDateRange(string $from, string $to): ?array
