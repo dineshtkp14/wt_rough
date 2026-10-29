@@ -148,6 +148,7 @@ function itemRowLabel(row) {
 
 function showItemDeleteDialog(row) {
     pendingItemDeletion = { id: row.id };
+    $(`#inputRow${row.id}`).addClass("delete-pending");
     $("#itemDeleteItemName").text(itemRowLabel(row));
     $("#itemDeleteQuantity").text(String(row.quantity || "not entered"));
     $("#itemDeleteConfirmModal").prop("hidden", false);
@@ -155,6 +156,7 @@ function showItemDeleteDialog(row) {
 }
 
 function closeItemDeleteDialog() {
+    if (pendingItemDeletion) $(`#inputRow${pendingItemDeletion.id}`).removeClass("delete-pending");
     pendingItemDeletion = null;
     $("#itemDeleteConfirmModal").prop("hidden", true);
 }
@@ -171,6 +173,7 @@ function deleteItemRow(id) {
     const index = salesData.findIndex((row) => Number(row.id) === Number(id));
     if (index < 0 || salesData.length <= 1) return;
     const row = JSON.parse(JSON.stringify(salesData[index]));
+    $(`#inputRow${id}`).removeClass("delete-pending");
     lastDeletedItem = { row, index };
     $(`#inputRow${id}`).remove();
     salesData.splice(index, 1);

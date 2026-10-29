@@ -278,6 +278,12 @@
             .item-delete-dialog{width:min(440px,100%);background:#fff;border-radius:14px;padding:24px;box-shadow:0 18px 50px rgba(15,23,42,.3)}
             .item-delete-dialog h3{margin:0 0 10px;color:#173b72;font-weight:800}.item-delete-dialog p{color:#475569;margin:0 0 22px;line-height:1.5}.item-delete-actions{display:flex;justify-content:flex-end;gap:10px}
             .item-undo-toast{position:fixed;right:24px;bottom:24px;z-index:100001;display:flex;align-items:center;gap:16px;background:#173b72;color:#fff;border-radius:10px;padding:12px 16px;box-shadow:0 10px 25px rgba(15,23,42,.25);font-weight:700}.item-undo-toast button{border:0;border-radius:6px;background:#fbbf24;color:#111827;padding:6px 12px;font-weight:800;cursor:pointer}
+            #invoiceTableBody tr.delete-pending{background:#fff3cd!important;outline:3px solid #f59e0b;outline-offset:-3px;position:relative;z-index:2}
+            #invoiceTableBody tr.delete-pending>td:first-child{background:#f59e0b!important;color:#111827!important;font-weight:900}
+            #invoiceTableBody tr.delete-pending input,
+            #invoiceTableBody tr.delete-pending select{background:#000!important;color:#fff!important;border-color:#000!important;font-weight:800!important}
+            #invoiceTableBody tr.delete-pending input::placeholder{color:#fff!important;opacity:.9}
+            #invoiceTableBody tr.delete-pending select option{background:#000;color:#fff}
         </style>
 
         <div class="modal fade" id="quickCustomerModal" tabindex="-1" aria-labelledby="quickCustomerModalLabel" aria-hidden="true">
