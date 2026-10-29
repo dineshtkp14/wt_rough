@@ -48,7 +48,7 @@ if ($this->sortBy === 'redlist') {
 //forcredttimeexpired
 // credit limit time expired customers
 // credit limit time expired customers (CORRECT LOGIC)
-// credit limit time expired customers (FINAL & CORRECT)
+// credit limit time expired customers (FINAL & CORRECTT)
 // credit limit time expired customers (FINAL & CORRECT)
 if ($this->sortBy === 'credittime_expired') {
     $query->whereNotNull('lt.latest_credit_date')
