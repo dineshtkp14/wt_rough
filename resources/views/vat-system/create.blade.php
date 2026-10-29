@@ -699,6 +699,7 @@ document.addEventListener('DOMContentLoaded', function () {
 .vat-create .item-suggestion { padding: 14px 16px !important; min-height: 67px; }
 .vat-create .item-suggestion strong { font-size: 18px !important; line-height: 1.3; font-weight: 900 !important; letter-spacing: .05px; }
 .vat-create .item-suggestion small { display: block; margin-top: 6px; font-size: 14px !important; line-height: 1.4; font-weight: 700; color: #dbeafe !important; }
+.vat-create .clean-customer-menu small { font-size: 15px !important; font-weight: 900 !important; color: #173b72 !important; letter-spacing: .15px; }
 .vat-create .item-suggestion:hover strong { color: #fff; }
 .vat-create #billItems .item-name { font-size: 18px; font-weight: 700; }
 .vat-create #billItems .rate, .vat-create #billItems .unit-select, .vat-create #billItems .qty { font-size: 17px; font-weight: 600; }

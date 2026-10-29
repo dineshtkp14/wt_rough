@@ -154,7 +154,7 @@
                                 </th> <!-- Serial number column -->
 
                                 <th>
-                                    <a class=" btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></a>
+                                    <button type="button" class="btn btn-success" id="addRowBtn"><i class="fa-solid fa-plus"></i></button>
                                 </th>
                                 
                                 <th>Item</th>
@@ -246,7 +246,7 @@
                                 <i class="fa-solid fa-circle-info"></i>
                                 <small class="fw-bold" id="errorText">Ready to verify invoice.</small>
                             </div>
-                            <button class="btn btn-primary btn-md invoice-action-btn" id="verifyBtn">
+                            <button type="button" class="btn btn-primary btn-md invoice-action-btn" id="verifyBtn">
                                 <i class="fa-solid fa-check"></i> Verify
                             </button>
                             <button class="btn btn-success btn-md invoice-action-btn" type="submit" id="submitBtn" style="display: none;" disabled>
@@ -257,6 +257,28 @@
                 </div>
             </form>
         </div>
+
+        <div id="itemDeleteConfirmModal" class="item-delete-modal" hidden role="dialog" aria-modal="true" aria-labelledby="itemDeleteConfirmTitle">
+            <div class="item-delete-dialog">
+                <h3 id="itemDeleteConfirmTitle">Delete item?</h3>
+                <p>Are you sure you want to delete <strong id="itemDeleteItemName">this item</strong> with quantity <strong id="itemDeleteQuantity">0</strong>?</p>
+                <div class="item-delete-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelItemDelete">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmItemDelete">Delete Item</button>
+                </div>
+            </div>
+        </div>
+        <div id="itemUndoToast" class="item-undo-toast" hidden role="status">
+            <span id="itemUndoMessage">Item deleted.</span>
+            <button type="button" id="undoItemDelete">Undo</button>
+        </div>
+        <style>
+            .item-delete-modal{position:fixed;inset:0;z-index:100000;background:rgba(15,23,42,.55);display:grid;place-items:center;padding:20px}
+            .item-delete-modal[hidden],.item-undo-toast[hidden]{display:none!important}
+            .item-delete-dialog{width:min(440px,100%);background:#fff;border-radius:14px;padding:24px;box-shadow:0 18px 50px rgba(15,23,42,.3)}
+            .item-delete-dialog h3{margin:0 0 10px;color:#173b72;font-weight:800}.item-delete-dialog p{color:#475569;margin:0 0 22px;line-height:1.5}.item-delete-actions{display:flex;justify-content:flex-end;gap:10px}
+            .item-undo-toast{position:fixed;right:24px;bottom:24px;z-index:100001;display:flex;align-items:center;gap:16px;background:#173b72;color:#fff;border-radius:10px;padding:12px 16px;box-shadow:0 10px 25px rgba(15,23,42,.25);font-weight:700}.item-undo-toast button{border:0;border-radius:6px;background:#fbbf24;color:#111827;padding:6px 12px;font-weight:800;cursor:pointer}
+        </style>
 
         <div class="modal fade" id="quickCustomerModal" tabindex="-1" aria-labelledby="quickCustomerModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -437,7 +459,16 @@
         });
 
 $(document).ready(function () {
+        let invoiceSubmitting = false;
         $('.invoice-create-page form').on('submit', function (event) {
+            if (invoiceSubmitting) {
+                event.preventDefault();
+                return;
+            }
+            syncAllRowsFromDom();
+            finalData[0]["note"] = $("#noteInput").val().trim();
+            $("#salesArrInput").val(JSON.stringify(salesData));
+            $("#finalArrInput").val(JSON.stringify(finalData));
             const invalidRow = salesData.find(function (row) {
                 const rowElement = $("#inputRow" + row.id);
                 const product = String(row.product || "").trim();
@@ -450,6 +481,10 @@ $(document).ready(function () {
                 row.quantity = quantity;
                 row.price = price;
                 row.unit = unit;
+
+                const meaningfulUnit = row.unit && !["choose", "select"].includes(String(row.unit).trim().toLowerCase());
+                const hasAnyValue = Boolean(String(row.product || row.item_name || row.unstocked || row.quantity || row.price || (meaningfulUnit ? row.unit : "") || "").trim());
+                if (!hasAnyValue) return false;
 
                 return (product === "" && unstocked === "")
                     || quantity === ""
@@ -514,6 +549,7 @@ $(document).ready(function () {
             $("#finalArrInput").val(JSON.stringify(finalData));
 
             $('#invoiceSubmitOverlay').css('display', 'flex');
+            invoiceSubmitting = true;
             $('#submitBtn')
                 .prop('disabled', true)
                 .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...');

@@ -118,6 +118,116 @@ function resetInvoiceVerification() {
     $("#verifyBtn").show();
 }
 
+let pendingItemDeletion = null;
+let lastDeletedItem = null;
+
+function syncRowFromDom(row) {
+    const rowElement = $(`#inputRow${row.id}`);
+    if (!rowElement.length) return row;
+    const selectedName = String(rowElement.find("#selectProductLink h6").text() || "").trim();
+    if (selectedName && !String(row.product || "").trim()) {
+        row.item_name = selectedName;
+    }
+    ["unstocked", "quantity", "unit", "price", "list_price", "discount_percent"].forEach(function (name) {
+        const input = rowElement.find(`[data-name="${name}"]`);
+        if (input.length) row[name] = String(input.val() || "").trim();
+    });
+    row.subtotal = getRowCalculations(String(row.quantity || ""), String(row.price || ""), String(row.discount || ""));
+    return row;
+}
+
+function syncAllRowsFromDom() {
+    salesData.forEach(syncRowFromDom);
+    getFinalCalculations();
+}
+
+function itemRowLabel(row) {
+    const rowElement = $(`#inputRow${row.id}`);
+    return String(row.item_name || rowElement.find("#selectProductLink h6").text() || row.unstocked || "Unnamed item").trim();
+}
+
+function showItemDeleteDialog(row) {
+    pendingItemDeletion = { id: row.id };
+    $("#itemDeleteItemName").text(itemRowLabel(row));
+    $("#itemDeleteQuantity").text(String(row.quantity || "not entered"));
+    $("#itemDeleteConfirmModal").prop("hidden", false);
+    window.setTimeout(() => $("#cancelItemDelete").trigger("focus"), 0);
+}
+
+function closeItemDeleteDialog() {
+    pendingItemDeletion = null;
+    $("#itemDeleteConfirmModal").prop("hidden", true);
+}
+
+function showItemUndo(row) {
+    $("#itemUndoMessage").text(`${itemRowLabel(row)} deleted.`);
+    $("#itemUndoToast").prop("hidden", false);
+    window.clearTimeout(window.itemUndoTimer);
+    window.itemUndoTimer = window.setTimeout(() => $("#itemUndoToast").prop("hidden", true), 10000);
+}
+
+function deleteItemRow(id) {
+    syncAllRowsFromDom();
+    const index = salesData.findIndex((row) => Number(row.id) === Number(id));
+    if (index < 0 || salesData.length <= 1) return;
+    const row = JSON.parse(JSON.stringify(salesData[index]));
+    lastDeletedItem = { row, index };
+    $(`#inputRow${id}`).remove();
+    salesData.splice(index, 1);
+    renumberInvoiceRows();
+    getFinalCalculations();
+    renderInvoiceRowsPage();
+    resetInvoiceVerification();
+    showItemUndo(row);
+}
+
+$(document).on("click.invoiceDelete", ".remove-row-btn", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    syncAllRowsFromDom();
+    const row = salesData.find((item) => Number(item.id) === Number($(this).data("id")));
+    if (!row) return;
+    const filled = Boolean(String(row.product || row.item_name || row.unstocked || row.quantity || row.price || row.unit || "").trim());
+    if (filled) showItemDeleteDialog(row);
+    else deleteItemRow(row.id);
+});
+
+$(document).on("click.invoiceDelete", "#cancelItemDelete", closeItemDeleteDialog);
+$(document).on("click.invoiceDelete", "#confirmItemDelete", function () {
+    if (pendingItemDeletion) deleteItemRow(pendingItemDeletion.id);
+    closeItemDeleteDialog();
+});
+$(document).on("click.invoiceDelete", "#undoItemDelete", function () {
+    if (!lastDeletedItem || !lastDeletedItem.row) return;
+    const snapshot = JSON.parse(JSON.stringify(lastDeletedItem));
+    appendInputRow(snapshot.row, snapshot.row.id);
+    const restored = salesData.pop();
+    salesData.splice(Math.min(snapshot.index, salesData.length), 0, restored);
+    const restoredElement = $(`#inputRow${snapshot.row.id}`);
+    const next = salesData[snapshot.index + 1];
+    if (next && $(`#inputRow${next.id}`).length) restoredElement.insertBefore($(`#inputRow${next.id}`));
+    renumberInvoiceRows();
+    getFinalCalculations();
+    resetInvoiceVerification();
+    lastDeletedItem = null;
+    $("#itemUndoToast").prop("hidden", true);
+});
+$(document).on("keydown.invoiceDelete", function (event) {
+    if (event.key === "Escape" && !$("#itemDeleteConfirmModal").prop("hidden")) {
+        event.preventDefault();
+        closeItemDeleteDialog();
+    }
+});
+
+// Enter in an item row is never a form-submit or delete command. Product-picker
+// and quick-price handlers run on their own inputs and retain their intentional Enter behavior.
+$(document).on("keydown.invoiceRow", "#invoiceTableBody input, #invoiceTableBody select", function (event) {
+    if (event.key !== "Enter") return;
+    if (this.id === "searchProductInput") return;
+    event.preventDefault();
+    event.stopPropagation();
+});
+
 function updateInvoiceStepVisibility() {
     const hasCustomer = `${finalData[0]["customer"] || ""}`.trim() !== "";
     const invoiceType = $("#invoice_type").val();
@@ -507,6 +617,13 @@ function renderInvoiceRowsPage() {
     $("#invoiceRowsNextBtn").prop("disabled", currentInvoiceRowsPage >= totalPages);
 }
 
+function renumberInvoiceRows() {
+    salesData.forEach(function (row, index) {
+        const rowElement = $(`#inputRow${row.id}`);
+        rowElement.children('td').first().text(index + 1);
+    });
+}
+
 $(document)
     .off("click.invoiceRowsPager")
     .on("click.invoiceRowsPager", "#invoiceRowsPrevBtn, #invoiceRowsNextBtn", function () {
@@ -516,15 +633,16 @@ $(document)
         renderInvoiceRowsPage();
     });
 
-function appendInputRow(rowData = null) {
+function appendInputRow(rowData = null, forcedId = null) {
     if (salesData.length >= MAX_INVOICE_ROWS) {
         return false;
     }
 
-    counter++;
-    $("#invoiceTableBody").append(inputHTML(counter));
+    const rowId = forcedId === null ? counter + 1 : Number(forcedId);
+    counter = Math.max(counter, rowId);
+    $("#invoiceTableBody").append(inputHTML(rowId));
     const row = {
-        id: counter,
+        id: rowId,
         product: rowData && rowData.product ? `${rowData.product}` : "",
         unstocked: rowData && rowData.unstocked ? `${rowData.unstocked}` : "",
         quantity: rowData && rowData.quantity ? `${rowData.quantity}` : "",
@@ -537,9 +655,10 @@ function appendInputRow(rowData = null) {
     };
 
     salesData.push(row);
+    renumberInvoiceRows();
 
     if (rowData) {
-        const rowEl = $(`#inputRow${counter}`);
+        const rowEl = $(`#inputRow${rowId}`);
         rowEl.find("#quantityInput").val(row.quantity);
         rowEl.find("#priceInput").val(row.price);
         rowEl.find("#listPriceInput").val(row.list_price);
@@ -589,22 +708,8 @@ function removeObj(id) {
 }
 
 function triggerRemoveEvent() {
-    $(".remove-row-btn")
-        .off("click")
-        .on("click", function (e) {
-            e.preventDefault();
-            const dataId = $(this).data("id");
-            const parentId = `inputRow${dataId}`;
-
-            if (salesData.length <= 1) {
-                return false;
-            }
-
-            $(`#${parentId}`).remove();
-            removeObj(dataId);
-            getFinalCalculations();
-            renderInvoiceRowsPage();
-        });
+    // Row deletion is handled by the delegated confirmation/undo handler above.
+    // Keeping this function preserves the existing initialization call sites.
 }
 
 function getRowCalculations(quantity, price, discount) {
@@ -1532,8 +1637,10 @@ $(window).on("load", function () {
         e.preventDefault();
         hideOldPriceBoxes();
         clearInvoiceErrors();
+        syncAllRowsFromDom();
 
         let hasError = false; // Flag to track if any error occurs
+        let populatedRows = 0;
 
         if ($("#salesDate").val().trim() === "") {
             setInvoiceError("Please select date.", $("#salesDate"));
@@ -1561,6 +1668,11 @@ $(window).on("load", function () {
             $.each(salesData, function (index, value) {
                 const row = $(`#inputRow${value.id}`);
                 const selectedUnit = String(row.find("#unitInput").val() || "").trim();
+
+                const meaningfulUnit = value.unit && !["choose", "select"].includes(String(value.unit).trim().toLowerCase());
+                const hasAnyValue = Boolean(String(value.product || value.item_name || value.unstocked || value.quantity || value.price || (meaningfulUnit ? value.unit : "") || "").trim());
+                if (!hasAnyValue) return true;
+                populatedRows++;
 
                 // Read the actual dropdown value again so validation cannot
                 // use stale salesData after a row is added or edited.
@@ -1604,6 +1716,11 @@ $(window).on("load", function () {
                     return false; // Exit the loop early since there's an error
                 }
             });
+
+            if (!populatedRows) {
+                setInvoiceError("Add at least one complete invoice item.", $("#invoiceTableBody tr[id^='inputRow'] #unstockedInput").first());
+                hasError = true;
+            }
 
             // If there are no errors, set success message and enable submit button
             if (!hasError) {

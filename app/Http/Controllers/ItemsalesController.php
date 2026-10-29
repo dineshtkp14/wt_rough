@@ -127,37 +127,63 @@ class ItemsalesController extends Controller
             return redirect()->route('itemsales.create')->with('error', 'Please verify invoice details before saving.');
         }
 
-        foreach ($sales_arr as $row) {
+        $validRows = [];
+        foreach ($sales_arr as $index => $row) {
             $product = trim((string) ($row->product ?? ''));
             $unstocked = trim((string) ($row->unstocked ?? ''));
-            $quantity = $row->quantity ?? null;
-            $price = $row->price ?? null;
+            $quantity = trim((string) ($row->quantity ?? ''));
+            $price = trim((string) ($row->price ?? ''));
             $unit = strtolower(trim((string) ($row->unit ?? '')));
 
+            // The UI always keeps one empty placeholder row. Ignore only rows that
+            // are completely empty; reject partially filled rows with their row no.
+            $hasAnyValue = $product !== '' || $unstocked !== '' || $quantity !== '' || $price !== '' || ($unit !== '' && !in_array($unit, ['choose', 'select'], true));
+            if (!$hasAnyValue) continue;
+
+            $displayRow = $index + 1;
             if ($product === '' && $unstocked === '') {
                 return redirect()->route('itemsales.create')
-                    ->with('error', 'Please select an item or enter an unstocked item before saving.')
+                    ->with('error', "Item row {$displayRow}: select an item or enter an unstocked item before saving.")
                     ->withInput();
             }
 
             if (!is_numeric($quantity) || (float) $quantity <= 0) {
                 return redirect()->route('itemsales.create')
-                    ->with('error', 'Please enter a valid quantity for every invoice item.')
+                    ->with('error', "Item row {$displayRow}: enter a valid quantity before saving.")
                     ->withInput();
             }
 
             if (!is_numeric($price) || (float) $price < 0) {
                 return redirect()->route('itemsales.create')
-                    ->with('error', 'Please enter a valid price for every invoice item.')
+                    ->with('error', "Item row {$displayRow}: enter a valid price before saving.")
                     ->withInput();
             }
 
             if ($unit === '' || in_array($unit, ['choose', 'select'], true)) {
                 return redirect()->route('itemsales.create')
-                    ->with('error', 'Please select a unit for every invoice item before saving.')
+                    ->with('error', "Item row {$displayRow}: select a unit before saving.")
                     ->withInput();
             }
+
+            $row->quantity = (float) $quantity;
+            $row->price = (float) $price;
+            $row->unit = $unit;
+            $rowDiscount = is_numeric($row->discount ?? null) ? max(0, (float) $row->discount) : 0;
+            $row->subtotal = number_format(max(0, ($row->quantity * $row->price) - $rowDiscount), 2, '.', '');
+            $validRows[] = $row;
         }
+
+        $sales_arr = $validRows;
+        if (empty($sales_arr)) {
+            return redirect()->route('itemsales.create')->with('error', 'Add at least one complete invoice item before saving.')->withInput();
+        }
+
+        $serverSubtotal = round(array_sum(array_map(fn ($row) => (float) $row->subtotal, $sales_arr)), 2);
+        $invoiceDiscount = is_numeric($final_arr[0]->discount ?? null) ? max(0, (float) $final_arr[0]->discount) : 0;
+        if ($invoiceDiscount > $serverSubtotal) {
+            return redirect()->route('itemsales.create')->with('error', 'Invoice discount cannot be greater than the item subtotal.')->withInput();
+        }
+        $serverTotal = round($serverSubtotal - $invoiceDiscount, 2);
 
         $customerId = $final_arr[0]->customer ?? null;
         $creditLimitDays = null;
@@ -190,9 +216,9 @@ class ItemsalesController extends Controller
         $invoice_data->customerid = $customerId;
         // $invoice_data->paidamount = null;
         // $invoice_data->dueamount = $final_arr[0]->total;
-        $invoice_data->subtotal = $final_arr[0]->subtotal;
-        $invoice_data->discount = $final_arr[0]->discount == "" ? 0.00 : $final_arr[0]->discount;
-        $invoice_data->total = $final_arr[0]->total;
+        $invoice_data->subtotal = $serverSubtotal;
+        $invoice_data->discount = $invoiceDiscount;
+        $invoice_data->total = $serverTotal;
         $invoice_data->notes = $final_arr[0]->note;
         $invoice_data->inv_type = $req->invoice_type;
         $invoice_data->inv_date = $req->date;
@@ -249,7 +275,7 @@ class ItemsalesController extends Controller
         $cus_data->particulars  = "Goods Sales";
         $cus_data->voucher_type = "sales";
         $cus_data->invoicetype = $req->invoice_type;
-        $cus_data->debit =  $final_arr[0]->total;
+        $cus_data->debit =  $serverTotal;
         $cus_data->credit_limit_days = $req->invoice_type === 'credit' ? $creditLimitDays : null;
         $cus_data->added_by = session('user_email');
 
