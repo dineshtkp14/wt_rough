@@ -132,12 +132,12 @@ Route::get('/vat-system/change-firm', [VatSystemBillController::class, 'switchFi
   Route::post('/vat-system/bills', [VatSystemBillController::class, 'store'])->name('vat-system.bills.store');
   Route::get('/vat-system/bills', [VatSystemBillController::class, 'index'])->name('vat-system.bills.index');
   Route::get('/vat-system/bills/export/excel', [VatSystemBillController::class, 'exportExcel'])->name('vat-system.bills.export.excel');
+  Route::get('/vat-system/bills/export/pan-summary', [VatSystemBillController::class, 'exportPanSummaryExcel'])->name('vat-system.bills.export.pan-summary');
   Route::get('/vat-system/bills/{bill}/edit', [VatSystemBillController::class, 'edit'])->name('vat-system.bills.edit');
   Route::put('/vat-system/bills/{bill}', [VatSystemBillController::class, 'update'])->name('vat-system.bills.update');
   Route::delete('/vat-system/bills/{bill}', [VatSystemBillController::class, 'destroy'])->name('vat-system.bills.destroy');
   Route::get('/vat-system/bills/{bill}', [VatSystemBillController::class, 'show'])->name('vat-system.bills.show');
   Route::get('/vat-system/company-bills/export/excel', [CompanyBillController::class, 'exportExcel'])->name('vat-system.company-bills.export.excel');
-  Route::get('/vat-system/company-bills/export/pan-summary', [CompanyBillController::class, 'exportPanSummaryExcel'])->name('vat-system.company-bills.export.pan-summary');
   Route::get('/vat-system/company-bills/check-duplicate', [CompanyBillController::class, 'checkDuplicate'])->name('vat-system.company-bills.check-duplicate');
   Route::resource('/vat-system/company-bills', CompanyBillController::class)->names('vat-system.company-bills');
   Route::resource('/vat-system/suppliers', VatSupplierController::class)->except(['show'])->names('vat-system.suppliers');

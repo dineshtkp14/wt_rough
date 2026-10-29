@@ -80,65 +80,6 @@ class CompanyBillController extends Controller
             'Content-Disposition' => 'attachment; filename="vat-purchase-'.$firm->id.'.xls"',
         ]);
     }
-
-    public function exportPanSummaryExcel(Request $request)
-    {
-        $firm = $this->firm();
-        if (!$firm) return redirect()->route('vat-system.firm.select', ['next' => 'purchase']);
-
-        $search = trim((string) $request->query('search'));
-        $bsMonth = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', (string) $request->query('bs_month')) ? $request->query('bs_month') : '';
-        $bsMonthRange = $this->bsMonthRange($bsMonth);
-        $bsFrom = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_from')) ? $request->query('bs_from') : '';
-        $bsTo = preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', (string) $request->query('bs_to')) ? $request->query('bs_to') : '';
-        $bsDateRange = $this->bsDateRange($bsFrom, $bsTo);
-
-        $bills = CompanyBill::where('firm_id', $firm->id)->with(['items', 'supplier'])
-            ->when($search !== '', fn ($q) => $q->where(function ($q) use ($search) {
-                $q->where('bill_no', 'like', "%{$search}%")
-                    ->orWhere('company_name', 'like', "%{$search}%")
-                    ->orWhere('company_vat_no', 'like', "%{$search}%")
-                    ->orWhere('company_pan_no', 'like', "%{$search}%")
-                    ->orWhereHas('supplier', fn ($q) => $q->where('name', 'like', "%{$search}%"));
-            }))
-            ->when($bsMonthRange, fn ($q) => $q->whereBetween('bill_date', $bsMonthRange))
-            ->when($bsDateRange, fn ($q) => $q->whereBetween('bill_date', $bsDateRange))
-            ->orderBy('bill_date')->orderBy('id')->get();
-
-        $parties = [];
-        foreach ($bills as $bill) {
-            $pan = trim((string) ($bill->company_pan_no ?: $bill->supplier?->pan_no));
-            $normalizedPan = strtoupper(preg_replace('/\s+/', '', $pan));
-            $key = $normalizedPan !== ''
-                ? 'pan:' . $normalizedPan
-                : 'party:' . ($bill->supplier_id ?: 'legacy:' . strtolower(trim($bill->company_name)));
-            $taxable = $bill->items->where('is_taxable', true)->sum(fn ($item) => (float) $item->quantity * (float) $item->rate);
-            $vat = round($taxable * 0.13, 2);
-
-            if (!isset($parties[$key])) $parties[$key] = ['names' => [], 'pan' => $pan, 'bills' => 0, 'taxable' => 0.0, 'vat' => 0.0];
-            $parties[$key]['names'][trim($bill->company_name)] = true;
-            $parties[$key]['bills']++;
-            $parties[$key]['taxable'] += $taxable;
-            $parties[$key]['vat'] += $vat;
-        }
-
-        $parties = collect($parties)->map(function ($party) {
-            $party['name'] = implode(' / ', array_keys($party['names']));
-            $party['taxable'] = round($party['taxable'], 2);
-            $party['vat'] = round($party['vat'], 2);
-            $party['grand'] = round($party['taxable'] + $party['vat'], 2);
-            return $party;
-        })->sortBy(fn ($party) => strtolower($party['name']))->values();
-
-        $above = $parties->filter(fn ($party) => trim($party['pan']) !== '' && $party['taxable'] >= 100000)->values();
-        $others = $parties->reject(fn ($party) => trim($party['pan']) !== '' && $party['taxable'] >= 100000)->values();
-        $html = view('vat-system.company-bills.pan-summary-excel', compact('firm', 'above', 'others', 'bsMonth', 'bsFrom', 'bsTo'))->render();
-
-        return response($html, 200, [
-            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="purchase-pan-summary-for-final-'.$firm->id.'.xls"',
-        ]);
-    }
     public function create() { $firm=$this->firm(); if(!$firm)return redirect()->route('vat-system.firm.select',['next'=>'purchase']); $suppliers=VatSupplier::orderBy('name')->get(); return view('vat-system.company-bills.form',compact('firm','suppliers')); }
     public function checkDuplicate(Request $request)
     {
