@@ -49,8 +49,17 @@ class ModernDashboardController extends Controller
             'month_credit_notes'   => CreditnotesInvoice::whereMonth('inv_date', $month)->whereYear('inv_date', $year)->count(),
             'bank_balance'         => (float) Bank::sum('amount'),
             'month_expenses'       => (float) Expense::whereMonth('date', $month)->whereYear('date', $year)->sum('amount'),
-            'pending_payments'     => max(0, (float) (customerledgerdetails::sum('debit') - customerledgerdetails::sum('credit'))),
+            // Read both totals in one aggregate query.  This preserves the
+            // existing balance calculation while avoiding two full-table scans.
+            'pending_payments'     => 0,
         ];
+        $ledgerTotals = customerledgerdetails::selectRaw(
+            'COALESCE(SUM(debit), 0) as total_debit, COALESCE(SUM(credit), 0) as total_credit'
+        )->first();
+        $stats['pending_payments'] = max(
+            0,
+            (float) $ledgerTotals->total_debit - (float) $ledgerTotals->total_credit
+        );
         $onlineUsers = Schema::hasColumn('users', 'last_activity_at')
             ? User::where('last_activity_at', '>=', now()->subMinutes(5))->orderBy('email')->get(['name', 'email', 'last_activity_at', 'last_login_at', 'last_logout_at'])
             : collect();
@@ -152,9 +161,15 @@ class ModernDashboardController extends Controller
         }
         $paymentModes = ['labels' => $payLabels, 'data' => $payData];
 
-        $inStock    = item::where('quantity', '>', 0)->where('check_remove_ofs', 0)->count();
-        $lowStock   = item::where('showwarning', '>', 0)->where('quantity', '>=', 1)->where('check_remove_ofs', 0)->whereRaw('quantity <= showwarning')->count();
-        $outOfStock = item::where('quantity', '=', 0)->where('check_remove_ofs', 0)->count();
+        $stockCounts = item::where('check_remove_ofs', 0)
+            ->selectRaw(''
+                . 'SUM(CASE WHEN quantity > 0 THEN 1 ELSE 0 END) as in_stock, '
+                . 'SUM(CASE WHEN showwarning > 0 AND quantity >= 1 AND quantity <= showwarning THEN 1 ELSE 0 END) as low_stock, '
+                . 'SUM(CASE WHEN quantity = 0 THEN 1 ELSE 0 END) as out_of_stock'
+            )->first();
+        $inStock    = (int) ($stockCounts->in_stock ?? 0);
+        $lowStock   = (int) ($stockCounts->low_stock ?? 0);
+        $outOfStock = (int) ($stockCounts->out_of_stock ?? 0);
         $stockStatus = ['labels' => ['In Stock', 'Low Stock', 'Out of Stock'], 'data' => [$inStock, $lowStock, $outOfStock]];
 
         $recentInvoicesRaw = invoice::join('customerinfos', 'invoices.customerid', '=', 'customerinfos.id')
@@ -164,10 +179,17 @@ class ModernDashboardController extends Controller
             ->limit(100)
             ->get();
 
+        $paidRecentInvoiceIds = customerledgerdetails::whereIn('invoiceid', $recentInvoicesRaw->pluck('id'))
+            ->where('credit', '>', 0)
+            ->pluck('invoiceid')
+            ->flip();
+        $invoiceRecords = invoice::whereIn('id', $recentInvoicesRaw->pluck('id'))
+            ->get()
+            ->keyBy('id');
         $recentInvoices = [];
         foreach ($recentInvoicesRaw as $inv) {
-            $invoiceRecord = invoice::find($inv->id);
-            $isPaid = ($inv->type === 'cash') || customerledgerdetails::where('invoiceid', $inv->id)->where('credit', '>', 0)->exists();
+            $invoiceRecord = $invoiceRecords->get($inv->id);
+            $isPaid = ($inv->type === 'cash') || isset($paidRecentInvoiceIds[$inv->id]);
             $recentInvoices[] = [
                 'invoice_id' => $inv->id,
                 'id'       => $invoiceRecord?->visible_invoice_no ?? $inv->id,
@@ -189,9 +211,12 @@ class ModernDashboardController extends Controller
             ->limit(100)
             ->get();
 
+        $paymentRecords = customerledgerdetails::whereIn('id', $recentPaymentsRaw->pluck('id'))
+            ->get()
+            ->keyBy('id');
         $recentPayments = [];
         foreach ($recentPaymentsRaw as $pay) {
-            $paymentRecord = customerledgerdetails::find($pay->id);
+            $paymentRecord = $paymentRecords->get($pay->id);
             $mode = trim($pay->voucher_type ?? '');
             if (empty($mode)) {
                 $mode = trim($pay->particulars ?? '');
@@ -649,10 +674,17 @@ class ModernDashboardController extends Controller
             ->orderByDesc('invoices.id')
             ->get();
 
+        $paidRecentInvoiceIds = customerledgerdetails::whereIn('invoiceid', $recentInvoicesRaw->pluck('id'))
+            ->where('credit', '>', 0)
+            ->pluck('invoiceid')
+            ->flip();
+        $invoiceRecords = invoice::whereIn('id', $recentInvoicesRaw->pluck('id'))
+            ->get()
+            ->keyBy('id');
         $recentInvoices = [];
         foreach ($recentInvoicesRaw as $inv) {
-            $invoiceRecord = invoice::find($inv->id);
-            $isPaid = ($inv->type === 'cash') || customerledgerdetails::where('invoiceid', $inv->id)->where('credit', '>', 0)->exists();
+            $invoiceRecord = $invoiceRecords->get($inv->id);
+            $isPaid = ($inv->type === 'cash') || isset($paidRecentInvoiceIds[$inv->id]);
             $recentInvoices[] = [
                 'invoice_id' => $inv->id,
                 'customer_id' => $inv->customerid,
@@ -675,9 +707,12 @@ class ModernDashboardController extends Controller
             ->orderByDesc('customerledgerdetails.id')
             ->get();
 
+        $paymentRecords = customerledgerdetails::whereIn('id', $recentPaymentsRaw->pluck('id'))
+            ->get()
+            ->keyBy('id');
         $recentPayments = [];
         foreach ($recentPaymentsRaw as $pay) {
-            $paymentRecord = customerledgerdetails::find($pay->id);
+            $paymentRecord = $paymentRecords->get($pay->id);
             $mode = trim($pay->voucher_type ?? '');
             if (empty($mode)) {
                 $mode = trim($pay->particulars ?? '');

@@ -303,7 +303,10 @@ class AllCustomerCreditListLivewire extends Component
         $this->applyFilters($query);
         $this->applySorting($query);
 
-        $customers = $query->paginate(300);
+        // Keep the page responsive on large customer databases. Pagination
+        // still exposes every customer without rendering hundreds of rows at
+        // once or changing any balances.
+        $customers = $query->paginate(100);
 
         foreach ($customers as $customer) {
             if (!array_key_exists($customer->id, $this->customerNotes)) {
@@ -363,13 +366,19 @@ class AllCustomerCreditListLivewire extends Component
         }
         $highestDueCustomer = $summaryRows->sortByDesc('total_due')->first();
 
-        [$ledgerTotalsForAdvance, $creditNoteTotalsForAdvance] = $this->creditSummarySubqueries();
-        $advanceQuery = $this->buildCustomerCreditQuery($ledgerTotalsForAdvance, $creditNoteTotalsForAdvance);
-        $this->applyCommonFilters($advanceQuery);
-        $advanceQuery->having('total_due', '<', -self::MIN_VISIBLE_BALANCE);
-        $advanceQuery->orderBy('total_due', 'asc');
-
-        $advanceCustomers = $advanceQuery->get();
+        // When the selected filter is already "advance deposit", the summary
+        // query contains exactly the same rows. Reuse it instead of running a
+        // third full aggregate query.
+        if ($this->sortBy === 'advance_deposit') {
+            $advanceCustomers = $summaryRows->sortBy('total_due')->values();
+        } else {
+            [$ledgerTotalsForAdvance, $creditNoteTotalsForAdvance] = $this->creditSummarySubqueries();
+            $advanceQuery = $this->buildCustomerCreditQuery($ledgerTotalsForAdvance, $creditNoteTotalsForAdvance);
+            $this->applyCommonFilters($advanceQuery);
+            $advanceQuery->having('total_due', '<', -self::MIN_VISIBLE_BALANCE);
+            $advanceQuery->orderBy('total_due', 'asc');
+            $advanceCustomers = $advanceQuery->get();
+        }
         $totalAdvanceDeposit = abs($advanceCustomers->sum('total_due'));
         $todayCollectionQuery = DB::table('customerledgerdetails')
             ->where('invoicetype', 'payment')
