@@ -366,6 +366,8 @@
                                         Items</a></li>
                                 <li><a href="{{ route('invoice.index') }}"><i class="fa-solid fa-list"></i>View
                                         Invoices</a></li>
+                                <li><a href="{{ route('invoice.index') }}"><i class="fa-solid fa-pen-to-square"></i>Edit
+                                        Invoice</a></li>
                                 <li><a href="{{ route('deletedcustomer.deletebillno') }}"><i
                                             class="fa-solid fa-trash-can"></i>Search Deleted Invoice</a></li>
                                 <li><a href="{{ route('deleted.invoice') }}"><i class="fa-solid fa-eye"></i>View Deleted
