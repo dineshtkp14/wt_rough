@@ -1187,6 +1187,15 @@ function triggerOldPriceClick() {
             }
 
             row.find(".old-price-result-box").hide().empty();
+
+            // After choosing an old-price suggestion, continue the normal
+            // entry flow in the same row by moving straight to Quantity.
+            window.setTimeout(function () {
+                const quantityInput = row.find("#quantityInput")[0];
+                if (!quantityInput || quantityInput.disabled) return;
+                quantityInput.focus({ preventScroll: true });
+                quantityInput.select();
+            }, 0);
         });
 }
 
