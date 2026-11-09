@@ -390,6 +390,7 @@ Route::post('/cpayments/{cpayments}/mark-cheque-exchanged',[CustomerLedgerDetail
 
 
 //Route::get('/clhs',[CustomerLedgerHistroy::class,'index'])->name('clhs.index');
+Route::get('/clhs/item-search',[CustomerLedgerHistroy::class,'searchCustomerItems'])->name('clhs.item-search');
 Route::get('/clhs',[CustomerLedgerHistroy::class,'returnchoosendatehistroy'])->name('clhs.returnchoosendatehistroy');
 Route::get('/customer-ledger-dispute',[CustomerLedgerHistroy::class,'customerLedgerDispute'])->name('customer.ledger.dispute');
 Route::get('/customer-ledger-dispute/pdf',[CustomerLedgerHistroy::class,'customerLedgerDisputePdf'])->name('customer.ledger.dispute.pdf');

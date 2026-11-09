@@ -179,18 +179,18 @@
                 @endif
             </div>
 
-            @if($customeridonly && !empty($itemSearch))
-                <section class="clhs-item-price-panel">
+            @if($customeridonly)
+                <section class="clhs-item-price-panel" id="customerItemPricePanel" style="{{ empty($itemSearch) ? 'display:none;' : '' }}">
                     <div class="clhs-item-price-heading">
                         <div>
                             <h4><i class="fa-solid fa-tags"></i> Sold Item Price History</h4>
-                            <span>{{ count($customerItemSales) }} matching item sale(s) for “{{ $itemSearch }}”</span>
+                            <span id="customerItemPriceSummary">{{ count($customerItemSales) }} matching item sale(s) for “{{ $itemSearch }}”</span>
                         </div>
                     </div>
                     <div class="table-responsive">
                         <table class="clhs-item-price-table">
                             <thead><tr><th>Date (B.S.)</th><th>Invoice No.</th><th>Item Name</th><th>Quantity</th><th>Unit</th><th class="text-end">Sold Price</th><th class="text-end">Amount</th></tr></thead>
-                            <tbody>
+                            <tbody id="customerItemPriceResults">
                                 @forelse($customerItemSales as $sale)
                                     <tr>
                                         <td>{{ \App\Support\NepaliDate::adToBsString($sale->date, 'en') }}</td>
@@ -2145,6 +2145,111 @@
                     ? '<i class="fa-solid fa-eye-slash"></i> Hide Column'
                     : '<i class="fa-solid fa-eye"></i> Show Column';
             });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.getElementById('customerItemSearch');
+            const customerId = document.getElementById('customerIdInput');
+            const panel = document.getElementById('customerItemPricePanel');
+            const summary = document.getElementById('customerItemPriceSummary');
+            const results = document.getElementById('customerItemPriceResults');
+            const startDate = document.querySelector('input[name="date1_bs"]');
+            const endDate = document.querySelector('input[name="date2_bs"]');
+
+            if (!input || !customerId || !panel || !summary || !results) return;
+
+            let timer;
+            let requestNumber = 0;
+
+            const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            }[character]));
+
+            const money = (value) => Number(value || 0).toFixed(2);
+
+            function renderItems(items, search) {
+                summary.textContent = `${items.length} matching item sale(s) for “${search}”`;
+
+                if (!items.length) {
+                    results.innerHTML = '<tr><td colspan="7" class="text-center p-4">No matching item sales found for this customer.</td></tr>';
+                    panel.style.display = '';
+                    return;
+                }
+
+                results.innerHTML = items.map((item) => `
+                    <tr>
+                        <td>${escapeHtml(item.date)}</td>
+                        <td>${escapeHtml(item.invoice)}</td>
+                        <td class="fw-bold">${escapeHtml(item.name)}</td>
+                        <td>${escapeHtml(item.quantity)}</td>
+                        <td>${escapeHtml(item.unit || '-')}</td>
+                        <td class="text-end fw-bold">${money(item.price)}</td>
+                        <td class="text-end">${money(item.amount)}</td>
+                    </tr>
+                `).join('');
+                panel.style.display = '';
+            }
+
+            async function searchItems() {
+                const search = input.value.trim();
+                window.clearTimeout(timer);
+
+                if (!search) {
+                    panel.style.display = 'none';
+                    return;
+                }
+
+                const currentRequest = ++requestNumber;
+                summary.textContent = 'Searching sold item prices…';
+                panel.style.display = '';
+
+                const params = new URLSearchParams({
+                    customerid: customerId.value,
+                    item_search: search,
+                    date1_bs: startDate ? startDate.value.trim() : '',
+                    date2_bs: endDate ? endDate.value.trim() : ''
+                });
+
+                try {
+                    const response = await fetch('{{ route('clhs.item-search') }}?' + params.toString(), {
+                        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    const payload = await response.json();
+                    if (currentRequest !== requestNumber) return;
+                    if (!response.ok) throw new Error(payload.message || 'Unable to search item prices.');
+                    renderItems(Array.isArray(payload.items) ? payload.items : [], search);
+                } catch (error) {
+                    if (currentRequest !== requestNumber) return;
+                    summary.textContent = error.message || 'Unable to search item prices.';
+                    results.innerHTML = '<tr><td colspan="7" class="text-center text-danger p-4">Live search failed. Please try again.</td></tr>';
+                    panel.style.display = '';
+                }
+            }
+
+            input.addEventListener('input', function () {
+                window.clearTimeout(timer);
+                timer = window.setTimeout(searchItems, 300);
+            });
+
+            input.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') event.preventDefault();
+            });
+
+            [startDate, endDate].forEach((dateInput) => {
+                if (!dateInput) return;
+                dateInput.addEventListener('change', function () {
+                    if (!input.value.trim()) return;
+                    window.clearTimeout(timer);
+                    timer = window.setTimeout(searchItems, 150);
+                });
+            });
+
+            if (!input.value.trim()) panel.style.display = 'none';
         });
     </script>
 @stop

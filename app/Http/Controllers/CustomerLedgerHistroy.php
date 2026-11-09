@@ -367,6 +367,46 @@ class CustomerLedgerHistroy extends Controller
      return redirect('/login');
  }
 
+ public function searchCustomerItems(Request $req)
+ {
+     if (!Auth::check()) return response()->json(['message' => 'Unauthenticated.'], 401);
+
+     $customerId = $req->integer('customerid');
+     $search = trim((string) $req->input('item_search', ''));
+     if (!$customerId || $search === '') return response()->json(['items' => []]);
+
+     $this->convertBsLedgerDates($req, [
+         'date1_bs' => 'date1',
+         'date2_bs' => 'date2',
+     ]);
+
+     $like = '%' . $search . '%';
+     $items = salesitem::query()
+         ->from('salesitems as s')
+         ->leftJoin('items as it', 'it.id', '=', 's.itemid')
+         ->leftJoin('invoices as inv', 'inv.id', '=', 's.invoiceid')
+         ->where('inv.customerid', $customerId)
+         ->when($req->input('date1') && $req->input('date2'), fn ($query) => $query->whereBetween('s.date', [$req->input('date1'), $req->input('date2')]))
+         ->where(function ($query) use ($like) {
+             $query->where('it.itemsname', 'like', $like)
+                 ->orWhere('s.unstockedname', 'like', $like);
+         })
+         ->orderByDesc('s.date')->orderByDesc('s.id')
+         ->select(['s.id', 's.date', 's.invoiceid', 's.quantity', 's.unit', 's.price', 's.subtotal', 'it.itemsname as stocked_item_name', 's.unstockedname'])
+         ->get()
+         ->map(fn ($item) => [
+             'date' => NepaliDate::adToBsString($item->date, 'en'),
+             'invoice' => $item->invoiceid,
+             'name' => trim((string) ($item->unstockedname ?: $item->stocked_item_name ?: 'Unknown item')),
+             'quantity' => $item->quantity,
+             'unit' => $item->unit ?: '-',
+             'price' => (float) $item->price,
+             'amount' => (float) ($item->subtotal ?: ((float) $item->quantity * (float) $item->price)),
+         ])->values();
+
+     return response()->json(['items' => $items]);
+ }
+
  private function convertBsLedgerDates(Request $request, array $fields): void
  {
      foreach ($fields as $bsField => $adField) {
