@@ -335,6 +335,16 @@
                                         @endif
                                         @if($isPayment)
                                             <button type="button" onclick="openPaymentModal({{ $i->id }})" class="clhs-view-payment-btn">View</button>
+                                            @if(auth()->check() && auth()->user()->isAdmin())
+                                                <a href="{{ route('cpayments.edit', $i->id) }}" class="clhs-admin-edit-btn">Edit</a>
+                                                <form action="{{ route('cpayments.destroy', $i->id) }}" method="POST" class="clhs-admin-delete-form" onsubmit="return confirm('Delete payment receipt {{ $i->display_receipt_no }}? This action will be backed up but cannot be undone from this page.');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <input type="hidden" name="redirect_to" value="cpayments.index">
+                                                    <input type="hidden" name="customerid" value="{{ $customeridonly }}">
+                                                    <button type="submit" class="clhs-admin-delete-btn">Delete</button>
+                                                </form>
+                                            @endif
                                         @endif
                                         @if(!empty($i->invoiceid))
                                             @php $invoiceAgeDays = max(0, (int) \Carbon\Carbon::parse($i->date)->diffInDays(now())); @endphp
@@ -357,6 +367,17 @@
                                                         <button type="button" onclick="openCreditNoteModal({{ $i->invoiceid }})" class="clhs-view-invoice-btn">View</button>
                                                     @else
                                                         <button type="button" onclick="openInvoiceModal({{ $i->invoiceid }})" class="clhs-view-invoice-btn">View</button>
+                                                        @if(auth()->check() && auth()->user()->isAdmin())
+                                                            <a href="{{ route('invoice.edit', $i->invoiceid) }}" class="clhs-admin-edit-btn">Edit</a>
+                                                            <form action="{{ route('customer.deletebillno') }}" method="POST" class="clhs-admin-delete-form" onsubmit="return confirm('Delete invoice {{ $i->display_invoice_no ?? $i->invoiceid }}? The invoice will be backed up before deletion.');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <input type="hidden" name="invoiceid" value="{{ $i->invoiceid }}">
+                                                                <input type="hidden" name="redirect_to" value="customer.billno">
+                                                                <input type="hidden" name="customerid" value="{{ $customeridonly }}">
+                                                                <button type="submit" class="clhs-admin-delete-btn">Delete</button>
+                                                            </form>
+                                                        @endif
                                                         @if(!$isPayment && !$isSettlement && $remainingInvoiceAmount > 0.01)
                                                             <a href="{{ route('cpayments.create', ['customerid' => $customeridonly, 'invoiceid' => $i->invoiceid, 'amount' => $remainingInvoiceAmount, 'particulars' => 'Payment for Invoice No. ' . ($i->display_invoice_no ?? $i->invoiceid), 'voucher_type' => 'Receipt', 'totaldueamountfornotclear' => $remainingInvoiceAmount, 'cname' => $customer ? trim(($customer->name ?? '') . ' | ' . ($customer->address ?? '') . ' | ' . ($customer->phoneno ?? '')) : null]) }}" class="clhs-pay-invoice-btn">Pay</a>
                                                         @endif
@@ -1508,6 +1529,25 @@
         .clhs-view-payment-btn:hover {
             background: #0891b2;
         }
+
+        .clhs-admin-edit-btn,
+        .clhs-admin-delete-btn {
+            border: 0;
+            border-radius: 5px;
+            color: #fff;
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 800;
+            margin-left: 4px;
+            padding: 6px 9px;
+            text-decoration: none;
+        }
+
+        .clhs-admin-edit-btn { background: #2563eb; }
+        .clhs-admin-edit-btn:hover { background: #1d4ed8; color: #fff; }
+        .clhs-admin-delete-form { display: inline; margin: 0; }
+        .clhs-admin-delete-btn { background: #dc2626; cursor: pointer; }
+        .clhs-admin-delete-btn:hover { background: #b91c1c; }
 
         .clhs-total-row td {
             background: #111827 !important;
