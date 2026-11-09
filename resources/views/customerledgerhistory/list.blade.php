@@ -402,7 +402,7 @@
                                 </tr>
                             @endforeach
                             <tr class="clhs-total-row">
-                                <td colspan="6" class="text-end">Totals</td>
+                                <td colspan="4" class="text-end ledger-total-label">Totals</td>
                                 <td class="text-end total-amount">Debit: {{ number_format((float) $dts, 2) }}</td>
                                 <td class="text-end total-amount">Credit: {{ number_format((float) $cts, 2) }}</td>
                                 <td class="text-end total-amount">Balance: {{ number_format((float) $dts - (float) $cts, 2) }}</td>
@@ -2264,9 +2264,15 @@
             const table = document.querySelector('.clhs-table');
             if (!toggle || !table) return;
             table.classList.add('ledger-columns-hidden');
+            const totalLabel = table.querySelector('.ledger-total-label');
+            const syncTotalLabel = (hidden) => {
+                if (totalLabel) totalLabel.setAttribute('colspan', hidden ? '4' : '6');
+            };
+            syncTotalLabel(true);
             toggle.addEventListener('click', function () {
                 const hidden = table.classList.toggle('ledger-columns-hidden');
                 table.classList.toggle('ledger-columns-visible', !hidden);
+                syncTotalLabel(hidden);
                 toggle.setAttribute('aria-pressed', hidden ? 'true' : 'false');
                 toggle.innerHTML = hidden
                     ? '<i class="fa-solid fa-eye-slash"></i> Hide Column'
