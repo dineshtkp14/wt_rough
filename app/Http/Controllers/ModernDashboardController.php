@@ -36,6 +36,10 @@ class ModernDashboardController extends Controller
         $today = now()->toDateString();
         $month = now()->month;
         $year = now()->year;
+        $todayStart = now()->startOfDay();
+        $tomorrowStart = now()->addDay()->startOfDay();
+        $monthStart = now()->startOfMonth();
+        $nextMonthStart = now()->addMonth()->startOfMonth();
 
         $stats = [
             'total_items'          => item::count(),
@@ -43,12 +47,12 @@ class ModernDashboardController extends Controller
             'out_of_stock_items'   => item::where('quantity', '=', 0)->where('check_remove_ofs', 0)->count(),
             'total_customers'      => customerinfo::count(),
             'total_companies'      => company::count(),
-            'today_invoices'       => invoice::whereDate('inv_date', $today)->count(),
-            'month_invoices'       => invoice::whereMonth('inv_date', $month)->whereYear('inv_date', $year)->count(),
-            'today_credit_notes'   => CreditnotesInvoice::whereDate('inv_date', $today)->count(),
-            'month_credit_notes'   => CreditnotesInvoice::whereMonth('inv_date', $month)->whereYear('inv_date', $year)->count(),
+            'today_invoices'       => invoice::whereBetween('inv_date', [$todayStart, $tomorrowStart])->count(),
+            'month_invoices'       => invoice::whereBetween('inv_date', [$monthStart, $nextMonthStart])->count(),
+            'today_credit_notes'   => CreditnotesInvoice::whereBetween('inv_date', [$todayStart, $tomorrowStart])->count(),
+            'month_credit_notes'   => CreditnotesInvoice::whereBetween('inv_date', [$monthStart, $nextMonthStart])->count(),
             'bank_balance'         => (float) Bank::sum('amount'),
-            'month_expenses'       => (float) Expense::whereMonth('date', $month)->whereYear('date', $year)->sum('amount'),
+            'month_expenses'       => (float) Expense::whereBetween('date', [$monthStart, $nextMonthStart])->sum('amount'),
             // Read both totals in one aggregate query.  This preserves the
             // existing balance calculation while avoiding two full-table scans.
             'pending_payments'     => 0,
@@ -65,18 +69,18 @@ class ModernDashboardController extends Controller
             : collect();
         $stats['online_users'] = $onlineUsers->count();
 
-        $todaySales = (float) invoice::whereDate('inv_date', $today)->sum('total');
-        $todayCashSales = (float) invoice::whereDate('inv_date', $today)->where('inv_type', 'cash')->sum('total');
-        $todayPayments = (float) customerledgerdetails::whereDate('date', $today)
+        $todaySales = (float) invoice::whereBetween('inv_date', [$todayStart, $tomorrowStart])->sum('total');
+        $todayCashSales = (float) invoice::whereBetween('inv_date', [$todayStart, $tomorrowStart])->where('inv_type', 'cash')->sum('total');
+        $todayPayments = (float) customerledgerdetails::whereBetween('date', [$todayStart, $tomorrowStart])
             ->where('invoicetype', 'payment')->sum('credit');
         $chequesDueToday = customerledgerdetails::with('customer')
             ->where('invoicetype', 'payment')
             ->where('is_cheque', true)
             ->where('cheque_exchanged', false)
-            ->whereDate('cheque_exchange_date', $today)
+            ->whereBetween('cheque_exchange_date', [$todayStart, $tomorrowStart])
             ->orderBy('id')
             ->get();
-        $todayExpenses = (float) Expense::whereDate('date', $today)->sum('amount');
+        $todayExpenses = (float) Expense::whereBetween('date', [$todayStart, $tomorrowStart])->sum('amount');
         $unmatchedBankTransactions = Schema::hasTable('bank_statement_transactions')
             ? DB::table('bank_statement_transactions')->where('status', 'unmatched')->count()
             : 0;
@@ -142,7 +146,7 @@ class ModernDashboardController extends Controller
         $topItems = ['labels' => $topLabels, 'data' => $topData];
 
         $paymentModesRaw = invoice::select('inv_type', DB::raw('COUNT(*) as count'))
-            ->whereMonth('inv_date', $month)->whereYear('inv_date', $year)
+            ->whereBetween('inv_date', [$monthStart, $nextMonthStart])
             ->groupBy('inv_type')
             ->pluck('count', 'inv_type');
 
