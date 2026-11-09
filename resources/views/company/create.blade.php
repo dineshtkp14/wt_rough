@@ -73,12 +73,10 @@
                     @error('notes')
                         <p class="invalid-feedback">{{ $message }}</p>
                     @enderror
+                    <button type="submit" id="submitBtn" class="btn btn-lg btn-success company-save-button" style="display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;min-height:76px!important;margin-top:24px!important;font-size:1.5rem!important;font-weight:800!important;position:relative!important;z-index:9999!important;"><i class="fas fa-save"></i> Save Supplier / Company</button>
             </div>
 
 </form>
-<div class="company-save-wrap" style="display:block!important;width:100%!important;clear:both!important;margin:24px 0 40px!important;">
-    <button type="submit" form="companyCreateForm" id="submitBtn" class="btn btn-lg btn-success company-save-button" style="display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;min-height:76px!important;font-size:1.5rem!important;font-weight:800!important;position:relative!important;z-index:9999!important;"><i class="fas fa-save"></i> Save Supplier / Company</button>
-</div>
 </div>
 
 
