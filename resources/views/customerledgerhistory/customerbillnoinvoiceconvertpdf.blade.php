@@ -107,6 +107,9 @@
 @php
   $invoice = $allinvoices ? $allinvoices->first() : null;
   $items = collect($allcusbyid ?? []);
+  $showItemId = $items->contains(function ($item) {
+    return trim((string) ($item->itemidorg ?? '')) !== '';
+  });
   $showPercentPricing = $items->contains(function ($item) {
     return $item->list_price !== null || $item->discount_percent !== null;
   });
@@ -147,8 +150,8 @@
   @php
     $isLastPage = $loop->last;
     $serialNo = ($pageIndex * 13) + 1;
-    $summaryLeftColspan = $showPercentPricing ? 6 : 4;
-    $summaryTotalColspan = $showPercentPricing ? 9 : 7;
+    $summaryLeftColspan = $showPercentPricing ? ($showItemId ? 6 : 5) : ($showItemId ? 4 : 3);
+    $summaryTotalColspan = $showPercentPricing ? ($showItemId ? 9 : 8) : ($showItemId ? 7 : 6);
   @endphp
 
   <div class="page invoice-page">
@@ -199,7 +202,7 @@
 
     <div class="table-container">
       <table class="{{ $showPercentPricing ? 'percent-pricing-table' : '' }}">
-        @if($showPercentPricing)
+        @if($showPercentPricing && $showItemId)
           <colgroup>
             <col style="width:4%;">
             <col style="width:6%;">
@@ -211,11 +214,24 @@
             <col style="width:12%;">
             <col style="width:13%;">
           </colgroup>
+        @elseif($showPercentPricing)
+          <colgroup>
+            <col style="width:4%;">
+            <col style="width:36%;">
+            <col style="width:12%;">
+            <col style="width:11%;">
+            <col style="width:8%;">
+            <col style="width:6%;">
+            <col style="width:12%;">
+            <col style="width:11%;">
+          </colgroup>
         @endif
         <thead>
           <tr>
             <th>#</th>
-            <th>ITEM ID</th>
+            @if($showItemId)
+              <th>ITEM ID</th>
+            @endif
             <th>ITEM Name</th>
             @if($showPercentPricing)
               <th>MRP</th>
@@ -231,7 +247,9 @@
           @foreach($pageItems as $i)
             <tr>
               <td class="center-cell">{{ $serialNo++ }}</td>
-              <td class="center-cell">{{ $i->itemidorg }}</td>
+              @if($showItemId)
+                <td class="center-cell">{{ $i->itemidorg }}</td>
+              @endif
               <td class="{{ $showPercentPricing ? 'item-name-cell' : '' }}">{{ $i->itemid }}</td>
               @if($showPercentPricing)
                 <td class="numeric-cell">{{ $i->list_price ?? $i->mrp ?? '' }}</td>
