@@ -16,10 +16,13 @@
             <a href="{{ route('items.index') }}" target="" rel="noopener noreferrer" class="btn btn-lg btn-primary mb-3 float-end">
                 <i class="fas fa-eye"></i> View Items
             </a>
+            <button type="submit" form="companyCreateForm" id="topSubmitBtn" class="btn btn-lg btn-success mb-3 w-100">
+                <i class="fas fa-save"></i> Save Supplier / Company
+            </button>
         </div>
         
     
-<form class="row gx-5 gy-3" action="{{ route('companys.store') }}" method="post">
+<form id="companyCreateForm" class="row gx-5 gy-3" action="{{ route('companys.store') }}" method="post">
                 @csrf
 
           <div class="col-md-6">
@@ -76,7 +79,7 @@
             </div>
 
             <div class="d-grid gap-2 pt-2 pb-4">
-                    <button type="submit" id="submitBtn" class="btn btn-lg btn-primary">Save</button>
+                <button type="submit" id="submitBtn" class="btn btn-lg btn-primary"><i class="fas fa-save"></i> Save Supplier / Company</button>
             </div>
 </form>
 </div>
@@ -89,7 +92,7 @@
     $(document).ready(function () {
             $('form').submit(function () {
                 // Disable the submit button
-                $('#submitBtn').prop('disabled', true);
+                $('#submitBtn, #topSubmitBtn').prop('disabled', true);
                 
             });
         });
