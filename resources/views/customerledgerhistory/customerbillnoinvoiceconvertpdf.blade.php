@@ -204,9 +204,9 @@
       <table class="{{ $showPercentPricing ? 'percent-pricing-table' : '' }}">
         @if($showPercentPricing && $showItemId)
           <colgroup>
-             <col style="width:2%;">
+             <col style="width:1%;">
             <col style="width:5%;">
-             <col style="width:40%;">
+             <col style="width:41%;">
              <col style="width:10%;">
              <col style="width:7%;">
              <col style="width:7%;">
@@ -215,8 +215,8 @@
           </colgroup>
         @elseif($showPercentPricing)
           <colgroup>
-             <col style="width:2%;">
-             <col style="width:47%;">
+             <col style="width:1%;">
+             <col style="width:48%;">
              <col style="width:10%;">
              <col style="width:7%;">
              <col style="width:7%;">
