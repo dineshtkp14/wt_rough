@@ -337,7 +337,7 @@
                                             <button type="button" onclick="openPaymentModal({{ $i->id }})" class="clhs-view-payment-btn">View</button>
                                             @if(auth()->check() && auth()->user()->isAdmin())
                                                 <a href="{{ route('cpayments.edit', $i->id) }}" class="clhs-admin-edit-btn">Edit</a>
-                                                <form action="{{ route('cpayments.destroy', $i->id) }}" method="POST" class="clhs-admin-delete-form" onsubmit="return confirm('Delete payment receipt {{ $i->display_receipt_no }}? This action will be backed up but cannot be undone from this page.');">
+                                                <form action="{{ route('cpayments.destroy', $i->id) }}" method="POST" class="clhs-admin-delete-form" data-confirm-message="Delete payment receipt {{ $i->display_receipt_no }}? This action will be backed up but cannot be undone from this page." onsubmit="return openLedgerDeleteConfirm(this);">
                                                     @csrf
                                                     @method('DELETE')
                                                     <input type="hidden" name="redirect_to" value="cpayments.index">
@@ -369,7 +369,7 @@
                                                         <button type="button" onclick="openInvoiceModal({{ $i->invoiceid }})" class="clhs-view-invoice-btn">View</button>
                                                         @if(auth()->check() && auth()->user()->isAdmin())
                                                             <a href="{{ route('invoice.edit', $i->invoiceid) }}" class="clhs-admin-edit-btn">Edit</a>
-                                                            <form action="{{ route('customer.deletebillno') }}" method="POST" class="clhs-admin-delete-form" onsubmit="return confirm('Delete invoice {{ $i->display_invoice_no ?? $i->invoiceid }}? The invoice will be backed up before deletion.');">
+                                                            <form action="{{ route('customer.deletebillno') }}" method="POST" class="clhs-admin-delete-form" data-confirm-message="Delete invoice {{ $i->display_invoice_no ?? $i->invoiceid }}? The invoice will be backed up before deletion." onsubmit="return openLedgerDeleteConfirm(this);">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <input type="hidden" name="invoiceid" value="{{ $i->invoiceid }}">
@@ -1548,6 +1548,15 @@
         .clhs-admin-delete-form { display: inline; margin: 0; }
         .clhs-admin-delete-btn { background: #dc2626; cursor: pointer; }
         .clhs-admin-delete-btn:hover { background: #b91c1c; }
+        .clhs-delete-modal[hidden] { display:none; }
+        .clhs-delete-modal { align-items:center; background:rgba(15,23,42,.62); display:flex; inset:0; justify-content:center; position:fixed; z-index:10050; }
+        .clhs-delete-dialog { background:#fff; border-radius:14px; box-shadow:0 20px 50px rgba(15,23,42,.3); max-width:460px; padding:24px; width:calc(100% - 32px); }
+        .clhs-delete-dialog h3 { color:#173b72; font-size:22px; font-weight:900; margin:0 0 10px; }
+        .clhs-delete-dialog p { color:#475569; font-size:15px; margin:0 0 20px; }
+        .clhs-delete-dialog-actions { display:flex; gap:10px; justify-content:flex-end; }
+        .clhs-delete-dialog-actions button { border:0; border-radius:7px; font-weight:800; padding:9px 16px; }
+        .clhs-delete-cancel { background:#e2e8f0; color:#334155; }
+        .clhs-delete-confirm { background:#dc2626; color:#fff; }
 
         .clhs-total-row td {
             background: #111827 !important;
@@ -2178,6 +2187,77 @@
             .clhs-toolbar-item-search { flex-basis:100%; order:3; }
         }
     </style>
+    <script>
+        let ledgerDeleteFormPending = null;
+
+        window.openLedgerDeleteConfirm = function (form) {
+            if (form.dataset.confirmed === '1') {
+                delete form.dataset.confirmed;
+                return true;
+            }
+
+            ledgerDeleteFormPending = form;
+            let modal = document.getElementById('ledgerDeleteConfirmModal');
+
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'ledgerDeleteConfirmModal';
+                modal.className = 'clhs-delete-modal';
+                modal.setAttribute('role', 'dialog');
+                modal.setAttribute('aria-modal', 'true');
+                modal.innerHTML = `
+                    <div class="clhs-delete-dialog" role="document">
+                        <h3>Delete item?</h3>
+                        <p id="ledgerDeleteConfirmMessage"></p>
+                        <div class="clhs-delete-dialog-actions">
+                            <button type="button" class="clhs-delete-cancel" id="ledgerDeleteCancel">Cancel</button>
+                            <button type="button" class="clhs-delete-confirm" id="ledgerDeleteConfirm">Delete</button>
+                        </div>
+                    </div>`;
+                document.body.appendChild(modal);
+
+                const closeModal = function () {
+                    modal.hidden = true;
+                    ledgerDeleteFormPending = null;
+                };
+
+                document.getElementById('ledgerDeleteCancel').addEventListener('click', closeModal);
+                modal.addEventListener('click', function (event) {
+                    if (event.target === modal) closeModal();
+                });
+                modal.addEventListener('keydown', function (event) {
+                    // Enter must never confirm a destructive action. The user
+                    // must explicitly click the Delete button.
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        closeModal();
+                    }
+                });
+                document.getElementById('ledgerDeleteConfirm').addEventListener('click', function () {
+                    const pending = ledgerDeleteFormPending;
+                    closeModal();
+                    if (pending) {
+                        pending.dataset.confirmed = '1';
+                        pending.submit();
+                    }
+                });
+                document.addEventListener('keydown', function (event) {
+                    if (event.key === 'Escape' && !modal.hidden) closeModal();
+                });
+            }
+
+            document.getElementById('ledgerDeleteConfirmMessage').textContent = form.dataset.confirmMessage || 'Are you sure you want to delete this record?';
+            modal.hidden = false;
+            document.getElementById('ledgerDeleteCancel').focus();
+            return false;
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('ledgerDeleteConfirmModal');
+            if (modal) modal.hidden = true;
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const toggle = document.getElementById('toggleLedgerColumnsBtn');
