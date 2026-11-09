@@ -403,7 +403,7 @@ Route::get('/all-customer-credit-list', function () {
     }
 
     if (!auth()->user()->isAdmin() && !session('customer_credit_list_access')) {
-        return view('auth.customer-credit-list-password');
+        return view('Auth.customer-credit-list-password');
     }
 
     $breadcrumb = [
