@@ -600,7 +600,7 @@
                     </li>
 
                     <!-- Price List -->
-                    <li class="nav-item">
+                    @if($navEnabled('price_list'))<li class="nav-item">
                         <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#price-collapse"
                             aria-expanded="false">
                             <i class="fas fa-tags"></i>
@@ -616,6 +616,7 @@
                             </ul>
                         </div>
                     </li>
+                    @endif
 
                     <!-- Stock -->
                     <li class="nav-item stock">
@@ -784,7 +785,7 @@
                     </li>
                     @endif
 
-                    <li class="nav-item">
+                    @if($navEnabled('price_list'))<li class="nav-item">
                         <a href="{{ route('pricelists.index') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-price-list"
                                 aria-expanded="false">
@@ -794,6 +795,7 @@
                             </button>
                         </a>
                     </li>
+                    @endif
 
                     @if($navEnabled('check_stock'))<li class="nav-item stock">
                         <a href="{{ route('stocks.index') }}" class="nav-link-single">

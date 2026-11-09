@@ -119,6 +119,7 @@ Route::middleware('auth')->group(function () {
             'credit_list' => 'CREDIT LIST OF ALL CUSTOMER',
             'check_stock' => 'CHECK STOCK',
             'old_price' => 'CHECK OLD PRICE',
+            'price_list' => 'PRICE LIST',
             'sales_details_per_day' => 'SALES DETAILS PER DAY',
         ];
         $saved = json_decode((string) (auth()->user()->nav_visibility ?? ''), true);
@@ -126,7 +127,7 @@ Route::middleware('auth')->group(function () {
     })->name('navigation.settings');
 
     Route::post('/navigation-settings', function (Request $request) {
-        $keys = ['modern_dashboard', 'smart_tools', 'credit_list', 'check_stock', 'old_price', 'sales_details_per_day'];
+        $keys = ['modern_dashboard', 'smart_tools', 'credit_list', 'check_stock', 'old_price', 'price_list', 'sales_details_per_day'];
         $values = $request->input('nav', []);
         $visibility = [];
         foreach ($keys as $key) {
