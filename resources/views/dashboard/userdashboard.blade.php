@@ -100,6 +100,12 @@
             <a href="{{ url('/extra-balance-confirmation') }}" class="btn btn-primary btn-block btn-super-duper-bigger"><i class="fa fa-file-signature"></i> EXTRA BALANCE CONFIRMATION</a>
         </div>
 
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('navigation.settings') }}" class="btn btn-primary btn-block btn-super-duper-bigger">
+                <i class="fa fa-toggle-on"></i> ON/OFF NAV BAR
+            </a>
+        </div>
+
     </div>
 
 </div>

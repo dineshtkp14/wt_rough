@@ -306,11 +306,6 @@
         </div>
 
         @auth
-            <a href="{{ route('navigation.settings') }}" class="nav-link-single" style="display:block;margin:10px 14px 16px;">
-                <button type="button" class="nav-toggle" style="width:100%;">
-                    <i class="fa-solid fa-toggle-on"></i><span>ON/OFF NAV BAR</span>
-                </button>
-            </a>
             <!-- Admin Navigation -->
             @if (Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com')
                 <ul class="nav-menu">
