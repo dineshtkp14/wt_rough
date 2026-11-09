@@ -252,6 +252,33 @@ class CustomerLedgerHistroy extends Controller
  
          $allcusinfo = customerinfo::orderBy('id', 'DESC')->get();  
          $customeridonly=$req->customerid;
+         $itemSearch = trim((string) $req->input('item_search', ''));
+         $customerItemSales = collect();
+
+         if ($customeridonly && $itemSearch !== '') {
+             $customerItemSales = salesitem::query()
+                 ->from('salesitems as s')
+                 ->leftJoin('items as it', 'it.id', '=', 's.itemid')
+                 ->leftJoin('invoices as inv', 'inv.id', '=', 's.invoiceid')
+                 ->where('inv.customerid', $customeridonly)
+                 ->when($from !== '' && $to !== '', fn ($query) => $query->whereBetween('s.date', [$from, $to]))
+                 ->where(function ($query) use ($itemSearch) {
+                     $like = '%' . $itemSearch . '%';
+                     $query->where('it.itemsname', 'like', $like)
+                         ->orWhere('s.unstockedname', 'like', $like);
+                 })
+                 ->orderByDesc('s.date')
+                 ->orderByDesc('s.id')
+                 ->select([
+                     's.id', 's.date', 's.invoiceid', 's.quantity', 's.unit', 's.price', 's.subtotal',
+                     'it.itemsname as stocked_item_name', 's.unstockedname',
+                 ])
+                 ->get()
+                 ->map(function ($row) {
+                     $row->display_item_name = trim((string) ($row->unstockedname ?: $row->stocked_item_name ?: 'Unknown item'));
+                     return $row;
+                 });
+         }
 
          $invoiceRemainingAmounts = collect();
 
@@ -331,6 +358,8 @@ class CustomerLedgerHistroy extends Controller
              'customeridonly' => $customeridonly,
              'cusinfobyid' => $afn,
              'invoiceRemainingAmounts' => $invoiceRemainingAmounts,
+             'itemSearch' => $itemSearch,
+             'customerItemSales' => $customerItemSales,
 
          ]);      
      }

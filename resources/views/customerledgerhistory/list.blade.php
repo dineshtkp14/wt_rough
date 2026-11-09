@@ -99,6 +99,15 @@
                             </div>
                         </div>
 
+                        <div class="customer-item-search mt-3">
+                            <label for="customerItemSearch" class="form-label fw-bold">Search customer bought item</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-box-open"></i></span>
+                                <input type="search" id="customerItemSearch" name="item_search" value="{{ $itemSearch ?? '' }}" class="form-control" placeholder="Enter item name to see sold price...">
+                            </div>
+                            <small class="text-muted">Search uses the selected customer and date range.</small>
+                        </div>
+
                         @if($errors->has('date1_bs') || $errors->has('date2_bs'))
                             <div class="clhs-date-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $errors->first('date1_bs') ?: $errors->first('date2_bs') }}</div>
                         @endif
@@ -169,6 +178,37 @@
                     </section>
                 @endif
             </div>
+
+            @if($customeridonly && !empty($itemSearch))
+                <section class="clhs-item-price-panel">
+                    <div class="clhs-item-price-heading">
+                        <div>
+                            <h4><i class="fa-solid fa-tags"></i> Sold Item Price History</h4>
+                            <span>{{ count($customerItemSales) }} matching item sale(s) for “{{ $itemSearch }}”</span>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="clhs-item-price-table">
+                            <thead><tr><th>Date (B.S.)</th><th>Invoice No.</th><th>Item Name</th><th>Quantity</th><th>Unit</th><th class="text-end">Sold Price</th><th class="text-end">Amount</th></tr></thead>
+                            <tbody>
+                                @forelse($customerItemSales as $sale)
+                                    <tr>
+                                        <td>{{ \App\Support\NepaliDate::adToBsString($sale->date, 'en') }}</td>
+                                        <td>{{ $sale->invoiceid }}</td>
+                                        <td class="fw-bold">{{ $sale->display_item_name }}</td>
+                                        <td>{{ $sale->quantity }}</td>
+                                        <td>{{ $sale->unit ?: '-' }}</td>
+                                        <td class="text-end fw-bold">{{ number_format((float) $sale->price, 2) }}</td>
+                                        <td class="text-end">{{ number_format((float) ($sale->subtotal ?: ((float) $sale->quantity * (float) $sale->price)), 2) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="7" class="text-center p-4">No matching item sales found for this customer.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            @endif
 
             <div class="clhs-toolbar">
                 <div>
@@ -2075,6 +2115,17 @@
 
         .clhs-column-toggle-btn { background:#eef2ff; border:1px solid #aab9ff; border-radius:8px; color:#253b9f; cursor:pointer; font-weight:800; padding:9px 13px; }
         .clhs-column-toggle-btn:hover { background:#dbe4ff; }
+        .customer-item-search { margin-bottom:14px; }
+        .customer-item-search label { color:#173b72; font-size:13px; }
+        .customer-item-search .form-control { border-color:#b9cbed; min-height:42px; }
+        .clhs-item-price-panel { background:#fff; border:1px solid #d8e2f0; border-left:4px solid #168a59; border-radius:12px; box-shadow:0 8px 20px #18365d12; margin:0 0 22px; overflow:hidden; }
+        .clhs-item-price-heading { align-items:center; background:#f4fbf7; display:flex; justify-content:space-between; padding:14px 18px; }
+        .clhs-item-price-heading h4 { color:#173b72; font-size:20px; font-weight:900; margin:0; }
+        .clhs-item-price-heading span { color:#64748b; display:block; font-size:12px; font-weight:700; margin-top:3px; }
+        .clhs-item-price-table { border-collapse:collapse; margin:0; width:100%; }
+        .clhs-item-price-table th { background:#173f7a; color:#fff; font-size:12px; padding:11px 13px; text-align:left; white-space:nowrap; }
+        .clhs-item-price-table td { border-top:1px solid #e2eaf4; color:#334155; font-size:14px; padding:10px 13px; }
+        .clhs-item-price-table tbody tr:nth-child(even) { background:#f8fbff; }
         .clhs-invoice-in-particulars { margin-top:7px; }
         .clhs-invoice-note { color:#475569; display:block; font-size:11px; font-weight:700; margin-top:3px; }
         .ledger-columns-visible .ledger-optional-column { display:table-cell !important; }
