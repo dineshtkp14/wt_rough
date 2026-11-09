@@ -65,10 +65,10 @@
     table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:18px; }
     th,td{ border:1px solid #000; padding:0 3px; height:20px; line-height:1.08; vertical-align:middle; text-align:center; }
     th{ font-weight:700; }
-    .percent-pricing-table{ font-size:13px; table-layout:fixed; }
+    .percent-pricing-table{ font-size:15px; table-layout:fixed; }
     .percent-pricing-table th,
     .percent-pricing-table td{ padding:2px 3px; }
-    .percent-pricing-table th{ font-size:13px; line-height:1.05; padding:3px 2px; }
+    .percent-pricing-table th{ font-size:15px; line-height:1.05; padding:3px 2px; }
     .percent-pricing-table .item-name-cell{ text-align:left; padding-left:6px; }
     .percent-pricing-table .numeric-cell{ text-align:right; padding-right:6px; white-space:nowrap; }
     .percent-pricing-table .center-cell{ text-align:center; white-space:nowrap; }
@@ -204,24 +204,24 @@
       <table class="{{ $showPercentPricing ? 'percent-pricing-table' : '' }}">
         @if($showPercentPricing && $showItemId)
           <colgroup>
-            <col style="width:4%;">
+             <col style="width:3%;">
             <col style="width:6%;">
-            <col style="width:30%;">
-            <col style="width:10%;">
-            <col style="width:11%;">
-            <col style="width:10%;">
+             <col style="width:35%;">
+             <col style="width:10%;">
+             <col style="width:8%;">
+             <col style="width:8%;">
+             <col style="width:14%;">
             <col style="width:16%;">
-            <col style="width:13%;">
           </colgroup>
         @elseif($showPercentPricing)
           <colgroup>
-            <col style="width:4%;">
-            <col style="width:36%;">
-            <col style="width:10%;">
-            <col style="width:11%;">
-            <col style="width:10%;">
-            <col style="width:17%;">
-            <col style="width:12%;">
+             <col style="width:3%;">
+             <col style="width:42%;">
+             <col style="width:10%;">
+             <col style="width:8%;">
+             <col style="width:8%;">
+             <col style="width:14%;">
+             <col style="width:15%;">
           </colgroup>
         @endif
         <thead>
