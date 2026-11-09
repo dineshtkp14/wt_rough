@@ -99,15 +99,6 @@
                             </div>
                         </div>
 
-                        <div class="customer-item-search mt-3">
-                            <label for="customerItemSearch" class="form-label fw-bold">Search customer bought item</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fa-solid fa-box-open"></i></span>
-                                <input type="search" id="customerItemSearch" name="item_search" value="{{ $itemSearch ?? '' }}" class="form-control" placeholder="Enter item name to see sold price...">
-                            </div>
-                            <small class="text-muted">Search uses the selected customer and date range.</small>
-                        </div>
-
                         @if($errors->has('date1_bs') || $errors->has('date2_bs'))
                             <div class="clhs-date-error"><i class="fa-solid fa-circle-exclamation"></i> {{ $errors->first('date1_bs') ?: $errors->first('date2_bs') }}</div>
                         @endif
@@ -215,6 +206,16 @@
                     <h4>Ledger Entries</h4>
                     <span>{{ $hasRows ? count($all) . ' records found' : 'No records found' }}</span>
                 </div>
+                @if($customeridonly)
+                    <div class="customer-item-search clhs-toolbar-item-search">
+                        <label for="customerItemSearch" class="form-label fw-bold">Search customer bought item</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-box-open"></i></span>
+                            <input type="search" id="customerItemSearch" name="item_search" value="{{ $itemSearch ?? '' }}" class="form-control" placeholder="Enter item name to see sold price...">
+                        </div>
+                        <small class="text-muted">Searches this customer and date range.</small>
+                    </div>
+                @endif
                 @if($hasRows)
                     <button type="button" id="paySelectedInvoicesBtn" class="clhs-pay-selected-btn" disabled>
                         <i class="fas fa-money-bill-wave"></i> Pay Selected Invoices
@@ -2118,6 +2119,9 @@
         .customer-item-search { margin-bottom:14px; }
         .customer-item-search label { color:#173b72; font-size:13px; }
         .customer-item-search .form-control { border-color:#b9cbed; min-height:42px; }
+        .clhs-toolbar-item-search { flex:1 1 360px; margin:0; min-width:280px; }
+        .clhs-toolbar-item-search label { display:block; margin:0 0 4px; }
+        .clhs-toolbar-item-search small { display:block; font-size:11px; margin-top:3px; }
         .clhs-item-price-panel { background:#fff; border:1px solid #d8e2f0; border-left:4px solid #168a59; border-radius:12px; box-shadow:0 8px 20px #18365d12; margin:0 0 22px; overflow:hidden; }
         .clhs-item-price-heading { align-items:center; background:#f4fbf7; display:flex; justify-content:space-between; padding:14px 18px; }
         .clhs-item-price-heading h4 { color:#173b72; font-size:20px; font-weight:900; margin:0; }
@@ -2130,6 +2134,9 @@
         .clhs-invoice-note { color:#475569; display:block; font-size:11px; font-weight:700; margin-top:3px; }
         .ledger-columns-visible .ledger-optional-column { display:table-cell !important; }
         .ledger-columns-hidden .ledger-optional-column { display:none !important; }
+        @media (max-width: 900px) {
+            .clhs-toolbar-item-search { flex-basis:100%; order:3; }
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
