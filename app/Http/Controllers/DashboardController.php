@@ -12,6 +12,12 @@ class DashboardController extends Controller
 {
    public function index()
    {
+        // Administrators use the same action dashboard as regular users.
+        // Keep the existing transaction dashboard available for non-admin users.
+        if (auth()->check() && (auth()->user()->role ?? null) === 'admin') {
+            return view('dashboard.userdashboard');
+        }
+
         $today = now()->toDateString();
 
         // Get today's invoices count and total
