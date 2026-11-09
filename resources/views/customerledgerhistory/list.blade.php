@@ -402,12 +402,12 @@
                                 </tr>
                             @endforeach
                             <tr class="clhs-total-row">
-                                <td colspan="6" class="text-end">Total</td>
-                                    <td class="text-end total-amount">{{ number_format((float) $dts, 2) }}</td>
-                                    <td class="text-end total-amount">{{ number_format((float) $cts, 2) }}</td>
-                                    <td class="text-end total-amount">{{ number_format((float) $dts - (float) $cts, 2) }}</td>
-                                    <td></td>
-                                </tr>
+                                <td colspan="6" class="text-end">Totals</td>
+                                <td class="text-end total-amount">Debit: {{ number_format((float) $dts, 2) }}</td>
+                                <td class="text-end total-amount">Credit: {{ number_format((float) $cts, 2) }}</td>
+                                <td class="text-end total-amount">Balance: {{ number_format((float) $dts - (float) $cts, 2) }}</td>
+                                <td></td>
+                            </tr>
                         @else
                             <tr>
                                 <td colspan="10" class="clhs-empty-state">
