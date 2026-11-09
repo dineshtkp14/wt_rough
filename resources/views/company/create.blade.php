@@ -16,9 +16,6 @@
             <a href="{{ route('items.index') }}" target="" rel="noopener noreferrer" class="btn btn-lg btn-primary mb-3 float-end">
                 <i class="fas fa-eye"></i> View Items
             </a>
-            <button type="submit" form="companyCreateForm" id="topSubmitBtn" class="btn btn-lg btn-success mb-3">
-                <i class="fas fa-save"></i> Save Supplier / Company
-            </button>
         </div>
         
     
@@ -78,8 +75,8 @@
                     @enderror
             </div>
 
-            <div class="d-grid gap-2 pt-2 pb-4">
-                <button type="submit" id="submitBtn" class="btn btn-lg btn-primary"><i class="fas fa-save"></i> Save Supplier / Company</button>
+            <div class="d-grid gap-2 pt-4 pb-4 w-100">
+                <button type="submit" id="submitBtn" class="btn btn-lg btn-success w-100 py-3" style="font-size:1.45rem;font-weight:800;min-height:68px;"><i class="fas fa-save"></i> Save Supplier / Company</button>
             </div>
 </form>
 </div>
@@ -92,7 +89,7 @@
     $(document).ready(function () {
             $('form').submit(function () {
                 // Disable the submit button
-                $('#submitBtn, #topSubmitBtn').prop('disabled', true);
+                $('#submitBtn').prop('disabled', true);
                 
             });
         });
