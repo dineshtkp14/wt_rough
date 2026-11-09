@@ -76,7 +76,7 @@
             </div>
 
             <div class="col-12 d-grid gap-2 pt-4 pb-4">
-                <button type="submit" id="submitBtn" class="btn btn-lg btn-success w-100 py-3" style="font-size:1.45rem;font-weight:800;min-height:68px;"><i class="fas fa-save"></i> Save Supplier / Company</button>
+                <button type="submit" id="submitBtn" class="btn btn-lg btn-success w-100 py-3 company-save-button" style="display:block!important;visibility:visible!important;opacity:1!important;position:relative;z-index:10;font-size:1.45rem;font-weight:800;min-height:68px;"><i class="fas fa-save"></i> Save Supplier / Company</button>
             </div>
 </form>
 </div>
