@@ -2163,8 +2163,11 @@
             const results = document.getElementById('customerItemPriceResults');
             const startDate = document.querySelector('input[name="date1_bs"]');
             const endDate = document.querySelector('input[name="date2_bs"]');
+            const ledgerToolbar = document.querySelector('.clhs-toolbar');
 
             if (!input || !customerId || !panel || !summary || !results) return;
+
+            if (ledgerToolbar) ledgerToolbar.insertAdjacentElement('afterend', panel);
 
             let timer;
             let requestNumber = 0;
