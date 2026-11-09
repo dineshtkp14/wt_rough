@@ -150,8 +150,8 @@
   @php
     $isLastPage = $loop->last;
     $serialNo = ($pageIndex * 13) + 1;
-    $summaryLeftColspan = $showPercentPricing ? ($showItemId ? 6 : 5) : ($showItemId ? 4 : 3);
-    $summaryTotalColspan = $showPercentPricing ? ($showItemId ? 9 : 8) : ($showItemId ? 7 : 6);
+    $summaryLeftColspan = $showPercentPricing ? ($showItemId ? 5 : 4) : ($showItemId ? 3 : 2);
+    $summaryTotalColspan = $showPercentPricing ? ($showItemId ? 8 : 7) : ($showItemId ? 6 : 5);
   @endphp
 
   <div class="page invoice-page">
@@ -207,23 +207,21 @@
             <col style="width:4%;">
             <col style="width:6%;">
             <col style="width:30%;">
+            <col style="width:10%;">
             <col style="width:11%;">
             <col style="width:10%;">
-            <col style="width:8%;">
-            <col style="width:6%;">
-            <col style="width:12%;">
+            <col style="width:16%;">
             <col style="width:13%;">
           </colgroup>
         @elseif($showPercentPricing)
           <colgroup>
             <col style="width:4%;">
             <col style="width:36%;">
-            <col style="width:12%;">
+            <col style="width:10%;">
             <col style="width:11%;">
-            <col style="width:8%;">
-            <col style="width:6%;">
+            <col style="width:10%;">
+            <col style="width:17%;">
             <col style="width:12%;">
-            <col style="width:11%;">
           </colgroup>
         @endif
         <thead>
@@ -233,12 +231,11 @@
               <th>ITEM ID</th>
             @endif
             <th>ITEM Name</th>
+            <th>Quantity</th>
             @if($showPercentPricing)
               <th>MRP</th>
               <th>Discount</th>
             @endif
-            <th>Quantity</th>
-            <th>Unit</th>
             <th>{{ $showPercentPricing ? 'Net Price' : 'Sold Price' }}</th>
             <th>Amount</th>
           </tr>
@@ -251,12 +248,11 @@
                 <td class="center-cell">{{ $i->itemidorg }}</td>
               @endif
               <td class="{{ $showPercentPricing ? 'item-name-cell' : '' }}">{{ $i->itemid }}</td>
+              <td class="center-cell">{{ $i->quantity }} {{ $i->unit }}</td>
               @if($showPercentPricing)
                 <td class="numeric-cell">{{ $i->list_price ?? $i->mrp ?? '' }}</td>
                 <td class="numeric-cell">{{ number_format((float) ($i->discount_percent ?? 0), 2) }} %</td>
               @endif
-              <td class="center-cell">{{ $i->quantity }}</td>
-              <td class="nep center-cell">{{ $i->unit }}</td>
               <td class="numeric-cell">{{ $i->price }}</td>
               <td class="numeric-cell">{{ $i->subtotal }}</td>
             </tr>
