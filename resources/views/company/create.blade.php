@@ -9,14 +9,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8"> </div>
-        <div class="col-md-4">
+        <div class="col-md-8 ms-auto d-flex justify-content-end align-content-start flex-wrap gap-2">
             <a href="{{ route('items.create') }}" target="" rel="noopener noreferrer" class="btn btn-lg btn-primary mb-3">
                 <i class="fas fa-plus"></i> Add New Items
             </a>
             <a href="{{ route('items.index') }}" target="" rel="noopener noreferrer" class="btn btn-lg btn-primary mb-3 float-end">
                 <i class="fas fa-eye"></i> View Items
             </a>
-            <button type="submit" form="companyCreateForm" id="topSubmitBtn" class="btn btn-lg btn-success mb-3 w-100">
+            <button type="submit" form="companyCreateForm" id="topSubmitBtn" class="btn btn-lg btn-success mb-3">
                 <i class="fas fa-save"></i> Save Supplier / Company
             </button>
         </div>
