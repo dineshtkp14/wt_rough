@@ -251,6 +251,38 @@ $(document).on("keydown.invoicePriceAddRow", "#invoiceTableBody #priceInput", fu
     resetInvoiceVerification();
 });
 
+$(document).on("keydown.invoiceQuantityAddRow", "#invoiceTableBody #quantityInput", function (event) {
+    if (event.key !== "Enter") return;
+
+    // Quick Price List uses Enter to continue to its next picker step.
+    if (quickPriceListMode) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const quantityInput = $(this);
+    const quantity = String(quantityInput.val() || "").trim();
+    if (!quantity || !Number.isFinite(Number(quantity)) || Number(quantity) <= 0) {
+        setInvoiceError("Please enter a valid quantity.", quantityInput);
+        quantityInput.trigger("focus");
+        return;
+    }
+
+    // Commit the current row before creating the next one so the latest
+    // quantity is retained in the client-side invoice state.
+    syncAllRowsFromDom();
+    const beforeCount = salesData.length;
+    appendInputRow();
+    if (salesData.length <= beforeCount) return;
+
+    const newRow = salesData[salesData.length - 1];
+    window.setTimeout(function () {
+        const target = $(`#inputRow${newRow.id} #unstockedInput`);
+        if (target.length) target.trigger("focus");
+    }, 0);
+    resetInvoiceVerification();
+});
+
 function updateInvoiceStepVisibility() {
     const hasCustomer = `${finalData[0]["customer"] || ""}`.trim() !== "";
     const invoiceType = $("#invoice_type").val();
