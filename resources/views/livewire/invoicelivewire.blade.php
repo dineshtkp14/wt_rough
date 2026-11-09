@@ -23,9 +23,7 @@
                             <th>Discount</th>
                             <th>Total</th>
                             <th>Notes</th>
-                       
-                            {{-- <th>Action</th> --}}
-                            {{-- <th>Action</th> --}}
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,16 +41,11 @@
                                     <td>{{ $sale->discount }}</td>
                                     <td>{{ $sale->total }}</td>
                                     <td>{{ $sale->notes }}</td>
-                                  
-                                    {{-- <td>
-                                        <a href="{{ route('invoice.edit', $sale->id) }}" class="btn" style="background:#389AF5;color:white;">EDIT</a>
-    
-                                        <a href="#" onclick="delfunctionsales({{ $sale->id }})" class="btn btn-danger">Delete</a>
-                                        <form id="eea{{ $sale->id }}" action="{{ route('itemssales.destroy', $sale->id) }}" method="post">
-                                            @csrf
-                                            @method('delete')
-                                        </form>
-                                    </td> --}}
+                                    <td>
+                                        <a href="{{ route('invoice.edit', $sale->id) }}" class="btn btn-sm" style="background:#389AF5;color:white;">
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        </a>
+                                    </td>
                                 </tr>
                             @endforeach
                         @else

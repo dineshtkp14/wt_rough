@@ -47,6 +47,22 @@ class customerledgerdetails extends Model
         );
     }
 
+    public static function nextFiscalReceiptNumber(string $fiscalYear): string
+    {
+        $prefix = 'CR-' . $fiscalYear . '-';
+
+        $highestSequence = static::where('invoicetype', 'payment')
+            ->where('fiscal_receipt_no', 'like', $prefix . '%')
+            ->pluck('fiscal_receipt_no')
+            ->map(function ($receiptNo) use ($prefix) {
+                $sequence = substr((string) $receiptNo, strlen($prefix));
+                return ctype_digit($sequence) ? (int) $sequence : 0;
+            })
+            ->max();
+
+        return FiscalNumber::format($fiscalYear, ((int) $highestSequence) + 1, 'CR');
+    }
+
     public function assignFiscalReceiptNumber(): void
     {
         if ($this->invoicetype !== 'payment') {
@@ -54,22 +70,7 @@ class customerledgerdetails extends Model
         }
 
         $fiscalYear = FiscalNumber::fiscalYearForDate($this->date ?: $this->created_at);
-        $sequence = static::where('invoicetype', 'payment')
-            ->orderBy('date')
-            ->orderBy('id')
-            ->get(['id', 'date', 'created_at'])
-            ->filter(function ($receipt) use ($fiscalYear) {
-                $date = $receipt->date ?: $receipt->created_at;
-                return FiscalNumber::fiscalYearForDate($date) === $fiscalYear;
-            })
-            ->values()
-            ->search(fn ($receipt) => (int) $receipt->id === (int) $this->id);
-
-        if ($sequence === false) {
-            return;
-        }
-
-        $this->fiscal_receipt_no = FiscalNumber::format($fiscalYear, $sequence + 1, 'CR');
+        $this->fiscal_receipt_no = static::nextFiscalReceiptNumber($fiscalYear);
         $this->saveQuietly();
     }
 

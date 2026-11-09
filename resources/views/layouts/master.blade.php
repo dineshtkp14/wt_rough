@@ -303,8 +303,8 @@
                 <ul class="nav-menu">
                     <!-- Dashboard -->
                     <li class="nav-item dashboard">
-                        <a href="{{ route('dashboard.index') }}" class="nav-link-single">
-                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse"
+                        <a href="{{ route('userdash') }}" class="nav-link-single">
+                            <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-dashboard"
                                 aria-expanded="false">
                                 <i class="fa-solid fa-gauge"></i>
                                 <span>Dashboard</span>

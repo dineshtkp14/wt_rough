@@ -68,16 +68,8 @@ class CustomerLedgerDetailsController extends Controller
         $statement  = DB::select("SHOW TABLE STATUS LIKE 'customerledgerdetails'");
         $nextUserId = $statement[0]->Auto_increment;       
         $fiscalYear = FiscalNumber::fiscalYearForDate(now());
-        $nextReceiptSequence = customerledgerdetails::where('invoicetype', 'payment')
-            ->orderBy('date')->orderBy('id')->get(['id', 'date', 'created_at'])
-            ->filter(fn ($receipt) => FiscalNumber::fiscalYearForDate($receipt->date ?: $receipt->created_at) === $fiscalYear)
-            ->count() + 1;
         $displayReceiptNo = FiscalNumber::shouldShowFiscalToCurrentUser()
-            ? FiscalNumber::format(
-                $fiscalYear,
-                $nextReceiptSequence,
-                'CR'
-            )
+            ? customerledgerdetails::nextFiscalReceiptNumber($fiscalYear)
             : (string) $nextUserId;
         return view('customerdetails.create', [
             'all' => $cus,
