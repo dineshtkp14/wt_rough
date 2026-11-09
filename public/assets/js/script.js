@@ -114,6 +114,10 @@ function updateCreditDaysVisibility() {
 }
 
 function resetInvoiceVerification() {
+    const path = window.location.pathname;
+    if (!path.includes('/itemsales') && !path.includes('/creditnotes') && !path.includes('/invoice/')) {
+        return;
+    }
     $("#submitBtn").attr("disabled", "disabled").hide();
     $("#verifyBtn").show();
 }
