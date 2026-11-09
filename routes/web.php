@@ -110,6 +110,34 @@ Route::get('/invoicedash',[UserdashboardController::class,'invoicedash'])->name(
 Route::get('/cndash',[UserdashboardController::class,'cndash'])->name('cndash');
 
 Route::get('/userdash',[UserdashboardController::class,'index'])->name('userdash');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/navigation-settings', function () {
+        $options = [
+            'modern_dashboard' => 'MODERN DASHBOARD',
+            'smart_tools' => 'SMART TOOLS',
+            'credit_list' => 'CREDIT LIST OF ALL CUSTOMER',
+            'check_stock' => 'CHECK STOCK',
+            'old_price' => 'CHECK OLD PRICE',
+            'sales_details_per_day' => 'SALES DETAILS PER DAY',
+        ];
+        $saved = json_decode((string) (auth()->user()->nav_visibility ?? ''), true);
+        return view('navigation.settings', ['options' => $options, 'visibility' => is_array($saved) ? $saved : []]);
+    })->name('navigation.settings');
+
+    Route::post('/navigation-settings', function (Request $request) {
+        $keys = ['modern_dashboard', 'smart_tools', 'credit_list', 'check_stock', 'old_price', 'sales_details_per_day'];
+        $values = $request->input('nav', []);
+        $visibility = [];
+        foreach ($keys as $key) {
+            $visibility[$key] = (bool) ($values[$key] ?? false);
+        }
+        $user = auth()->user();
+        $user->nav_visibility = json_encode($visibility);
+        $user->save();
+        return redirect()->route('navigation.settings')->with('success', 'Navigation settings saved.');
+    })->name('navigation.settings.save');
+});
 Route::get('/extra-balance-confirmation', [ExtraBalanceConfirmationController::class, 'create'])->name('extra-balance-confirmation.create');
 Route::post('/extra-balance-confirmation', [ExtraBalanceConfirmationController::class, 'generate'])->name('extra-balance-confirmation.generate');
 Route::post('/extra-balance-confirmation/firms', [ExtraBalanceConfirmationController::class, 'storeFirm'])->name('extra-balance-confirmation.firms.store');

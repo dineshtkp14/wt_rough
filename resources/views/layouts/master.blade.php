@@ -270,6 +270,14 @@
 </head>
 
 <body class="{{ request()->is('vat-system*') ? 'vat-system-shell' : '' }}">
+    @php
+        $navVisibility = [];
+        if (Auth::check()) {
+            $decodedNavVisibility = json_decode((string) (Auth::user()->nav_visibility ?? ''), true);
+            $navVisibility = is_array($decodedNavVisibility) ? $decodedNavVisibility : [];
+        }
+        $navEnabled = static fn (string $key): bool => (bool) ($navVisibility[$key] ?? true);
+    @endphp
     <button type="button" class="sidebar-collapse-btn" id="sidebarCollapseBtn" aria-label="Toggle navigation">
         <i class="fa-solid fa-bars"></i>
     </button>
@@ -298,6 +306,11 @@
         </div>
 
         @auth
+            <a href="{{ route('navigation.settings') }}" class="nav-link-single" style="display:block;margin:10px 14px 16px;">
+                <button type="button" class="nav-toggle" style="width:100%;">
+                    <i class="fa-solid fa-toggle-on"></i><span>ON/OFF NAV BAR</span>
+                </button>
+            </a>
             <!-- Admin Navigation -->
             @if (Auth::check() && Auth::user()->email == 'dineshtkp14@gmail.com')
                 <ul class="nav-menu">
@@ -314,6 +327,7 @@
                     </li>
 
                     <!-- Modern Dashboard -->
+                    @if($navEnabled('modern_dashboard'))
                     <li class="nav-item dashboard">
                         <a href="{{ route('modern.dashboard') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#modern-dash-collapse"
@@ -324,7 +338,9 @@
                             </button>
                         </a>
                     </li>
+                    @endif
 
+                    @if($navEnabled('smart_tools'))
                     <li class="nav-item dashboard">
                         <a href="{{ url('/smart-tools') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#smart-tools-collapse"
@@ -335,6 +351,7 @@
                             </button>
                         </a>
                     </li>
+                    @endif
 
                     <!-- Check Today -->
                     <li class="nav-item dashboard">
@@ -557,8 +574,9 @@
                                         Receipt</a></li>
                                 <li><a href="{{ route('allsalesdetails.showallcuscreditdetails') }}"><i
                                             class="fa-solid fa-list-check"></i>Due List</a></li>
-                                <li><a href="{{ route('customer.creditlist.all') }}"><i
+                                @if($navEnabled('credit_list'))<li><a href="{{ route('customer.creditlist.all') }}"><i
                                             class="fa-solid fa-address-book"></i>Credit List All Customers</a></li>
+                                @endif
                                 <li><a href="{{ route('cpayments.create') }}"><i
                                             class="fa-solid fa-money-bill-wave"></i>Payment Entry</a></li>
                                 <li><a href="{{ route('openingbalances.create') }}"><i
@@ -656,8 +674,9 @@
                                             class="fa-solid fa-money-bill-wave"></i>Show Sales</a></li>
                                 <li><a href="{{ route('temporaryinvoice.create') }}"><i
                                             class="fa-solid fa-file-lines"></i>Temporary Invoice</a></li>
-                                <li><a href="{{ url('/sales-details-per-day') }}"><i
+                                @if($navEnabled('sales_details_per_day'))<li><a href="{{ url('/sales-details-per-day') }}"><i
                                             class="fa-solid fa-table-list"></i>Sales Details Per Day</a></li>
+                                @endif
                                 <li><a href="{{ route('CheckBankDeposit.index') }}"><i
                                             class="fa-solid fa-building-columns"></i>Check Bank Deposit</a></li>
                                 <li><a href="{{ route('CheckCounterDeposit.index') }}"><i
@@ -681,6 +700,7 @@
                         </a>
                     </li>
 
+                    @if($navEnabled('modern_dashboard'))
                     <li class="nav-item dashboard">
                         <a href="{{ route('modern.dashboard') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-modern-dash"
@@ -691,7 +711,9 @@
                             </button>
                         </a>
                     </li>
+                    @endif
 
+                    @if($navEnabled('smart_tools'))
                     <li class="nav-item dashboard">
                         <a href="{{ url('/smart-tools') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-smart-tools"
@@ -702,6 +724,7 @@
                             </button>
                         </a>
                     </li>
+                    @endif
 
                     <!-- Check Today -->
                     <li class="nav-item dashboard">
@@ -737,7 +760,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item customer">
+                    @if($navEnabled('credit_list'))<li class="nav-item customer">
                         <a href="{{ route('customer.creditlist.all') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-credit-list"
                                 aria-expanded="false">
@@ -747,8 +770,9 @@
                             </button>
                         </a>
                     </li>
+                    @endif
 
-                    <li class="nav-item">
+                    @if($navEnabled('old_price'))<li class="nav-item">
                         <a href="{{ route('oldpricecheck') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-price"
                                 aria-expanded="false">
@@ -758,6 +782,7 @@
                             </button>
                         </a>
                     </li>
+                    @endif
 
                     <li class="nav-item">
                         <a href="{{ route('pricelists.index') }}" class="nav-link-single">
@@ -770,7 +795,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item stock">
+                    @if($navEnabled('check_stock'))<li class="nav-item stock">
                         <a href="{{ route('stocks.index') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-stock"
                                 aria-expanded="false">
@@ -780,6 +805,7 @@
                             </button>
                         </a>
                     </li>
+                    @endif
 
                     <li class="nav-item company">
                         <a href="{{ route('companyledgerdetails.returnchoosendatehistroy') }}" class="nav-link-single">
@@ -803,7 +829,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    @if($navEnabled('sales_details_per_day'))<li class="nav-item">
                         <a href="{{ url('/sales-details-per-day') }}" class="nav-link-single">
                             <button class="nav-toggle" data-bs-toggle="collapse" data-bs-target="#user-sales-details-perday"
                                 aria-expanded="false">
@@ -813,6 +839,7 @@
                             </button>
                         </a>
                     </li>
+                    @endif
 
                     <li class="nav-item credit">
                         <a href="{{ route('creditnotes.create') }}" class="nav-link-single">
