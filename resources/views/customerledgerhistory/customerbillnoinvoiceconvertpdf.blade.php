@@ -65,7 +65,38 @@
     table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:18px; }
     th,td{ border:1px solid #000; padding:0 3px; height:20px; line-height:1.08; vertical-align:middle; text-align:center; }
     th{ font-weight:700; }
-    .percent-pricing-table{ font-size:15px; table-layout:fixed; }
+    .percent-pricing-table{ font-size:15px; table-layout:fixed !important; }
+    /* Dompdf can ignore colgroup widths, so keep the PDF layout explicit. */
+    .percent-pricing-table.with-item-id th:nth-child(1),
+    .percent-pricing-table.with-item-id td:nth-child(1){ width:1% !important; }
+    .percent-pricing-table.with-item-id th:nth-child(2),
+    .percent-pricing-table.with-item-id td:nth-child(2){ width:5% !important; }
+    .percent-pricing-table.with-item-id th:nth-child(3),
+    .percent-pricing-table.with-item-id td:nth-child(3){ width:41% !important; }
+    .percent-pricing-table.with-item-id th:nth-child(4),
+    .percent-pricing-table.with-item-id td:nth-child(4){ width:10% !important; }
+    .percent-pricing-table.with-item-id th:nth-child(5),
+    .percent-pricing-table.with-item-id td:nth-child(5){ width:7% !important; }
+    .percent-pricing-table.with-item-id th:nth-child(6),
+    .percent-pricing-table.with-item-id td:nth-child(6){ width:7% !important; }
+    .percent-pricing-table.with-item-id th:nth-child(7),
+    .percent-pricing-table.with-item-id td:nth-child(7){ width:12% !important; }
+    .percent-pricing-table.with-item-id th:nth-child(8),
+    .percent-pricing-table.with-item-id td:nth-child(8){ width:17% !important; }
+    .percent-pricing-table.without-item-id th:nth-child(1),
+    .percent-pricing-table.without-item-id td:nth-child(1){ width:1% !important; }
+    .percent-pricing-table.without-item-id th:nth-child(2),
+    .percent-pricing-table.without-item-id td:nth-child(2){ width:48% !important; }
+    .percent-pricing-table.without-item-id th:nth-child(3),
+    .percent-pricing-table.without-item-id td:nth-child(3){ width:10% !important; }
+    .percent-pricing-table.without-item-id th:nth-child(4),
+    .percent-pricing-table.without-item-id td:nth-child(4){ width:7% !important; }
+    .percent-pricing-table.without-item-id th:nth-child(5),
+    .percent-pricing-table.without-item-id td:nth-child(5){ width:7% !important; }
+    .percent-pricing-table.without-item-id th:nth-child(6),
+    .percent-pricing-table.without-item-id td:nth-child(6){ width:12% !important; }
+    .percent-pricing-table.without-item-id th:nth-child(7),
+    .percent-pricing-table.without-item-id td:nth-child(7){ width:15% !important; }
     .percent-pricing-table th,
     .percent-pricing-table td{ padding:2px 3px; }
     .percent-pricing-table th{ font-size:15px; line-height:1.05; padding:3px 2px; }
@@ -201,7 +232,7 @@
     <div class="page-count">Page {{ $pageIndex + 1 }} of {{ $totalPages }}</div>
 
     <div class="table-container">
-      <table class="{{ $showPercentPricing ? 'percent-pricing-table' : '' }}">
+      <table class="{{ $showPercentPricing ? 'percent-pricing-table ' . ($showItemId ? 'with-item-id' : 'without-item-id') : '' }}">
         @if($showPercentPricing && $showItemId)
           <colgroup>
              <col style="width:1%;">
