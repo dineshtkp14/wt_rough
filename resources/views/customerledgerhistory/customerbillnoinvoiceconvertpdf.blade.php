@@ -68,31 +68,31 @@
     .percent-pricing-table{ font-size:15px; table-layout:fixed !important; }
     /* Dompdf can ignore colgroup widths, so keep the PDF layout explicit. */
     .percent-pricing-table.with-item-id th:nth-child(1),
-    .percent-pricing-table.with-item-id td:nth-child(1){ width:1% !important; }
+    .percent-pricing-table.with-item-id td:nth-child(1){ width:2% !important; }
     .percent-pricing-table.with-item-id th:nth-child(2),
     .percent-pricing-table.with-item-id td:nth-child(2){ width:5% !important; }
     .percent-pricing-table.with-item-id th:nth-child(3),
-    .percent-pricing-table.with-item-id td:nth-child(3){ width:41% !important; }
+    .percent-pricing-table.with-item-id td:nth-child(3){ width:39% !important; }
     .percent-pricing-table.with-item-id th:nth-child(4),
     .percent-pricing-table.with-item-id td:nth-child(4){ width:10% !important; }
     .percent-pricing-table.with-item-id th:nth-child(5),
-    .percent-pricing-table.with-item-id td:nth-child(5){ width:7% !important; }
+    .percent-pricing-table.with-item-id td:nth-child(5){ width:8% !important; }
     .percent-pricing-table.with-item-id th:nth-child(6),
-    .percent-pricing-table.with-item-id td:nth-child(6){ width:7% !important; }
+    .percent-pricing-table.with-item-id td:nth-child(6){ width:8% !important; }
     .percent-pricing-table.with-item-id th:nth-child(7),
     .percent-pricing-table.with-item-id td:nth-child(7){ width:12% !important; }
     .percent-pricing-table.with-item-id th:nth-child(8),
-    .percent-pricing-table.with-item-id td:nth-child(8){ width:17% !important; }
+    .percent-pricing-table.with-item-id td:nth-child(8){ width:16% !important; }
     .percent-pricing-table.without-item-id th:nth-child(1),
-    .percent-pricing-table.without-item-id td:nth-child(1){ width:1% !important; }
+    .percent-pricing-table.without-item-id td:nth-child(1){ width:2% !important; }
     .percent-pricing-table.without-item-id th:nth-child(2),
-    .percent-pricing-table.without-item-id td:nth-child(2){ width:48% !important; }
+    .percent-pricing-table.without-item-id td:nth-child(2){ width:45% !important; }
     .percent-pricing-table.without-item-id th:nth-child(3),
     .percent-pricing-table.without-item-id td:nth-child(3){ width:10% !important; }
     .percent-pricing-table.without-item-id th:nth-child(4),
-    .percent-pricing-table.without-item-id td:nth-child(4){ width:7% !important; }
+    .percent-pricing-table.without-item-id td:nth-child(4){ width:8% !important; }
     .percent-pricing-table.without-item-id th:nth-child(5),
-    .percent-pricing-table.without-item-id td:nth-child(5){ width:7% !important; }
+    .percent-pricing-table.without-item-id td:nth-child(5){ width:8% !important; }
     .percent-pricing-table.without-item-id th:nth-child(6),
     .percent-pricing-table.without-item-id td:nth-child(6){ width:12% !important; }
     .percent-pricing-table.without-item-id th:nth-child(7),
@@ -235,22 +235,22 @@
       <table class="{{ $showPercentPricing ? 'percent-pricing-table ' . ($showItemId ? 'with-item-id' : 'without-item-id') : '' }}">
         @if($showPercentPricing && $showItemId)
           <colgroup>
-             <col style="width:1%;">
+             <col style="width:2%;">
             <col style="width:5%;">
-             <col style="width:41%;">
+             <col style="width:39%;">
              <col style="width:10%;">
-             <col style="width:7%;">
-             <col style="width:7%;">
+             <col style="width:8%;">
+             <col style="width:8%;">
              <col style="width:12%;">
-            <col style="width:17%;">
+            <col style="width:16%;">
           </colgroup>
         @elseif($showPercentPricing)
           <colgroup>
-             <col style="width:1%;">
-             <col style="width:48%;">
+             <col style="width:2%;">
+             <col style="width:45%;">
              <col style="width:10%;">
-             <col style="width:7%;">
-             <col style="width:7%;">
+             <col style="width:8%;">
+             <col style="width:8%;">
              <col style="width:12%;">
              <col style="width:15%;">
           </colgroup>
