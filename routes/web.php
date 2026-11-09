@@ -559,7 +559,41 @@ Route::put('/CheckCounterDeposit/update', [BankDeposit_CounterCheckController::c
 
 Route::get('/showsalesperday', [showperday_controller::class, 'showonlysalesperday'])->name('showonlysalesperday.pp');
 Route::get('/onetable_showsalesperda', [showperday_controller::class, 'showonlysalesperdayinone_table'])->name('showonlysalesperdayinone_table.pp');
-Route::get('/sales-details-per-day', [showperday_controller::class, 'salesDetailsPerDay'])->name('sales.details.perday');
+Route::get('/sales-details-per-day', function (Request $request) {
+    if (!auth()->check()) {
+        return redirect('/login');
+    }
+
+    if (!auth()->user()->isAdmin() && !session('sales_details_per_day_access')) {
+        return view('Auth.customer-credit-list-password', [
+            'unlockRoute' => route('sales.details.perday.unlock'),
+            'pageTitle' => 'Sales Details Protected',
+            'pageDescription' => 'Enter the password to view sales details per day.',
+        ]);
+    }
+
+    return app(showperday_controller::class)->salesDetailsPerDay($request);
+})->name('sales.details.perday');
+
+Route::post('/sales-details-per-day/unlock', function (Request $request) {
+    if (!auth()->check()) {
+        return redirect('/login');
+    }
+
+    if (auth()->user()->isAdmin()) {
+        return redirect()->route('sales.details.perday');
+    }
+
+    $request->validate(['password' => ['required', 'string']]);
+
+    if (!hash_equals('9988', (string) $request->input('password'))) {
+        return back()->withErrors(['password' => 'Incorrect password.'])->withInput();
+    }
+
+    $request->session()->put('sales_details_per_day_access', true);
+
+    return redirect()->route('sales.details.perday');
+})->name('sales.details.perday.unlock');
 
 
 
