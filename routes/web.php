@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Daybookcontroller;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\CompanyController;
@@ -401,6 +402,10 @@ Route::get('/all-customer-credit-list', function () {
         return redirect('/login');
     }
 
+    if (!auth()->user()->isAdmin() && !session('customer_credit_list_access')) {
+        return view('auth.customer-credit-list-password');
+    }
+
     $breadcrumb = [
         'subtitle' => 'View',
         'title' => 'Credit List Of All Customer',
@@ -409,6 +414,28 @@ Route::get('/all-customer-credit-list', function () {
 
     return view('customerledgerhistory.all_customer_credit_list', compact('breadcrumb'));
 })->name('customer.creditlist.all');
+
+Route::post('/all-customer-credit-list/unlock', function (Request $request) {
+    if (!auth()->check()) {
+        return redirect('/login');
+    }
+
+    if (auth()->user()->isAdmin()) {
+        return redirect()->route('customer.creditlist.all');
+    }
+
+    $request->validate([
+        'password' => ['required', 'string'],
+    ]);
+
+    if (!hash_equals('9988', (string) $request->input('password'))) {
+        return back()->withErrors(['password' => 'Incorrect password.'])->withInput();
+    }
+
+    $request->session()->put('customer_credit_list_access', true);
+
+    return redirect()->route('customer.creditlist.all');
+})->name('customer.creditlist.unlock');
 
 Route::get('clhs/pdf/convert/',[CustomerLedgerHistroy::class,'PdfGenerateCustomerDetails'])->name('clhspdf.convert');
 Route::get('allcashandcredit/pdf/convert/',[CustomerLedgerHistroy::class,'pdfreturnchoosendatehistroycashandcredit'])->name('pdfreturnchoosendatehistroycashandcredit.convert');
