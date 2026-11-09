@@ -412,7 +412,13 @@ class VatSystemBillController extends Controller
 
     private function adjustStock(string $name, string $unit, float $quantity, float $rate, string $reference): void
     {
-        $stock = VatStock::firstOrCreate(['firm_id'=>(int) session('vat_firm_id'),'item_name'=>trim($name),'unit'=>trim($unit)], ['quantity'=>0,'purchase_rate'=>0,'sale_rate'=>$rate,'reorder_level'=>0]);
+        $stock = VatStock::withTrashed()->firstOrNew(['firm_id'=>(int) session('vat_firm_id'),'item_name'=>trim($name),'unit'=>trim($unit)]);
+        if (!$stock->exists) {
+            $stock->fill(['quantity'=>0,'purchase_rate'=>0,'sale_rate'=>$rate,'reorder_level'=>0]);
+        }
+        if ($stock->trashed()) {
+            $stock->restore();
+        }
         $before=(float)$stock->quantity;
         $after=$before+$quantity;
         $stock->update(['quantity'=>$after,'sale_rate'=>$rate]);
