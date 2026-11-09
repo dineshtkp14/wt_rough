@@ -75,7 +75,7 @@
                     @enderror
             </div>
 
-            <div class="d-grid gap-2 pt-4 pb-4 w-100">
+            <div class="col-12 d-grid gap-2 pt-4 pb-4">
                 <button type="submit" id="submitBtn" class="btn btn-lg btn-success w-100 py-3" style="font-size:1.45rem;font-weight:800;min-height:68px;"><i class="fas fa-save"></i> Save Supplier / Company</button>
             </div>
 </form>
