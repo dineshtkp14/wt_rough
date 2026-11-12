@@ -421,7 +421,9 @@ class VatSystemBillController extends Controller
         }
         $before=(float)$stock->quantity;
         $after=$before+$quantity;
-        $stock->update(['quantity'=>$after,'sale_rate'=>$rate]);
+        $stock->quantity=$after;
+        $stock->sale_rate=$rate;
+        $stock->save();
         $stock->movements()->create(['movement_type'=>$quantity < 0 ? 'sale' : 'sale_reversal','quantity'=>abs($quantity),'rate'=>$rate,'reference'=>$reference,'user_email'=>session('user_email')?:auth()->user()?->email,'quantity_before'=>$before,'quantity_after'=>$after]);
     }
 
