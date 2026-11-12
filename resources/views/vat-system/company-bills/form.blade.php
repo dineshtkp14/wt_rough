@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!adInput || document.querySelector('input[name="bill_date_bs"]')) return;
     const column = document.createElement('div');
     column.className = 'col-md-2';
-    const initialBsDate = @json(old('bill_date_bs', isset($bill) ? \\App\\Support\\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'), 'en') : \\App\\Support\\NepaliDate::adToBsString(now()->toDateString(), 'en')));
+    const initialBsDate = @json(old('bill_date_bs', isset($bill) ? \App\Support\NepaliDate::adToBsString($bill->bill_date->format('Y-m-d'), 'en') : \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en')));
     column.innerHTML = '<label>Bill Date (B.S.)</label><input name="bill_date_bs" class="form-control" placeholder="2083-07-13" value="' + initialBsDate + '"><small class="text-muted">Enter B.S. date when needed</small>';
     adInput.closest('.col-md-2').insertAdjacentElement('afterend', column);
     const bsInput = column.querySelector('input');
