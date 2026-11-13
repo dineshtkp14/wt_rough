@@ -44,6 +44,13 @@ class PricelistController extends Controller
     public function store(Request $req)
    {
     if(Auth::check()){
+    $items = $req->input('items', []);
+    foreach ($items as $index => $item) {
+        if (is_array($item) && array_key_exists('unit', $item)) {
+            $items[$index]['unit'] = strtolower(trim((string) $item['unit']));
+        }
+    }
+    $req->merge(['items' => $items]);
     $validator=Validator::make($req->all(),[
 
         'items' => 'required|array|min:1|max:12',
