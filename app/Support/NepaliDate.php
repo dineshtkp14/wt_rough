@@ -14,7 +14,7 @@ final class NepaliDate
     /** AD epoch (UTC) corresponding to BS 2000-01-01 */
     private const BEGIN_AD_Y = 1943;
     private const BEGIN_AD_M = 4;  // April (1-based for PHP)
-    private const BEGIN_AD_D = 13; // 13th
+    private const BEGIN_AD_D = 14; // 14th
 
     /** Boundaries (same as the JS lib) */
     private const MIN_DAY = 1;
