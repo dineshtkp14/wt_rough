@@ -17,7 +17,15 @@ class invoice extends Model
             return (string) $this->fiscal_invoice_no;
         }
 
-        $fiscalYear = FiscalNumber::fiscalYearForDate($this->inv_date ?: $this->created_at);
+        // Post-cutover invoices must have a persisted fiscal number. Do not
+        // derive one from date ordering: that fallback can display a number
+        // already owned by another invoice after a failed save.
+        $invoiceDate = $this->inv_date ?: $this->created_at;
+        if (FiscalNumber::isAfterDisplayCutover($invoiceDate)) {
+            return (string) $this->id;
+        }
+
+        $fiscalYear = FiscalNumber::fiscalYearForDate($invoiceDate);
         $sequence = static::orderBy('inv_date')
             ->orderBy('id')
             ->get(['id', 'inv_date', 'created_at'])
