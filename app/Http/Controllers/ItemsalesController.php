@@ -211,6 +211,10 @@ class ItemsalesController extends Controller
                 $creditLimitDays = (int) $req->credit_days;
             }
         }
+        // Keep invoice, stock, and ledger writes atomic. A failed fiscal-number
+        // allocation must never leave a partial invoice behind.
+        DB::beginTransaction();
+        try {
         // invoice insert
         $invoice_data = new invoice();
         $invoice_data->customerid = $customerId;
@@ -280,6 +284,18 @@ class ItemsalesController extends Controller
         $cus_data->added_by = session('user_email');
 
         $cus_data->save();
+        DB::commit();
+        } catch (\Throwable $exception) {
+            DB::rollBack();
+            Log::error('Invoice creation rolled back', [
+                'error' => $exception->getMessage(),
+                'user_id' => Auth::id(),
+            ]);
+
+            return redirect()->route('itemsales.create')
+                ->with('error', 'Invoice was not saved because its number could not be allocated safely.')
+                ->withInput();
+        }
         
 
         $customer = customerinfo::find($invoice_data->customerid);
