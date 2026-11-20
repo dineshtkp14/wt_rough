@@ -124,15 +124,16 @@
                     </div>
 
                     
+                    @php($todayAd = now('Asia/Kathmandu')->toDateString())
                     <div class="invoice-control date-control">
                         <label class="invoice-field-label" for="salesDate">Date</label>
                         <div class="input-group mb-1">
                             <span class="input-group-text">Date:</span>
                             <input type="date" class="form-control" placeholder="" id="salesDate"
-                                class="form-control foritemsaledatecss" value="{{ now()->format('Y-m-d') }}" name="date">
+                                class="form-control foritemsaledatecss" value="{{ old('date', $todayAd) }}" name="date">
                         </div>
                         <small class="text-muted invoice-help-text">
-                            Nepali Date: {{ \App\Support\NepaliDate::adToBsString(now()->toDateString(), 'en') }}
+                            Nepali Date: <span id="nepaliDateLabel">{{ \App\Support\NepaliDate::adToBsString(old('date', $todayAd), 'en') }}</span>
                         </small>
                         
                     </div>
